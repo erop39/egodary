@@ -1,0 +1,275 @@
+id: style.aesthetic
+title: Aesthetic / Mood
+items:
+- id: aesthetic
+  label: Aesthetic
+  meta:
+    subgroup: general
+  tags:
+    illustrious: aesthetic
+    anima: aesthetic
+    zimage_turbo: aesthetic
+- id: very_aesthetic
+  label: Very aesthetic
+  meta:
+    subgroup: general
+  tags:
+    illustrious: very aesthetic
+    anima: very aesthetic
+    zimage_turbo: very aesthetic
+- id: beautiful_composition
+  label: Beautiful composition
+  meta:
+    subgroup: general
+  tags:
+    illustrious: beautiful composition
+    anima: beautiful composition
+    zimage_turbo: beautiful composition
+- id: elegant
+  label: Elegant
+  meta:
+    subgroup: general
+  tags:
+    illustrious: elegant
+    anima: elegant
+    zimage_turbo: elegant
+- id: stylish
+  label: Stylish
+  meta:
+    subgroup: general
+  tags:
+    illustrious: stylish
+    anima: stylish
+    zimage_turbo: stylish
+- id: moody
+  label: Moody
+  meta:
+    subgroup: general
+  tags:
+    illustrious: moody
+    anima: moody
+    zimage_turbo: moody
+- id: atmospheric
+  label: Atmospheric
+  meta:
+    subgroup: general
+  tags:
+    illustrious: atmospheric
+    anima: atmospheric
+    zimage_turbo: atmospheric
+- id: dreamy
+  label: Dreamy
+  meta:
+    subgroup: general
+  tags:
+    illustrious: dreamy
+    anima: dreamy
+    zimage_turbo: dreamy
+- id: ethereal
+  label: Ethereal
+  meta:
+    subgroup: general
+  tags:
+    illustrious: ethereal
+    anima: ethereal
+    zimage_turbo: ethereal
+- id: dark_aesthetic
+  label: Dark aesthetic
+  meta:
+    subgroup: general
+  tags:
+    illustrious: dark aesthetic
+    anima: dark aesthetic
+    zimage_turbo: dark aesthetic
+- id: bright_aesthetic
+  label: Bright aesthetic
+  meta:
+    subgroup: general
+  tags:
+    illustrious: bright aesthetic
+    anima: bright aesthetic
+    zimage_turbo: bright aesthetic
+- id: sensual
+  label: Sensual
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: sensual
+    anima: sensual
+    zimage_turbo: sensual
+- id: erotic
+  label: Erotic
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: erotic
+    anima: erotic
+    zimage_turbo: erotic
+- id: tasteful_sensual
+  label: Tasteful sensual
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: tasteful sensual
+    anima: tasteful sensual
+    zimage_turbo: tasteful sensual
+- id: seductive_atmosphere
+  label: Seductive atmosphere
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: seductive atmosphere
+    anima: seductive atmosphere
+    zimage_turbo: seductive atmosphere
+- id: lewd
+  label: Lewd
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: lewd
+    anima: lewd
+    zimage_turbo: lewd
+- id: suggestive
+  label: Suggestive
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: suggestive
+    anima: suggestive
+    zimage_turbo: suggestive
+- id: provocative
+  label: Provocative
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: provocative
+    anima: provocative
+    zimage_turbo: provocative
+- id: intimate
+  label: Intimate
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: intimate
+    anima: intimate
+    zimage_turbo: intimate
+- id: sultry
+  label: Sultry
+  meta:
+    subgroup: nsfw_sensual
+  tags:
+    illustrious: sultry
+    anima: sultry
+    zimage_turbo: sultry
+- id: uncensored
+  label: Uncensored
+  meta:
+    subgroup: nsfw
+  tags:
+    illustrious: uncensored
+    anima: uncensored
+    zimage_turbo: uncensored
+- id: nude
+  label: Nude
+  meta:
+    subgroup: nsfw
+  tags:
+    illustrious: nude
+    anima: nude
+    zimage_turbo: nude
+- id: explicit
+  label: Explicit
+  meta:
+    subgroup: nsfw
+  tags:
+    illustrious: explicit
+    anima: explicit
+    zimage_turbo: explicit
+- id: spicy
+  label: Spicy
+  meta:
+    subgroup: nsfw
+  tags:
+    illustrious: spicy
+    anima: spicy
+    zimage_turbo: spicy
+- id: cyberpunk_aesthetic
+  label: Cyberpunk aesthetic
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: cyberpunk aesthetic
+    anima: cyberpunk aesthetic
+    zimage_turbo: cyberpunk aesthetic
+- id: neon_aesthetic
+  label: Neon aesthetic
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: neon aesthetic
+    anima: neon aesthetic
+    zimage_turbo: neon aesthetic
+- id: retro_anime_aesthetic
+  label: Retro anime aesthetic
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: retro anime aesthetic
+    anima: retro anime aesthetic
+    zimage_turbo: retro anime aesthetic
+- id: modern_anime_aesthetic
+  label: Modern anime aesthetic
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: modern anime aesthetic
+    anima: modern anime aesthetic
+    zimage_turbo: modern anime aesthetic
+- id: kawaii
+  label: Kawaii
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: kawaii
+    anima: kawaii
+    zimage_turbo: kawaii
+- id: dark_fantasy
+  label: Dark fantasy
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: dark fantasy
+    anima: dark fantasy
+    zimage_turbo: dark fantasy
+- id: elegant_mature
+  label: Elegant mature
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: elegant mature
+    anima: elegant mature
+    zimage_turbo: elegant mature
+- id: soft_and_delicate
+  label: Soft and delicate
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: soft and delicate
+    anima: soft and delicate
+    zimage_turbo: soft and delicate
+- id: cool_and_calculating
+  label: Cool and calculating
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: cool and calculating
+    anima: cool and calculating
+    zimage_turbo: cool and calculating
+- id: intense_and_dramatic
+  label: Intense and dramatic
+  meta:
+    subgroup: styled_vibes
+  tags:
+    illustrious: intense and dramatic
+    anima: intense and dramatic
+    zimage_turbo: intense and dramatic

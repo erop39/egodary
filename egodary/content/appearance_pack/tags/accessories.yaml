@@ -1,0 +1,339 @@
+id: appearance.accessories
+title: Accessories
+items:
+- id: full_body_chain_harness
+  label: Full Body Chain Harness
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: full body chain harness
+    anima: full body chain harness, styled accessory
+    zimage_turbo: wearing full body chain harness
+- id: strappy_body_harness
+  label: Strappy Body Harness
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: strappy body harness
+    anima: strappy body harness, styled accessory
+    zimage_turbo: wearing strappy body harness
+- id: nipple_chains
+  label: Nipple Chains
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: nipple chains
+    anima: nipple chains, styled accessory
+    zimage_turbo: wearing nipple chains
+- id: waist_chain_harness
+  label: Waist Chain Harness
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: waist chain harness
+    anima: waist chain harness, styled accessory
+    zimage_turbo: wearing waist chain harness
+- id: multiple_body_chains
+  label: Multiple Body Chains
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: multiple body chains
+    anima: multiple body chains, styled accessory
+    zimage_turbo: wearing multiple body chains
+- id: o_ring_body_harness
+  label: O-Ring Body Harness
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: o-ring body harness
+    anima: o-ring body harness, styled accessory
+    zimage_turbo: wearing o-ring body harness
+- id: strappy_chest_harness
+  label: Strappy Chest Harness
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: strappy chest harness
+    anima: strappy chest harness, styled accessory
+    zimage_turbo: wearing strappy chest harness
+- id: bondage_body_jewelry
+  label: Bondage Body Jewelry
+  meta:
+    subgroup: body_jewelry
+  tags:
+    illustrious: bondage body jewelry
+    anima: bondage body jewelry, styled accessory
+    zimage_turbo: wearing bondage body jewelry
+- id: wide_harness_belt
+  label: Wide Harness Belt
+  meta:
+    subgroup: belts_waist
+  tags:
+    illustrious: wide harness belt
+    anima: wide harness belt, styled accessory
+    zimage_turbo: wearing wide harness belt
+- id: multiple_strap_belt
+  label: Multiple Strap Belt
+  meta:
+    subgroup: belts_waist
+  tags:
+    illustrious: multiple strap belt
+    anima: multiple strap belt, styled accessory
+    zimage_turbo: wearing multiple strap belt
+- id: o_ring_waist_harness
+  label: O-Ring Waist Harness
+  meta:
+    subgroup: belts_waist
+  tags:
+    illustrious: o-ring waist harness
+    anima: o-ring waist harness, styled accessory
+    zimage_turbo: wearing o-ring waist harness
+- id: chain_waist_belt
+  label: Chain Waist Belt
+  meta:
+    subgroup: belts_waist
+  tags:
+    illustrious: chain waist belt
+    anima: chain waist belt, styled accessory
+    zimage_turbo: wearing chain waist belt
+- id: vinyl_corset_belt
+  label: Vinyl Corset Belt
+  meta:
+    subgroup: belts_waist
+  tags:
+    illustrious: vinyl corset belt
+    anima: vinyl corset belt, styled accessory
+    zimage_turbo: wearing vinyl corset belt
+- id: strappy_low_waist_belt
+  label: Strappy Low Waist Belt
+  meta:
+    subgroup: belts_waist
+  tags:
+    illustrious: strappy low waist belt
+    anima: strappy low waist belt, styled accessory
+    zimage_turbo: wearing strappy low waist belt
+- id: fedora_sexy_tilt
+  label: Fedora Sexy Tilt
+  meta:
+    subgroup: headwear
+  tags:
+    illustrious: fedora sexy tilt
+    anima: fedora sexy tilt, styled accessory
+    zimage_turbo: wearing fedora sexy tilt
+- id: beanie_wetlook
+  label: Beanie Wetlook
+  meta:
+    subgroup: headwear
+  tags:
+    illustrious: beanie wetlook
+    anima: beanie wetlook, styled accessory
+    zimage_turbo: wearing beanie wetlook
+- id: baseball_cap_backward
+  label: Baseball Cap Backward
+  meta:
+    subgroup: headwear
+  tags:
+    illustrious: baseball cap backward
+    anima: baseball cap backward, styled accessory
+    zimage_turbo: wearing baseball cap backward
+- id: harness_headpiece
+  label: Harness Headpiece
+  meta:
+    subgroup: headwear
+  tags:
+    illustrious: harness headpiece
+    anima: harness headpiece, styled accessory
+    zimage_turbo: wearing harness headpiece
+- id: latex_hood_partial
+  label: Latex Hood Partial
+  meta:
+    subgroup: headwear
+  tags:
+    illustrious: latex hood partial
+    anima: latex hood partial, styled accessory
+    zimage_turbo: wearing latex hood partial
+- id: strappy_head_harness
+  label: Strappy Head Harness
+  meta:
+    subgroup: headwear
+  tags:
+    illustrious: strappy head harness
+    anima: strappy head harness, styled accessory
+    zimage_turbo: wearing strappy head harness
+- id: o_ring_choker
+  label: O-Ring Choker
+  meta:
+    subgroup: chokers_neck
+  tags:
+    illustrious: o-ring choker
+    anima: o-ring choker, styled accessory
+    zimage_turbo: wearing o-ring choker
+- id: strappy_harness_choker
+  label: Strappy Harness Choker
+  meta:
+    subgroup: chokers_neck
+  tags:
+    illustrious: strappy harness choker
+    anima: strappy harness choker, styled accessory
+    zimage_turbo: wearing strappy harness choker
+- id: wide_leather_choker
+  label: Wide Leather Choker
+  meta:
+    subgroup: chokers_neck
+  tags:
+    illustrious: wide leather choker
+    anima: wide leather choker, styled accessory
+    zimage_turbo: wearing wide leather choker
+- id: chain_choker_with_pendant
+  label: Chain Choker with Pendant
+  meta:
+    subgroup: chokers_neck
+  tags:
+    illustrious: chain choker with pendant
+    anima: chain choker with pendant, styled accessory
+    zimage_turbo: wearing chain choker with pendant
+- id: latex_collar
+  label: Latex Collar
+  meta:
+    subgroup: chokers_neck
+  tags:
+    illustrious: latex collar
+    anima: latex collar, styled accessory
+    zimage_turbo: wearing latex collar
+- id: multiple_layer_chokers
+  label: Multiple Layer Chokers
+  meta:
+    subgroup: chokers_neck
+  tags:
+    illustrious: multiple layer chokers
+    anima: multiple layer chokers, styled accessory
+    zimage_turbo: wearing multiple layer chokers
+- id: small_chain_handbag
+  label: Small Chain Handbag
+  meta:
+    subgroup: bags_extra
+  tags:
+    illustrious: small chain handbag
+    anima: small chain handbag, styled accessory
+    zimage_turbo: wearing small chain handbag
+- id: crossbody_harness_bag
+  label: Crossbody Harness Bag
+  meta:
+    subgroup: bags_extra
+  tags:
+    illustrious: crossbody harness bag
+    anima: crossbody harness bag, styled accessory
+    zimage_turbo: wearing crossbody harness bag
+- id: mini_vinyl_purse
+  label: Mini Vinyl Purse
+  meta:
+    subgroup: bags_extra
+  tags:
+    illustrious: mini vinyl purse
+    anima: mini vinyl purse, styled accessory
+    zimage_turbo: wearing mini vinyl purse
+- id: body_chain_bag
+  label: Body Chain Bag
+  meta:
+    subgroup: bags_extra
+  tags:
+    illustrious: body chain bag
+    anima: body chain bag, styled accessory
+    zimage_turbo: wearing body chain bag
+- id: fetish_style_pouch
+  label: Fetish Style Pouch
+  meta:
+    subgroup: bags_extra
+  tags:
+    illustrious: fetish style pouch
+    anima: fetish style pouch, styled accessory
+    zimage_turbo: wearing fetish style pouch
+- id: strappy_backpack
+  label: Strappy Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: strappy backpack
+    anima: strappy backpack, styled accessory
+    zimage_turbo: wearing strappy backpack
+- id: heart_shaped_backpack
+  label: Heart-Shaped Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: heart-shaped backpack
+    anima: heart-shaped backpack, styled accessory
+    zimage_turbo: wearing heart-shaped backpack
+- id: cute_mini_backpack
+  label: Cute Mini Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: cute mini backpack
+    anima: cute mini backpack, styled accessory
+    zimage_turbo: wearing cute mini backpack
+- id: transparent_backpack
+  label: Transparent Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: transparent backpack
+    anima: transparent backpack, styled accessory
+    zimage_turbo: wearing transparent backpack
+- id: neon_backpack
+  label: Neon Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: neon backpack
+    anima: neon backpack, styled accessory
+    zimage_turbo: wearing neon backpack
+- id: plastic_heart_bag
+  label: Plastic Heart Bag
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: plastic heart bag
+    anima: plastic heart bag, styled accessory
+    zimage_turbo: wearing plastic heart bag
+- id: kawaii_backpack
+  label: Kawaii Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: kawaii backpack
+    anima: kawaii backpack, styled accessory
+    zimage_turbo: wearing kawaii backpack
+- id: crossbody_backpack
+  label: Crossbody Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: crossbody backpack
+    anima: crossbody backpack, styled accessory
+    zimage_turbo: wearing crossbody backpack
+- id: small_heart_shaped_bag
+  label: Small Heart-Shaped Bag
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: small heart-shaped bag
+    anima: small heart-shaped bag, styled accessory
+    zimage_turbo: wearing small heart-shaped bag
+- id: neon_pink_backpack
+  label: Neon Pink Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: neon pink backpack
+    anima: neon pink backpack, styled accessory
+    zimage_turbo: wearing neon pink backpack
+- id: utility_neon_backpack
+  label: Utility Neon Backpack
+  meta:
+    subgroup: backpacks
+  tags:
+    illustrious: utility neon backpack
+    anima: utility neon backpack, styled accessory
+    zimage_turbo: wearing utility neon backpack

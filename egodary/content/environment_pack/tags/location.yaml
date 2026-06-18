@@ -1,0 +1,283 @@
+id: environment.location
+title: Location
+items:
+- id: modern_bedroom
+  label: Modern bedroom
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: modern bedroom
+    anima: modern bedroom, detailed environment
+    zimage_turbo: in modern bedroom
+- id: luxury_bedroom
+  label: Luxury bedroom
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: luxury bedroom
+    anima: luxury bedroom, detailed environment
+    zimage_turbo: in luxury bedroom
+- id: minimalist_apartment
+  label: Minimalist apartment
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: minimalist apartment
+    anima: minimalist apartment, detailed environment
+    zimage_turbo: in minimalist apartment
+- id: dark_moody_bedroom
+  label: Dark moody bedroom
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: dark moody bedroom
+    anima: dark moody bedroom, detailed environment
+    zimage_turbo: in dark moody bedroom
+- id: hotel_room
+  label: Hotel room
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: hotel room
+    anima: hotel room, detailed environment
+    zimage_turbo: in hotel room
+- id: penthouse
+  label: Penthouse
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: penthouse
+    anima: penthouse, detailed environment
+    zimage_turbo: in penthouse
+- id: basement__dungeon
+  label: Basement / dungeon
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: basement / dungeon
+    anima: basement / dungeon, detailed environment
+    zimage_turbo: in basement / dungeon
+- id: abandoned_building_interior
+  label: Abandoned building interior
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: abandoned building interior
+    anima: abandoned building interior, detailed environment
+    zimage_turbo: in abandoned building interior
+- id: neon_lit_room
+  label: Neon-lit room
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: neon-lit room
+    anima: neon-lit room, detailed environment
+    zimage_turbo: in neon-lit room
+- id: candlelit_room
+  label: Candlelit room
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: candlelit room
+    anima: candlelit room, detailed environment
+    zimage_turbo: in candlelit room
+- id: bathroom_wet_tiles
+  label: Bathroom (wet tiles)
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: bathroom (wet tiles)
+    anima: bathroom (wet tiles), detailed environment
+    zimage_turbo: in bathroom (wet tiles)
+- id: kitchen_counter
+  label: Kitchen counter
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: kitchen counter
+    anima: kitchen counter, detailed environment
+    zimage_turbo: in kitchen counter
+- id: living_room_couch
+  label: Living room couch
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: living room couch
+    anima: living room couch, detailed environment
+    zimage_turbo: in living room couch
+- id: mirror_room
+  label: Mirror room
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: mirror room
+    anima: mirror room, detailed environment
+    zimage_turbo: in mirror room
+- id: red_light_district_room
+  label: Red light district room
+  meta:
+    subgroup: indoor
+  tags:
+    illustrious: red light district room
+    anima: red light district room, detailed environment
+    zimage_turbo: in red light district room
+- id: night_city_street
+  label: Night city street
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: night city street
+    anima: night city street, detailed environment
+    zimage_turbo: in night city street
+- id: rooftop_at_night
+  label: Rooftop at night
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: rooftop at night
+    anima: rooftop at night, detailed environment
+    zimage_turbo: in rooftop at night
+- id: alleyway
+  label: Alleyway
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: alleyway
+    anima: alleyway, detailed environment
+    zimage_turbo: in alleyway
+- id: forest_at_night
+  label: Forest at night
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: forest at night
+    anima: forest at night, detailed environment
+    zimage_turbo: in forest at night
+- id: beach_at_night
+  label: Beach at night
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: beach at night
+    anima: beach at night, detailed environment
+    zimage_turbo: in beach at night
+- id: car_interior_night
+  label: Car interior (night)
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: car interior (night)
+    anima: car interior (night), detailed environment
+    zimage_turbo: in car interior (night)
+- id: balcony
+  label: Balcony
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: balcony
+    anima: balcony, detailed environment
+    zimage_turbo: in balcony
+- id: abandoned_warehouse
+  label: Abandoned warehouse
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: abandoned warehouse
+    anima: abandoned warehouse, detailed environment
+    zimage_turbo: in abandoned warehouse
+- id: under_bridge
+  label: Under bridge
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: under bridge
+    anima: under bridge, detailed environment
+    zimage_turbo: in under bridge
+- id: neon_cyberpunk_street
+  label: Neon cyberpunk street
+  meta:
+    subgroup: outdoor_semi
+  tags:
+    illustrious: neon cyberpunk street
+    anima: neon cyberpunk street, detailed environment
+    zimage_turbo: in neon cyberpunk street
+- id: dark_fantasy_bedroom
+  label: Dark fantasy bedroom
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: dark fantasy bedroom
+    anima: dark fantasy bedroom, detailed environment
+    zimage_turbo: in dark fantasy bedroom
+- id: throne_room
+  label: Throne room
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: throne room
+    anima: throne room, detailed environment
+    zimage_turbo: in throne room
+- id: gothic_castle_interior
+  label: Gothic castle interior
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: gothic castle interior
+    anima: gothic castle interior, detailed environment
+    zimage_turbo: in gothic castle interior
+- id: futuristic_bedroom
+  label: Futuristic bedroom
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: futuristic bedroom
+    anima: futuristic bedroom, detailed environment
+    zimage_turbo: in futuristic bedroom
+- id: void__abstract_background
+  label: Void / abstract background
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: void / abstract background
+    anima: void / abstract background, detailed environment
+    zimage_turbo: in void / abstract background
+- id: heavenly__ethereal_space
+  label: Heavenly / ethereal space
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: heavenly / ethereal space
+    anima: heavenly / ethereal space, detailed environment
+    zimage_turbo: in heavenly / ethereal space
+- id: underground_club
+  label: Underground club
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: underground club
+    anima: underground club, detailed environment
+    zimage_turbo: in underground club
+- id: luxury_bdsm_club
+  label: Luxury BDSM club
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: luxury bdsm club
+    anima: luxury bdsm club, detailed environment
+    zimage_turbo: in luxury bdsm club
+- id: rainy_window_background
+  label: Rainy window background
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: rainy window background
+    anima: rainy window background, detailed environment
+    zimage_turbo: in rainy window background
+- id: foggy_atmosphere
+  label: Foggy atmosphere
+  meta:
+    subgroup: fantasy_stylized
+  tags:
+    illustrious: foggy atmosphere
+    anima: foggy atmosphere, detailed environment
+    zimage_turbo: in foggy atmosphere

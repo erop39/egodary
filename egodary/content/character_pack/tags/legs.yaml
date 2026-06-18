@@ -1,0 +1,99 @@
+id: character.legs
+title: Legs
+items:
+- id: long_legs
+  label: Long legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: long legs
+    anima: long legs, detailed body
+    zimage_turbo: with long legs
+- id: toned_legs
+  label: Toned legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: toned legs
+    anima: toned legs, detailed body
+    zimage_turbo: with toned legs
+- id: thick_thighs
+  label: Thick thighs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: thick thighs
+    anima: thick thighs, detailed body
+    zimage_turbo: with thick thighs
+- id: slim_legs
+  label: Slim legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: slim legs
+    anima: slim legs, detailed body
+    zimage_turbo: with slim legs
+- id: muscular_legs
+  label: Muscular legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: muscular legs
+    anima: muscular legs, detailed body
+    zimage_turbo: with muscular legs
+- id: soft_legs
+  label: Soft legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: soft legs
+    anima: soft legs, detailed body
+    zimage_turbo: with soft legs
+- id: long_and_elegant_legs
+  label: Long and elegant legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: long and elegant legs
+    anima: long and elegant legs, detailed body
+    zimage_turbo: with long and elegant legs
+- id: short_and_thick_legs
+  label: Short and thick legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: short and thick legs
+    anima: short and thick legs, detailed body
+    zimage_turbo: with short and thick legs
+- id: thigh_gap
+  label: Thigh gap
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: thigh gap
+    anima: thigh gap, detailed body
+    zimage_turbo: with thigh gap
+- id: strong_calves
+  label: Strong calves
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: strong calves
+    anima: strong calves, detailed body
+    zimage_turbo: with strong calves
+- id: smooth_legs
+  label: Smooth legs
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: smooth legs
+    anima: smooth legs, detailed body
+    zimage_turbo: with smooth legs
+- id: legs_with_subtle_muscle_definition
+  label: Legs with subtle muscle definition
+  meta:
+    subgroup: legs
+  tags:
+    illustrious: legs with subtle muscle definition
+    anima: legs with subtle muscle definition, detailed body
+    zimage_turbo: with legs with subtle muscle definition

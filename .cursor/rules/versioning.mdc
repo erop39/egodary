@@ -1,0 +1,26 @@
+---
+description: Bump app version and update CHANGELOG when making substantive changes
+alwaysApply: true
+---
+
+# Versioning and changelog
+
+When working on eGOdary, bump the patch version by **+0.0.1** and update `CHANGELOG.md` if **any** of these apply:
+
+1. More than **2** distinct fixes/changes in the same task
+2. One **global** setting or layout change (sidebar, session, navigation, defaults)
+3. A **new feature** or user-facing capability
+
+## Files to update together
+
+- `egodary/_version.py` — `APP_VERSION` and `BUILD_NUMBER`
+- `pyproject.toml` — `project.version`
+- `egodary/api/main.py` — FastAPI `version=`
+- `egodary/web/static/index.html` — footer version label (`vX.Y.Z`)
+- `CHANGELOG.md` — add bullets under `[Unreleased]` (Added / Changed / Fixed)
+
+## Changelog style
+
+- Short, user-facing bullets in Russian or English (match surrounding entries)
+- Mention UI moves, new buttons/icons, API endpoints when relevant
+- Do not bump version for typo-only or comment-only edits

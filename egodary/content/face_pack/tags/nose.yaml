@@ -1,0 +1,171 @@
+id: face.nose
+title: Nose
+items:
+- id: small_delicate_nose
+  label: Small delicate nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: small delicate nose
+    anima: small delicate nose, detailed face
+    zimage_turbo: with small delicate nose
+- id: button_nose
+  label: Button nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: button nose
+    anima: button nose, detailed face
+    zimage_turbo: with button nose
+- id: straight_nose
+  label: Straight nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: straight nose
+    anima: straight nose, detailed face
+    zimage_turbo: with straight nose
+- id: slightly_upturned_nose
+  label: Slightly upturned nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: slightly upturned nose
+    anima: slightly upturned nose, detailed face
+    zimage_turbo: with slightly upturned nose
+- id: aquiline_nose
+  label: Aquiline nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: aquiline nose
+    anima: aquiline nose, detailed face
+    zimage_turbo: with aquiline nose
+- id: wide_nose
+  label: Wide nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: wide nose
+    anima: wide nose, detailed face
+    zimage_turbo: with wide nose
+- id: narrow_refined_nose
+  label: Narrow refined nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: narrow refined nose
+    anima: narrow refined nose, detailed face
+    zimage_turbo: with narrow refined nose
+- id: snub_nose
+  label: Snub nose
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: snub nose
+    anima: snub nose, detailed face
+    zimage_turbo: with snub nose
+- id: small_cute_nose
+  label: Small cute nose
+  meta:
+    subgroup: details
+  tags:
+    illustrious: small cute nose
+    anima: small cute nose, detailed face
+    zimage_turbo: with small cute nose
+- id: perfect_straight_nose
+  label: Perfect straight nose
+  meta:
+    subgroup: details
+  tags:
+    illustrious: perfect straight nose
+    anima: perfect straight nose, detailed face
+    zimage_turbo: with perfect straight nose
+- id: slightly_wide_nostrils
+  label: Slightly wide nostrils
+  meta:
+    subgroup: details
+  tags:
+    illustrious: slightly wide nostrils
+    anima: slightly wide nostrils, detailed face
+    zimage_turbo: with slightly wide nostrils
+- id: narrow_elegant_nose
+  label: Narrow elegant nose
+  meta:
+    subgroup: details
+  tags:
+    illustrious: narrow elegant nose
+    anima: narrow elegant nose, detailed face
+    zimage_turbo: with narrow elegant nose
+- id: soft_rounded_tip
+  label: Soft rounded tip
+  meta:
+    subgroup: details
+  tags:
+    illustrious: soft rounded tip
+    anima: soft rounded tip, detailed face
+    zimage_turbo: with soft rounded tip
+- id: sharp_defined_nose
+  label: Sharp defined nose
+  meta:
+    subgroup: details
+  tags:
+    illustrious: sharp defined nose
+    anima: sharp defined nose, detailed face
+    zimage_turbo: with sharp defined nose
+- id: subtle_nose_bump
+  label: Subtle nose bump
+  meta:
+    subgroup: details
+  tags:
+    illustrious: subtle nose bump
+    anima: subtle nose bump, detailed face
+    zimage_turbo: with subtle nose bump
+- id: very_small_nose_doll_like
+  label: Very small nose (doll-like)
+  meta:
+    subgroup: details
+  tags:
+    illustrious: very small nose (doll-like)
+    anima: very small nose (doll-like), detailed face
+    zimage_turbo: with very small nose (doll-like)
+- id: cute_small_nose_bimbo
+  label: Cute small nose (bimbo)
+  meta:
+    subgroup: nsfw_variants
+  tags:
+    illustrious: cute small nose (bimbo)
+    anima: cute small nose (bimbo), detailed face
+    zimage_turbo: with cute small nose (bimbo)
+- id: slightly_red_nose_aroused_crying
+  label: Slightly red nose (aroused/crying)
+  meta:
+    subgroup: nsfw_variants
+  tags:
+    illustrious: slightly red nose (aroused/crying)
+    anima: slightly red nose (aroused/crying), detailed face
+    zimage_turbo: with slightly red nose (aroused/crying)
+- id: wet_glossy_nose_tip
+  label: Wet/glossy nose tip
+  meta:
+    subgroup: nsfw_variants
+  tags:
+    illustrious: wet/glossy nose tip
+    anima: wet/glossy nose tip, detailed face
+    zimage_turbo: with wet/glossy nose tip
+- id: nose_with_light_freckles
+  label: Nose with light freckles
+  meta:
+    subgroup: nsfw_variants
+  tags:
+    illustrious: nose with light freckles
+    anima: nose with light freckles, detailed face
+    zimage_turbo: with nose with light freckles
+- id: delicate_feminine_nose
+  label: Delicate feminine nose
+  meta:
+    subgroup: nsfw_variants
+  tags:
+    illustrious: delicate feminine nose
+    anima: delicate feminine nose, detailed face
+    zimage_turbo: with delicate feminine nose

@@ -1,0 +1,76 @@
+compatibility_warnings:
+- message: Low angle + extreme close-up may heavily distort the face.
+  angle_ids:
+  - low_angle
+  - extreme_low_angle
+  - low_angle_looking_up_dominance
+  - low_angle_from_floor_level
+  framing_ids:
+  - extreme_close_up_face_eyes_lips
+  - tight_close_up
+- message: High angle + full body can look awkward — check composition.
+  angle_ids:
+  - high_angle
+  - extreme_high_angle
+  - high_angle_looking_down_vulnerability
+  - high_angle_from_above_submission
+  framing_ids:
+  - full_body
+  - full_body_with_space
+  - wide_shot
+  - extreme_wide_shot
+- message: 24mm close-up causes strong facial distortion.
+  framing_ids:
+  - extreme_close_up_face_eyes_lips
+  - close_up
+  - tight_close_up
+  - portrait
+  lens_ids:
+  - 24mm_wide_angle
+- message: 105mm + full body compresses the figure too much.
+  framing_ids:
+  - full_body
+  - full_body_with_space
+  - wide_shot
+  - extreme_wide_shot
+  lens_ids:
+  - 105mm
+  - 135mm_strong_compression
+- message: Dutch angle works best with dynamic or tense poses.
+  angle_ids:
+  - dutch_angle
+  - dutch_angle_for_tension
+  requires_static_pose: true
+- message: Extreme close-up pairs best with 85mm or 105mm lenses.
+  framing_ids:
+  - extreme_close_up_face_eyes_lips
+  - tight_close_up
+  lens_ids:
+  - 24mm_wide_angle
+  - 35mm
+- message: Full body framing works best with 24–50mm lenses.
+  framing_ids:
+  - full_body
+  - full_body_with_space
+  lens_ids:
+  - 85mm_portrait
+  - 105mm
+  - 135mm_strong_compression
+lens_pose_fixes:
+- lens_id: 85mm_portrait
+  pose_ids:
+  - on_all_fours_ass_high_chest_low
+  target_lens_id: 35mm
+  message: Lens auto-switched to 35mm for floor pose visibility.
+- lens_id: 105mm
+  pose_ids:
+  - on_all_fours_ass_high_chest_low
+  target_lens_id: 35mm
+  message: Lens auto-switched to 35mm for floor pose visibility.
+single_select_fields:
+- angle
+- framing
+- lens
+- focus
+- composition
+- nsfw_shot

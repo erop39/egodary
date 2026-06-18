@@ -1,0 +1,22 @@
+[plugin]
+
+id = "lighting_pack"
+
+name = "Lighting Pack"
+
+version = "1.0.0"
+
+kind = "content_pack"
+
+author = "eGOdary"
+
+requires_core = ">=0.1"
+
+depends_on = []
+
+
+
+[content]
+
+tags_dir = "tags"
+

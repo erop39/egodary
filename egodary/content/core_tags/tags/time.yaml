@@ -1,0 +1,51 @@
+id: scene.time
+title: Time of Day
+items:
+  - id: sunrise
+    label: Sunrise
+    tags:
+      illustrious: "sunrise, dawn, morning light, orange sky"
+      anima: "soft sunrise light, golden dawn horizon, warm morning glow"
+      zimage: "at sunrise with golden dawn light on the horizon"
+  - id: morning
+    label: Morning
+    tags:
+      illustrious: "morning, daytime, soft light"
+      anima: "fresh morning atmosphere, gentle daylight"
+      zimage: "in the soft light of morning"
+  - id: noon
+    label: Noon
+    tags:
+      illustrious: "noon, midday, bright sunlight"
+      anima: "harsh midday sun, bright overhead light"
+      zimage: "under bright midday sunlight"
+  - id: sunset
+    label: Sunset
+    tags:
+      illustrious: "sunset, evening, orange sky"
+      anima: "warm sunset colors, fading daylight"
+      zimage: "at sunset with warm orange sky"
+  - id: golden_hour
+    label: Golden Hour
+    tags:
+      illustrious: "golden hour, warm lighting"
+      anima: "golden hour glow, warm cinematic light"
+      zimage: "during golden hour with warm cinematic lighting"
+  - id: blue_hour
+    label: Blue Hour
+    tags:
+      illustrious: "blue hour, twilight"
+      anima: "blue hour atmosphere, cool twilight tones"
+      zimage: "during blue hour twilight"
+  - id: night
+    label: Night
+    tags:
+      illustrious: "night, dark, night sky"
+      anima: "nighttime atmosphere, dark ambient lighting"
+      zimage: "at night under a dark sky"
+  - id: midnight
+    label: Midnight
+    tags:
+      illustrious: "midnight, deep night, moonlight"
+      anima: "deep midnight darkness, pale moonlight"
+      zimage: "at midnight with pale moonlight"

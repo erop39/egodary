@@ -1,0 +1,57 @@
+single_select_fields:
+- art_style
+- artist_style
+multi_select_limits:
+  quality: 8
+  aesthetic: 56
+  technique: 6
+exclusive_art_style_groups:
+- - anime_style
+  - detailed_anime
+  - clean_anime_style
+  - anime_illustration
+  - anime_screencap_style
+  - modern_anime_style
+  - anime_key_visual
+  - manga_style
+  - manhwa_style
+  - game_cg_style
+  - visual_novel_style
+  - pixar_style
+  - disney_style
+  - western_comic_style
+- - realistic
+  - semi_realistic
+  - photorealistic
+  - hyperrealistic
+  - cinematic_realism
+  - 3d_render
+blend_exceptions:
+- realistic_anime_blend
+- semi_realistic_anime
+compatibility_warnings:
+- message: Anime art style with photorealistic or hyperrealistic quality tags usually
+    conflict.
+  art_style_ids:
+  - anime_style
+  - semi_realistic_anime
+  - detailed_anime
+  - clean_anime_style
+  - anime_illustration
+  - anime_screencap_style
+  - modern_anime_style
+  - anime_key_visual
+  quality_ids:
+  - photorealistic
+  - hyperrealistic
+  - realistic
+- message: Lewd / erotic aesthetics pair better with low-key or dramatic lighting.
+  aesthetic_ids:
+  - lewd
+  - erotic
+  - provocative
+- message: Tasteful sensual aesthetic works best with soft lighting and elegant looks.
+  aesthetic_ids:
+  - tasteful_sensual
+  - elegant
+  - intimate

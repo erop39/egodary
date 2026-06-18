@@ -1,0 +1,56 @@
+meta:
+  id: anima_gen
+  model_id: anima
+  version: "1.0.0"
+  title: Anima generation rules
+  prompt_style: structured_blocks
+
+format:
+  bucket_order:
+    - quality
+    - character
+    - outfit
+    - pose
+    - scene
+    - lighting
+    - atmosphere
+    - fetish
+    - camera
+    - extra
+  scores_prefix: "score_7, score_8_up, score_7_up"
+  max_lighting_lines: 3
+  dedupe_tags: true
+  strip_boilerplate:
+    - cinematic lighting
+    - cinematic framing
+    - detailed face
+    - styled outfit
+    - styled accessory
+    - face makeup
+    - detailed hairstyle
+    - dynamic pose
+    - clothing detail
+  forbidden_patterns:
+    - photo
+    - photography
+    - photorealistic
+    - photorealism
+    - photoreal
+    - dslr
+    - film grain
+    - depth of field
+    - bokeh
+    - 8k
+    - uhd
+    - raw photo
+
+negative:
+  template: >
+    lowres, bad anatomy, bad hands, text, error, missing fingers,
+    extra digit, fewer digits, cropped, worst quality, low quality,
+    normal quality, jpeg artifacts, signature, watermark, username, blurry
+
+generation_defaults:
+  cfg_scale: 5.0
+  steps: 30
+  sampler: euler_a

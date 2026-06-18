@@ -1,0 +1,123 @@
+id: lighting.direction
+title: Lighting Direction
+items:
+- id: front_lighting
+  label: Front lighting
+  meta:
+    subgroup: basic
+  tags:
+    illustrious: front lighting
+    anima: front lighting, cinematic lighting
+    zimage_turbo: with front lighting
+- id: side_lighting
+  label: Side lighting
+  meta:
+    subgroup: basic
+  tags:
+    illustrious: side lighting
+    anima: side lighting, cinematic lighting
+    zimage_turbo: with side lighting
+- id: back_lighting
+  label: Back lighting
+  meta:
+    subgroup: basic
+  tags:
+    illustrious: back lighting
+    anima: back lighting, cinematic lighting
+    zimage_turbo: with back lighting
+- id: top_lighting_from_above
+  label: Top lighting (from above)
+  meta:
+    subgroup: basic
+  tags:
+    illustrious: top lighting (from above)
+    anima: top lighting (from above), cinematic lighting
+    zimage_turbo: with top lighting (from above)
+- id: bottom_lighting_from_below
+  label: Bottom lighting (from below)
+  meta:
+    subgroup: basic
+  tags:
+    illustrious: bottom lighting (from below)
+    anima: bottom lighting (from below), cinematic lighting
+    zimage_turbo: with bottom lighting (from below)
+- id: strong_side_lighting_dramatic_shadows
+  label: Strong side lighting (dramatic shadows)
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: strong side lighting (dramatic shadows)
+    anima: strong side lighting (dramatic shadows), cinematic lighting
+    zimage_turbo: with strong side lighting (dramatic shadows)
+- id: rim_lighting
+  label: Rim lighting
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: rim lighting
+    anima: rim lighting, cinematic lighting
+    zimage_turbo: with rim lighting
+- id: edge_lighting
+  label: Edge lighting
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: edge lighting
+    anima: edge lighting, cinematic lighting
+    zimage_turbo: with edge lighting
+- id: backlit_silhouette
+  label: Backlit silhouette
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: backlit silhouette
+    anima: backlit silhouette, cinematic lighting
+    zimage_turbo: with backlit silhouette
+- id: three_quarter_lighting
+  label: Three-quarter lighting
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: three-quarter lighting
+    anima: three-quarter lighting, cinematic lighting
+    zimage_turbo: with three-quarter lighting
+- id: split_lighting_half_face_in_shadow
+  label: Split lighting (half face in shadow)
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: split lighting (half face in shadow)
+    anima: split lighting (half face in shadow), cinematic lighting
+    zimage_turbo: with split lighting (half face in shadow)
+- id: butterfly_lighting
+  label: Butterfly lighting
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: butterfly lighting
+    anima: butterfly lighting, cinematic lighting
+    zimage_turbo: with butterfly lighting
+- id: loop_lighting
+  label: Loop lighting
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: loop lighting
+    anima: loop lighting, cinematic lighting
+    zimage_turbo: with loop lighting
+- id: rembrandt_lighting
+  label: Rembrandt lighting
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: rembrandt lighting
+    anima: rembrandt lighting, cinematic lighting
+    zimage_turbo: with rembrandt lighting
+- id: underlighting_from_below__unsettling__erotic
+  label: Underlighting (from below — unsettling / erotic)
+  meta:
+    subgroup: advanced_erotic
+  tags:
+    illustrious: underlighting (from below — unsettling / erotic)
+    anima: underlighting (from below — unsettling / erotic), cinematic lighting
+    zimage_turbo: with underlighting (from below — unsettling / erotic)

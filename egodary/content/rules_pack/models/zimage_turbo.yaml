@@ -1,0 +1,28 @@
+meta:
+  id: zimage_turbo_gen
+  model_id: zimage_turbo
+  version: "1.0.0"
+  title: Z-Image Turbo generation rules
+  prompt_style: natural_language
+
+format:
+  bucket_order:
+    - character
+    - pose
+    - outfit
+    - scene
+    - lighting
+    - atmosphere
+    - camera
+    - extra
+    - fetish
+  sentence_templates:
+    main: "{character} {pose} and {outfit}."
+    scene: "The scene is {scene}, {lighting}, {atmosphere}."
+    camera: "The image is {camera}."
+    quality_hint: "Keep style coherent, avoid contradictory aesthetics, and prioritize clear anatomy."
+  supports_negative: false
+
+generation_defaults:
+  steps: 8
+  guidance: 1.0

@@ -1,0 +1,663 @@
+id: scene.location
+title: Location
+items:
+- id: bedroom
+  label: Bedroom
+  tags:
+    illustrious: bedroom, indoors, bed, pillow
+    anima: cozy bedroom with soft bedding and intimate lighting
+    zimage_turbo: in a scene with cozy bedroom with soft bedding and intimate lighting
+  meta:
+    environment_group: indoor
+- id: luxury_apartment
+  label: Luxury Apartment
+  tags:
+    illustrious: apartment, indoors, luxury, modern
+    anima: luxury apartment with floor-to-ceiling windows and city view
+    zimage_turbo: in a scene with luxury apartment with floor-to-ceiling windows and
+      city view
+  meta:
+    environment_group: indoor
+- id: office
+  label: Office
+  tags:
+    illustrious: office, indoors, desk, chair
+    anima: modern corporate office with glass walls
+    zimage_turbo: in a scene with modern corporate office with glass walls
+  meta:
+    environment_group: indoor
+- id: library
+  label: Library
+  tags:
+    illustrious: library, indoors, bookshelf
+    anima: grand library with towering bookshelves
+    zimage_turbo: in a scene with grand library with towering bookshelves
+  meta:
+    environment_group: indoor
+- id: cyber_lab
+  label: Cyber Lab
+  tags:
+    illustrious: laboratory, sci-fi, indoors, computer
+    anima: high-tech cyber lab with holographic displays
+    zimage_turbo: in a scene with high-tech cyber lab with holographic displays
+  meta:
+    environment_group: indoor
+- id: classroom
+  label: Classroom
+  tags:
+    illustrious: classroom, indoors, school desk
+    anima: sunlit classroom with chalkboard and desks
+    zimage_turbo: in a scene with sunlit classroom with chalkboard and desks
+  meta:
+    environment_group: indoor
+- id: temple
+  label: Temple
+  tags:
+    illustrious: temple, indoors, shrine
+    anima: ancient temple interior with incense and stone pillars
+    zimage_turbo: in a scene with ancient temple interior with incense and stone pillars
+  meta:
+    environment_group: indoor
+- id: gothic_castle
+  label: Gothic Castle
+  tags:
+    illustrious: castle, gothic, indoors, candle
+    anima: gothic castle hall with vaulted ceilings and candles
+    zimage_turbo: in a scene with gothic castle hall with vaulted ceilings and candles
+  meta:
+    environment_group: indoor
+- id: bathhouse
+  label: Bathhouse
+  tags:
+    illustrious: bathhouse, indoors, steam, tile
+    anima: traditional bathhouse with rising steam and marble
+    zimage_turbo: in a scene with traditional bathhouse with rising steam and marble
+  meta:
+    environment_group: indoor
+- id: spaceship_interior
+  label: Spaceship Interior
+  tags:
+    illustrious: spaceship, sci-fi, indoors, futuristic
+    anima: spaceship interior with glowing panels and metal corridors
+    zimage_turbo: in a scene with spaceship interior with glowing panels and metal
+      corridors
+  meta:
+    environment_group: indoor
+- id: coffee_shop
+  label: Coffee Shop
+  tags:
+    illustrious: cafe, indoors, coffee cup, table
+    anima: cozy coffee shop with warm ambient lighting and latte art
+    zimage_turbo: in a scene with cozy coffee shop with warm ambient lighting and
+      latte art
+  meta:
+    environment_group: indoor
+- id: bakery
+  label: Bakery
+  tags:
+    illustrious: bakery, indoors, bread, pastry
+    anima: charming bakery with fresh pastries and golden oven glow
+    zimage_turbo: in a scene with charming bakery with fresh pastries and golden oven
+      glow
+  meta:
+    environment_group: indoor
+- id: bookstore
+  label: Bookstore
+  tags:
+    illustrious: bookstore, indoors, bookshelf
+    anima: quiet bookstore with stacked shelves and reading nooks
+    zimage_turbo: in a scene with quiet bookstore with stacked shelves and reading
+      nooks
+  meta:
+    environment_group: indoor
+- id: shopping_mall
+  label: Shopping Mall
+  tags:
+    illustrious: shopping mall, indoors, escalator
+    anima: bustling shopping mall with bright storefronts
+    zimage_turbo: in a scene with bustling shopping mall with bright storefronts
+  meta:
+    environment_group: indoor
+- id: cinema
+  label: Cinema
+  tags:
+    illustrious: movie theater, indoors, cinema seats
+    anima: dim cinema hall with glowing screen reflections
+    zimage_turbo: in a scene with dim cinema hall with glowing screen reflections
+  meta:
+    environment_group: indoor
+- id: arcade
+  label: Arcade
+  tags:
+    illustrious: arcade, indoors, game machine, neon
+    anima: retro arcade with neon cabinets and colorful glow
+    zimage_turbo: in a scene with retro arcade with neon cabinets and colorful glow
+  meta:
+    environment_group: indoor
+- id: gym
+  label: Gym
+  tags:
+    illustrious: gym, indoors, exercise equipment
+    anima: modern gym with mirrors and workout equipment
+    zimage_turbo: in a scene with modern gym with mirrors and workout equipment
+  meta:
+    environment_group: indoor
+- id: spa
+  label: Spa
+  tags:
+    illustrious: spa, indoors, candles, relaxation
+    anima: luxurious spa with candles and marble surfaces
+    zimage_turbo: in a scene with luxurious spa with candles and marble surfaces
+  meta:
+    environment_group: indoor
+- id: hotel_suite
+  label: Hotel Suite
+  tags:
+    illustrious: hotel room, indoors, luxury bed
+    anima: elegant hotel suite with plush bedding
+    zimage_turbo: in a scene with elegant hotel suite with plush bedding
+  meta:
+    environment_group: indoor
+- id: penthouse
+  label: Penthouse
+  tags:
+    illustrious: penthouse, indoors, luxury, city view
+    anima: luxury penthouse with panoramic city skyline view
+    zimage_turbo: in a scene with luxury penthouse with panoramic city skyline view
+  meta:
+    environment_group: indoor
+- id: luxury_villa
+  label: Luxury Villa
+  tags:
+    illustrious: villa, indoors, luxury, marble
+    anima: luxury villa interior with marble floors and open architecture
+    zimage_turbo: in a scene with luxury villa interior with marble floors and open
+      architecture
+  meta:
+    environment_group: indoor
+- id: rooftop_infinity_pool
+  label: Rooftop Infinity Pool
+  tags:
+    illustrious: infinity pool, rooftop, outdoors, cityscape
+    anima: rooftop infinity pool overlooking glittering city lights
+    zimage_turbo: in a scene with rooftop infinity pool overlooking glittering city
+      lights
+  meta:
+    environment_group: indoor
+- id: private_island
+  label: Private Island
+  tags:
+    illustrious: tropical island, beach, paradise
+    anima: private tropical island with turquoise water and white sand
+    zimage_turbo: in a scene with private tropical island with turquoise water and
+      white sand
+  meta:
+    environment_group: indoor
+- id: wine_cellar
+  label: Wine Cellar
+  tags:
+    illustrious: wine cellar, indoors, barrel, dim light
+    anima: stone wine cellar with oak barrels and moody lighting
+    zimage_turbo: in a scene with stone wine cellar with oak barrels and moody lighting
+  meta:
+    environment_group: indoor
+- id: royal_palace
+  label: Royal Palace
+  tags:
+    illustrious: palace, indoors, throne, luxury
+    anima: royal palace hall with gilded columns and chandeliers
+    zimage_turbo: in a scene with royal palace hall with gilded columns and chandeliers
+  meta:
+    environment_group: indoor
+- id: luxury_casino
+  label: Luxury Casino
+  tags:
+    illustrious: casino, indoors, luxury, chandelier
+    anima: luxury casino with crystal chandeliers and velvet decor
+    zimage_turbo: in a scene with luxury casino with crystal chandeliers and velvet
+      decor
+  meta:
+    environment_group: indoor
+- id: city_street
+  label: City Street
+  tags:
+    illustrious: city, street, outdoors, urban
+    anima: busy city street with pedestrians and storefronts
+    zimage_turbo: in a scene with busy city street with pedestrians and storefronts
+  meta:
+    environment_group: outdoor
+- id: rooftop
+  label: Rooftop
+  tags:
+    illustrious: rooftop, outdoors, cityscape
+    anima: urban rooftop overlooking the skyline
+    zimage_turbo: in a scene with urban rooftop overlooking the skyline
+  meta:
+    environment_group: outdoor
+- id: park
+  label: Park
+  tags:
+    illustrious: park, outdoors, tree, bench
+    anima: peaceful city park with trees and pathways
+    zimage_turbo: in a scene with peaceful city park with trees and pathways
+  meta:
+    environment_group: outdoor
+- id: beach
+  label: Beach
+  tags:
+    illustrious: beach, outdoors, ocean, sand
+    anima: sandy beach with waves and open horizon
+    zimage_turbo: in a scene with sandy beach with waves and open horizon
+  meta:
+    environment_group: outdoor
+- id: forest
+  label: Forest
+  tags:
+    illustrious: forest, outdoors, tree, nature
+    anima: dense forest with dappled sunlight through canopy
+    zimage_turbo: in a scene with dense forest with dappled sunlight through canopy
+  meta:
+    environment_group: outdoor
+- id: bamboo_grove
+  label: Bamboo Grove
+  tags:
+    illustrious: bamboo forest, outdoors
+    anima: serene bamboo grove with filtered green light
+    zimage_turbo: in a scene with serene bamboo grove with filtered green light
+  meta:
+    environment_group: outdoor
+- id: mountain
+  label: Mountain
+  tags:
+    illustrious: mountain, outdoors, peak, landscape
+    anima: mountain vista with dramatic peaks and valleys
+    zimage_turbo: in a scene with mountain vista with dramatic peaks and valleys
+  meta:
+    environment_group: outdoor
+- id: desert
+  label: Desert
+  tags:
+    illustrious: desert, outdoors, sand, dunes
+    anima: vast desert with rolling sand dunes
+    zimage_turbo: in a scene with vast desert with rolling sand dunes
+  meta:
+    environment_group: outdoor
+- id: snowy_field
+  label: Snowy Field
+  tags:
+    illustrious: snow, outdoors, winter, field
+    anima: snow-covered open field under pale winter sky
+    zimage_turbo: in a scene with snow-covered open field under pale winter sky
+  meta:
+    environment_group: outdoor
+- id: flower_garden
+  label: Flower Garden
+  tags:
+    illustrious: garden, flower, outdoors
+    anima: lush flower garden in full bloom
+    zimage_turbo: in a scene with lush flower garden in full bloom
+  meta:
+    environment_group: outdoor
+- id: floating_islands
+  label: Floating Islands
+  tags:
+    illustrious: floating island, fantasy, sky
+    anima: floating islands drifting above the clouds
+    zimage_turbo: in a scene with floating islands drifting above the clouds
+  meta:
+    environment_group: fantasy
+- id: ancient_ruins
+  label: Ancient Ruins
+  tags:
+    illustrious: ruins, ancient, outdoors, stone
+    anima: crumbling ancient ruins overgrown with vines
+    zimage_turbo: in a scene with crumbling ancient ruins overgrown with vines
+  meta:
+    environment_group: fantasy
+- id: elven_forest
+  label: Elven Forest
+  tags:
+    illustrious: fantasy forest, elf, magical
+    anima: enchanted elven forest with bioluminescent plants
+    zimage_turbo: in a scene with enchanted elven forest with bioluminescent plants
+  meta:
+    environment_group: fantasy
+- id: crystal_cave
+  label: Crystal Cave
+  tags:
+    illustrious: cave, crystal, glowing, fantasy
+    anima: crystal cave with luminous blue formations
+    zimage_turbo: in a scene with crystal cave with luminous blue formations
+  meta:
+    environment_group: fantasy
+- id: dragon_lair
+  label: Dragon Lair
+  tags:
+    illustrious: dragon, cave, treasure, fantasy
+    anima: dragon's lair filled with gold and ancient bones
+    zimage_turbo: in a scene with dragon's lair filled with gold and ancient bones
+  meta:
+    environment_group: fantasy
+- id: magical_academy
+  label: Magical Academy
+  tags:
+    illustrious: magic, academy, fantasy, castle
+    anima: magical academy with floating books and arcane symbols
+    zimage_turbo: in a scene with magical academy with floating books and arcane symbols
+  meta:
+    environment_group: fantasy
+- id: neon_alley
+  label: Neon Alley
+  tags:
+    illustrious: alley, neon, cyberpunk, night
+    anima: narrow neon-lit alley with holographic signs
+    zimage_turbo: in a scene with narrow neon-lit alley with holographic signs
+  meta:
+    environment_group: cyberpunk
+- id: megacity_street
+  label: Megacity Street
+  tags:
+    illustrious: cyberpunk, city, neon, street
+    anima: megacity street towering with skyscrapers and neon
+    zimage_turbo: in a scene with megacity street towering with skyscrapers and neon
+  meta:
+    environment_group: cyberpunk
+- id: datacenter
+  label: Datacenter
+  tags:
+    illustrious: server room, computer, sci-fi, indoors
+    anima: vast datacenter with blinking server racks
+    zimage_turbo: in a scene with vast datacenter with blinking server racks
+  meta:
+    environment_group: cyberpunk
+- id: holographic_market
+  label: Holographic Market
+  tags:
+    illustrious: market, hologram, cyberpunk
+    anima: bustling holographic market with digital vendors
+    zimage_turbo: in a scene with bustling holographic market with digital vendors
+  meta:
+    environment_group: cyberpunk
+- id: rainy_backstreet
+  label: Rainy Backstreet
+  tags:
+    illustrious: rain, alley, cyberpunk, wet
+    anima: rain-soaked backstreet reflecting neon signs
+    zimage_turbo: in a scene with rain-soaked backstreet reflecting neon signs
+  meta:
+    environment_group: cyberpunk
+- id: space_station
+  label: Space Station
+  tags:
+    illustrious: space station, sci-fi, indoors, futuristic
+    anima: orbital space station with panoramic Earth view
+    zimage_turbo: in a scene with orbital space station with panoramic Earth view
+  meta:
+    environment_group: space
+- id: spaceship_bridge
+  label: Spaceship Bridge
+  tags:
+    illustrious: spaceship, bridge, sci-fi, control panel
+    anima: spaceship bridge with holographic displays and stars
+    zimage_turbo: in a scene with spaceship bridge with holographic displays and stars
+  meta:
+    environment_group: space
+- id: alien_planet
+  label: Alien Planet
+  tags:
+    illustrious: alien planet, sci-fi, outdoors, exotic
+    anima: alien planet surface with twin moons and strange flora
+    zimage_turbo: in a scene with alien planet surface with twin moons and strange
+      flora
+  meta:
+    environment_group: space
+- id: zero_g_chamber
+  label: Zero G Chamber
+  tags:
+    illustrious: zero gravity, space, floating, sci-fi
+    anima: zero gravity chamber with floating objects and soft blue light
+    zimage_turbo: in a scene with zero gravity chamber with floating objects and soft
+      blue light
+  meta:
+    environment_group: space
+- id: observation_deck
+  label: Observation Deck
+  tags:
+    illustrious: observation deck, space, window, stars
+    anima: observation deck overlooking a vast nebula
+    zimage_turbo: in a scene with observation deck overlooking a vast nebula
+  meta:
+    environment_group: space
+- id: sports_car
+  label: Sports Car
+  tags:
+    illustrious: sports car, car interior, leather seat
+    anima: sleek sports car interior with leather seats and dashboard glow
+    zimage_turbo: in a scene with sleek sports car interior with leather seats and
+      dashboard glow
+  meta:
+    environment_group: transport
+- id: supercar
+  label: Supercar
+  tags:
+    illustrious: supercar, luxury car interior
+    anima: ultra-luxury supercar cockpit with carbon fiber trim
+    zimage_turbo: in a scene with ultra-luxury supercar cockpit with carbon fiber
+      trim
+  meta:
+    environment_group: transport
+- id: classic_car
+  label: Classic Car
+  tags:
+    illustrious: classic car, vintage car interior
+    anima: vintage classic car interior with polished chrome details
+    zimage_turbo: in a scene with vintage classic car interior with polished chrome
+      details
+  meta:
+    environment_group: transport
+- id: muscle_car
+  label: Muscle Car
+  tags:
+    illustrious: muscle car, car interior
+    anima: American muscle car interior with bold retro styling
+    zimage_turbo: in a scene with American muscle car interior with bold retro styling
+  meta:
+    environment_group: transport
+- id: luxury_sedan
+  label: Luxury Sedan
+  tags:
+    illustrious: luxury car, sedan interior
+    anima: luxury sedan interior with ambient lighting
+    zimage_turbo: in a scene with luxury sedan interior with ambient lighting
+  meta:
+    environment_group: transport
+- id: convertible
+  label: Convertible
+  tags:
+    illustrious: convertible, car, open top
+    anima: convertible car with open top and wind in hair
+    zimage_turbo: in a scene with convertible car with open top and wind in hair
+  meta:
+    environment_group: transport
+- id: drift_car
+  label: Drift Car
+  tags:
+    illustrious: drift car, racing car interior
+    anima: drift car cockpit with racing harness and roll cage
+    zimage_turbo: in a scene with drift car cockpit with racing harness and roll cage
+  meta:
+    environment_group: transport
+- id: cyberpunk_vehicle
+  label: Cyberpunk Vehicle
+  tags:
+    illustrious: cyberpunk car, sci-fi vehicle
+    anima: futuristic cyberpunk vehicle with holographic dashboard
+    zimage_turbo: in a scene with futuristic cyberpunk vehicle with holographic dashboard
+  meta:
+    environment_group: transport
+- id: luxury_train_cabin
+  label: Luxury Train Cabin
+  tags:
+    illustrious: train interior, luxury cabin
+    anima: luxury train cabin with velvet seats and window landscape
+    zimage_turbo: in a scene with luxury train cabin with velvet seats and window
+      landscape
+  meta:
+    environment_group: transport
+- id: high_speed_train
+  label: High Speed Train
+  tags:
+    illustrious: bullet train, train interior
+    anima: high speed train cabin with blurred scenery outside
+    zimage_turbo: in a scene with high speed train cabin with blurred scenery outside
+  meta:
+    environment_group: transport
+- id: subway_train
+  label: Subway Train
+  tags:
+    illustrious: subway, train interior
+    anima: urban subway car with fluorescent lighting
+    zimage_turbo: in a scene with urban subway car with fluorescent lighting
+  meta:
+    environment_group: transport
+- id: old_steam_train
+  label: Old Steam Train
+  tags:
+    illustrious: steam train, vintage train interior
+    anima: vintage steam train compartment with wood paneling
+    zimage_turbo: in a scene with vintage steam train compartment with wood paneling
+  meta:
+    environment_group: transport
+- id: orient_express
+  label: Orient Express
+  tags:
+    illustrious: luxury train, art deco interior
+    anima: Orient Express style luxury train dining car
+    zimage_turbo: in a scene with Orient Express style luxury train dining car
+  meta:
+    environment_group: transport
+- id: private_jet
+  label: Private Jet
+  tags:
+    illustrious: private jet, airplane interior, luxury
+    anima: private jet cabin with cream leather seats and clouds outside
+    zimage_turbo: in a scene with private jet cabin with cream leather seats and clouds
+      outside
+  meta:
+    environment_group: transport
+- id: airliner_cabin
+  label: Airliner Cabin
+  tags:
+    illustrious: airplane, cabin, seat, window
+    anima: airliner cabin with soft cabin lighting and oval windows
+    zimage_turbo: in a scene with airliner cabin with soft cabin lighting and oval
+      windows
+  meta:
+    environment_group: transport
+- id: fighter_jet
+  label: Fighter Jet
+  tags:
+    illustrious: fighter jet, cockpit, military
+    anima: fighter jet cockpit with HUD displays and canopy view
+    zimage_turbo: in a scene with fighter jet cockpit with HUD displays and canopy
+      view
+  meta:
+    environment_group: transport
+- id: helicopter_cockpit
+  label: Helicopter Cockpit
+  tags:
+    illustrious: helicopter, cockpit, controls
+    anima: helicopter cockpit with panoramic aerial view
+    zimage_turbo: in a scene with helicopter cockpit with panoramic aerial view
+  meta:
+    environment_group: transport
+- id: airship
+  label: Airship
+  tags:
+    illustrious: airship, steampunk, gondola
+    anima: steampunk airship gondola floating above clouds
+    zimage_turbo: in a scene with steampunk airship gondola floating above clouds
+  meta:
+    environment_group: transport
+- id: luxury_yacht
+  label: Luxury Yacht
+  tags:
+    illustrious: yacht, boat, luxury deck
+    anima: luxury yacht deck with ocean horizon and polished teak
+    zimage_turbo: in a scene with luxury yacht deck with ocean horizon and polished
+      teak
+  meta:
+    environment_group: transport
+- id: sailing_yacht
+  label: Sailing Yacht
+  tags:
+    illustrious: sailboat, yacht, ocean
+    anima: sailing yacht on open water with billowing sails
+    zimage_turbo: in a scene with sailing yacht on open water with billowing sails
+  meta:
+    environment_group: transport
+- id: cruise_ship
+  label: Cruise Ship
+  tags:
+    illustrious: cruise ship, deck, ocean
+    anima: cruise ship deck overlooking vast ocean
+    zimage_turbo: in a scene with cruise ship deck overlooking vast ocean
+  meta:
+    environment_group: transport
+- id: pirate_ship
+  label: Pirate Ship
+  tags:
+    illustrious: pirate ship, wooden deck, ocean
+    anima: pirate ship deck with weathered wood and ocean spray
+    zimage_turbo: in a scene with pirate ship deck with weathered wood and ocean spray
+  meta:
+    environment_group: transport
+- id: fishing_boat
+  label: Fishing Boat
+  tags:
+    illustrious: fishing boat, boat deck
+    anima: small fishing boat on calm morning water
+    zimage_turbo: in a scene with small fishing boat on calm morning water
+  meta:
+    environment_group: transport
+- id: submarine
+  label: Submarine
+  tags:
+    illustrious: submarine, interior, metal
+    anima: submarine interior with red emergency lighting
+    zimage_turbo: in a scene with submarine interior with red emergency lighting
+  meta:
+    environment_group: transport
+- id: starship_bridge
+  label: Starship Bridge
+  tags:
+    illustrious: spaceship bridge, sci-fi, control panel
+    anima: starship bridge with holographic star maps
+    zimage_turbo: in a scene with starship bridge with holographic star maps
+  meta:
+    environment_group: transport
+- id: escape_pod
+  label: Escape Pod
+  tags:
+    illustrious: escape pod, sci-fi, cramped interior
+    anima: cramped escape pod with viewport showing stars
+    zimage_turbo: in a scene with cramped escape pod with viewport showing stars
+  meta:
+    environment_group: transport
+- id: hangar_bay
+  label: Hangar Bay
+  tags:
+    illustrious: hangar, spaceship, sci-fi
+    anima: massive spacecraft hangar bay with industrial lighting
+    zimage_turbo: in a scene with massive spacecraft hangar bay with industrial lighting
+  meta:
+    environment_group: transport
+- id: orbital_station
+  label: Orbital Station
+  tags:
+    illustrious: space station, orbital, sci-fi interior
+    anima: orbital station corridor with Earth visible through windows
+    zimage_turbo: in a scene with orbital station corridor with Earth visible through
+      windows
+  meta:
+    environment_group: transport

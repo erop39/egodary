@@ -1,0 +1,14 @@
+groups:
+  - ids:
+      - scene.location:indoor
+      - scene.weather:rain
+      - scene.weather:heavy_rain
+      - scene.weather:blizzard
+    reason: "Indoor scenes should not force strong weather tags."
+  - ids:
+      - scene.location:space
+      - scene.weather:rain
+      - scene.weather:snow
+      - scene.season:winter
+    reason: "Space scenes block weather and seasons."
+

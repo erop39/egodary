@@ -1,0 +1,17 @@
+# Appearance compatibility rules
+complex_hairstyles:
+  - high_messy_bun
+  - space_buns
+  - double_dutch_braids
+  - high_ponytail
+  - pigtails_sexy
+  - braided_crown
+  - top_knot_wetlook
+
+voluminous_hats:
+  - fedora_sexy_tilt
+  - beanie_wetlook
+  - baseball_cap_backward
+
+max_accessories: 4
+max_makeup: 6

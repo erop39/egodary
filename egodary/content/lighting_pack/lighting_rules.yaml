@@ -1,0 +1,44 @@
+compatibility_warnings:
+- message: Neon light with warm candle tones may look incoherent.
+  light_type_ids:
+  - neon_lighting
+  - led_strip_lighting
+  color_mood_ids:
+  - candlelight__fireplace
+  - cozy_warm_light
+  - warm_golden_lighting
+- message: High key lighting suits lighter romantic moods — intense erotic NSFW lighting
+    may clash.
+  light_type_ids:
+  - high_key_lighting
+  nsfw_ids:
+  - high_contrast_erotic_lighting
+  - neon_erotic_lighting
+- message: Volumetric light works best with hazy, moody, or dark-room atmosphere.
+  light_type_ids:
+  - volumetric_lighting
+  - god_rays__crepuscular_rays
+  quality_ids:
+  - glowing__ethereal_light
+  - soft_shadows
+- message: Cool blue mood with warm candlelight type may fight each other.
+  light_type_ids:
+  - candlelight
+  color_mood_ids:
+  - cool_blue_lighting
+  - cold_moonlight
+  - cold_sterile_light
+- message: Rim / edge direction excels with body-focused or silhouette framing.
+  direction_ids:
+  - rim_lighting
+  - edge_lighting
+  - backlit_silhouette
+- message: Underlighting creates an unsettling or intensely erotic effect.
+  direction_ids:
+  - underlighting_from_below__unsettling__erotic
+single_select_fields:
+- light_type
+- direction
+- quality
+- color_mood
+- nsfw

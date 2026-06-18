@@ -1,0 +1,227 @@
+id: style.art_style
+title: Art Style
+items:
+- id: anime_style
+  label: Anime style
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: anime style
+    anima: anime style
+    zimage_turbo: anime style
+- id: semi_realistic_anime
+  label: Semi-realistic anime
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: semi-realistic anime
+    anima: semi-realistic anime
+    zimage_turbo: semi-realistic anime
+- id: detailed_anime
+  label: Detailed anime
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: detailed anime
+    anima: detailed anime
+    zimage_turbo: detailed anime
+- id: clean_anime_style
+  label: Clean anime style
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: clean anime style
+    anima: clean anime style
+    zimage_turbo: clean anime style
+- id: anime_illustration
+  label: Anime illustration
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: anime illustration
+    anima: anime illustration
+    zimage_turbo: anime illustration
+- id: anime_screencap_style
+  label: Anime screencap style
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: anime screencap style
+    anima: anime screencap style
+    zimage_turbo: anime screencap style
+- id: modern_anime_style
+  label: Modern anime style
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: modern anime style
+    anima: modern anime style
+    zimage_turbo: modern anime style
+- id: anime_key_visual
+  label: Anime key visual
+  meta:
+    subgroup: anime_stylized
+  tags:
+    illustrious: anime key visual
+    anima: anime key visual
+    zimage_turbo: anime key visual
+- id: realistic
+  label: Realistic
+  meta:
+    subgroup: realistic_semi
+  tags:
+    illustrious: realistic
+    anima: realistic
+    zimage_turbo: realistic
+- id: semi_realistic
+  label: Semi-realistic
+  meta:
+    subgroup: realistic_semi
+  tags:
+    illustrious: semi-realistic
+    anima: semi-realistic
+    zimage_turbo: semi-realistic
+- id: photorealistic
+  label: Photorealistic
+  meta:
+    subgroup: realistic_semi
+  tags:
+    illustrious: photorealistic
+    anima: photorealistic
+    zimage_turbo: photorealistic
+- id: hyperrealistic
+  label: Hyperrealistic
+  meta:
+    subgroup: realistic_semi
+  tags:
+    illustrious: hyperrealistic
+    anima: hyperrealistic
+    zimage_turbo: hyperrealistic
+- id: cinematic_realism
+  label: Cinematic realism
+  meta:
+    subgroup: realistic_semi
+  tags:
+    illustrious: cinematic realism
+    anima: cinematic realism
+    zimage_turbo: cinematic realism
+- id: realistic_anime_blend
+  label: Realistic anime blend
+  meta:
+    subgroup: realistic_semi
+  tags:
+    illustrious: realistic anime blend
+    anima: realistic anime blend
+    zimage_turbo: realistic anime blend
+- id: illustration
+  label: Illustration
+  meta:
+    subgroup: illustration_artistic
+  tags:
+    illustrious: illustration
+    anima: illustration
+    zimage_turbo: illustration
+- id: digital_illustration
+  label: Digital illustration
+  meta:
+    subgroup: illustration_artistic
+  tags:
+    illustrious: digital illustration
+    anima: digital illustration
+    zimage_turbo: digital illustration
+- id: concept_art_style
+  label: Concept art style
+  meta:
+    subgroup: illustration_artistic
+  tags:
+    illustrious: concept art style
+    anima: concept art style
+    zimage_turbo: concept art style
+- id: anime_concept_art
+  label: Anime concept art
+  meta:
+    subgroup: illustration_artistic
+  tags:
+    illustrious: anime concept art
+    anima: anime concept art
+    zimage_turbo: anime concept art
+- id: detailed_illustration
+  label: Detailed illustration
+  meta:
+    subgroup: illustration_artistic
+  tags:
+    illustrious: detailed illustration
+    anima: detailed illustration
+    zimage_turbo: detailed illustration
+- id: stylized_illustration
+  label: Stylized illustration
+  meta:
+    subgroup: illustration_artistic
+  tags:
+    illustrious: stylized illustration
+    anima: stylized illustration
+    zimage_turbo: stylized illustration
+- id: 3d_render
+  label: 3D render
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: 3d render
+    anima: 3d render
+    zimage_turbo: 3d render
+- id: pixar_style
+  label: Pixar style
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: pixar style
+    anima: pixar style
+    zimage_turbo: pixar style
+- id: disney_style
+  label: Disney style
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: disney style
+    anima: disney style
+    zimage_turbo: disney style
+- id: western_comic_style
+  label: Western comic style
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: western comic style
+    anima: western comic style
+    zimage_turbo: western comic style
+- id: manga_style
+  label: Manga style
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: manga style
+    anima: manga style
+    zimage_turbo: manga style
+- id: manhwa_style
+  label: Manhwa style
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: manhwa style
+    anima: manhwa style
+    zimage_turbo: manhwa style
+- id: game_cg_style
+  label: Game CG style
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: game cg style
+    anima: game cg style
+    zimage_turbo: game cg style
+- id: visual_novel_style
+  label: Visual novel style
+  meta:
+    subgroup: other_styles
+  tags:
+    illustrious: visual novel style
+    anima: visual novel style
+    zimage_turbo: visual novel style

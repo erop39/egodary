@@ -1,0 +1,51 @@
+# Перенесено из eGen 8.6: const TIME_TAGS, const WEATHER_TAGS (без изменений
+# содержания — это нейтральные, не модель-специфичные данные окружения).
+# Вариант "zimage" пока не добавляется: для Z-Image Turbo сборка будет идти
+# через NarrativeAssembler (фаза 5), который генерирует фразу процедурно, а
+# не по готовому словарю — отдельный ключ появится только если окажется, что
+# конкретной формулировке нужен явный override.
+
+categories:
+  - id: scene.time_of_day
+    title: "Time of Day"
+    items:
+      - id: sunrise
+        label: "Sunrise"
+        tags:
+          illustrious: "sunrise, dawn, morning light, orange sky"
+          anima: "soft sunrise light, golden dawn horizon, warm morning glow"
+      - id: morning
+        label: "Morning"
+        tags:
+          illustrious: "morning, daytime, soft light"
+          anima: "fresh morning atmosphere, gentle daylight"
+      - id: noon
+        label: "Noon"
+        tags:
+          illustrious: "noon, midday, bright sunlight"
+          anima: "harsh midday sun, bright overhead light"
+      - id: sunset
+        label: "Sunset"
+        tags:
+          illustrious: "sunset, evening, orange sky"
+          anima: "warm sunset colors, fading daylight"
+      - id: golden_hour
+        label: "Golden Hour"
+        tags:
+          illustrious: "golden hour, warm lighting"
+          anima: "golden hour glow, warm cinematic light"
+      - id: blue_hour
+        label: "Blue Hour"
+        tags:
+          illustrious: "blue hour, twilight"
+          anima: "blue hour atmosphere, cool twilight tones"
+      - id: night
+        label: "Night"
+        tags:
+          illustrious: "night, dark, night sky"
+          anima: "nighttime atmosphere, dark ambient lighting"
+      - id: midnight
+        label: "Midnight"
+        tags:
+          illustrious: "midnight, deep night, moonlight"
+          anima: "deep midnight darkness, pale moonlight"

@@ -1,0 +1,57 @@
+id: scene.weather
+title: Weather
+items:
+  - id: clear_sky
+    label: Clear Sky
+    tags:
+      illustrious: "clear sky, sunny"
+      anima: "clear blue sky, bright sunny weather"
+      zimage: "under a clear sunny sky"
+  - id: cloudy
+    label: Cloudy
+    tags:
+      illustrious: "cloudy, clouds"
+      anima: "scattered clouds, soft overcast light"
+      zimage: "with scattered clouds overhead"
+  - id: overcast
+    label: Overcast
+    tags:
+      illustrious: "overcast, grey sky"
+      anima: "heavy overcast sky, diffused flat light"
+      zimage: "under a heavy overcast grey sky"
+  - id: rain
+    label: Rain
+    tags:
+      illustrious: "rain, wet, raining"
+      anima: "light rain falling, wet surfaces, rain droplets"
+      zimage: "in light rain with wet surfaces"
+  - id: heavy_rain
+    label: Heavy Rain
+    tags:
+      illustrious: "heavy rain, storm, wet"
+      anima: "torrential rain, soaking wet, dramatic rainfall"
+      zimage: "in torrential rain"
+  - id: snow
+    label: Snow
+    tags:
+      illustrious: "snow, snowing, winter"
+      anima: "gentle snowfall, snowflakes, cold atmosphere"
+      zimage: "with gentle snowfall"
+  - id: blizzard
+    label: Blizzard
+    tags:
+      illustrious: "blizzard, snowstorm, heavy snow"
+      anima: "fierce blizzard, swirling snow, whiteout"
+      zimage: "in a fierce blizzard"
+  - id: fog
+    label: Fog
+    tags:
+      illustrious: "fog, foggy, mist"
+      anima: "thick fog, misty atmosphere, low visibility"
+      zimage: "in thick fog with low visibility"
+  - id: thunderstorm
+    label: Thunderstorm
+    tags:
+      illustrious: "thunderstorm, lightning, rain"
+      anima: "dramatic thunderstorm, lightning flashes, dark storm clouds"
+      zimage: "during a dramatic thunderstorm with lightning"

@@ -1,0 +1,99 @@
+id: character.body_type
+title: Body Type
+items:
+- id: slim__slender
+  label: Slim / Slender
+  meta:
+    subgroup: types
+  tags:
+    illustrious: slim / slender
+    anima: slim / slender, detailed body
+    zimage_turbo: with slim / slender
+- id: petite
+  label: Petite
+  meta:
+    subgroup: types
+  tags:
+    illustrious: petite
+    anima: petite, detailed body
+    zimage_turbo: with petite
+- id: athletic__toned
+  label: Athletic / Toned
+  meta:
+    subgroup: types
+  tags:
+    illustrious: athletic / toned
+    anima: athletic / toned, detailed body
+    zimage_turbo: with athletic / toned
+- id: fit
+  label: Fit
+  meta:
+    subgroup: types
+  tags:
+    illustrious: fit
+    anima: fit, detailed body
+    zimage_turbo: with fit
+- id: curvy
+  label: Curvy
+  meta:
+    subgroup: types
+  tags:
+    illustrious: curvy
+    anima: curvy, detailed body
+    zimage_turbo: with curvy
+- id: voluptuous
+  label: Voluptuous
+  meta:
+    subgroup: types
+  tags:
+    illustrious: voluptuous
+    anima: voluptuous, detailed body
+    zimage_turbo: with voluptuous
+- id: hourglass_figure
+  label: Hourglass figure
+  meta:
+    subgroup: types
+  tags:
+    illustrious: hourglass figure
+    anima: hourglass figure, detailed body
+    zimage_turbo: with hourglass figure
+- id: slim_thick
+  label: Slim-thick
+  meta:
+    subgroup: types
+  tags:
+    illustrious: slim-thick
+    anima: slim-thick, detailed body
+    zimage_turbo: with slim-thick
+- id: soft__chubby
+  label: Soft / Chubby
+  meta:
+    subgroup: types
+  tags:
+    illustrious: soft / chubby
+    anima: soft / chubby, detailed body
+    zimage_turbo: with soft / chubby
+- id: muscular_feminine
+  label: Muscular feminine
+  meta:
+    subgroup: types
+  tags:
+    illustrious: muscular feminine
+    anima: muscular feminine, detailed body
+    zimage_turbo: with muscular feminine
+- id: tall_and_elegant
+  label: Tall and elegant
+  meta:
+    subgroup: types
+  tags:
+    illustrious: tall and elegant
+    anima: tall and elegant, detailed body
+    zimage_turbo: with tall and elegant
+- id: shortstack
+  label: Shortstack
+  meta:
+    subgroup: types
+  tags:
+    illustrious: shortstack
+    anima: shortstack, detailed body
+    zimage_turbo: with shortstack

@@ -1,0 +1,723 @@
+id: pose.solo
+title: Solo Pose
+items:
+- id: confident_standing_hand_on_hip_chest_forward
+  label: Confident standing, hand on hip, chest forward
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: confident standing, hand on hip, chest forward
+    anima: confident standing, hand on hip, chest forward, dynamic pose
+    zimage_turbo: in confident standing, hand on hip, chest forward
+- id: standing_with_legs_slightly_apart_intense_eye_contact
+  label: Standing with legs slightly apart, intense eye contact
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing with legs slightly apart, intense eye contact
+    anima: standing with legs slightly apart, intense eye contact, dynamic pose
+    zimage_turbo: in standing with legs slightly apart, intense eye contact
+- id: standing_arching_back_hands_in_hair
+  label: Standing arching back, hands in hair
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing arching back, hands in hair
+    anima: standing arching back, hands in hair, dynamic pose
+    zimage_turbo: in standing arching back, hands in hair
+- id: standing_with_one_leg_bent_hip_pop_strong
+  label: Standing with one leg bent, hip pop strong
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing with one leg bent, hip pop strong
+    anima: standing with one leg bent, hip pop strong, dynamic pose
+    zimage_turbo: in standing with one leg bent, hip pop strong
+- id: standing_looking_over_shoulder_ass_focus
+  label: Standing looking over shoulder (ass focus)
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing looking over shoulder (ass focus)
+    anima: standing looking over shoulder (ass focus), dynamic pose
+    zimage_turbo: in standing looking over shoulder (ass focus)
+- id: standing_with_arms_raised_behind_head
+  label: Standing with arms raised behind head
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing with arms raised behind head
+    anima: standing with arms raised behind head, dynamic pose
+    zimage_turbo: in standing with arms raised behind head
+- id: standing_chest_out_shoulders_back
+  label: Standing chest out, shoulders back
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing chest out, shoulders back
+    anima: standing chest out, shoulders back, dynamic pose
+    zimage_turbo: in standing chest out, shoulders back
+- id: standing_with_hands_slowly_sliding_down_body
+  label: Standing with hands slowly sliding down body
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing with hands slowly sliding down body
+    anima: standing with hands slowly sliding down body, dynamic pose
+    zimage_turbo: in standing with hands slowly sliding down body
+- id: standing_with_one_hand_on_thigh_seductive_gaze
+  label: Standing with one hand on thigh, seductive gaze
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing with one hand on thigh, seductive gaze
+    anima: standing with one hand on thigh, seductive gaze, dynamic pose
+    zimage_turbo: in standing with one hand on thigh, seductive gaze
+- id: standing_with_legs_crossed_leaning_slightly
+  label: Standing with legs crossed, leaning slightly
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing with legs crossed, leaning slightly
+    anima: standing with legs crossed, leaning slightly, dynamic pose
+    zimage_turbo: in standing with legs crossed, leaning slightly
+- id: standing_powerful_stance_looking_down_at_viewer
+  label: Standing powerful stance, looking down at viewer
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing powerful stance, looking down at viewer
+    anima: standing powerful stance, looking down at viewer, dynamic pose
+    zimage_turbo: in standing powerful stance, looking down at viewer
+- id: standing_teasing_biting_lip
+  label: Standing teasing, biting lip
+  meta:
+    subgroup: standing_seductive
+  tags:
+    illustrious: standing teasing, biting lip
+    anima: standing teasing, biting lip, dynamic pose
+    zimage_turbo: in standing teasing, biting lip
+- id: standing_pulling_micro_skirt_up_slightly
+  label: Standing pulling micro skirt up slightly
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing pulling micro skirt up slightly
+    anima: standing pulling micro skirt up slightly, dynamic pose
+    zimage_turbo: in standing pulling micro skirt up slightly
+- id: standing_holding_cape_jacket_open
+  label: Standing holding cape/jacket open
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing holding cape/jacket open
+    anima: standing holding cape/jacket open, dynamic pose
+    zimage_turbo: in standing holding cape/jacket open
+- id: standing_bending_forward_slightly_cleavage_ass_focus
+  label: Standing bending forward slightly (cleavage/ass focus)
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing bending forward slightly (cleavage/ass focus)
+    anima: standing bending forward slightly (cleavage/ass focus), dynamic pose
+    zimage_turbo: in standing bending forward slightly (cleavage/ass focus)
+- id: standing_with_legs_wide_hands_on_knees
+  label: Standing with legs wide, hands on knees
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing with legs wide, hands on knees
+    anima: standing with legs wide, hands on knees, dynamic pose
+    zimage_turbo: in standing with legs wide, hands on knees
+- id: standing_lifting_one_leg_against_wall
+  label: Standing lifting one leg against wall
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing lifting one leg against wall
+    anima: standing lifting one leg against wall, dynamic pose
+    zimage_turbo: in standing lifting one leg against wall
+- id: standing_with_hands_spreading_ass_cheeks_over_clothes
+  label: Standing with hands spreading ass cheeks (over clothes)
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing with hands spreading ass cheeks (over clothes)
+    anima: standing with hands spreading ass cheeks (over clothes), dynamic pose
+    zimage_turbo: in standing with hands spreading ass cheeks (over clothes)
+- id: standing_adjusting_harness_top_teasingly
+  label: Standing adjusting harness/top teasingly
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing adjusting harness/top teasingly
+    anima: standing adjusting harness/top teasingly, dynamic pose
+    zimage_turbo: in standing adjusting harness/top teasingly
+- id: standing_with_back_arched_ass_pushed_out
+  label: Standing with back arched, ass pushed out
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing with back arched, ass pushed out
+    anima: standing with back arched, ass pushed out, dynamic pose
+    zimage_turbo: in standing with back arched, ass pushed out
+- id: standing_with_fingers_in_mouth
+  label: Standing with fingers in mouth
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing with fingers in mouth
+    anima: standing with fingers in mouth, dynamic pose
+    zimage_turbo: in standing with fingers in mouth
+- id: standing_pulling_top_down_exposing_more
+  label: Standing pulling top down exposing more
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing pulling top down exposing more
+    anima: standing pulling top down exposing more, dynamic pose
+    zimage_turbo: in standing pulling top down exposing more
+- id: standing_with_hand_between_legs_over_clothes
+  label: Standing with hand between legs (over clothes)
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing with hand between legs (over clothes)
+    anima: standing with hand between legs (over clothes), dynamic pose
+    zimage_turbo: in standing with hand between legs (over clothes)
+- id: standing_looking_back_while_lifting_skirt
+  label: Standing looking back while lifting skirt
+  meta:
+    subgroup: standing_tease
+  tags:
+    illustrious: standing looking back while lifting skirt
+    anima: standing looking back while lifting skirt, dynamic pose
+    zimage_turbo: in standing looking back while lifting skirt
+- id: sitting_on_edge_legs_spread_wide
+  label: Sitting on edge, legs spread wide
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: sitting on edge, legs spread wide
+    anima: sitting on edge, legs spread wide, dynamic pose
+    zimage_turbo: in sitting on edge, legs spread wide
+- id: sitting_with_knees_together_leaning_forward_cleavage
+  label: Sitting with knees together, leaning forward (cleavage)
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: sitting with knees together, leaning forward (cleavage)
+    anima: sitting with knees together, leaning forward (cleavage), dynamic pose
+    zimage_turbo: in sitting with knees together, leaning forward (cleavage)
+- id: kneeling_on_floor_sitting_on_heels_looking_up
+  label: Kneeling on floor, sitting on heels, looking up
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: kneeling on floor, sitting on heels, looking up
+    anima: kneeling on floor, sitting on heels, looking up, dynamic pose
+    zimage_turbo: in kneeling on floor, sitting on heels, looking up
+- id: sitting_with_one_leg_up_other_spread
+  label: Sitting with one leg up, other spread
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: sitting with one leg up, other spread
+    anima: sitting with one leg up, other spread, dynamic pose
+    zimage_turbo: in sitting with one leg up, other spread
+- id: kneeling_leaning_back_on_hands_chest_out
+  label: Kneeling leaning back on hands, chest out
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: kneeling leaning back on hands, chest out
+    anima: kneeling leaning back on hands, chest out, dynamic pose
+    zimage_turbo: in kneeling leaning back on hands, chest out
+- id: sitting_with_legs_crossed_high_thigh_focus
+  label: Sitting with legs crossed high (thigh focus)
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: sitting with legs crossed high (thigh focus)
+    anima: sitting with legs crossed high (thigh focus), dynamic pose
+    zimage_turbo: in sitting with legs crossed high (thigh focus)
+- id: kneeling_with_hands_on_thighs_seductive
+  label: Kneeling with hands on thighs, seductive
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: kneeling with hands on thighs, seductive
+    anima: kneeling with hands on thighs, seductive, dynamic pose
+    zimage_turbo: in kneeling with hands on thighs, seductive
+- id: sitting_low_knees_apart_hands_between_legs
+  label: Sitting low, knees apart, hands between legs
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: sitting low, knees apart, hands between legs
+    anima: sitting low, knees apart, hands between legs, dynamic pose
+    zimage_turbo: in sitting low, knees apart, hands between legs
+- id: kneeling_in_worship_pose_hands_on_floor
+  label: Kneeling in "worship" pose, hands on floor
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: kneeling in "worship" pose, hands on floor
+    anima: kneeling in "worship" pose, hands on floor, dynamic pose
+    zimage_turbo: in kneeling in "worship" pose, hands on floor
+- id: sitting_sideways_looking_over_shoulder
+  label: Sitting sideways, looking over shoulder
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: sitting sideways, looking over shoulder
+    anima: sitting sideways, looking over shoulder, dynamic pose
+    zimage_turbo: in sitting sideways, looking over shoulder
+- id: kneeling_with_back_arched
+  label: Kneeling with back arched
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: kneeling with back arched
+    anima: kneeling with back arched, dynamic pose
+    zimage_turbo: in kneeling with back arched
+- id: sitting_with_legs_in_m_position_very_explicit
+  label: Sitting with legs in M-position (very explicit)
+  meta:
+    subgroup: sitting_kneeling
+  tags:
+    illustrious: sitting with legs in m-position (very explicit)
+    anima: sitting with legs in m-position (very explicit), dynamic pose
+    zimage_turbo: in sitting with legs in m-position (very explicit)
+- id: lying_on_back_legs_spread_wide_knees_bent
+  label: Lying on back, legs spread wide, knees bent
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on back, legs spread wide, knees bent
+    anima: lying on back, legs spread wide, knees bent, dynamic pose
+    zimage_turbo: in lying on back, legs spread wide, knees bent
+- id: lying_on_side_one_leg_lifted_high
+  label: Lying on side, one leg lifted high
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on side, one leg lifted high
+    anima: lying on side, one leg lifted high, dynamic pose
+    zimage_turbo: in lying on side, one leg lifted high
+- id: lying_on_stomach_ass_up_slightly_prone_bone_hint
+  label: Lying on stomach, ass up slightly (prone bone hint)
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on stomach, ass up slightly (prone bone hint)
+    anima: lying on stomach, ass up slightly (prone bone hint), dynamic pose
+    zimage_turbo: in lying on stomach, ass up slightly (prone bone hint)
+- id: lying_on_back_hands_above_head_back_arched
+  label: Lying on back, hands above head, back arched
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on back, hands above head, back arched
+    anima: lying on back, hands above head, back arched, dynamic pose
+    zimage_turbo: in lying on back, hands above head, back arched
+- id: lying_with_legs_in_air_holding_ankles
+  label: Lying with legs in air, holding ankles
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying with legs in air, holding ankles
+    anima: lying with legs in air, holding ankles, dynamic pose
+    zimage_turbo: in lying with legs in air, holding ankles
+- id: lying_on_side_hand_between_legs
+  label: Lying on side, hand between legs
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on side, hand between legs
+    anima: lying on side, hand between legs, dynamic pose
+    zimage_turbo: in lying on side, hand between legs
+- id: lying_on_back_knees_to_chest_very_open
+  label: Lying on back, knees to chest (very open)
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on back, knees to chest (very open)
+    anima: lying on back, knees to chest (very open), dynamic pose
+    zimage_turbo: in lying on back, knees to chest (very open)
+- id: lying_on_stomach_looking_back_at_viewer
+  label: Lying on stomach, looking back at viewer
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on stomach, looking back at viewer
+    anima: lying on stomach, looking back at viewer, dynamic pose
+    zimage_turbo: in lying on stomach, looking back at viewer
+- id: lying_with_one_leg_straight_other_bent
+  label: Lying with one leg straight, other bent
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying with one leg straight, other bent
+    anima: lying with one leg straight, other bent, dynamic pose
+    zimage_turbo: in lying with one leg straight, other bent
+- id: lying_in_butterfly_position
+  label: Lying in "butterfly" position
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying in "butterfly" position
+    anima: lying in "butterfly" position, dynamic pose
+    zimage_turbo: in lying in "butterfly" position
+- id: lying_on_back_hips_raised_bridge_pose
+  label: Lying on back, hips raised (bridge pose)
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on back, hips raised (bridge pose)
+    anima: lying on back, hips raised (bridge pose), dynamic pose
+    zimage_turbo: in lying on back, hips raised (bridge pose)
+- id: lying_on_side_top_leg_bent_over
+  label: Lying on side, top leg bent over
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying on side, top leg bent over
+    anima: lying on side, top leg bent over, dynamic pose
+    zimage_turbo: in lying on side, top leg bent over
+- id: lying_with_hands_squeezing_breasts
+  label: Lying with hands squeezing breasts
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying with hands squeezing breasts
+    anima: lying with hands squeezing breasts, dynamic pose
+    zimage_turbo: in lying with hands squeezing breasts
+- id: lying_in_fetal_position_but_seductive
+  label: Lying in fetal position but seductive
+  meta:
+    subgroup: lying_bed
+  tags:
+    illustrious: lying in fetal position but seductive
+    anima: lying in fetal position but seductive, dynamic pose
+    zimage_turbo: in lying in fetal position but seductive
+- id: on_all_fours_back_arched_looking_back
+  label: On all fours, back arched, looking back
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, back arched, looking back
+    anima: on all fours, back arched, looking back, dynamic pose
+    zimage_turbo: in on all fours, back arched, looking back
+- id: on_all_fours_ass_high_chest_low
+  label: On all fours, ass high, chest low
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, ass high, chest low
+    anima: on all fours, ass high, chest low, dynamic pose
+    zimage_turbo: in on all fours, ass high, chest low
+- id: on_all_fours_legs_spread_wide
+  label: On all fours, legs spread wide
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, legs spread wide
+    anima: on all fours, legs spread wide, dynamic pose
+    zimage_turbo: in on all fours, legs spread wide
+- id: on_all_fours_one_hand_reaching_back
+  label: On all fours, one hand reaching back
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, one hand reaching back
+    anima: on all fours, one hand reaching back, dynamic pose
+    zimage_turbo: in on all fours, one hand reaching back
+- id: on_all_fours_head_down_ass_up
+  label: On all fours, head down, ass up
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, head down, ass up
+    anima: on all fours, head down, ass up, dynamic pose
+    zimage_turbo: in on all fours, head down, ass up
+- id: on_all_fours_looking_at_viewer_over_shoulder
+  label: On all fours, looking at viewer over shoulder
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, looking at viewer over shoulder
+    anima: on all fours, looking at viewer over shoulder, dynamic pose
+    zimage_turbo: in on all fours, looking at viewer over shoulder
+- id: on_all_fours_slowly_lowering_chest
+  label: On all fours, slowly lowering chest
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, slowly lowering chest
+    anima: on all fours, slowly lowering chest, dynamic pose
+    zimage_turbo: in on all fours, slowly lowering chest
+- id: on_all_fours_one_leg_lifted
+  label: On all fours, one leg lifted
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, one leg lifted
+    anima: on all fours, one leg lifted, dynamic pose
+    zimage_turbo: in on all fours, one leg lifted
+- id: on_all_fours_hands_pulling_ass_apart
+  label: On all fours, hands pulling ass apart
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours, hands pulling ass apart
+    anima: on all fours, hands pulling ass apart, dynamic pose
+    zimage_turbo: in on all fours, hands pulling ass apart
+- id: on_all_fours_in_presenting_pose
+  label: On all fours in "presenting" pose
+  meta:
+    subgroup: all_fours
+  tags:
+    illustrious: on all fours in "presenting" pose
+    anima: on all fours in "presenting" pose, dynamic pose
+    zimage_turbo: in on all fours in "presenting" pose
+- id: walking_toward_camera_seductively
+  label: Walking toward camera seductively
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: walking toward camera seductively
+    anima: walking toward camera seductively, dynamic pose
+    zimage_turbo: in walking toward camera seductively
+- id: spinning__turning_with_hair_cape
+  label: Spinning / turning with hair/cape
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: spinning / turning with hair/cape
+    anima: spinning / turning with hair/cape, dynamic pose
+    zimage_turbo: in spinning / turning with hair/cape
+- id: bending_over_to_pick_something_up
+  label: Bending over to pick something up
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: bending over to pick something up
+    anima: bending over to pick something up, dynamic pose
+    zimage_turbo: in bending over to pick something up
+- id: stretching_with_back_arch
+  label: Stretching with back arch
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: stretching with back arch
+    anima: stretching with back arch, dynamic pose
+    zimage_turbo: in stretching with back arch
+- id: dancing__moving_hips
+  label: Dancing / moving hips
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: dancing / moving hips
+    anima: dancing / moving hips, dynamic pose
+    zimage_turbo: in dancing / moving hips
+- id: leaning_against_wall_one_leg_up
+  label: Leaning against wall, one leg up
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: leaning against wall, one leg up
+    anima: leaning against wall, one leg up, dynamic pose
+    zimage_turbo: in leaning against wall, one leg up
+- id: crouching_down_slowly
+  label: Crouching down slowly
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: crouching down slowly
+    anima: crouching down slowly, dynamic pose
+    zimage_turbo: in crouching down slowly
+- id: standing_up_from_kneeling_pose
+  label: Standing up from kneeling pose
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: standing up from kneeling pose
+    anima: standing up from kneeling pose, dynamic pose
+    zimage_turbo: in standing up from kneeling pose
+- id: hair_flip_while_bending
+  label: Hair flip while bending
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: hair flip while bending
+    anima: hair flip while bending, dynamic pose
+    zimage_turbo: in hair flip while bending
+- id: playful_run__chase_pose
+  label: Playful run / chase pose
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: playful run / chase pose
+    anima: playful run / chase pose, dynamic pose
+    zimage_turbo: in playful run / chase pose
+- id: hand_between_legs_touching_self
+  label: Hand between legs, touching self
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: hand between legs, touching self
+    anima: hand between legs, touching self, dynamic pose
+    zimage_turbo: in hand between legs, touching self
+- id: squeezing_breasts_with_both_hands
+  label: Squeezing breasts with both hands
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: squeezing breasts with both hands
+    anima: squeezing breasts with both hands, dynamic pose
+    zimage_turbo: in squeezing breasts with both hands
+- id: hand_inside_panties__harness
+  label: Hand inside panties / harness
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: hand inside panties / harness
+    anima: hand inside panties / harness, dynamic pose
+    zimage_turbo: in hand inside panties / harness
+- id: fingers_in_mouth_while_touching
+  label: Fingers in mouth while touching
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: fingers in mouth while touching
+    anima: fingers in mouth while touching, dynamic pose
+    zimage_turbo: in fingers in mouth while touching
+- id: both_hands_on_body_exploring
+  label: Both hands on body, exploring
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: both hands on body, exploring
+    anima: both hands on body, exploring, dynamic pose
+    zimage_turbo: in both hands on body, exploring
+- id: touching_nipples_through_clothes
+  label: Touching nipples through clothes
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: touching nipples through clothes
+    anima: touching nipples through clothes, dynamic pose
+    zimage_turbo: in touching nipples through clothes
+- id: hand_sliding_down_stomach
+  label: Hand sliding down stomach
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: hand sliding down stomach
+    anima: hand sliding down stomach, dynamic pose
+    zimage_turbo: in hand sliding down stomach
+- id: gripping_thighs_while_spreading
+  label: Gripping thighs while spreading
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: gripping thighs while spreading
+    anima: gripping thighs while spreading, dynamic pose
+    zimage_turbo: in gripping thighs while spreading
+- id: playing_with_hair_while_touching
+  label: Playing with hair while touching
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: playing with hair while touching
+    anima: playing with hair while touching, dynamic pose
+    zimage_turbo: in playing with hair while touching
+- id: intense_eye_contact_while_self_touching
+  label: Intense eye contact while self-touching
+  meta:
+    subgroup: self_touch
+  tags:
+    illustrious: intense eye contact while self-touching
+    anima: intense eye contact while self-touching, dynamic pose
+    zimage_turbo: in intense eye contact while self-touching
+- id: legs_completely_spread_in_split
+  label: Legs completely spread in split
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: legs completely spread in split
+    anima: legs completely spread in split, dynamic pose
+    zimage_turbo: in legs completely spread in split
+- id: bent_over_90_degrees_hands_on_floor
+  label: Bent over 90 degrees, hands on floor
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: bent over 90 degrees, hands on floor
+    anima: bent over 90 degrees, hands on floor, dynamic pose
+    zimage_turbo: in bent over 90 degrees, hands on floor
+- id: on_back_with_legs_behind_head
+  label: On back with legs behind head
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: on back with legs behind head
+    anima: on back with legs behind head, dynamic pose
+    zimage_turbo: in on back with legs behind head
+- id: squatting_with_knees_wide_open
+  label: Squatting with knees wide open
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: squatting with knees wide open
+    anima: squatting with knees wide open, dynamic pose
+    zimage_turbo: in squatting with knees wide open
+- id: lying_with_ass_up_face_down
+  label: Lying with ass up, face down
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: lying with ass up, face down
+    anima: lying with ass up, face down, dynamic pose
+    zimage_turbo: in lying with ass up, face down
+- id: standing_split_one_leg_high_on_wall
+  label: Standing split (one leg high on wall)
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: standing split (one leg high on wall)
+    anima: standing split (one leg high on wall), dynamic pose
+    zimage_turbo: in standing split (one leg high on wall)
+- id: deep_squat_facing_camera
+  label: Deep squat facing camera
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: deep squat facing camera
+    anima: deep squat facing camera, dynamic pose
+    zimage_turbo: in deep squat facing camera
+- id: on_all_fours_with_extreme_arch
+  label: On all fours with extreme arch
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: on all fours with extreme arch
+    anima: on all fours with extreme arch, dynamic pose
+    zimage_turbo: in on all fours with extreme arch
+- id: lying_with_hips_raised_high
+  label: Lying with hips raised high
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: lying with hips raised high
+    anima: lying with hips raised high, dynamic pose
+    zimage_turbo: in lying with hips raised high
+- id: ahegao_style_face__body_pose
+  label: '"Ahegao" style face + body pose'
+  meta:
+    subgroup: extreme_solo
+  tags:
+    illustrious: '"ahegao" style face + body pose'
+    anima: '"ahegao" style face + body pose, dynamic pose'
+    zimage_turbo: in "ahegao" style face + body pose

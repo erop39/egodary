@@ -1,0 +1,771 @@
+id: outfit.bottom
+title: Bottom
+items:
+- id: none
+  label: None (no bottom)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: bottomless, no bottom garment
+    anima: bottomless, no bottom garment
+    zimage_turbo: bottomless with no bottom garment
+- id: skinny_jeans
+  label: Skinny Jeans
+  tags:
+    illustrious: skinny jeans
+    anima: skinny jeans, styled outfit
+    zimage_turbo: wearing skinny jeans
+  meta:
+    subgroup: long_pants
+- id: shiny_leather_pants
+  label: Shiny Leather Pants
+  tags:
+    illustrious: shiny leather pants
+    anima: shiny leather pants, styled outfit
+    zimage_turbo: wearing shiny leather pants
+  meta:
+    subgroup: long_pants
+- id: tight_latex_pants
+  label: Tight Latex Pants
+  tags:
+    illustrious: tight latex pants
+    anima: tight latex pants, styled outfit
+    zimage_turbo: wearing tight latex pants
+  meta:
+    subgroup: long_pants
+- id: glossy_vinyl_pants
+  label: Glossy Vinyl Pants
+  tags:
+    illustrious: glossy vinyl pants
+    anima: glossy vinyl pants, styled outfit
+    zimage_turbo: wearing glossy vinyl pants
+  meta:
+    subgroup: long_pants
+- id: high_waisted_trousers
+  label: High-Waisted Trousers
+  tags:
+    illustrious: high-waisted trousers
+    anima: high-waisted trousers, styled outfit
+    zimage_turbo: wearing high-waisted trousers
+  meta:
+    subgroup: long_pants
+- id: low_rise_skinny_pants
+  label: Low-Rise Skinny Pants
+  tags:
+    illustrious: low-rise skinny pants
+    anima: low-rise skinny pants, styled outfit
+    zimage_turbo: wearing low-rise skinny pants
+  meta:
+    subgroup: long_pants
+- id: sexy_cargo_pants
+  label: Sexy Cargo Pants
+  tags:
+    illustrious: sexy cargo pants
+    anima: sexy cargo pants, styled outfit
+    zimage_turbo: wearing sexy cargo pants
+  meta:
+    subgroup: long_pants
+- id: wide_leg_leather_pants
+  label: Wide Leg Leather Pants
+  tags:
+    illustrious: wide leg leather pants
+    anima: wide leg leather pants, styled outfit
+    zimage_turbo: wearing wide leg leather pants
+  meta:
+    subgroup: long_pants
+- id: flared_latex_pants
+  label: Flared Latex Pants
+  tags:
+    illustrious: flared latex pants
+    anima: flared latex pants, styled outfit
+    zimage_turbo: wearing flared latex pants
+  meta:
+    subgroup: long_pants
+- id: slim_fit_vinyl_trousers
+  label: Slim Fit Vinyl Trousers
+  tags:
+    illustrious: slim fit vinyl trousers
+    anima: slim fit vinyl trousers, styled outfit
+    zimage_turbo: wearing slim fit vinyl trousers
+  meta:
+    subgroup: long_pants
+- id: shiny_leggings
+  label: Shiny Leggings
+  tags:
+    illustrious: shiny leggings
+    anima: shiny leggings, styled outfit
+    zimage_turbo: wearing shiny leggings
+  meta:
+    subgroup: long_pants
+- id: high_waisted_jeggings
+  label: High-Waisted Jeggings
+  tags:
+    illustrious: high-waisted jeggings
+    anima: high-waisted jeggings, styled outfit
+    zimage_turbo: wearing high-waisted jeggings
+  meta:
+    subgroup: long_pants
+- id: leather_leggings
+  label: Leather Leggings
+  tags:
+    illustrious: leather leggings
+    anima: leather leggings, styled outfit
+    zimage_turbo: wearing leather leggings
+  meta:
+    subgroup: long_pants
+- id: latex_leggings
+  label: Latex Leggings
+  tags:
+    illustrious: latex leggings
+    anima: latex leggings, styled outfit
+    zimage_turbo: wearing latex leggings
+  meta:
+    subgroup: long_pants
+- id: bootcut_leather_pants
+  label: Bootcut Leather Pants
+  tags:
+    illustrious: bootcut leather pants
+    anima: bootcut leather pants, styled outfit
+    zimage_turbo: wearing bootcut leather pants
+  meta:
+    subgroup: long_pants
+- id: sheer_mesh_over_pants
+  label: Sheer Mesh Over Pants
+  tags:
+    illustrious: sheer mesh over pants
+    anima: sheer mesh over pants, styled outfit
+    zimage_turbo: wearing sheer mesh over pants
+  meta:
+    subgroup: long_pants
+- id: strappy_harness_pants
+  label: Strappy Harness Pants
+  tags:
+    illustrious: strappy harness pants
+    anima: strappy harness pants, styled outfit
+    zimage_turbo: wearing strappy harness pants
+  meta:
+    subgroup: long_pants
+- id: high_waisted_vinyl_pants
+  label: High-Waisted Vinyl Pants
+  tags:
+    illustrious: high-waisted vinyl pants
+    anima: high-waisted vinyl pants, styled outfit
+    zimage_turbo: wearing high-waisted vinyl pants
+  meta:
+    subgroup: long_pants
+- id: pleated_leather_trousers
+  label: Pleated Leather Trousers
+  tags:
+    illustrious: pleated leather trousers
+    anima: pleated leather trousers, styled outfit
+    zimage_turbo: wearing pleated leather trousers
+  meta:
+    subgroup: long_pants
+- id: wetlook_leggings
+  label: Wetlook Leggings
+  tags:
+    illustrious: wetlook leggings
+    anima: wetlook leggings, styled outfit
+    zimage_turbo: wearing wetlook leggings
+  meta:
+    subgroup: long_pants
+- id: micro_mini_skirt
+  label: Micro Mini Skirt
+  tags:
+    illustrious: micro mini skirt
+    anima: micro mini skirt, styled outfit
+    zimage_turbo: wearing micro mini skirt
+  meta:
+    subgroup: skirts
+- id: pleated_micro_skirt
+  label: Pleated Micro Skirt
+  tags:
+    illustrious: pleated micro skirt
+    anima: pleated micro skirt, styled outfit
+    zimage_turbo: wearing pleated micro skirt
+  meta:
+    subgroup: skirts
+- id: leather_micro_mini
+  label: Leather Micro Mini
+  tags:
+    illustrious: leather micro mini
+    anima: leather micro mini, styled outfit
+    zimage_turbo: wearing leather micro mini
+  meta:
+    subgroup: skirts
+- id: latex_mini_skirt
+  label: Latex Mini Skirt
+  tags:
+    illustrious: latex mini skirt
+    anima: latex mini skirt, styled outfit
+    zimage_turbo: wearing latex mini skirt
+  meta:
+    subgroup: skirts
+- id: denim_micro_skirt
+  label: Denim Micro Skirt
+  tags:
+    illustrious: denim micro skirt
+    anima: denim micro skirt, styled outfit
+    zimage_turbo: wearing denim micro skirt
+  meta:
+    subgroup: skirts
+- id: high_slit_pencil_skirt
+  label: High Slit Pencil Skirt
+  tags:
+    illustrious: high slit pencil skirt
+    anima: high slit pencil skirt, styled outfit
+    zimage_turbo: wearing high slit pencil skirt
+  meta:
+    subgroup: skirts
+- id: wrap_micro_skirt
+  label: Wrap Micro Skirt
+  tags:
+    illustrious: wrap micro skirt
+    anima: wrap micro skirt, styled outfit
+    zimage_turbo: wearing wrap micro skirt
+  meta:
+    subgroup: skirts
+- id: pleated_schoolgirl_micro
+  label: Pleated Schoolgirl Micro
+  tags:
+    illustrious: pleated schoolgirl micro
+    anima: pleated schoolgirl micro, styled outfit
+    zimage_turbo: wearing pleated schoolgirl micro
+  meta:
+    subgroup: skirts
+- id: vinyl_micro_skirt
+  label: Vinyl Micro Skirt
+  tags:
+    illustrious: vinyl micro skirt
+    anima: vinyl micro skirt, styled outfit
+    zimage_turbo: wearing vinyl micro skirt
+  meta:
+    subgroup: skirts
+- id: sheer_see_through_mini
+  label: Sheer See-Through Mini
+  tags:
+    illustrious: sheer see-through mini
+    anima: sheer see-through mini, styled outfit
+    zimage_turbo: wearing sheer see-through mini
+  meta:
+    subgroup: skirts
+- id: asymmetrical_micro_skirt
+  label: Asymmetrical Micro Skirt
+  tags:
+    illustrious: asymmetrical micro skirt
+    anima: asymmetrical micro skirt, styled outfit
+    zimage_turbo: wearing asymmetrical micro skirt
+  meta:
+    subgroup: skirts
+- id: cargo_micro_skirt
+  label: Cargo Micro Skirt
+  tags:
+    illustrious: cargo micro skirt
+    anima: cargo micro skirt, styled outfit
+    zimage_turbo: wearing cargo micro skirt
+  meta:
+    subgroup: skirts
+- id: leather_pencil_skirt
+  label: Leather Pencil Skirt
+  tags:
+    illustrious: leather pencil skirt
+    anima: leather pencil skirt, styled outfit
+    zimage_turbo: wearing leather pencil skirt
+  meta:
+    subgroup: skirts
+- id: extreme_high_slit_maxi
+  label: Extreme High Slit Maxi
+  tags:
+    illustrious: extreme high slit maxi
+    anima: extreme high slit maxi, styled outfit
+    zimage_turbo: wearing extreme high slit maxi
+  meta:
+    subgroup: skirts
+- id: tiered_micro_skirt
+  label: Tiered Micro Skirt
+  tags:
+    illustrious: tiered micro skirt
+    anima: tiered micro skirt, styled outfit
+    zimage_turbo: wearing tiered micro skirt
+  meta:
+    subgroup: skirts
+- id: bodycon_micro_skirt
+  label: Bodycon Micro Skirt
+  tags:
+    illustrious: bodycon micro skirt
+    anima: bodycon micro skirt, styled outfit
+    zimage_turbo: wearing bodycon micro skirt
+  meta:
+    subgroup: skirts
+- id: fishnet_overlay_skirt
+  label: Fishnet Overlay Skirt
+  tags:
+    illustrious: fishnet overlay skirt
+    anima: fishnet overlay skirt, styled outfit
+    zimage_turbo: wearing fishnet overlay skirt
+  meta:
+    subgroup: skirts
+- id: strappy_micro_skirt
+  label: Strappy Micro Skirt
+  tags:
+    illustrious: strappy micro skirt
+    anima: strappy micro skirt, styled outfit
+    zimage_turbo: wearing strappy micro skirt
+  meta:
+    subgroup: skirts
+- id: latex_high_slit_skirt
+  label: Latex High Slit Skirt
+  tags:
+    illustrious: latex high slit skirt
+    anima: latex high slit skirt, styled outfit
+    zimage_turbo: wearing latex high slit skirt
+  meta:
+    subgroup: skirts
+- id: bondage_strap_skirt
+  label: Bondage Strap Skirt
+  tags:
+    illustrious: bondage strap skirt
+    anima: bondage strap skirt, styled outfit
+    zimage_turbo: wearing bondage strap skirt
+  meta:
+    subgroup: skirts
+- id: sheer_mini_skirt
+  label: Sheer Mini Skirt
+  tags:
+    illustrious: sheer mini skirt
+    anima: sheer mini skirt, styled outfit
+    zimage_turbo: wearing sheer mini skirt
+  meta:
+    subgroup: skirts
+- id: transparent_vinyl_skirt
+  label: Transparent Vinyl Skirt
+  tags:
+    illustrious: transparent vinyl skirt
+    anima: transparent vinyl skirt, styled outfit
+    zimage_turbo: wearing transparent vinyl skirt
+  meta:
+    subgroup: skirts
+- id: pvc_micro_skirt
+  label: PVC Micro Skirt
+  tags:
+    illustrious: pvc micro skirt
+    anima: pvc micro skirt, styled outfit
+    zimage_turbo: wearing pvc micro skirt
+  meta:
+    subgroup: skirts
+- id: transparent_plastic_skirt
+  label: Transparent Plastic Skirt
+  tags:
+    illustrious: transparent plastic skirt
+    anima: transparent plastic skirt, styled outfit
+    zimage_turbo: wearing transparent plastic skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: clear_pvc_skirt
+  label: Clear PVC Skirt
+  tags:
+    illustrious: clear pvc skirt
+    anima: clear pvc skirt, styled outfit
+    zimage_turbo: wearing clear pvc skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: neon_transparent_skirt
+  label: Neon Transparent Skirt
+  tags:
+    illustrious: neon transparent skirt
+    anima: neon transparent skirt, styled outfit
+    zimage_turbo: wearing neon transparent skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: glossy_transparent_mini_skirt
+  label: Glossy Transparent Mini Skirt
+  tags:
+    illustrious: glossy transparent mini skirt
+    anima: glossy transparent mini skirt, styled outfit
+    zimage_turbo: wearing glossy transparent mini skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: sheer_plastic_skirt
+  label: Sheer Plastic Skirt
+  tags:
+    illustrious: sheer plastic skirt
+    anima: sheer plastic skirt, styled outfit
+    zimage_turbo: wearing sheer plastic skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: iridescent_transparent_skirt
+  label: Iridescent Transparent Skirt
+  tags:
+    illustrious: iridescent transparent skirt
+    anima: iridescent transparent skirt, styled outfit
+    zimage_turbo: wearing iridescent transparent skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: neon_green_transparent_skirt
+  label: Neon Green Transparent Skirt
+  tags:
+    illustrious: neon green transparent skirt
+    anima: neon green transparent skirt, styled outfit
+    zimage_turbo: wearing neon green transparent skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: clear_vinyl_skirt
+  label: Clear Vinyl Skirt
+  tags:
+    illustrious: clear vinyl skirt
+    anima: clear vinyl skirt, styled outfit
+    zimage_turbo: wearing clear vinyl skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: see_through_plastic_pleated_skirt
+  label: See-Through Plastic Pleated Skirt
+  tags:
+    illustrious: see-through plastic pleated skirt
+    anima: see-through plastic pleated skirt, styled outfit
+    zimage_turbo: wearing see-through plastic pleated skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: transparent_bubble_skirt
+  label: Transparent Bubble Skirt
+  tags:
+    illustrious: transparent bubble skirt
+    anima: transparent bubble skirt, styled outfit
+    zimage_turbo: wearing transparent bubble skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: glossy_clear_mini_skirt
+  label: Glossy Clear Mini Skirt
+  tags:
+    illustrious: glossy clear mini skirt
+    anima: glossy clear mini skirt, styled outfit
+    zimage_turbo: wearing glossy clear mini skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: transparent_layered_skirt
+  label: Transparent Layered Skirt
+  tags:
+    illustrious: transparent layered skirt
+    anima: transparent layered skirt, styled outfit
+    zimage_turbo: wearing transparent layered skirt
+  meta:
+    subgroup: transparent_plastic_skirts
+- id: micro_hotpants
+  label: Micro Hotpants
+  tags:
+    illustrious: micro hotpants
+    anima: micro hotpants, styled outfit
+    zimage_turbo: wearing micro hotpants
+  meta:
+    subgroup: shorts
+- id: denim_micro_shorts
+  label: Denim Micro Shorts
+  tags:
+    illustrious: denim micro shorts
+    anima: denim micro shorts, styled outfit
+    zimage_turbo: wearing denim micro shorts
+  meta:
+    subgroup: shorts
+- id: leather_hotpants
+  label: Leather Hotpants
+  tags:
+    illustrious: leather hotpants
+    anima: leather hotpants, styled outfit
+    zimage_turbo: wearing leather hotpants
+  meta:
+    subgroup: shorts
+- id: latex_micro_shorts
+  label: Latex Micro Shorts
+  tags:
+    illustrious: latex micro shorts
+    anima: latex micro shorts, styled outfit
+    zimage_turbo: wearing latex micro shorts
+  meta:
+    subgroup: shorts
+- id: high_cut_booty_shorts
+  label: High-Cut Booty Shorts
+  tags:
+    illustrious: high-cut booty shorts
+    anima: high-cut booty shorts, styled outfit
+    zimage_turbo: wearing high-cut booty shorts
+  meta:
+    subgroup: shorts
+- id: vinyl_hotpants
+  label: Vinyl Hotpants
+  tags:
+    illustrious: vinyl hotpants
+    anima: vinyl hotpants, styled outfit
+    zimage_turbo: wearing vinyl hotpants
+  meta:
+    subgroup: shorts
+- id: sheer_mesh_shorts
+  label: Sheer Mesh Shorts
+  tags:
+    illustrious: sheer mesh shorts
+    anima: sheer mesh shorts, styled outfit
+    zimage_turbo: wearing sheer mesh shorts
+  meta:
+    subgroup: shorts
+- id: strappy_harness_shorts
+  label: Strappy Harness Shorts
+  tags:
+    illustrious: strappy harness shorts
+    anima: strappy harness shorts, styled outfit
+    zimage_turbo: wearing strappy harness shorts
+  meta:
+    subgroup: shorts
+- id: cargo_micro_shorts
+  label: Cargo Micro Shorts
+  tags:
+    illustrious: cargo micro shorts
+    anima: cargo micro shorts, styled outfit
+    zimage_turbo: wearing cargo micro shorts
+  meta:
+    subgroup: shorts
+- id: dolphin_micro_shorts
+  label: Dolphin Micro Shorts
+  tags:
+    illustrious: dolphin micro shorts
+    anima: dolphin micro shorts, styled outfit
+    zimage_turbo: wearing dolphin micro shorts
+  meta:
+    subgroup: shorts
+- id: pleated_micro_shorts
+  label: Pleated Micro Shorts
+  tags:
+    illustrious: pleated micro shorts
+    anima: pleated micro shorts, styled outfit
+    zimage_turbo: wearing pleated micro shorts
+  meta:
+    subgroup: shorts
+- id: high_waisted_micro_shorts
+  label: High-Waisted Micro Shorts
+  tags:
+    illustrious: high-waisted micro shorts
+    anima: high-waisted micro shorts, styled outfit
+    zimage_turbo: wearing high-waisted micro shorts
+  meta:
+    subgroup: shorts
+- id: cut_off_denim_booty_shorts
+  label: Cut-Off Denim Booty Shorts
+  tags:
+    illustrious: cut-off denim booty shorts
+    anima: cut-off denim booty shorts, styled outfit
+    zimage_turbo: wearing cut-off denim booty shorts
+  meta:
+    subgroup: shorts
+- id: ripped_micro_shorts
+  label: Ripped Micro Shorts
+  tags:
+    illustrious: ripped micro shorts
+    anima: ripped micro shorts, styled outfit
+    zimage_turbo: wearing ripped micro shorts
+  meta:
+    subgroup: shorts
+- id: bondage_strap_shorts
+  label: Bondage Strap Shorts
+  tags:
+    illustrious: bondage strap shorts
+    anima: bondage strap shorts, styled outfit
+    zimage_turbo: wearing bondage strap shorts
+  meta:
+    subgroup: shorts
+- id: wetlook_hotpants
+  label: Wetlook Hotpants
+  tags:
+    illustrious: wetlook hotpants
+    anima: wetlook hotpants, styled outfit
+    zimage_turbo: wearing wetlook hotpants
+  meta:
+    subgroup: shorts
+- id: extreme_micro_hotpants
+  label: Extreme Micro Hotpants
+  tags:
+    illustrious: extreme micro hotpants
+    anima: extreme micro hotpants, styled outfit
+    zimage_turbo: wearing extreme micro hotpants
+  meta:
+    subgroup: shorts
+- id: fishnet_overlay_shorts
+  label: Fishnet Overlay Shorts
+  tags:
+    illustrious: fishnet overlay shorts
+    anima: fishnet overlay shorts, styled outfit
+    zimage_turbo: wearing fishnet overlay shorts
+  meta:
+    subgroup: shorts
+- id: thong_style_shorts
+  label: Thong-Style Shorts
+  tags:
+    illustrious: thong-style shorts
+    anima: thong-style shorts, styled outfit
+    zimage_turbo: wearing thong-style shorts
+  meta:
+    subgroup: shorts
+- id: harness_micro_shorts
+  label: Harness Micro Shorts
+  tags:
+    illustrious: harness micro shorts
+    anima: harness micro shorts, styled outfit
+    zimage_turbo: wearing harness micro shorts
+  meta:
+    subgroup: shorts
+- id: classic_lace_panties
+  label: Classic Lace Panties
+  tags:
+    illustrious: classic lace panties
+    anima: classic lace panties, styled outfit
+    zimage_turbo: wearing classic lace panties
+  meta:
+    subgroup: underwear
+- id: classic_thong
+  label: Classic Thong
+  tags:
+    illustrious: classic thong
+    anima: classic thong, styled outfit
+    zimage_turbo: wearing classic thong
+  meta:
+    subgroup: underwear
+- id: g_string
+  label: G-String
+  tags:
+    illustrious: g-string
+    anima: g-string, styled outfit
+    zimage_turbo: wearing g-string
+  meta:
+    subgroup: underwear
+- id: tanga
+  label: Tanga
+  tags:
+    illustrious: tanga
+    anima: tanga, styled outfit
+    zimage_turbo: wearing tanga
+  meta:
+    subgroup: underwear
+- id: boyshorts
+  label: Boyshorts
+  tags:
+    illustrious: boyshorts
+    anima: boyshorts, styled outfit
+    zimage_turbo: wearing boyshorts
+  meta:
+    subgroup: underwear
+- id: crotchless_panties
+  label: Crotchless Panties
+  tags:
+    illustrious: crotchless panties
+    anima: crotchless panties, styled outfit
+    zimage_turbo: wearing crotchless panties
+  meta:
+    subgroup: underwear
+- id: open_crotch_thong
+  label: Open Crotch Thong
+  tags:
+    illustrious: open crotch thong
+    anima: open crotch thong, styled outfit
+    zimage_turbo: wearing open crotch thong
+  meta:
+    subgroup: underwear
+- id: strappy_harness_panties
+  label: Strappy Harness Panties
+  tags:
+    illustrious: strappy harness panties
+    anima: strappy harness panties, styled outfit
+    zimage_turbo: wearing strappy harness panties
+  meta:
+    subgroup: underwear
+- id: latex_panties
+  label: Latex Panties
+  tags:
+    illustrious: latex panties
+    anima: latex panties, styled outfit
+    zimage_turbo: wearing latex panties
+  meta:
+    subgroup: underwear
+- id: vinyl_panties
+  label: Vinyl Panties
+  tags:
+    illustrious: vinyl panties
+    anima: vinyl panties, styled outfit
+    zimage_turbo: wearing vinyl panties
+  meta:
+    subgroup: underwear
+- id: sheer_mesh_panties
+  label: Sheer Mesh Panties
+  tags:
+    illustrious: sheer mesh panties
+    anima: sheer mesh panties, styled outfit
+    zimage_turbo: wearing sheer mesh panties
+  meta:
+    subgroup: underwear
+- id: high_cut_brazilian
+  label: High-Cut Brazilian
+  tags:
+    illustrious: high-cut brazilian
+    anima: high-cut brazilian, styled outfit
+    zimage_turbo: wearing high-cut brazilian
+  meta:
+    subgroup: underwear
+- id: micro_g_string
+  label: Micro G-String
+  tags:
+    illustrious: micro g-string
+    anima: micro g-string, styled outfit
+    zimage_turbo: wearing micro g-string
+  meta:
+    subgroup: underwear
+- id: pearl_thong
+  label: Pearl Thong
+  tags:
+    illustrious: pearl thong
+    anima: pearl thong, styled outfit
+    zimage_turbo: wearing pearl thong
+  meta:
+    subgroup: underwear
+- id: crotchless_lace_panties
+  label: Crotchless Lace Panties
+  tags:
+    illustrious: crotchless lace panties
+    anima: crotchless lace panties, styled outfit
+    zimage_turbo: wearing crotchless lace panties
+  meta:
+    subgroup: underwear
+- id: bondage_harness_bottom
+  label: Bondage Harness Bottom
+  tags:
+    illustrious: bondage harness bottom
+    anima: bondage harness bottom, styled outfit
+    zimage_turbo: wearing bondage harness bottom
+  meta:
+    subgroup: underwear
+- id: see_through_crotchless
+  label: See-Through Crotchless
+  tags:
+    illustrious: see-through crotchless
+    anima: see-through crotchless, styled outfit
+    zimage_turbo: wearing see-through crotchless
+  meta:
+    subgroup: underwear
+- id: strappy_open_panties
+  label: Strappy Open Panties
+  tags:
+    illustrious: strappy open panties
+    anima: strappy open panties, styled outfit
+    zimage_turbo: wearing strappy open panties
+  meta:
+    subgroup: underwear
+- id: wetlook_micro_panties
+  label: Wetlook Micro Panties
+  tags:
+    illustrious: wetlook micro panties
+    anima: wetlook micro panties, styled outfit
+    zimage_turbo: wearing wetlook micro panties
+  meta:
+    subgroup: underwear
+- id: extreme_micro_thong
+  label: Extreme Micro Thong
+  tags:
+    illustrious: extreme micro thong
+    anima: extreme micro thong, styled outfit
+    zimage_turbo: wearing extreme micro thong
+  meta:
+    subgroup: underwear

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eGOdary</title>
+  <link rel="icon" type="image/png" href="/static/img/favicon.png" />
+  <link rel="apple-touch-icon" href="/static/img/favicon.png" />
+  <link rel="stylesheet" href="/static/css/app.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- LEFT: main tabs -->
+    <aside class="sidebar sidebar-left">
+      <div class="brand">
+        <img
+          class="brand-logo"
+          src="/static/img/logo.png"
+          alt="eGOdary — prompt engine"
+          width="188"
+          height="48"
+        />
+      </div>
+      <nav class="nav" id="main-nav">
+        <button class="nav-item active" data-tab="style"><span class="nav-icon">🎨</span> Style</button>
+        <button class="nav-item" data-tab="character"><span class="nav-icon">👤</span> Character</button>
+        <button class="nav-item" data-tab="face"><span class="nav-icon">😶</span> Face</button>
+        <button class="nav-item" data-tab="makeup"><span class="nav-icon">💄</span> Makeup</button>
+        <button class="nav-item" data-tab="outfit"><span class="nav-icon">👗</span> Outfit</button>
+        <button class="nav-item" data-tab="accessories"><span class="nav-icon">✨</span> Accessories</button>
+        <button class="nav-item" data-tab="pose"><span class="nav-icon">🧍</span> Pose</button>
+        <button class="nav-item" data-tab="camera"><span class="nav-icon">📷</span> Camera</button>
+        <button class="nav-item" data-tab="lighting"><span class="nav-icon">💡</span> Lighting</button>
+        <button class="nav-item" data-tab="environment"><span class="nav-icon">🏙</span> Environment</button>
+        <button class="nav-item" data-tab="fetish"><span class="nav-icon">✦</span> Fetish</button>
+        <button class="nav-item" data-tab="prompting"><span class="nav-icon">✎</span> Prompting</button>
+        <button class="nav-item" data-tab="tagstudio"><span class="nav-icon">🏷</span> Tag Studio</button>
+        <button class="nav-item" data-tab="favorites"><span class="nav-icon">⭐</span> Favorites</button>
+      </nav>
+      <nav class="nav nav-bottom" id="system-nav">
+        <button class="nav-item" data-tab="llm"><span class="nav-icon">🤖</span> LLM Settings</button>
+        <button class="nav-item" data-tab="advanced"><span class="nav-icon">⚙</span> Advanced</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" class="btn btn-secondary btn-block btn-sidebar-action" id="btn-restart-server">Restart server</button>
+        <div class="meta-line">v0.1.14 · автосохранение</div>
+      </div>
+    </aside>
+
+    <!-- CENTER: settings -->
+    <main class="workspace">
+      <header class="workspace-header">
+        <h1 id="panel-title">Style</h1>
+        <p id="panel-desc">Художественный стиль, качество рендера и эстетика · Off убирает стиль из промпта</p>
+        <div class="import-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-open-add-tag-modal">+ Add tag</button>
+        </div>
+        <ul class="conflict-warnings hidden" id="conflict-warnings"></ul>
+      </header>
+      <div class="workspace-scroll" id="workspace-panels">
+        <!-- Style -->
+        <section class="panel active" data-panel="style">
+          <div class="card">
+            <div class="card-title">Style</div>
+            <p class="card-hint">Управление художественным стилем, качеством рендера и общей эстетикой изображения.</p>
+            <div class="chip-row" id="style-enabled-chips"></div>
+          </div>
+          <div class="card quality-boosters-card" id="quality-boosters-card">
+            <div class="card-title row-between">
+              <span>Quality Boosters</span>
+              <div class="chip-row quality-boosters-toggle" id="quality-boosters-enabled-chips"></div>
+            </div>
+            <p class="card-hint" id="quality-boosters-desc">
+              Уровень качества генерации. Влияет на детализацию и композицию.
+            </p>
+            <div class="quality-boosters-levels" id="quality-boosters-levels"></div>
+            <p class="quality-boosters-tip" id="quality-boosters-tip">
+              Рекомендуется оставлять на High для лучшего качества генерации у Anima.
+            </p>
+            <p class="quality-boosters-off-warning hidden" id="quality-boosters-off-warning">
+              Отключение score-тегов может сильно снизить качество генерации у Anima.
+            </p>
+          </div>
+          <div id="style-content">
+            <div class="outfit-layout">
+              <nav class="outfit-tree" id="style-tree"></nav>
+              <div class="outfit-detail card">
+                <div class="card-title" id="style-detail-title">Anime / Stylized</div>
+                <p class="card-hint" id="style-detail-hint">Art style — 1 · Artist — 1 · Quality — до 8 · Aesthetic — до 56 · Technique — до 6</p>
+                <div class="chip-panel" id="style-chips"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Character -->
+        <section class="panel" data-panel="character">
+          <div class="card character-library-card" id="character-library-card">
+            <div class="card-title row-between">
+              <span>Библиотека персонажей</span>
+              <button type="button" class="btn btn-secondary" id="btn-character-library-save">+ Сохранить текущего</button>
+            </div>
+            <p class="card-hint">Здесь же, списком ниже — все сохранённые пресеты. Нажмите <strong>Загрузить</strong>, чтобы подставить тело, лицо и волосы (outfit и сцена не меняются).</p>
+            <div class="char-lib-header">Сохранённые персонажи</div>
+            <div id="character-library-list" class="char-lib-list"></div>
+          </div>
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="character-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="character-detail-title">Age Appearance</div>
+              <p class="card-hint">Тело, черты лица и причёска · выражение и архетип — вкладка Face</p>
+              <div class="chip-panel" id="character-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Face -->
+        <section class="panel" data-panel="face">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="face-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="face-detail-title">Facial Expression</div>
+              <p class="card-hint">Выражение, возраст, архетип и детали · одна опция на категорию</p>
+              <div class="chip-panel" id="face-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Makeup -->
+        <section class="panel" data-panel="makeup">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="makeup-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="makeup-detail-title">Eyes</div>
+              <p class="card-hint">Multi-select · до 6 элементов · аддитивно</p>
+              <div class="chip-panel" id="makeup-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Outfit -->
+        <section class="panel" data-panel="outfit">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="outfit-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="outfit-detail-title">Dress</div>
+              <div class="chip-panel" id="outfit-chips"></div>
+              <div class="condition-panel hidden" id="outfit-condition-panel">
+                <label class="condition-label" for="outfit-condition-select">Wear condition</label>
+                <div class="condition-select-wrap">
+                  <select id="outfit-condition-select" class="condition-select"></select>
+                </div>
+                <p class="condition-hint">Single-select · damage, wet, ripped &amp; glossy states</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Accessories -->
+        <section class="panel" data-panel="accessories">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="accessories-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title row-between" id="accessories-detail-title-wrap">
+                <span id="accessories-detail-title">Body Jewelry & Harness</span>
+                <button type="button" class="btn-ghost" id="btn-accessories-clear-all">Сбросить все</button>
+              </div>
+              <p class="card-hint">Multi-select · до 4 аксессуаров всего · Off — только текущая подгруппа</p>
+              <div class="chip-panel" id="accessories-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Pose -->
+        <section class="panel" data-panel="pose">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="pose-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="pose-detail-title">Standing Seductive</div>
+              <p class="card-hint" id="pose-detail-hint">Одна поза · solo или couple (couple только с Group mode)</p>
+              <div class="chip-panel" id="pose-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Camera -->
+        <section class="panel" data-panel="camera">
+          <div class="card camera-presets-card">
+            <div class="card-title">Camera presets</div>
+            <p class="card-hint">Быстрые комбинации ракурса · перезаписывают поля камеры</p>
+            <div class="chip-panel" id="camera-preset-chips"></div>
+          </div>
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="camera-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="camera-detail-title">Standard Angles</div>
+              <p class="card-hint">Одна опция на категорию · Off / Random / single-select</p>
+              <div class="chip-panel" id="camera-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lighting -->
+        <section class="panel" data-panel="lighting">
+          <div class="card camera-presets-card">
+            <div class="card-title">Lighting presets</div>
+            <p class="card-hint">Освещение + камера · перезаписывают выбранные поля</p>
+            <div class="chip-panel" id="lighting-preset-chips"></div>
+          </div>
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="lighting-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="lighting-detail-title">Natural Light</div>
+              <p class="card-hint">Одна опция на категорию · Off / Random / single-select</p>
+              <div class="chip-panel" id="lighting-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Environment -->
+        <section class="panel" data-panel="environment">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="environment-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="environment-detail-title">Time of Day</div>
+              <p class="card-hint">Время, погода, сезон · локация · ситуация · модификаторы · Off / Random</p>
+              <div class="chip-panel" id="environment-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Fetish -->
+        <section class="panel" data-panel="fetish">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="fetish-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="fetish-detail-title">BDSM & Restraints</div>
+              <p class="card-hint">Multi-select · до 6 на группу · max 5 всего · Off / Random</p>
+              <div class="chip-panel" id="fetish-chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Prompting -->
+        <section class="panel" data-panel="prompting">
+          <div class="outfit-layout">
+            <nav class="outfit-tree" id="prompting-tree"></nav>
+            <div class="outfit-detail card">
+              <div class="card-title" id="prompting-detail-title">Prompt Analyze</div>
+              <p class="card-hint" id="prompting-detail-hint">Извлечение core, конвертация формата модели или JSON (v1.2), нормализация весов</p>
+              <div id="prompting-panel-analyze" class="prompting-panel">
+                <div class="prompting-input-toolbar">
+                  <textarea id="prompting-analyze-input" rows="5" placeholder="Paste prompt…"></textarea>
+                  <button type="button" class="btn btn-secondary btn-icon" id="btn-fav-to-analyze" title="Загрузить из Favorites" aria-label="Загрузить из Favorites">⭐</button>
+                </div>
+                <div class="prompting-model-row">
+                  <label>Source <select id="prompting-source-model"><option value="illustrious">Illustrious</option><option value="anima">Anima</option><option value="zimage_turbo">Z-Image Turbo</option></select></label>
+                  <label>Target <select id="prompting-target-model"><option value="illustrious">Illustrious</option><option value="anima">Anima</option><option value="zimage_turbo">Z-Image Turbo</option><option value="json">JSON</option></select></label>
+                </div>
+                <div class="import-actions">
+                  <button type="button" class="btn btn-secondary" id="btn-prompt-extract">Extract core</button>
+                  <button type="button" class="btn btn-secondary" id="btn-prompt-convert">Convert</button>
+                  <button type="button" class="btn btn-ghost" id="btn-prompt-normalize">Normalize weights</button>
+                  <label class="check-row hidden" id="prompt-zit-llm-wrap"><input type="checkbox" id="prompt-zit-use-llm" /> LLM refine (ZIT)</label>
+                </div>
+                <div class="prompting-output-wrap">
+                  <div class="prompting-output-header row-between">
+                    <span class="prompting-output-label">Результат</span>
+                    <div class="result-actions-inline">
+                      <button type="button" class="btn-ghost btn-sm btn-icon" id="btn-prompt-analyze-fav" title="Добавить в избранное" aria-label="Добавить в избранное">⭐</button>
+                      <button type="button" class="btn-ghost btn-sm" id="btn-prompt-analyze-copy">Copy</button>
+                    </div>
+                  </div>
+                  <pre id="prompting-analyze-output" class="debug-pre prompting-output">—</pre>
+                </div>
+              </div>
+              <div id="prompting-panel-import" class="prompting-panel hidden">
+                <textarea id="prompting-import-input" rows="5" placeholder="Paste prompt to import…"></textarea>
+                <div class="import-actions">
+                  <button type="button" class="btn btn-secondary" id="btn-prompt-import-merge">Import + Merge</button>
+                  <button type="button" class="btn btn-ghost" id="btn-prompt-import-classify">Classify only</button>
+                  <label class="check-row"><input type="checkbox" id="prompt-import-persist" /> Запомнить в SQLite</label>
+                  <label class="check-row"><input type="checkbox" id="prompt-import-use-llm" /> Use LLM classify</label>
+                </div>
+                <div class="import-actions">
+                  <button type="button" class="btn btn-ghost" id="btn-prompt-export-yaml">Export YAML</button>
+                  <button type="button" class="btn btn-ghost" id="btn-prompt-clear-overlay">Clear overlay</button>
+                </div>
+                <div class="import-report" id="prompting-import-report">
+                  <div class="import-report-title">Import report</div>
+                  <div class="import-report-stats" id="prompting-import-stats">—</div>
+                  <ul class="import-report-list" id="prompting-import-list"></ul>
+                </div>
+                <div class="card-title prompting-title-spacer">Runtime overlay</div>
+                <pre id="prompting-overlay-stats" class="debug-pre">—</pre>
+              </div>
+              <div id="prompting-panel-nsfw" class="prompting-panel hidden">
+                <p class="card-hint">Сборка из каталога (Anima — блоки) ≠ свободный чат Llama. Для богатого текста: вставьте исходный промпт, включите <strong>Use LLM refine</strong> или <strong>LLM full rewrite</strong>.</p>
+                <textarea id="prompting-nsfw-input" rows="4" placeholder="Prompt or leave empty to use current state…"></textarea>
+                <div class="chip-row" id="prompting-intensity-chips"></div>
+                <label class="check-row"><input type="checkbox" id="prompt-nsfw-force" /> Force restyle</label>
+                <label class="check-row"><input type="checkbox" id="prompt-nsfw-llm" /> Use LLM refine (catalog)</label>
+                <label class="check-row"><input type="checkbox" id="prompt-nsfw-rewrite" /> LLM full rewrite (как в чате)</label>
+                <label class="check-row"><input type="checkbox" id="prompt-nsfw-user-rewrite" /> User prompt rewrite</label>
+                <label class="prompting-user-instruction hidden" id="prompt-nsfw-user-wrap">Ваша инструкция для LLM (приоритет над правилами eGOdary)
+                  <textarea id="prompt-nsfw-user-instruction" rows="2" placeholder="don't change face expression, make NSFW scene max…"></textarea>
+                </label>
+                <label class="check-row"><input type="checkbox" id="prompt-nsfw-keep-locked" checked /> Сохранить идентичность (лицо, волосы, пропорции тела)</label>
+                <p class="card-hint card-hint-tight" id="prompt-nsfw-identity-hint">При включении: черты лица, волосы и пропорции тела не меняются; одежда, поза, выражение, камера и сцена — можно усиливать для NSFW.</p>
+                <div class="import-actions">
+                  <button type="button" class="btn btn-secondary" id="btn-prompt-nsfw">Apply NSFW styler</button>
+                </div>
+                <div class="import-report-stats" id="prompting-nsfw-llm-badge">—</div>
+                <div class="import-report-stats hidden" id="prompting-nsfw-unknown"></div>
+                <div class="prompting-output-wrap">
+                  <div class="prompting-output-header row-between">
+                    <span class="prompting-output-label">Результат</span>
+                    <div class="result-actions-inline">
+                      <button type="button" class="btn-ghost btn-sm btn-icon" id="btn-prompt-nsfw-fav" title="Добавить в избранное" aria-label="Добавить в избранное">⭐</button>
+                      <button type="button" class="btn-ghost btn-sm" id="btn-prompt-nsfw-copy">Copy</button>
+                    </div>
+                  </div>
+                  <pre id="prompting-nsfw-output" class="debug-pre prompting-output">—</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tag Studio -->
+        <section class="panel" data-panel="tagstudio">
+          <div class="card">
+            <div class="card-title row-between">
+              <span>Tag Studio</span>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-tagstudio-refresh">Refresh</button>
+            </div>
+            <p class="card-hint">Поиск и управление runtime тегами: category/subcategory, деактивация, дедупликация, миграция.</p>
+            <div class="field-grid">
+              <label class="span-2">Search
+                <input type="text" id="tagstudio-search" placeholder="label / alias / description" />
+              </label>
+              <label>Category
+                <input type="text" id="tagstudio-category" placeholder="prompting.imported" />
+              </label>
+              <label>Subcategory
+                <input type="text" id="tagstudio-subcategory" placeholder="imported" />
+              </label>
+            </div>
+            <div class="import-actions">
+              <button type="button" class="btn btn-secondary" id="btn-tagstudio-search">Search</button>
+              <button type="button" class="btn btn-ghost" id="btn-tagstudio-dedupe">Find duplicates</button>
+              <button type="button" class="btn btn-ghost" id="btn-tagstudio-migrate">Run migration</button>
+              <button type="button" class="btn btn-ghost" id="btn-tagstudio-rollback">Rollback migration</button>
+            </div>
+            <pre id="tagstudio-output" class="debug-pre">—</pre>
+          </div>
+        </section>
+
+        <!-- Favorites -->
+        <section class="panel" data-panel="favorites">
+          <div class="card result-card favorites-card" id="favorites-card">
+            <div class="card-title row-between">
+              <span>Избранные промпты</span>
+              <div class="fav-toolbar">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-fav-manual">+ Вручную</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-fav-export-txt" title="Экспорт всех">TXT</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-fav-export-json" title="Экспорт всех">JSON</button>
+              </div>
+            </div>
+            <p class="card-hint">Сохраняйте промпты с моделью, настройками генерации, seed и hires. «Из результата» подставляет текущую модель и параметры автоматически.</p>
+            <div id="favorites-list" class="fav-list"></div>
+          </div>
+          <div class="card result-card" id="favorite-preview-card">
+            <div class="card-title row-between">
+              <span>Просмотр сохраненного промпта</span>
+              <div class="fav-preview-toolbar">
+                <button type="button" class="btn btn-ghost btn-sm btn-icon" id="btn-fav-preview-to-analyze" title="В Prompt Analyze" aria-label="В Prompt Analyze" disabled>✎</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-fav-open-link" disabled>Открыть ссылку</button>
+              </div>
+            </div>
+            <div id="favorite-preview-empty" class="fav-preview-empty">Выберите элемент из списка выше.</div>
+            <div id="favorite-preview" class="fav-preview hidden">
+              <div class="fav-preview-meta" id="fav-preview-meta">—</div>
+              <label class="fav-field"><span>Positive</span><textarea id="fav-preview-positive" rows="6" readonly></textarea></label>
+              <label class="fav-field" id="fav-preview-negative-wrap"><span>Negative</span><textarea id="fav-preview-negative" rows="4" readonly></textarea></label>
+              <div class="fav-preview-settings" id="fav-preview-settings">—</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LLM Settings -->
+        <section class="panel" data-panel="llm">
+          <div class="card">
+            <div class="card-title row-between">
+              <span>LLM Settings</span>
+              <button class="btn-ghost" type="button" id="btn-llm-refresh-models">Refresh models</button>
+            </div>
+            <p class="card-hint">Локальный Ollama. Установка модели: <code>ollama pull &lt;model&gt;</code></p>
+            <label class="check-row"><input type="checkbox" id="llm-enabled" /> Enable LLM (Ollama)</label>
+            <div class="field-grid">
+              <label class="span-2">Base URL
+                <input id="llm-base-url" type="text" placeholder="http://127.0.0.1:11434" />
+              </label>
+              <label class="span-2">Model
+                <select id="llm-model-select"></select>
+              </label>
+              <label class="span-2">Model (manual)
+                <input id="llm-model-custom" type="text" placeholder="llama3.1 / qwen2.5:7b / ..." />
+              </label>
+              <label>Temperature
+                <input id="llm-temperature" type="number" min="0" max="2" step="0.1" />
+              </label>
+              <label>Top-p
+                <input id="llm-top-p" type="number" min="0" max="1" step="0.05" />
+              </label>
+              <label>Timeout (sec)
+                <input id="llm-timeout" type="number" min="1" max="120" step="1" />
+              </label>
+              <label>Max retries
+                <input id="llm-retries" type="number" min="0" max="5" step="1" />
+              </label>
+            </div>
+            <div class="import-actions">
+              <button type="button" class="btn btn-secondary" id="btn-llm-save">Save</button>
+              <button type="button" class="btn btn-ghost" id="btn-llm-test">Test connection</button>
+            </div>
+            <div class="import-report-stats" id="llm-status-badge">—</div>
+          </div>
+        </section>
+
+        <!-- Advanced -->
+        <section class="panel" data-panel="advanced">
+          <div class="card-grid">
+            <div class="card span-2">
+              <div class="card-title">Import prompt → state</div>
+              <p class="card-hint">Вставьте промпт — известные теги каталога подставятся в настройки автоматически.</p>
+              <textarea id="import-prompt" rows="4" placeholder="Paste prompt to auto-fill…"></textarea>
+              <div class="import-actions">
+                <button type="button" class="btn btn-secondary" id="btn-import">Import</button>
+              </div>
+              <div class="import-report hidden" id="import-report">
+                <div class="import-report-title">Результат импорта</div>
+                <div class="import-report-stats" id="import-report-stats"></div>
+                <div class="import-report-section">
+                  <div class="import-report-label">Распознано</div>
+                  <ul class="import-report-list" id="import-matched-list"></ul>
+                </div>
+                <div class="import-report-section">
+                  <div class="import-report-label">Неизвестные (сохранены в базу)</div>
+                  <ul class="import-report-list import-report-unknown" id="import-unknown-list"></ul>
+                </div>
+              </div>
+            </div>
+            <div class="card span-2" id="rules-card">
+              <div class="card-title row-between">
+                <span>Rules</span>
+                <button class="btn-ghost" type="button" id="btn-refresh-rules">Refresh</button>
+              </div>
+              <p class="card-hint">
+                Встроенные правила (default) или свои: загрузите YAML, задайте имя, сохраните.
+                Профили хранятся в <code>rules_user/</code> и подхватываются сразу после выбора.
+              </p>
+              <div class="rules-slot-row" id="rules-slot-chips"></div>
+              <div class="rules-slot-row" id="rules-profile-chips"></div>
+              <div class="rules-meta" id="rules-meta"></div>
+              <textarea id="rules-yaml" class="rules-yaml" rows="16" spellcheck="false" placeholder="Loading rules…"></textarea>
+              <div class="rules-toolbar">
+                <input type="text" id="rules-profile-name" class="rules-name-input" placeholder="Rule name" maxlength="80" />
+                <input type="file" id="rules-file-input" accept=".yaml,.yml,.txt,text/yaml,text/plain" hidden />
+                <button type="button" class="btn btn-secondary" id="btn-rules-load-file">Load file</button>
+                <button type="button" class="btn btn-primary" id="btn-rules-save">Save</button>
+                <button type="button" class="btn btn-secondary" id="btn-rules-delete-profile">Delete</button>
+                <button type="button" class="btn btn-ghost" id="btn-rules-use-default">Use default</button>
+                <button type="button" class="btn btn-ghost" id="btn-rules-download">Download YAML</button>
+              </div>
+            </div>
+            <div class="card span-2">
+              <div class="card-title row-between">
+                <span>Debug</span>
+                <button class="btn-ghost" type="button" id="btn-refresh-debug">Refresh</button>
+              </div>
+              <p class="card-hint">Плагины, реестр тегов, счётчики · аналог <code>egodary debug</code></p>
+              <pre id="debug-output" class="debug-pre">Loading…</pre>
+              <div class="card-title prompting-title-spacer">Buckets debug</div>
+              <pre id="output-buckets" class="debug-pre">{}</pre>
+            </div>
+            <div class="card span-2">
+              <div class="card-title">Changelog</div>
+              <p class="card-hint">История версий · <code>CHANGELOG.md</code></p>
+              <pre id="changelog-output" class="changelog-pre">Loading…</pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- RIGHT: results -->
+    <aside class="sidebar sidebar-right">
+      <div class="result-header">
+        <h2>Results</h2>
+        <div class="result-actions-wrap">
+          <div class="result-actions">
+            <button class="btn btn-primary" id="btn-generate">Generate</button>
+            <button class="btn btn-success" id="btn-random">Random</button>
+          </div>
+          <div class="result-actions">
+            <button class="btn btn-secondary btn-icon" id="btn-session-save" title="Сохранить JSON" aria-label="Сохранить JSON">💾</button>
+            <button class="btn btn-secondary btn-icon" id="btn-session-load" title="Загрузить JSON" aria-label="Загрузить JSON">📂</button>
+            <button class="btn btn-secondary btn-icon" id="btn-session-reset" title="Сброс сессии" aria-label="Сброс сессии">↺</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card result-card">
+        <div class="card-title">Model</div>
+        <div class="chip-row" id="model-chips"></div>
+      </div>
+
+      <div class="card result-card">
+        <div class="card-title row-between">
+          <span>Positive</span>
+          <div class="result-actions-inline">
+            <button class="btn-ghost" id="btn-fav-from-result" title="Добавить в избранное">⭐</button>
+            <button class="btn-ghost" id="btn-copy-pos">Copy</button>
+          </div>
+        </div>
+        <textarea id="output-positive" rows="10" readonly placeholder="Нажмите Generate…"></textarea>
+      </div>
+
+      <div class="card result-card" id="negative-card">
+        <div class="card-title row-between">
+          <span>Negative</span>
+          <button class="btn-ghost" id="btn-copy-neg">Copy</button>
+        </div>
+        <textarea id="output-negative" rows="5" readonly></textarea>
+      </div>
+
+      <div class="card result-card">
+        <div class="card-title">Output options</div>
+        <label class="check-row"><input type="checkbox" id="opt-group-mode" /> Group mode (2girls)</label>
+      </div>
+
+      <div class="card result-card" id="quality-score-panel">
+        <div class="card-title row-between">
+          <span>Quality Score</span>
+          <span class="quality-badge" id="quality-score-badge">—</span>
+        </div>
+        <div class="quality-score-line" id="quality-score-line">—</div>
+        <div class="quality-section hidden" id="quality-issues-wrap">
+          <div class="quality-section-title">Проблемы:</div>
+          <ul class="quality-list" id="quality-issues"></ul>
+        </div>
+        <div class="quality-section hidden" id="quality-recs-wrap">
+          <div class="quality-section-title">Рекомендации:</div>
+          <ul class="quality-list quality-recs" id="quality-recommendations"></ul>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <div class="llm-progress hidden" id="llm-progress" aria-live="polite" aria-busy="false">
+    <div class="llm-progress-head">
+      <span class="llm-progress-label" id="llm-progress-label">Ollama…</span>
+      <span class="llm-progress-meta" id="llm-progress-meta">0 с</span>
+    </div>
+    <div class="llm-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="llm-progress-bar" id="llm-progress-bar"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="fav-modal hidden" id="fav-modal" role="dialog" aria-modal="true" aria-labelledby="fav-modal-title">
+    <div class="fav-modal-backdrop" id="fav-modal-backdrop"></div>
+    <div class="fav-modal-panel card">
+      <div class="card-title row-between">
+        <span id="fav-modal-title">Избранный промпт</span>
+        <button type="button" class="btn-ghost fav-modal-close" id="fav-modal-close" aria-label="Закрыть">✕</button>
+      </div>
+      <form id="fav-form" class="fav-form">
+        <label class="fav-field">
+          <span>Название</span>
+          <input type="text" id="fav-name" required placeholder="Мой промпт" />
+        </label>
+        <label class="fav-field">
+          <span>Модель</span>
+          <select id="fav-model">
+            <option value="illustrious">Illustrious</option>
+            <option value="anima">Anima</option>
+            <option value="zimage_turbo">Z-Image Turbo</option>
+          </select>
+        </label>
+        <label class="fav-field">
+          <span>Positive</span>
+          <textarea id="fav-positive" rows="5" required placeholder="Промпт…"></textarea>
+        </label>
+        <label class="fav-field" id="fav-negative-wrap">
+          <span>Negative</span>
+          <textarea id="fav-negative" rows="3" placeholder="Негативный промпт…"></textarea>
+        </label>
+        <label class="fav-field">
+          <span>Ссылка на результат <em class="fav-optional">(необязательно)</em></span>
+          <input type="url" id="fav-result-url" placeholder="https://…" />
+        </label>
+
+        <details class="fav-details" open>
+          <summary>Настройки генерации</summary>
+          <div class="fav-settings-grid">
+            <label class="fav-field"><span>Sampler</span><input type="text" id="fav-sampler" /></label>
+            <label class="fav-field"><span>Schedule</span><input type="text" id="fav-schedule" /></label>
+            <label class="fav-field"><span>Steps</span><input type="number" id="fav-steps" min="1" max="150" /></label>
+            <label class="fav-field"><span id="fav-cfg-label">CFG</span><input type="number" id="fav-cfg" min="0" max="30" step="0.1" /></label>
+            <label class="fav-field"><span>Seed</span><input type="number" id="fav-seed" min="-1" step="1" /></label>
+            <label class="fav-field"><span>Width</span><input type="number" id="fav-width" min="64" max="4096" step="64" /></label>
+            <label class="fav-field"><span>Height</span><input type="number" id="fav-height" min="64" max="4096" step="64" /></label>
+          </div>
+        </details>
+
+        <details class="fav-details">
+          <summary>Hires fix</summary>
+          <label class="check-row fav-hires-enable">
+            <input type="checkbox" id="fav-hires-enabled" /> Включить hires
+          </label>
+          <div class="fav-settings-grid" id="fav-hires-fields">
+            <label class="fav-field"><span>Scale</span><input type="number" id="fav-hr-scale" min="1" max="4" step="0.05" /></label>
+            <label class="fav-field"><span>Hires steps</span><input type="number" id="fav-hr-steps" min="1" max="150" /></label>
+            <label class="fav-field"><span>Denoising</span><input type="number" id="fav-hr-denoising" min="0" max="1" step="0.05" /></label>
+            <label class="fav-field"><span>Upscaler</span><input type="text" id="fav-hr-upscaler" placeholder="4x-UltraSharp" /></label>
+          </div>
+        </details>
+
+        <div class="fav-form-actions">
+          <button type="button" class="btn btn-ghost" id="fav-cancel">Отмена</button>
+          <button type="submit" class="btn btn-primary" id="fav-save">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="fav-modal hidden" id="add-tag-modal" role="dialog" aria-modal="true" aria-labelledby="add-tag-modal-title">
+    <div class="fav-modal-backdrop" id="add-tag-modal-backdrop"></div>
+    <div class="fav-modal-panel card">
+      <div class="card-title row-between">
+        <span id="add-tag-modal-title">Добавить новый тег</span>
+        <button type="button" class="btn-ghost fav-modal-close" id="add-tag-modal-close" aria-label="Закрыть">✕</button>
+      </div>
+      <p class="card-hint">Тег сразу попадёт в runtime overlay и будет доступен в генерации. Правила совместимости не изменяются автоматически.</p>
+      <form id="add-tag-form" class="fav-form">
+        <label class="fav-field">
+          <span>Category</span>
+          <select id="add-tag-category" required></select>
+        </label>
+        <label class="fav-field">
+          <span>Subcategory</span>
+          <select id="add-tag-subgroup"></select>
+        </label>
+        <label class="fav-field">
+          <span>Aliases (comma separated)</span>
+          <input type="text" id="add-tag-aliases" placeholder="alias one, alias two" />
+        </label>
+        <label class="fav-field">
+          <span>Description</span>
+          <input type="text" id="add-tag-description" placeholder="Optional description" />
+        </label>
+        <label class="fav-field">
+          <span>Default weight</span>
+          <input type="number" id="add-tag-default-weight" value="1.0" min="0" max="10" step="0.1" />
+        </label>
+        <label class="fav-field">
+          <span>Label</span>
+          <input type="text" id="add-tag-label" required placeholder="Например: glossy pvc corset" />
+        </label>
+        <label class="fav-field">
+          <span>Item ID (optional)</span>
+          <input type="text" id="add-tag-item-id" placeholder="auto-generated from label" />
+        </label>
+        <label class="check-row">
+          <input type="checkbox" id="add-tag-persist" checked />
+          Сохранить в SQLite (после перезапуска останется)
+        </label>
+        <div class="import-report-stats">Категория: <span id="add-tag-category-title">—</span></div>
+        <div class="fav-form-actions">
+          <button type="button" class="btn btn-ghost" id="add-tag-cancel">Отмена</button>
+          <button type="submit" class="btn btn-primary" id="add-tag-save">Добавить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <input type="file" id="session-file-input" accept="application/json,.json" hidden />
+  <script src="/static/js/character-tree-data.js"></script>
+  <script src="/static/js/face-tree-data.js"></script>
+  <script src="/static/js/camera-tree-data.js"></script>
+  <script src="/static/js/camera-presets-data.js"></script>
+  <script src="/static/js/lighting-tree-data.js"></script>
+  <script src="/static/js/lighting-presets-data.js"></script>
+  <script src="/static/js/environment-tree-data.js"></script>
+  <script src="/static/js/style-tree-data.js"></script>
+  <script src="/static/js/fetish-tree-data.js"></script>
+  <script src="/static/js/tag-tooltips-ru.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+id: outfit.gloves
+title: Gloves
+items:
+- id: none
+  label: None (no gloves)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: bare hands, no gloves
+    anima: bare hands, no gloves
+    zimage_turbo: with bare hands and no gloves
+- id: long_latex_opera_gloves
+  label: Long Latex Opera Gloves
+  tags:
+    illustrious: long latex opera gloves
+    anima: long latex opera gloves, styled outfit
+    zimage_turbo: wearing long latex opera gloves
+  meta:
+    subgroup: long_opera
+- id: vinyl_long_gloves
+  label: Vinyl Long Gloves
+  tags:
+    illustrious: vinyl long gloves
+    anima: vinyl long gloves, styled outfit
+    zimage_turbo: wearing vinyl long gloves
+  meta:
+    subgroup: long_opera
+- id: sheer_long_gloves
+  label: Sheer Long Gloves
+  tags:
+    illustrious: sheer long gloves
+    anima: sheer long gloves, styled outfit
+    zimage_turbo: wearing sheer long gloves
+  meta:
+    subgroup: long_opera
+- id: wetlook_opera_gloves
+  label: Wetlook Opera Gloves
+  tags:
+    illustrious: wetlook opera gloves
+    anima: wetlook opera gloves, styled outfit
+    zimage_turbo: wearing wetlook opera gloves
+  meta:
+    subgroup: long_opera
+- id: harness_long_gloves
+  label: Harness Long Gloves
+  tags:
+    illustrious: harness long gloves
+    anima: harness long gloves, styled outfit
+    zimage_turbo: wearing harness long gloves
+  meta:
+    subgroup: long_opera
+- id: strappy_long_gloves
+  label: Strappy Long Gloves
+  tags:
+    illustrious: strappy long gloves
+    anima: strappy long gloves, styled outfit
+    zimage_turbo: wearing strappy long gloves
+  meta:
+    subgroup: long_opera
+- id: lace_long_opera_gloves
+  label: Lace Long Opera Gloves
+  tags:
+    illustrious: lace long opera gloves
+    anima: lace long opera gloves, styled outfit
+    zimage_turbo: wearing lace long opera gloves
+  meta:
+    subgroup: long_opera
+- id: glossy_black_opera_gloves
+  label: Glossy Black Opera Gloves
+  tags:
+    illustrious: glossy black opera gloves
+    anima: glossy black opera gloves, styled outfit
+    zimage_turbo: wearing glossy black opera gloves
+  meta:
+    subgroup: long_opera
+- id: short_latex_gloves
+  label: Short Latex Gloves
+  tags:
+    illustrious: short latex gloves
+    anima: short latex gloves, styled outfit
+    zimage_turbo: wearing short latex gloves
+  meta:
+    subgroup: short_fashion
+- id: vinyl_short_gloves
+  label: Vinyl Short Gloves
+  tags:
+    illustrious: vinyl short gloves
+    anima: vinyl short gloves, styled outfit
+    zimage_turbo: wearing vinyl short gloves
+  meta:
+    subgroup: short_fashion
+- id: leather_driving_gloves
+  label: Leather Driving Gloves
+  tags:
+    illustrious: leather driving gloves
+    anima: leather driving gloves, styled outfit
+    zimage_turbo: wearing leather driving gloves
+  meta:
+    subgroup: short_fashion
+- id: sheer_wrist_gloves
+  label: Sheer Wrist Gloves
+  tags:
+    illustrious: sheer wrist gloves
+    anima: sheer wrist gloves, styled outfit
+    zimage_turbo: wearing sheer wrist gloves
+  meta:
+    subgroup: short_fashion
+- id: wetlook_short_gloves
+  label: Wetlook Short Gloves
+  tags:
+    illustrious: wetlook short gloves
+    anima: wetlook short gloves, styled outfit
+    zimage_turbo: wearing wetlook short gloves
+  meta:
+    subgroup: short_fashion
+- id: strappy_short_gloves
+  label: Strappy Short Gloves
+  tags:
+    illustrious: strappy short gloves
+    anima: strappy short gloves, styled outfit
+    zimage_turbo: wearing strappy short gloves
+  meta:
+    subgroup: short_fashion
+- id: full_hand_harness_gloves
+  label: Full Hand Harness Gloves
+  tags:
+    illustrious: full hand harness gloves
+    anima: full hand harness gloves, styled outfit
+    zimage_turbo: wearing full hand harness gloves
+  meta:
+    subgroup: harness_bondage
+- id: strappy_fingerless_gloves
+  label: Strappy Fingerless Gloves
+  tags:
+    illustrious: strappy fingerless gloves
+    anima: strappy fingerless gloves, styled outfit
+    zimage_turbo: wearing strappy fingerless gloves
+  meta:
+    subgroup: harness_bondage
+- id: bondage_mittens
+  label: Bondage Mittens
+  tags:
+    illustrious: bondage mittens
+    anima: bondage mittens, styled outfit
+    zimage_turbo: wearing bondage mittens
+  meta:
+    subgroup: harness_bondage
+- id: open_finger_harness_gloves
+  label: Open Finger Harness Gloves
+  tags:
+    illustrious: open finger harness gloves
+    anima: open finger harness gloves, styled outfit
+    zimage_turbo: wearing open finger harness gloves
+  meta:
+    subgroup: harness_bondage
+- id: multiple_strap_gloves
+  label: Multiple Strap Gloves
+  tags:
+    illustrious: multiple strap gloves
+    anima: multiple strap gloves, styled outfit
+    zimage_turbo: wearing multiple strap gloves
+  meta:
+    subgroup: harness_bondage
+- id: cage_style_gloves
+  label: Cage Style Gloves
+  tags:
+    illustrious: cage style gloves
+    anima: cage style gloves, styled outfit
+    zimage_turbo: wearing cage style gloves
+  meta:
+    subgroup: harness_bondage
+- id: long_fingerless_gloves
+  label: Long Fingerless Gloves
+  tags:
+    illustrious: long fingerless gloves
+    anima: long fingerless gloves, styled outfit
+    zimage_turbo: wearing long fingerless gloves
+  meta:
+    subgroup: fingerless_alt
+- id: arm_warmer_harness
+  label: Arm Warmer Harness
+  tags:
+    illustrious: arm warmer harness
+    anima: arm warmer harness, styled outfit
+    zimage_turbo: wearing arm warmer harness
+  meta:
+    subgroup: fingerless_alt
+- id: studded_fingerless
+  label: Studded Fingerless
+  tags:
+    illustrious: studded fingerless
+    anima: studded fingerless, styled outfit
+    zimage_turbo: wearing studded fingerless
+  meta:
+    subgroup: fingerless_alt
+- id: mesh_fingerless_long
+  label: Mesh Fingerless Long
+  tags:
+    illustrious: mesh fingerless long
+    anima: mesh fingerless long, styled outfit
+    zimage_turbo: wearing mesh fingerless long
+  meta:
+    subgroup: fingerless_alt
+- id: latex_fingerless_opera
+  label: Latex Fingerless Opera
+  tags:
+    illustrious: latex fingerless opera
+    anima: latex fingerless opera, styled outfit
+    zimage_turbo: wearing latex fingerless opera
+  meta:
+    subgroup: fingerless_alt
+- id: tactical_strappy_hybrid_gloves
+  label: Tactical Strappy Hybrid Gloves
+  tags:
+    illustrious: tactical strappy hybrid gloves
+    anima: tactical strappy hybrid gloves, styled outfit
+    zimage_turbo: wearing tactical strappy hybrid gloves
+  meta:
+    subgroup: fingerless_alt

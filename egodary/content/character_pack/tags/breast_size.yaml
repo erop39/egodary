@@ -1,0 +1,43 @@
+id: character.breast_size
+title: Breast Size
+items:
+- id: small_breasts
+  label: Small breasts
+  meta:
+    subgroup: sizes
+  tags:
+    illustrious: small breasts
+    anima: small breasts, detailed body
+    zimage_turbo: with small breasts
+- id: medium_breasts
+  label: Medium breasts
+  meta:
+    subgroup: sizes
+  tags:
+    illustrious: medium breasts
+    anima: medium breasts, detailed body
+    zimage_turbo: with medium breasts
+- id: large_breasts
+  label: Large breasts
+  meta:
+    subgroup: sizes
+  tags:
+    illustrious: large breasts
+    anima: large breasts, detailed body
+    zimage_turbo: with large breasts
+- id: very_large_breasts
+  label: Very large breasts
+  meta:
+    subgroup: sizes
+  tags:
+    illustrious: very large breasts
+    anima: very large breasts, detailed body
+    zimage_turbo: with very large breasts
+- id: huge_breasts
+  label: Huge breasts
+  meta:
+    subgroup: sizes
+  tags:
+    illustrious: huge breasts
+    anima: huge breasts, detailed body
+    zimage_turbo: with huge breasts

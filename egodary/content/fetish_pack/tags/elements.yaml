@@ -1,0 +1,467 @@
+id: fetish.elements
+title: Fetish Elements
+items:
+- id: leather_cuffs
+  label: Leather cuffs
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: leather cuffs
+    anima: leather cuffs, erotic detail
+    zimage_turbo: with leather cuffs
+- id: metal_handcuffs
+  label: Metal handcuffs
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: metal handcuffs
+    anima: metal handcuffs, erotic detail
+    zimage_turbo: with metal handcuffs
+- id: rope_bondage_shibari
+  label: Rope bondage (shibari)
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: rope bondage (shibari)
+    anima: rope bondage (shibari), erotic detail
+    zimage_turbo: with rope bondage (shibari)
+- id: silk_ropes
+  label: Silk ropes
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: silk ropes
+    anima: silk ropes, erotic detail
+    zimage_turbo: with silk ropes
+- id: collar_and_leash
+  label: Collar and leash
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: collar and leash
+    anima: collar and leash, erotic detail
+    zimage_turbo: with collar and leash
+- id: ball_gag
+  label: Ball gag
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: ball gag
+    anima: ball gag, erotic detail
+    zimage_turbo: with ball gag
+- id: bit_gag
+  label: Bit gag
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: bit gag
+    anima: bit gag, erotic detail
+    zimage_turbo: with bit gag
+- id: blindfold
+  label: Blindfold
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: blindfold
+    anima: blindfold, erotic detail
+    zimage_turbo: with blindfold
+- id: spreader_bar
+  label: Spreader bar
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: spreader bar
+    anima: spreader bar, erotic detail
+    zimage_turbo: with spreader bar
+- id: chains
+  label: Chains
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: chains
+    anima: chains, erotic detail
+    zimage_turbo: with chains
+- id: harness_restraints
+  label: Harness restraints
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: harness restraints
+    anima: harness restraints, erotic detail
+    zimage_turbo: with harness restraints
+- id: suspension_ropes
+  label: Suspension ropes
+  meta:
+    subgroup: bdsm_restraints
+  tags:
+    illustrious: suspension ropes
+    anima: suspension ropes, erotic detail
+    zimage_turbo: with suspension ropes
+- id: vibrator
+  label: Vibrator
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: vibrator
+    anima: vibrator, erotic detail
+    zimage_turbo: with vibrator
+- id: dildo
+  label: Dildo
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: dildo
+    anima: dildo, erotic detail
+    zimage_turbo: with dildo
+- id: butt_plug
+  label: Butt plug
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: butt plug
+    anima: butt plug, erotic detail
+    zimage_turbo: with butt plug
+- id: nipple_clamps
+  label: Nipple clamps
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: nipple clamps
+    anima: nipple clamps, erotic detail
+    zimage_turbo: with nipple clamps
+- id: wand_vibrator
+  label: Wand vibrator
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: wand vibrator
+    anima: wand vibrator, erotic detail
+    zimage_turbo: with wand vibrator
+- id: riding_crop
+  label: Riding crop
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: riding crop
+    anima: riding crop, erotic detail
+    zimage_turbo: with riding crop
+- id: paddle
+  label: Paddle
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: paddle
+    anima: paddle, erotic detail
+    zimage_turbo: with paddle
+- id: whip
+  label: Whip
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: whip
+    anima: whip, erotic detail
+    zimage_turbo: with whip
+- id: flogger
+  label: Flogger
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: flogger
+    anima: flogger, erotic detail
+    zimage_turbo: with flogger
+- id: anal_hook
+  label: Anal hook
+  meta:
+    subgroup: toys_accessories
+  tags:
+    illustrious: anal hook
+    anima: anal hook, erotic detail
+    zimage_turbo: with anal hook
+- id: hickeys_on_neck
+  label: Hickeys on neck
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: hickeys on neck
+    anima: hickeys on neck, erotic detail
+    zimage_turbo: with hickeys on neck
+- id: bite_marks
+  label: Bite marks
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: bite marks
+    anima: bite marks, erotic detail
+    zimage_turbo: with bite marks
+- id: handprints_on_ass_thighs
+  label: Handprints on ass/thighs
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: handprints on ass/thighs
+    anima: handprints on ass/thighs, erotic detail
+    zimage_turbo: with handprints on ass/thighs
+- id: rope_marks_on_skin
+  label: Rope marks on skin
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: rope marks on skin
+    anima: rope marks on skin, erotic detail
+    zimage_turbo: with rope marks on skin
+- id: red_marks_from_spanking
+  label: Red marks from spanking
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: red marks from spanking
+    anima: red marks from spanking, erotic detail
+    zimage_turbo: with red marks from spanking
+- id: light_bruises
+  label: Light bruises
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: light bruises
+    anima: light bruises, erotic detail
+    zimage_turbo: with light bruises
+- id: lipstick_marks_on_body
+  label: Lipstick marks on body
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: lipstick marks on body
+    anima: lipstick marks on body, erotic detail
+    zimage_turbo: with lipstick marks on body
+- id: sweat_trails
+  label: Sweat trails
+  meta:
+    subgroup: body_marks
+  tags:
+    illustrious: sweat trails
+    anima: sweat trails, erotic detail
+    zimage_turbo: with sweat trails
+- id: saliva_on_lips_and_chin
+  label: Saliva on lips and chin
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: saliva on lips and chin
+    anima: saliva on lips and chin, erotic detail
+    zimage_turbo: with saliva on lips and chin
+- id: drooling
+  label: Drooling
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: drooling
+    anima: drooling, erotic detail
+    zimage_turbo: with drooling
+- id: sweat_on_skin
+  label: Sweat on skin
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: sweat on skin
+    anima: sweat on skin, erotic detail
+    zimage_turbo: with sweat on skin
+- id: wet_skin_water_oil
+  label: Wet skin (water/oil)
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: wet skin (water/oil)
+    anima: wet skin (water/oil), erotic detail
+    zimage_turbo: with wet skin (water/oil)
+- id: cum_on_body_face
+  label: Cum on body/face
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: cum on body/face
+    anima: cum on body/face, erotic detail
+    zimage_turbo: with cum on body/face
+- id: cum_on_lips_tongue
+  label: Cum on lips/tongue
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: cum on lips/tongue
+    anima: cum on lips/tongue, erotic detail
+    zimage_turbo: with cum on lips/tongue
+- id: ahegao_with_drool
+  label: Ahegao with drool
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: ahegao with drool
+    anima: ahegao with drool, erotic detail
+    zimage_turbo: with ahegao with drool
+- id: wet_pussy_visible_arousal
+  label: Wet pussy (visible arousal)
+  meta:
+    subgroup: fluids_wetness
+  tags:
+    illustrious: wet pussy (visible arousal)
+    anima: wet pussy (visible arousal), erotic detail
+    zimage_turbo: with wet pussy (visible arousal)
+- id: body_writing_slut_cumdump_etc
+  label: Body writing ("slut", "cumdump", etc.)
+  meta:
+    subgroup: body_writing
+  tags:
+    illustrious: body writing ("slut", "cumdump", etc.)
+    anima: body writing ("slut", "cumdump", etc.), erotic detail
+    zimage_turbo: with body writing ("slut", "cumdump", etc.)
+- id: lipstick_writing_on_body
+  label: Lipstick writing on body
+  meta:
+    subgroup: body_writing
+  tags:
+    illustrious: lipstick writing on body
+    anima: lipstick writing on body, erotic detail
+    zimage_turbo: with lipstick writing on body
+- id: marker_on_skin
+  label: Marker on skin
+  meta:
+    subgroup: body_writing
+  tags:
+    illustrious: marker on skin
+    anima: marker on skin, erotic detail
+    zimage_turbo: with marker on skin
+- id: property_of_text
+  label: '"Property of..." text'
+  meta:
+    subgroup: body_writing
+  tags:
+    illustrious: '"property of..." text'
+    anima: '"property of..." text, erotic detail'
+    zimage_turbo: with "property of..." text
+- id: ahegao_face
+  label: Ahegao face
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: ahegao face
+    anima: ahegao face, erotic detail
+    zimage_turbo: with ahegao face
+- id: heart_shaped_pupils
+  label: Heart-shaped pupils
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: heart-shaped pupils
+    anima: heart-shaped pupils, erotic detail
+    zimage_turbo: with heart-shaped pupils
+- id: broken_expression
+  label: Broken expression
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: broken expression
+    anima: broken expression, erotic detail
+    zimage_turbo: with broken expression
+- id: mind_break
+  label: Mind break
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: mind break
+    anima: mind break, erotic detail
+    zimage_turbo: with mind break
+- id: excessive_fluids
+  label: Excessive fluids
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: excessive fluids
+    anima: excessive fluids, erotic detail
+    zimage_turbo: with excessive fluids
+- id: used__messy_look
+  label: Used / messy look
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: used / messy look
+    anima: used / messy look, erotic detail
+    zimage_turbo: with used / messy look
+- id: aftercare_elements
+  label: Aftercare elements
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: aftercare elements
+    anima: aftercare elements, erotic detail
+    zimage_turbo: with aftercare elements
+- id: post_sex_glow_and_mess
+  label: Post-sex glow and mess
+  meta:
+    subgroup: specific_details
+  tags:
+    illustrious: post-sex glow and mess
+    anima: post-sex glow and mess, erotic detail
+    zimage_turbo: with post-sex glow and mess
+- id: full_body_harness
+  label: Full body harness
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: full body harness
+    anima: full body harness, erotic detail
+    zimage_turbo: with full body harness
+- id: latex_catsuit_if_not_in_outfit
+  label: Latex catsuit (if not in outfit)
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: latex catsuit (if not in outfit)
+    anima: latex catsuit (if not in outfit), erotic detail
+    zimage_turbo: with latex catsuit (if not in outfit)
+- id: gas_mask
+  label: Gas mask
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: gas mask
+    anima: gas mask, erotic detail
+    zimage_turbo: with gas mask
+- id: pet_play_elements_ears_tail_collar
+  label: Pet play elements (ears, tail, collar)
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: pet play elements (ears, tail, collar)
+    anima: pet play elements (ears, tail, collar), erotic detail
+    zimage_turbo: with pet play elements (ears, tail, collar)
+- id: medical_play_elements
+  label: Medical play elements
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: medical play elements
+    anima: medical play elements, erotic detail
+    zimage_turbo: with medical play elements
+- id: sensory_deprivation
+  label: Sensory deprivation
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: sensory deprivation
+    anima: sensory deprivation, erotic detail
+    zimage_turbo: with sensory deprivation
+- id: wax_play_marks
+  label: Wax play marks
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: wax play marks
+    anima: wax play marks, erotic detail
+    zimage_turbo: with wax play marks
+- id: electro_play_elements_light
+  label: Electro play elements (light)
+  meta:
+    subgroup: advanced_heavy
+  tags:
+    illustrious: electro play elements (light)
+    anima: electro play elements (light), erotic detail
+    zimage_turbo: with electro play elements (light)

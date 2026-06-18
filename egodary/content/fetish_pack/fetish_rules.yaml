@@ -1,0 +1,84 @@
+max_per_subgroup: 6
+max_elements: 12
+subgroups:
+  bdsm_restraints:
+  - leather_cuffs
+  - metal_handcuffs
+  - rope_bondage_shibari
+  - silk_ropes
+  - collar_and_leash
+  - ball_gag
+  - bit_gag
+  - blindfold
+  - spreader_bar
+  - chains
+  - harness_restraints
+  - suspension_ropes
+  toys_accessories:
+  - vibrator
+  - dildo
+  - butt_plug
+  - nipple_clamps
+  - wand_vibrator
+  - riding_crop
+  - paddle
+  - whip
+  - flogger
+  - anal_hook
+  body_marks:
+  - hickeys_on_neck
+  - bite_marks
+  - handprints_on_ass_thighs
+  - rope_marks_on_skin
+  - red_marks_from_spanking
+  - light_bruises
+  - lipstick_marks_on_body
+  - sweat_trails
+  fluids_wetness:
+  - saliva_on_lips_and_chin
+  - drooling
+  - sweat_on_skin
+  - wet_skin_water_oil
+  - cum_on_body_face
+  - cum_on_lips_tongue
+  - ahegao_with_drool
+  - wet_pussy_visible_arousal
+  body_writing:
+  - body_writing_slut_cumdump_etc
+  - lipstick_writing_on_body
+  - marker_on_skin
+  - property_of_text
+  specific_details:
+  - ahegao_face
+  - heart_shaped_pupils
+  - broken_expression
+  - mind_break
+  - excessive_fluids
+  - used__messy_look
+  - aftercare_elements
+  - post_sex_glow_and_mess
+  advanced_heavy:
+  - full_body_harness
+  - latex_catsuit_if_not_in_outfit
+  - gas_mask
+  - pet_play_elements_ears_tail_collar
+  - medical_play_elements
+  - sensory_deprivation
+  - wax_play_marks
+  - electro_play_elements_light
+compatibility_warnings:
+- message: Mind break and aftercare elements tell opposite emotional stories.
+  element_ids:
+  - mind_break
+  - aftercare_elements
+- message: Full body harness overlaps with harness restraints — may look redundant.
+  element_ids:
+  - full_body_harness
+  - harness_restraints
+- message: Collar and leash partially overlaps with pet play accessories.
+  element_ids:
+  - collar_and_leash
+  - pet_play_elements_ears_tail_collar
+- message: Ahegao face may duplicate face-expression ahegao if both are set.
+  element_ids:
+  - ahegao_face

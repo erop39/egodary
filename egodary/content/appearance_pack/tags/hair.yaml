@@ -1,0 +1,211 @@
+id: appearance.hair
+title: Hair
+items:
+- id: long_straight_wetlook
+  label: Long Straight Wetlook
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long straight wetlook
+    anima: long straight wetlook, detailed hairstyle
+    zimage_turbo: with long straight wetlook
+- id: long_wavy_voluminous
+  label: Long Wavy Voluminous
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long wavy voluminous
+    anima: long wavy voluminous, detailed hairstyle
+    zimage_turbo: with long wavy voluminous
+- id: long_curly_wild
+  label: Long Curly Wild
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long curly wild
+    anima: long curly wild, detailed hairstyle
+    zimage_turbo: with long curly wild
+- id: long_with_heavy_bangs
+  label: Long with Heavy Bangs
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long with heavy bangs
+    anima: long with heavy bangs, detailed hairstyle
+    zimage_turbo: with long with heavy bangs
+- id: long_slicked_back_wet
+  label: Long Slicked Back Wet
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long slicked back wet
+    anima: long slicked back wet, detailed hairstyle
+    zimage_turbo: with long slicked back wet
+- id: long_with_face_framing
+  label: Long with Face Framing
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long with face framing
+    anima: long with face framing, detailed hairstyle
+    zimage_turbo: with long with face framing
+- id: long_ponytail_high
+  label: Long Ponytail High
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long ponytail high
+    anima: long ponytail high, detailed hairstyle
+    zimage_turbo: with long ponytail high
+- id: long_half_up
+  label: Long Half-Up
+  meta:
+    subgroup: long
+  tags:
+    illustrious: long half-up
+    anima: long half-up, detailed hairstyle
+    zimage_turbo: with long half-up
+- id: high_messy_bun
+  label: High Messy Bun
+  meta:
+    subgroup: updos_buns
+  tags:
+    illustrious: high messy bun
+    anima: high messy bun, detailed hairstyle
+    zimage_turbo: with high messy bun
+- id: sleek_low_bun
+  label: Sleek Low Bun
+  meta:
+    subgroup: updos_buns
+  tags:
+    illustrious: sleek low bun
+    anima: sleek low bun, detailed hairstyle
+    zimage_turbo: with sleek low bun
+- id: space_buns
+  label: Space Buns
+  meta:
+    subgroup: updos_buns
+  tags:
+    illustrious: space buns
+    anima: space buns, detailed hairstyle
+    zimage_turbo: with space buns
+- id: top_knot_wetlook
+  label: Top Knot Wetlook
+  meta:
+    subgroup: updos_buns
+  tags:
+    illustrious: top knot wetlook
+    anima: top knot wetlook, detailed hairstyle
+    zimage_turbo: with top knot wetlook
+- id: braided_crown
+  label: Braided Crown
+  meta:
+    subgroup: updos_buns
+  tags:
+    illustrious: braided crown
+    anima: braided crown, detailed hairstyle
+    zimage_turbo: with braided crown
+- id: loose_low_bun
+  label: Loose Low Bun
+  meta:
+    subgroup: updos_buns
+  tags:
+    illustrious: loose low bun
+    anima: loose low bun, detailed hairstyle
+    zimage_turbo: with loose low bun
+- id: double_dutch_braids
+  label: Double Dutch Braids
+  meta:
+    subgroup: braids_ponytails
+  tags:
+    illustrious: double dutch braids
+    anima: double dutch braids, detailed hairstyle
+    zimage_turbo: with double dutch braids
+- id: high_ponytail
+  label: High Ponytail
+  meta:
+    subgroup: braids_ponytails
+  tags:
+    illustrious: high ponytail
+    anima: high ponytail, detailed hairstyle
+    zimage_turbo: with high ponytail
+- id: low_braided_ponytail
+  label: Low Braided Ponytail
+  meta:
+    subgroup: braids_ponytails
+  tags:
+    illustrious: low braided ponytail
+    anima: low braided ponytail, detailed hairstyle
+    zimage_turbo: with low braided ponytail
+- id: multiple_small_braids
+  label: Multiple Small Braids
+  meta:
+    subgroup: braids_ponytails
+  tags:
+    illustrious: multiple small braids
+    anima: multiple small braids, detailed hairstyle
+    zimage_turbo: with multiple small braids
+- id: fishtail_braid
+  label: Fishtail Braid
+  meta:
+    subgroup: braids_ponytails
+  tags:
+    illustrious: fishtail braid
+    anima: fishtail braid, detailed hairstyle
+    zimage_turbo: with fishtail braid
+- id: pigtails_sexy
+  label: Pigtails Sexy
+  meta:
+    subgroup: braids_ponytails
+  tags:
+    illustrious: pigtails sexy
+    anima: pigtails sexy, detailed hairstyle
+    zimage_turbo: with pigtails sexy
+- id: pixie_with_texture
+  label: Pixie with Texture
+  meta:
+    subgroup: short_alt
+  tags:
+    illustrious: pixie with texture
+    anima: pixie with texture, detailed hairstyle
+    zimage_turbo: with pixie with texture
+- id: short_shaggy_wetlook
+  label: Short Shaggy Wetlook
+  meta:
+    subgroup: short_alt
+  tags:
+    illustrious: short shaggy wetlook
+    anima: short shaggy wetlook, detailed hairstyle
+    zimage_turbo: with short shaggy wetlook
+- id: bob_with_heavy_bangs
+  label: Bob with Heavy Bangs
+  meta:
+    subgroup: short_alt
+  tags:
+    illustrious: bob with heavy bangs
+    anima: bob with heavy bangs, detailed hairstyle
+    zimage_turbo: with bob with heavy bangs
+- id: undercut_long_top
+  label: Undercut Long Top
+  meta:
+    subgroup: short_alt
+  tags:
+    illustrious: undercut long top
+    anima: undercut long top, detailed hairstyle
+    zimage_turbo: with undercut long top
+- id: slicked_back_short
+  label: Slicked Back Short
+  meta:
+    subgroup: short_alt
+  tags:
+    illustrious: slicked back short
+    anima: slicked back short, detailed hairstyle
+    zimage_turbo: with slicked back short
+- id: messy_short_crop
+  label: Messy Short Crop
+  meta:
+    subgroup: short_alt
+  tags:
+    illustrious: messy short crop
+    anima: messy short crop, detailed hairstyle
+    zimage_turbo: with messy short crop

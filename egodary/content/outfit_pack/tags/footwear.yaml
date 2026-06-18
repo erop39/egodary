@@ -1,0 +1,283 @@
+id: outfit.footwear
+title: Footwear
+items:
+- id: none
+  label: None (barefoot)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: barefoot, no footwear
+    anima: barefoot, no footwear
+    zimage_turbo: barefoot with no footwear
+- id: thigh_high_platform_boots
+  label: Thigh High Platform Boots
+  tags:
+    illustrious: thigh high platform boots
+    anima: thigh high platform boots, styled outfit
+    zimage_turbo: wearing thigh high platform boots
+  meta:
+    subgroup: thigh_high
+- id: latex_thigh_high_boots
+  label: Latex Thigh High Boots
+  tags:
+    illustrious: latex thigh high boots
+    anima: latex thigh high boots, styled outfit
+    zimage_turbo: wearing latex thigh high boots
+  meta:
+    subgroup: thigh_high
+- id: vinyl_thigh_high_boots
+  label: Vinyl Thigh High Boots
+  tags:
+    illustrious: vinyl thigh high boots
+    anima: vinyl thigh high boots, styled outfit
+    zimage_turbo: wearing vinyl thigh high boots
+  meta:
+    subgroup: thigh_high
+- id: strappy_thigh_high_boots
+  label: Strappy Thigh High Boots
+  tags:
+    illustrious: strappy thigh high boots
+    anima: strappy thigh high boots, styled outfit
+    zimage_turbo: wearing strappy thigh high boots
+  meta:
+    subgroup: thigh_high
+- id: wetlook_thigh_highs
+  label: Wetlook Thigh Highs
+  tags:
+    illustrious: wetlook thigh highs
+    anima: wetlook thigh highs, styled outfit
+    zimage_turbo: wearing wetlook thigh highs
+  meta:
+    subgroup: thigh_high
+- id: harness_detail_thigh_highs
+  label: Harness Detail Thigh Highs
+  tags:
+    illustrious: harness detail thigh highs
+    anima: harness detail thigh highs, styled outfit
+    zimage_turbo: wearing harness detail thigh highs
+  meta:
+    subgroup: thigh_high
+- id: over_the_knee_platform
+  label: Over-the-Knee Platform
+  tags:
+    illustrious: over-the-knee platform
+    anima: over-the-knee platform, styled outfit
+    zimage_turbo: wearing over-the-knee platform
+  meta:
+    subgroup: thigh_high
+- id: lace_up_thigh_high_boots
+  label: Lace-Up Thigh High Boots
+  tags:
+    illustrious: lace-up thigh high boots
+    anima: lace-up thigh high boots, styled outfit
+    zimage_turbo: wearing lace-up thigh high boots
+  meta:
+    subgroup: thigh_high
+- id: glossy_black_thigh_highs
+  label: Glossy Black Thigh Highs
+  tags:
+    illustrious: glossy black thigh highs
+    anima: glossy black thigh highs, styled outfit
+    zimage_turbo: wearing glossy black thigh highs
+  meta:
+    subgroup: thigh_high
+- id: extreme_platform_thigh_highs
+  label: Extreme Platform Thigh Highs
+  tags:
+    illustrious: extreme platform thigh highs
+    anima: extreme platform thigh highs, styled outfit
+    zimage_turbo: wearing extreme platform thigh highs
+  meta:
+    subgroup: thigh_high
+- id: extreme_platform_heels
+  label: Extreme Platform Heels
+  tags:
+    illustrious: extreme platform heels
+    anima: extreme platform heels, styled outfit
+    zimage_turbo: wearing extreme platform heels
+  meta:
+    subgroup: platform_heels
+- id: strappy_platform_sandals
+  label: Strappy Platform Sandals
+  tags:
+    illustrious: strappy platform sandals
+    anima: strappy platform sandals, styled outfit
+    zimage_turbo: wearing strappy platform sandals
+  meta:
+    subgroup: platform_heels
+- id: latex_high_heels
+  label: Latex High Heels
+  tags:
+    illustrious: latex high heels
+    anima: latex high heels, styled outfit
+    zimage_turbo: wearing latex high heels
+  meta:
+    subgroup: platform_heels
+- id: vinyl_stilettos
+  label: Vinyl Stilettos
+  tags:
+    illustrious: vinyl stilettos
+    anima: vinyl stilettos, styled outfit
+    zimage_turbo: wearing vinyl stilettos
+  meta:
+    subgroup: platform_heels
+- id: clear_platform_heels
+  label: Clear Platform Heels
+  tags:
+    illustrious: clear platform heels
+    anima: clear platform heels, styled outfit
+    zimage_turbo: wearing clear platform heels
+  meta:
+    subgroup: platform_heels
+- id: strappy_bondage_heels
+  label: Strappy Bondage Heels
+  tags:
+    illustrious: strappy bondage heels
+    anima: strappy bondage heels, styled outfit
+    zimage_turbo: wearing strappy bondage heels
+  meta:
+    subgroup: platform_heels
+- id: wetlook_platform_pumps
+  label: Wetlook Platform Pumps
+  tags:
+    illustrious: wetlook platform pumps
+    anima: wetlook platform pumps, styled outfit
+    zimage_turbo: wearing wetlook platform pumps
+  meta:
+    subgroup: platform_heels
+- id: open_toe_platform_heels
+  label: Open Toe Platform Heels
+  tags:
+    illustrious: open toe platform heels
+    anima: open toe platform heels, styled outfit
+    zimage_turbo: wearing open toe platform heels
+  meta:
+    subgroup: platform_heels
+- id: combat_platform_boots
+  label: Combat Platform Boots
+  tags:
+    illustrious: combat platform boots
+    anima: combat platform boots, styled outfit
+    zimage_turbo: wearing combat platform boots
+  meta:
+    subgroup: fetish_boots
+- id: biker_latex_boots
+  label: Biker Latex Boots
+  tags:
+    illustrious: biker latex boots
+    anima: biker latex boots, styled outfit
+    zimage_turbo: wearing biker latex boots
+  meta:
+    subgroup: fetish_boots
+- id: knee_high_vinyl_boots
+  label: Knee High Vinyl Boots
+  tags:
+    illustrious: knee high vinyl boots
+    anima: knee high vinyl boots, styled outfit
+    zimage_turbo: wearing knee high vinyl boots
+  meta:
+    subgroup: fetish_boots
+- id: strappy_ankle_boots
+  label: Strappy Ankle Boots
+  tags:
+    illustrious: strappy ankle boots
+    anima: strappy ankle boots, styled outfit
+    zimage_turbo: wearing strappy ankle boots
+  meta:
+    subgroup: fetish_boots
+- id: harness_ankle_boots
+  label: Harness Ankle Boots
+  tags:
+    illustrious: harness ankle boots
+    anima: harness ankle boots, styled outfit
+    zimage_turbo: wearing harness ankle boots
+  meta:
+    subgroup: fetish_boots
+- id: wetlook_combat_boots
+  label: Wetlook Combat Boots
+  tags:
+    illustrious: wetlook combat boots
+    anima: wetlook combat boots, styled outfit
+    zimage_turbo: wearing wetlook combat boots
+  meta:
+    subgroup: fetish_boots
+- id: buckle_detail_boots
+  label: Buckle Detail Boots
+  tags:
+    illustrious: buckle detail boots
+    anima: buckle detail boots, styled outfit
+    zimage_turbo: wearing buckle detail boots
+  meta:
+    subgroup: fetish_boots
+- id: extreme_heel_combat_boots
+  label: Extreme Heel Combat Boots
+  tags:
+    illustrious: extreme heel combat boots
+    anima: extreme heel combat boots, styled outfit
+    zimage_turbo: wearing extreme heel combat boots
+  meta:
+    subgroup: fetish_boots
+- id: neon_platform_boots
+  label: Neon Platform Boots
+  tags:
+    illustrious: neon platform boots
+    anima: neon platform boots, styled outfit
+    zimage_turbo: wearing neon platform boots
+  meta:
+    subgroup: fetish_boots
+- id: chunky_platform_sneakers
+  label: Chunky Platform Sneakers
+  tags:
+    illustrious: chunky platform sneakers
+    anima: chunky platform sneakers, styled outfit
+    zimage_turbo: wearing chunky platform sneakers
+  meta:
+    subgroup: casual_nsfw
+- id: high_top_latex_sneakers
+  label: High Top Latex Sneakers
+  tags:
+    illustrious: high top latex sneakers
+    anima: high top latex sneakers, styled outfit
+    zimage_turbo: wearing high top latex sneakers
+  meta:
+    subgroup: casual_nsfw
+- id: strappy_sandals
+  label: Strappy Sandals
+  tags:
+    illustrious: strappy sandals
+    anima: strappy sandals, styled outfit
+    zimage_turbo: wearing strappy sandals
+  meta:
+    subgroup: casual_nsfw
+- id: micro_mini_heel_slides
+  label: Micro Mini Heel Slides
+  tags:
+    illustrious: micro mini heel slides
+    anima: micro mini heel slides, styled outfit
+    zimage_turbo: wearing micro mini heel slides
+  meta:
+    subgroup: casual_nsfw
+- id: wetlook_trainers
+  label: Wetlook Trainers
+  tags:
+    illustrious: wetlook trainers
+    anima: wetlook trainers, styled outfit
+    zimage_turbo: wearing wetlook trainers
+  meta:
+    subgroup: casual_nsfw
+- id: open_toe_strappy_flats
+  label: Open Toe Strappy Flats
+  tags:
+    illustrious: open toe strappy flats
+    anima: open toe strappy flats, styled outfit
+    zimage_turbo: wearing open toe strappy flats
+  meta:
+    subgroup: casual_nsfw
+- id: neon_accent_sneakers
+  label: Neon Accent Sneakers
+  tags:
+    illustrious: neon accent sneakers
+    anima: neon accent sneakers, styled outfit
+    zimage_turbo: wearing neon accent sneakers
+  meta:
+    subgroup: casual_nsfw

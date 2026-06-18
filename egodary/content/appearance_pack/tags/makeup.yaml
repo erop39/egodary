@@ -1,0 +1,179 @@
+id: appearance.makeup
+title: Makeup
+items:
+- id: heavy_smokey_eyes
+  label: Heavy Smokey Eyes
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: heavy smokey eyes
+    anima: heavy smokey eyes, face makeup
+    zimage_turbo: with heavy smokey eyes
+- id: glossy_black_smokey
+  label: Glossy Black Smokey
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: glossy black smokey
+    anima: glossy black smokey, face makeup
+    zimage_turbo: with glossy black smokey
+- id: winged__glitter
+  label: Winged + Glitter
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: winged + glitter
+    anima: winged + glitter, face makeup
+    zimage_turbo: with winged + glitter
+- id: graphic_eyeliner
+  label: Graphic Eyeliner
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: graphic eyeliner
+    anima: graphic eyeliner, face makeup
+    zimage_turbo: with graphic eyeliner
+- id: cat_eye_extreme
+  label: Cat Eye Extreme
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: cat eye extreme
+    anima: cat eye extreme, face makeup
+    zimage_turbo: with cat eye extreme
+- id: wetlook_glossy_eyes
+  label: Wetlook Glossy Eyes
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: wetlook glossy eyes
+    anima: wetlook glossy eyes, face makeup
+    zimage_turbo: with wetlook glossy eyes
+- id: neon_cyber_eyes
+  label: Neon Cyber Eyes
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: neon cyber eyes
+    anima: neon cyber eyes, face makeup
+    zimage_turbo: with neon cyber eyes
+- id: heavy_lower_lash
+  label: Heavy Lower Lash
+  meta:
+    subgroup: eyes
+  tags:
+    illustrious: heavy lower lash
+    anima: heavy lower lash, face makeup
+    zimage_turbo: with heavy lower lash
+- id: glossy_bold_red
+  label: Glossy Bold Red
+  meta:
+    subgroup: lips
+  tags:
+    illustrious: glossy bold red
+    anima: glossy bold red, face makeup
+    zimage_turbo: with glossy bold red
+- id: glossy_black_lips
+  label: Glossy Black Lips
+  meta:
+    subgroup: lips
+  tags:
+    illustrious: glossy black lips
+    anima: glossy black lips, face makeup
+    zimage_turbo: with glossy black lips
+- id: metallic_lips
+  label: Metallic Lips
+  meta:
+    subgroup: lips
+  tags:
+    illustrious: metallic lips
+    anima: metallic lips, face makeup
+    zimage_turbo: with metallic lips
+- id: wetlook_nude_gloss
+  label: Wetlook Nude Gloss
+  meta:
+    subgroup: lips
+  tags:
+    illustrious: wetlook nude gloss
+    anima: wetlook nude gloss, face makeup
+    zimage_turbo: with wetlook nude gloss
+- id: overlined_glossy
+  label: Overlined Glossy
+  meta:
+    subgroup: lips
+  tags:
+    illustrious: overlined glossy
+    anima: overlined glossy, face makeup
+    zimage_turbo: with overlined glossy
+- id: ombre_glossy_lips
+  label: Ombre Glossy Lips
+  meta:
+    subgroup: lips
+  tags:
+    illustrious: ombre glossy lips
+    anima: ombre glossy lips, face makeup
+    zimage_turbo: with ombre glossy lips
+- id: full_glam_heavy
+  label: Full Glam Heavy
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: full glam heavy
+    anima: full glam heavy, face makeup
+    zimage_turbo: with full glam heavy
+- id: gothic_pale__dark_lips
+  label: Gothic Pale + Dark Lips
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: gothic pale + dark lips
+    anima: gothic pale + dark lips, face makeup
+    zimage_turbo: with gothic pale + dark lips
+- id: dewy__glossy_skin
+  label: Dewy + Glossy Skin
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: dewy + glossy skin
+    anima: dewy + glossy skin, face makeup
+    zimage_turbo: with dewy + glossy skin
+- id: matte__bold_contour
+  label: Matte + Bold Contour
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: matte + bold contour
+    anima: matte + bold contour, face makeup
+    zimage_turbo: with matte + bold contour
+- id: cyberpunk_neon
+  label: Cyberpunk Neon
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: cyberpunk neon
+    anima: cyberpunk neon, face makeup
+    zimage_turbo: with cyberpunk neon
+- id: wet_skin_look
+  label: Wet Skin Look
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: wet skin look
+    anima: wet skin look, face makeup
+    zimage_turbo: with wet skin look
+- id: extreme_blush__gloss
+  label: Extreme Blush + Gloss
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: extreme blush + gloss
+    anima: extreme blush + gloss, face makeup
+    zimage_turbo: with extreme blush + gloss
+- id: monochrome_black__silver
+  label: Monochrome Black & Silver
+  meta:
+    subgroup: full_face
+  tags:
+    illustrious: monochrome black & silver
+    anima: monochrome black & silver, face makeup
+    zimage_turbo: with monochrome black & silver

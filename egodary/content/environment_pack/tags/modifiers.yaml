@@ -1,0 +1,59 @@
+id: environment.modifiers
+title: Atmospheric Modifiers
+items:
+- id: heavy_fog
+  label: Heavy fog
+  meta:
+    subgroup: atmospheric
+  tags:
+    illustrious: heavy fog
+    anima: heavy fog, detailed environment
+    zimage_turbo: in heavy fog
+- id: light_rain
+  label: Light rain
+  meta:
+    subgroup: atmospheric
+  tags:
+    illustrious: light rain
+    anima: light rain, detailed environment
+    zimage_turbo: in light rain
+- id: neon_reflections
+  label: Neon reflections
+  meta:
+    subgroup: atmospheric
+  tags:
+    illustrious: neon reflections
+    anima: neon reflections, detailed environment
+    zimage_turbo: in neon reflections
+- id: volumetric_light_rays
+  label: Volumetric light rays
+  meta:
+    subgroup: atmospheric
+  tags:
+    illustrious: volumetric light rays
+    anima: volumetric light rays, detailed environment
+    zimage_turbo: in volumetric light rays
+- id: smoke__haze
+  label: Smoke / haze
+  meta:
+    subgroup: atmospheric
+  tags:
+    illustrious: smoke / haze
+    anima: smoke / haze, detailed environment
+    zimage_turbo: in smoke / haze
+- id: wet_surfaces
+  label: Wet surfaces
+  meta:
+    subgroup: atmospheric
+  tags:
+    illustrious: wet surfaces
+    anima: wet surfaces, detailed environment
+    zimage_turbo: in wet surfaces
+- id: reflections_on_floor_walls
+  label: Reflections on floor/walls
+  meta:
+    subgroup: atmospheric
+  tags:
+    illustrious: reflections on floor/walls
+    anima: reflections on floor/walls, detailed environment
+    zimage_turbo: in reflections on floor/walls

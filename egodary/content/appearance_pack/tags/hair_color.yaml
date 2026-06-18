@@ -1,0 +1,195 @@
+id: appearance.hair_color
+title: Hair Color
+items:
+- id: platinum_blonde
+  label: Platinum Blonde
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: platinum blonde hair
+    anima: platinum blonde hair, detailed hairstyle
+    zimage_turbo: with platinum blonde hair
+- id: golden_blonde
+  label: Golden Blonde
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: golden blonde hair
+    anima: golden blonde hair, detailed hairstyle
+    zimage_turbo: with golden blonde hair
+- id: ash_blonde
+  label: Ash Blonde
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: ash blonde hair
+    anima: ash blonde hair, detailed hairstyle
+    zimage_turbo: with ash blonde hair
+- id: light_brown
+  label: Light Brown
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: light brown hair
+    anima: light brown hair, detailed hairstyle
+    zimage_turbo: with light brown hair
+- id: dark_brown
+  label: Dark Brown
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: dark brown hair
+    anima: dark brown hair, detailed hairstyle
+    zimage_turbo: with dark brown hair
+- id: black
+  label: Black
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: black hair
+    anima: black hair, detailed hairstyle
+    zimage_turbo: with black hair
+- id: jet_black
+  label: Jet Black
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: jet black hair
+    anima: jet black hair, detailed hairstyle
+    zimage_turbo: with jet black hair
+- id: auburn
+  label: Auburn
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: auburn hair
+    anima: auburn hair, detailed hairstyle
+    zimage_turbo: with auburn hair
+- id: copper_red
+  label: Copper Red
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: copper red hair
+    anima: copper red hair, detailed hairstyle
+    zimage_turbo: with copper red hair
+- id: bright_red
+  label: Bright Red
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: bright red hair
+    anima: bright red hair, detailed hairstyle
+    zimage_turbo: with bright red hair
+- id: burgundy
+  label: Burgundy
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: burgundy hair
+    anima: burgundy hair, detailed hairstyle
+    zimage_turbo: with burgundy hair
+- id: silver__gray
+  label: Silver / Gray
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: silver / gray hair
+    anima: silver / gray hair, detailed hairstyle
+    zimage_turbo: with silver / gray hair
+- id: white
+  label: White
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: white hair
+    anima: white hair, detailed hairstyle
+    zimage_turbo: with white hair
+- id: pastel_pink
+  label: Pastel Pink
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: pastel pink hair
+    anima: pastel pink hair, detailed hairstyle
+    zimage_turbo: with pastel pink hair
+- id: pastel_blue
+  label: Pastel Blue
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: pastel blue hair
+    anima: pastel blue hair, detailed hairstyle
+    zimage_turbo: with pastel blue hair
+- id: pastel_purple
+  label: Pastel Purple
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: pastel purple hair
+    anima: pastel purple hair, detailed hairstyle
+    zimage_turbo: with pastel purple hair
+- id: mint_green
+  label: Mint Green
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: mint green hair
+    anima: mint green hair, detailed hairstyle
+    zimage_turbo: with mint green hair
+- id: neon_pink
+  label: Neon Pink
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: neon pink hair
+    anima: neon pink hair, detailed hairstyle
+    zimage_turbo: with neon pink hair
+- id: neon_blue
+  label: Neon Blue
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: neon blue hair
+    anima: neon blue hair, detailed hairstyle
+    zimage_turbo: with neon blue hair
+- id: neon_green
+  label: Neon Green
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: neon green hair
+    anima: neon green hair, detailed hairstyle
+    zimage_turbo: with neon green hair
+- id: rainbow__multicolor
+  label: Rainbow / Multicolor
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: rainbow / multicolor hair
+    anima: rainbow / multicolor hair, detailed hairstyle
+    zimage_turbo: with rainbow / multicolor hair
+- id: oil_slick_переливающийся
+  label: Oil Slick (переливающийся)
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: oil slick hair, iridescent hair
+    anima: oil slick hair, iridescent hair, detailed hairstyle
+    zimage_turbo: with oil slick hair, iridescent hair
+- id: metallic_silver
+  label: Metallic Silver
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: metallic silver hair
+    anima: metallic silver hair, detailed hairstyle
+    zimage_turbo: with metallic silver hair
+- id: metallic_gold
+  label: Metallic Gold
+  meta:
+    subgroup: hair_color
+  tags:
+    illustrious: metallic gold hair
+    anima: metallic gold hair, detailed hairstyle
+    zimage_turbo: with metallic gold hair

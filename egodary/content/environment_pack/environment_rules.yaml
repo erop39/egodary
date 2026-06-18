@@ -1,0 +1,74 @@
+location_groups:
+  dark_moody:
+  - dark_moody_bedroom
+  - basement__dungeon
+  - abandoned_building_interior
+  - alleyway
+  - forest_at_night
+  - under_bridge
+  - gothic_castle_interior
+  - underground_club
+  - void__abstract_background
+  - foggy_atmosphere
+  luxury: &id001
+  - luxury_bedroom
+  - penthouse
+  - hotel_room
+  - luxury_bdsm_club
+  neon_cyberpunk: &id002
+  - neon_lit_room
+  - neon_cyberpunk_street
+  - futuristic_bedroom
+  dungeon: &id004
+  - basement__dungeon
+  - luxury_bdsm_club
+  - gothic_castle_interior
+  gentle_romantic:
+  - candlelit_room
+  - heavenly__ethereal_space
+  - rainy_window_background
+  - modern_bedroom
+  - living_room_couch
+  abandoned: &id003
+  - abandoned_building_interior
+  - abandoned_warehouse
+  indoor:
+  - modern_bedroom
+  - luxury_bedroom
+  - minimalist_apartment
+  - dark_moody_bedroom
+  - hotel_room
+  - penthouse
+  - basement__dungeon
+  - abandoned_building_interior
+  - neon_lit_room
+  - candlelit_room
+  - bathroom_wet_tiles
+  - kitchen_counter
+  - living_room_couch
+  - mirror_room
+  - red_light_district_room
+compatibility_warnings:
+- message: Luxury location clashes with heavy BDSM / dungeon fetish elements.
+  location_ids: *id001
+  fetish_group: heavy_bdsm
+  fetish_min_level: 4
+- message: Neon cyberpunk environment may fight gentle romantic expressions.
+  location_ids: *id002
+  face_expression_group: gentle_romantic
+- message: Abandoned setting with bright studio lighting may look incoherent.
+  location_ids: *id003
+  light_type_ids:
+  - soft_studio_lighting
+  - hard_studio_lighting
+- message: Dungeon location with high key lighting rarely reads well.
+  location_ids: *id004
+  light_type_ids:
+  - high_key_lighting
+single_select_fields:
+- location
+- situation
+multi_select_fields:
+  modifiers: 2
+indoor_groups:
+- indoor

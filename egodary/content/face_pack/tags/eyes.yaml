@@ -1,0 +1,251 @@
+id: face.eyes
+title: Eyes
+items:
+- id: almond_shaped_eyes
+  label: Almond shaped eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: almond shaped eyes
+    anima: almond shaped eyes, detailed face
+    zimage_turbo: with almond shaped eyes
+- id: round_big_eyes
+  label: Round big eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: round big eyes
+    anima: round big eyes, detailed face
+    zimage_turbo: with round big eyes
+- id: hooded_eyes
+  label: Hooded eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: hooded eyes
+    anima: hooded eyes, detailed face
+    zimage_turbo: with hooded eyes
+- id: upturned_eyes_fox_eyes
+  label: Upturned eyes (fox eyes)
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: upturned eyes (fox eyes)
+    anima: upturned eyes (fox eyes), detailed face
+    zimage_turbo: with upturned eyes (fox eyes)
+- id: downturned_eyes
+  label: Downturned eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: downturned eyes
+    anima: downturned eyes, detailed face
+    zimage_turbo: with downturned eyes
+- id: wide_doe_eyes
+  label: Wide doe eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: wide doe eyes
+    anima: wide doe eyes, detailed face
+    zimage_turbo: with wide doe eyes
+- id: narrow_seductive_eyes
+  label: Narrow seductive eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: narrow seductive eyes
+    anima: narrow seductive eyes, detailed face
+    zimage_turbo: with narrow seductive eyes
+- id: cat_like_eyes
+  label: Cat-like eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: cat-like eyes
+    anima: cat-like eyes, detailed face
+    zimage_turbo: with cat-like eyes
+- id: big_anime_style_eyes
+  label: Big anime-style eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: big anime-style eyes
+    anima: big anime-style eyes, detailed face
+    zimage_turbo: with big anime-style eyes
+- id: half_closed_seductive_eyes
+  label: Half-closed seductive eyes
+  meta:
+    subgroup: eye_shape
+  tags:
+    illustrious: half-closed seductive eyes
+    anima: half-closed seductive eyes, detailed face
+    zimage_turbo: with half-closed seductive eyes
+- id: large_expressive_eyes
+  label: Large expressive eyes
+  meta:
+    subgroup: eye_size_details
+  tags:
+    illustrious: large expressive eyes
+    anima: large expressive eyes, detailed face
+    zimage_turbo: with large expressive eyes
+- id: small_sharp_eyes
+  label: Small sharp eyes
+  meta:
+    subgroup: eye_size_details
+  tags:
+    illustrious: small sharp eyes
+    anima: small sharp eyes, detailed face
+    zimage_turbo: with small sharp eyes
+- id: big_sparkling_eyes
+  label: Big sparkling eyes
+  meta:
+    subgroup: eye_size_details
+  tags:
+    illustrious: big sparkling eyes
+    anima: big sparkling eyes, detailed face
+    zimage_turbo: with big sparkling eyes
+- id: heavy_lidded_bedroom_eyes
+  label: Heavy-lidded bedroom eyes
+  meta:
+    subgroup: eye_size_details
+  tags:
+    illustrious: heavy-lidded bedroom eyes
+    anima: heavy-lidded bedroom eyes, detailed face
+    zimage_turbo: with heavy-lidded bedroom eyes
+- id: wide_innocent_eyes
+  label: Wide innocent eyes
+  meta:
+    subgroup: eye_size_details
+  tags:
+    illustrious: wide innocent eyes
+    anima: wide innocent eyes, detailed face
+    zimage_turbo: with wide innocent eyes
+- id: narrow_calculating_eyes
+  label: Narrow calculating eyes
+  meta:
+    subgroup: eye_size_details
+  tags:
+    illustrious: narrow calculating eyes
+    anima: narrow calculating eyes, detailed face
+    zimage_turbo: with narrow calculating eyes
+- id: detailed_realistic_iris
+  label: Detailed realistic iris
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: detailed realistic iris
+    anima: detailed realistic iris, detailed face
+    zimage_turbo: with detailed realistic iris
+- id: heart_shaped_pupils
+  label: Heart-shaped pupils
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: heart-shaped pupils
+    anima: heart-shaped pupils, detailed face
+    zimage_turbo: with heart-shaped pupils
+- id: spiral_hypnotic_pupils
+  label: Spiral/hypnotic pupils
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: spiral/hypnotic pupils
+    anima: spiral/hypnotic pupils, detailed face
+    zimage_turbo: with spiral/hypnotic pupils
+- id: dilated_pupils_aroused
+  label: Dilated pupils (aroused)
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: dilated pupils (aroused)
+    anima: dilated pupils (aroused), detailed face
+    zimage_turbo: with dilated pupils (aroused)
+- id: glowing_eyes
+  label: Glowing eyes
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: glowing eyes
+    anima: glowing eyes, detailed face
+    zimage_turbo: with glowing eyes
+- id: glossy_wet_eyes
+  label: Glossy wet eyes
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: glossy wet eyes
+    anima: glossy wet eyes, detailed face
+    zimage_turbo: with glossy wet eyes
+- id: teary_eyes
+  label: Teary eyes
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: teary eyes
+    anima: teary eyes, detailed face
+    zimage_turbo: with teary eyes
+- id: reddened_eyes_crying_from_pleasure
+  label: Reddened eyes (crying from pleasure)
+  meta:
+    subgroup: iris_pupil
+  tags:
+    illustrious: reddened eyes (crying from pleasure)
+    anima: reddened eyes (crying from pleasure), detailed face
+    zimage_turbo: with reddened eyes (crying from pleasure)
+- id: long_thick_eyelashes
+  label: Long thick eyelashes
+  meta:
+    subgroup: eyelashes_eyeliner
+  tags:
+    illustrious: long thick eyelashes
+    anima: long thick eyelashes, detailed face
+    zimage_turbo: with long thick eyelashes
+- id: dramatic_winged_eyeliner
+  label: Dramatic winged eyeliner
+  meta:
+    subgroup: eyelashes_eyeliner
+  tags:
+    illustrious: dramatic winged eyeliner
+    anima: dramatic winged eyeliner, detailed face
+    zimage_turbo: with dramatic winged eyeliner
+- id: heavy_smokey_eye_makeup
+  label: Heavy smokey eye makeup
+  meta:
+    subgroup: eyelashes_eyeliner
+  tags:
+    illustrious: heavy smokey eye makeup
+    anima: heavy smokey eye makeup, detailed face
+    zimage_turbo: with heavy smokey eye makeup
+- id: natural_eyelashes
+  label: Natural eyelashes
+  meta:
+    subgroup: eyelashes_eyeliner
+  tags:
+    illustrious: natural eyelashes
+    anima: natural eyelashes, detailed face
+    zimage_turbo: with natural eyelashes
+- id: false_lashes
+  label: False lashes
+  meta:
+    subgroup: eyelashes_eyeliner
+  tags:
+    illustrious: false lashes
+    anima: false lashes, detailed face
+    zimage_turbo: with false lashes
+- id: wet_clumpy_lashes_from_tears_drool
+  label: Wet clumpy lashes (from tears/drool)
+  meta:
+    subgroup: eyelashes_eyeliner
+  tags:
+    illustrious: wet clumpy lashes (from tears/drool)
+    anima: wet clumpy lashes (from tears/drool), detailed face
+    zimage_turbo: with wet clumpy lashes (from tears/drool)
+- id: lower_lash_line_emphasis
+  label: Lower lash line emphasis
+  meta:
+    subgroup: eyelashes_eyeliner
+  tags:
+    illustrious: lower lash line emphasis
+    anima: lower lash line emphasis, detailed face
+    zimage_turbo: with lower lash line emphasis

@@ -1,0 +1,163 @@
+id: lighting.light_type
+title: Light Type / Source
+items:
+- id: natural_daylight
+  label: Natural daylight
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: natural daylight
+    anima: natural daylight, cinematic lighting
+    zimage_turbo: with natural daylight
+- id: soft_window_light
+  label: Soft window light
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: soft window light
+    anima: soft window light, cinematic lighting
+    zimage_turbo: with soft window light
+- id: golden_hour_lighting
+  label: Golden hour lighting
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: golden hour lighting
+    anima: golden hour lighting, cinematic lighting
+    zimage_turbo: with golden hour lighting
+- id: blue_hour_lighting
+  label: Blue hour lighting
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: blue hour lighting
+    anima: blue hour lighting, cinematic lighting
+    zimage_turbo: with blue hour lighting
+- id: overcast_soft_light
+  label: Overcast soft light
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: overcast soft light
+    anima: overcast soft light, cinematic lighting
+    zimage_turbo: with overcast soft light
+- id: sunlight_through_curtains
+  label: Sunlight through curtains
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: sunlight through curtains
+    anima: sunlight through curtains, cinematic lighting
+    zimage_turbo: with sunlight through curtains
+- id: dappled_sunlight
+  label: Dappled sunlight
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: dappled sunlight
+    anima: dappled sunlight, cinematic lighting
+    zimage_turbo: with dappled sunlight
+- id: soft_studio_lighting
+  label: Soft studio lighting
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: soft studio lighting
+    anima: soft studio lighting, cinematic lighting
+    zimage_turbo: with soft studio lighting
+- id: hard_studio_lighting
+  label: Hard studio lighting
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: hard studio lighting
+    anima: hard studio lighting, cinematic lighting
+    zimage_turbo: with hard studio lighting
+- id: neon_lighting
+  label: Neon lighting
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: neon lighting
+    anima: neon lighting, cinematic lighting
+    zimage_turbo: with neon lighting
+- id: led_strip_lighting
+  label: LED strip lighting
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: led strip lighting
+    anima: led strip lighting, cinematic lighting
+    zimage_turbo: with led strip lighting
+- id: candlelight
+  label: Candlelight
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: candlelight
+    anima: candlelight, cinematic lighting
+    zimage_turbo: with candlelight
+- id: lamp_light__bedside_lamp
+  label: Lamp light / bedside lamp
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: lamp light / bedside lamp
+    anima: lamp light / bedside lamp, cinematic lighting
+    zimage_turbo: with lamp light / bedside lamp
+- id: streetlight_at_night
+  label: Streetlight at night
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: streetlight at night
+    anima: streetlight at night, cinematic lighting
+    zimage_turbo: with streetlight at night
+- id: fluorescent_lighting
+  label: Fluorescent lighting
+  meta:
+    subgroup: artificial
+  tags:
+    illustrious: fluorescent lighting
+    anima: fluorescent lighting, cinematic lighting
+    zimage_turbo: with fluorescent lighting
+- id: dramatic_cinematic_lighting
+  label: Dramatic cinematic lighting
+  meta:
+    subgroup: dramatic_cinematic
+  tags:
+    illustrious: dramatic cinematic lighting
+    anima: dramatic cinematic lighting, cinematic lighting
+    zimage_turbo: with dramatic cinematic lighting
+- id: low_key_lighting
+  label: Low key lighting
+  meta:
+    subgroup: dramatic_cinematic
+  tags:
+    illustrious: low key lighting
+    anima: low key lighting, cinematic lighting
+    zimage_turbo: with low key lighting
+- id: high_key_lighting
+  label: High key lighting
+  meta:
+    subgroup: dramatic_cinematic
+  tags:
+    illustrious: high key lighting
+    anima: high key lighting, cinematic lighting
+    zimage_turbo: with high key lighting
+- id: volumetric_lighting
+  label: Volumetric lighting
+  meta:
+    subgroup: dramatic_cinematic
+  tags:
+    illustrious: volumetric lighting
+    anima: volumetric lighting, cinematic lighting
+    zimage_turbo: with volumetric lighting
+- id: god_rays__crepuscular_rays
+  label: God rays / crepuscular rays
+  meta:
+    subgroup: dramatic_cinematic
+  tags:
+    illustrious: god rays / crepuscular rays
+    anima: god rays / crepuscular rays, cinematic lighting
+    zimage_turbo: with god rays / crepuscular rays

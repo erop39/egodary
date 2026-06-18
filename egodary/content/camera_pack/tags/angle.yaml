@@ -1,0 +1,123 @@
+id: camera.angle
+title: Camera Angle
+items:
+- id: eye_level
+  label: Eye Level
+  meta:
+    subgroup: standard_angles
+  tags:
+    illustrious: eye level
+    anima: eye level, cinematic framing
+    zimage_turbo: with eye level
+- id: low_angle
+  label: Low Angle
+  meta:
+    subgroup: standard_angles
+  tags:
+    illustrious: low angle
+    anima: low angle, cinematic framing
+    zimage_turbo: with low angle
+- id: high_angle
+  label: High Angle
+  meta:
+    subgroup: standard_angles
+  tags:
+    illustrious: high angle
+    anima: high angle, cinematic framing
+    zimage_turbo: with high angle
+- id: dutch_angle
+  label: Dutch Angle
+  meta:
+    subgroup: standard_angles
+  tags:
+    illustrious: dutch angle
+    anima: dutch angle, cinematic framing
+    zimage_turbo: with dutch angle
+- id: extreme_low_angle
+  label: Extreme Low Angle
+  meta:
+    subgroup: extreme_dramatic
+  tags:
+    illustrious: extreme low angle
+    anima: extreme low angle, cinematic framing
+    zimage_turbo: with extreme low angle
+- id: extreme_high_angle
+  label: Extreme High Angle
+  meta:
+    subgroup: extreme_dramatic
+  tags:
+    illustrious: extreme high angle
+    anima: extreme high angle, cinematic framing
+    zimage_turbo: with extreme high angle
+- id: worms_eye_view
+  label: Worm's Eye View
+  meta:
+    subgroup: extreme_dramatic
+  tags:
+    illustrious: worm's eye view
+    anima: worm's eye view, cinematic framing
+    zimage_turbo: with worm's eye view
+- id: birds_eye_view
+  label: Bird's Eye View
+  meta:
+    subgroup: extreme_dramatic
+  tags:
+    illustrious: bird's eye view
+    anima: bird's eye view, cinematic framing
+    zimage_turbo: with bird's eye view
+- id: over_the_shoulder
+  label: Over the Shoulder
+  meta:
+    subgroup: extreme_dramatic
+  tags:
+    illustrious: over the shoulder
+    anima: over the shoulder, cinematic framing
+    zimage_turbo: with over the shoulder
+- id: pov_first_person
+  label: POV (first person)
+  meta:
+    subgroup: extreme_dramatic
+  tags:
+    illustrious: pov (first person)
+    anima: pov (first person), cinematic framing
+    zimage_turbo: with pov (first person)
+- id: low_angle_looking_up_dominance
+  label: Low Angle looking up (dominance)
+  meta:
+    subgroup: nsfw_angles
+  tags:
+    illustrious: low angle looking up (dominance)
+    anima: low angle looking up (dominance), cinematic framing
+    zimage_turbo: with low angle looking up (dominance)
+- id: high_angle_looking_down_vulnerability
+  label: High Angle looking down (vulnerability)
+  meta:
+    subgroup: nsfw_angles
+  tags:
+    illustrious: high angle looking down (vulnerability)
+    anima: high angle looking down (vulnerability), cinematic framing
+    zimage_turbo: with high angle looking down (vulnerability)
+- id: low_angle_from_floor_level
+  label: Low Angle from floor level
+  meta:
+    subgroup: nsfw_angles
+  tags:
+    illustrious: low angle from floor level
+    anima: low angle from floor level, cinematic framing
+    zimage_turbo: with low angle from floor level
+- id: high_angle_from_above_submission
+  label: High Angle from above (submission)
+  meta:
+    subgroup: nsfw_angles
+  tags:
+    illustrious: high angle from above (submission)
+    anima: high angle from above (submission), cinematic framing
+    zimage_turbo: with high angle from above (submission)
+- id: dutch_angle_for_tension
+  label: Dutch Angle for tension
+  meta:
+    subgroup: nsfw_angles
+  tags:
+    illustrious: dutch angle for tension
+    anima: dutch angle for tension, cinematic framing
+    zimage_turbo: with dutch angle for tension

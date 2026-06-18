@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "egodary"
+version = "0.1.14"
+description = "Plugin-based prompt generator engine for Illustrious / Anima / Z-Image Turbo"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "Egor" }]
+dependencies = [
+    "pydantic>=2.6",
+    "PyYAML>=6.0",
+    "typer>=0.12",
+    "rich>=13.7",
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+    "httpx2>=2.0",
+]
+
+[project.scripts]
+egodary = "egodary.cli.main:app"
+
+[tool.setuptools.packages.find]
+include = ["egodary*"]
+
+[tool.setuptools.package-data]
+egodary = ["web/static/**/*", "content/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

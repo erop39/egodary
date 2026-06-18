@@ -1,0 +1,13 @@
+rules:
+  latex_catsuit_if_not_in_outfit:
+  - field: outfit.dress
+    equals: black_latex_long_dress
+  - field: outfit.dress
+    equals: latex_catsuit
+  - field: outfit.top
+    equals: latex_corset_top
+  ahegao_face:
+  - field: face.facial_expression
+    equals: classic_ahegao_tongue_out_eyes_rolled_up
+  - field: face.facial_expression
+    equals: subtle_ahegao_half_lidded

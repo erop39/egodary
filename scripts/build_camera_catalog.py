@@ -1,0 +1,235 @@
+"""Generate camera_pack tag YAML files, tree JS, and rules."""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from catalog_camera_data import (  # noqa: E402
+    CAMERA_CATALOG,
+    CAMERA_COMPAT_WARNINGS,
+    CAMERA_FIELD_LABELS,
+    CAMERA_LENS_POSE_FIXES,
+    CAMERA_PRESETS,
+    CAMERA_SUBGROUP_LABELS,
+)
+
+PACK_ROOT = Path(__file__).resolve().parents[1] / "egodary" / "content" / "camera_pack"
+TAGS_ROOT = PACK_ROOT / "tags"
+JS_TREE = Path(__file__).resolve().parents[1] / "egodary" / "web" / "static" / "js" / "camera-tree-data.js"
+JS_PRESETS = Path(__file__).resolve().parents[1] / "egodary" / "web" / "static" / "js" / "camera-presets-data.js"
+
+
+def slug(label: str) -> str:
+    return (
+        label.lower()
+        .replace("(", "")
+        .replace(")", "")
+        .replace("'", "")
+        .replace('"', "")
+        .replace("/", " ")
+        .replace("+", " ")
+        .replace("&", " ")
+        .replace("-", " ")
+        .replace(",", "")
+        .replace("–", " ")
+        .replace("—", " ")
+        .replace("  ", " ")
+        .strip()
+        .replace(" ", "_")
+    )
+
+
+def camera_item(label: str, subgroup: str, field: str) -> dict:
+    ill = label.lower()
+    if field == "lens":
+        focal = label.split("(")[0].strip().lower()
+        ill = f"{focal} lens"
+    return {
+        "id": slug(label),
+        "label": label,
+        "meta": {"subgroup": subgroup},
+        "tags": {
+            "illustrious": ill,
+            "anima": f"{ill}, cinematic framing",
+            "zimage_turbo": f"with {ill}",
+        },
+    }
+
+
+def items_from_groups(field: str, groups: dict[str, list[str]]) -> list[dict]:
+    items: list[dict] = []
+    used: set[str] = set()
+    for subgroup, labels in groups.items():
+        for label in labels:
+            item_id = slug(label)
+            if item_id in used:
+                item_id = f"{subgroup}_{item_id}"
+            used.add(item_id)
+            item = camera_item(label, subgroup, field)
+            item["id"] = item_id
+            items.append(item)
+    return items
+
+
+def build_label_index() -> dict[str, dict[str, str]]:
+    """field -> label -> item_id"""
+    index: dict[str, dict[str, str]] = {}
+    for field, groups in CAMERA_CATALOG.items():
+        index[field] = {}
+        for items in items_from_groups(field, groups):
+            pass
+        for subgroup, labels in groups.items():
+            for label in labels:
+                for item in items_from_groups({subgroup: [label]}, {subgroup: [label]}):
+                    index[field][label] = item["id"]
+    return index
+
+
+def label_to_id(field: str, label: str, label_index: dict[str, dict[str, str]]) -> str:
+    return label_index[field][label]
+
+
+def write_category(field: str, items: list[dict]) -> None:
+    cat_id = f"camera.{field}"
+    title = CAMERA_FIELD_LABELS.get(field, field.replace("_", " ").title())
+    path = TAGS_ROOT / f"{field}.yaml"
+    payload = {"id": cat_id, "title": title, "items": items}
+    path.write_text(yaml.dump(payload, allow_unicode=True, sort_keys=False), encoding="utf-8")
+
+
+def write_camera_tree_js() -> None:
+    tree: list[dict] = []
+    lens_focus_children: list[dict] = []
+
+    for field, groups in CAMERA_CATALOG.items():
+        if field in ("lens", "focus"):
+            for subgroup in groups:
+                labels = CAMERA_SUBGROUP_LABELS.get(field, {})
+                lens_focus_children.append(
+                    {
+                        "id": f"camera_{field}_{subgroup}",
+                        "label": labels.get(subgroup, subgroup.replace("_", " ").title()),
+                        "field": field,
+                        "categoryId": f"camera.{field}",
+                        "subgroup": subgroup,
+                    }
+                )
+            continue
+
+        labels = CAMERA_SUBGROUP_LABELS.get(field, {})
+        children = []
+        for subgroup in groups:
+            children.append(
+                {
+                    "id": f"camera_{field}_{subgroup}",
+                    "label": labels.get(subgroup, subgroup.replace("_", " ").title()),
+                    "field": field,
+                    "categoryId": f"camera.{field}",
+                    "subgroup": subgroup,
+                }
+            )
+        tree.append(
+            {
+                "id": f"camera_{field}",
+                "label": CAMERA_FIELD_LABELS.get(field, field.replace("_", " ").title()),
+                "children": children,
+            }
+        )
+
+    tree.insert(
+        2,
+        {
+            "id": "camera_lens_focus",
+            "label": "Lens & Focus",
+            "children": lens_focus_children,
+        },
+    )
+
+    JS_TREE.parent.mkdir(parents=True, exist_ok=True)
+    JS_TREE.write_text(
+        f"/* Auto-generated by build_camera_catalog.py */\nwindow.CAMERA_TREE = {json.dumps(tree, indent=2)};\n",
+        encoding="utf-8",
+    )
+
+
+def write_presets_js(label_index: dict[str, dict[str, str]]) -> None:
+    presets: list[dict] = []
+    for raw in CAMERA_PRESETS:
+        entry = {
+            "id": raw["id"],
+            "label": raw["label"],
+            "hint": raw.get("hint", ""),
+            "camera": {},
+        }
+        for field in ("angle", "framing", "lens", "focus", "composition", "nsfw_shot"):
+            if field in raw:
+                entry["camera"][field] = label_to_id(field, raw[field], label_index)
+        presets.append(entry)
+    JS_PRESETS.write_text(
+        f"/* Auto-generated by build_camera_catalog.py */\nwindow.CAMERA_PRESETS = {json.dumps(presets, indent=2, ensure_ascii=False)};\n",
+        encoding="utf-8",
+    )
+
+
+def write_rules_yaml(label_index: dict[str, dict[str, str]]) -> None:
+    warnings: list[dict] = []
+    for rule in CAMERA_COMPAT_WARNINGS:
+        entry: dict = {"message": rule["message"]}
+        if "angle_labels" in rule:
+            entry["angle_ids"] = [label_to_id("angle", lb, label_index) for lb in rule["angle_labels"]]
+        if "framing_labels" in rule:
+            entry["framing_ids"] = [label_to_id("framing", lb, label_index) for lb in rule["framing_labels"]]
+        if "lens_labels" in rule:
+            entry["lens_ids"] = [label_to_id("lens", lb, label_index) for lb in rule["lens_labels"]]
+        if rule.get("requires_static_pose"):
+            entry["requires_static_pose"] = True
+        warnings.append(entry)
+
+    lens_pose_fixes: list[dict] = []
+    for fix in CAMERA_LENS_POSE_FIXES:
+        lens_pose_fixes.append(
+            {
+                "lens_id": label_to_id("lens", fix["lens_label"], label_index),
+                "pose_ids": fix["pose_ids"],
+                "target_lens_id": label_to_id("lens", fix["target_lens_label"], label_index),
+                "message": fix["message"],
+            }
+        )
+
+    payload = {
+        "compatibility_warnings": warnings,
+        "lens_pose_fixes": lens_pose_fixes,
+        "single_select_fields": ["angle", "framing", "lens", "focus", "composition", "nsfw_shot"],
+    }
+    (PACK_ROOT / "camera_rules.yaml").write_text(
+        yaml.dump(payload, allow_unicode=True, sort_keys=False),
+        encoding="utf-8",
+    )
+
+
+def main() -> None:
+    TAGS_ROOT.mkdir(parents=True, exist_ok=True)
+    label_index: dict[str, dict[str, str]] = {field: {} for field in CAMERA_CATALOG}
+    total = 0
+
+    for field, groups in CAMERA_CATALOG.items():
+        items = items_from_groups(field, groups)
+        for item in items:
+            label_index[field][item["label"]] = item["id"]
+        write_category(field, items)
+        total += len(items)
+
+    write_camera_tree_js()
+    write_presets_js(label_index)
+    write_rules_yaml(label_index)
+    print(f"Wrote {total} camera tags across {len(CAMERA_CATALOG)} categories to {TAGS_ROOT}")
+
+
+if __name__ == "__main__":
+    main()

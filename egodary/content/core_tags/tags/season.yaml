@@ -1,0 +1,27 @@
+id: scene.season
+title: Season
+items:
+  - id: spring
+    label: Spring
+    tags:
+      illustrious: "spring, cherry blossoms, flowers"
+      anima: "spring season, blooming flowers, fresh green"
+      zimage: "in spring with blooming flowers"
+  - id: summer
+    label: Summer
+    tags:
+      illustrious: "summer, hot, sunny"
+      anima: "summer heat, vibrant greenery, bright season"
+      zimage: "on a hot summer day"
+  - id: autumn
+    label: Autumn
+    tags:
+      illustrious: "autumn, fall, leaves"
+      anima: "autumn colors, falling leaves, crisp air"
+      zimage: "in autumn with falling leaves"
+  - id: winter
+    label: Winter
+    tags:
+      illustrious: "winter, cold, snow"
+      anima: "winter cold, bare trees, frosty air"
+      zimage: "in cold winter air"

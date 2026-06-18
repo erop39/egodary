@@ -1,0 +1,1182 @@
+id: outfit.clothing_condition
+title: Clothing Condition
+items:
+- id: ripped_fishnet_stockings
+  label: ripped fishnet stockings
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: ripped fishnet stockings
+    anima: ripped fishnet stockings, clothing detail
+    zimage_turbo: wearing ripped fishnet stockings
+- id: torn_fishnet_tights
+  label: torn fishnet tights
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: torn fishnet tights
+    anima: torn fishnet tights, clothing detail
+    zimage_turbo: wearing torn fishnet tights
+- id: fishnets_with_large_holes
+  label: fishnets with large holes
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: fishnets with large holes
+    anima: fishnets with large holes, clothing detail
+    zimage_turbo: wearing fishnets with large holes
+- id: heavily_ripped_fishnets
+  label: heavily ripped fishnets
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: heavily ripped fishnets
+    anima: heavily ripped fishnets, clothing detail
+    zimage_turbo: wearing heavily ripped fishnets
+- id: fishnet_stockings_with_multiple_tears
+  label: fishnet stockings with multiple tears
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: fishnet stockings with multiple tears
+    anima: fishnet stockings with multiple tears, clothing detail
+    zimage_turbo: wearing fishnet stockings with multiple tears
+- id: distressed_fishnet_tights
+  label: distressed fishnet tights
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: distressed fishnet tights
+    anima: distressed fishnet tights, clothing detail
+    zimage_turbo: wearing distressed fishnet tights
+- id: fishnets_with_big_ragged_holes
+  label: fishnets with big ragged holes
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: fishnets with big ragged holes
+    anima: fishnets with big ragged holes, clothing detail
+    zimage_turbo: wearing fishnets with big ragged holes
+- id: partially_torn_fishnets
+  label: partially torn fishnets
+  meta:
+    field: legwear
+    group: Damage States
+  tags:
+    illustrious: partially torn fishnets
+    anima: partially torn fishnets, clothing detail
+    zimage_turbo: wearing partially torn fishnets
+- id: wet_fishnet_stockings
+  label: wet fishnet stockings
+  meta:
+    field: legwear
+    group: Wet States
+  tags:
+    illustrious: wet fishnet stockings
+    anima: wet fishnet stockings, clothing detail
+    zimage_turbo: wearing wet fishnet stockings
+- id: soaked_fishnet_tights
+  label: soaked fishnet tights
+  meta:
+    field: legwear
+    group: Wet States
+  tags:
+    illustrious: soaked fishnet tights
+    anima: soaked fishnet tights, clothing detail
+    zimage_turbo: wearing soaked fishnet tights
+- id: drenched_fishnet_pantyhose
+  label: drenched fishnet pantyhose
+  meta:
+    field: legwear
+    group: Wet States
+  tags:
+    illustrious: drenched fishnet pantyhose
+    anima: drenched fishnet pantyhose, clothing detail
+    zimage_turbo: wearing drenched fishnet pantyhose
+- id: wet_fishnets_clinging_to_legs
+  label: wet fishnets clinging to legs
+  meta:
+    field: legwear
+    group: Wet States
+  tags:
+    illustrious: wet fishnets clinging to legs
+    anima: wet fishnets clinging to legs, clothing detail
+    zimage_turbo: wearing wet fishnets clinging to legs
+- id: completely_soaked_fishnets
+  label: completely soaked fishnets
+  meta:
+    field: legwear
+    group: Wet States
+  tags:
+    illustrious: completely soaked fishnets
+    anima: completely soaked fishnets, clothing detail
+    zimage_turbo: wearing completely soaked fishnets
+- id: rain_soaked_fishnet_stockings
+  label: rain-soaked fishnet stockings
+  meta:
+    field: legwear
+    group: Wet States
+  tags:
+    illustrious: rain-soaked fishnet stockings
+    anima: rain-soaked fishnet stockings, clothing detail
+    zimage_turbo: wearing rain-soaked fishnet stockings
+- id: wet_ripped_fishnet_stockings
+  label: wet ripped fishnet stockings
+  meta:
+    field: legwear
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet ripped fishnet stockings
+    anima: wet ripped fishnet stockings, clothing detail
+    zimage_turbo: wearing wet ripped fishnet stockings
+- id: soaked_torn_fishnets
+  label: soaked torn fishnets
+  meta:
+    field: legwear
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: soaked torn fishnets
+    anima: soaked torn fishnets, clothing detail
+    zimage_turbo: wearing soaked torn fishnets
+- id: drenched_ripped_fishnet_tights
+  label: drenched ripped fishnet tights
+  meta:
+    field: legwear
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: drenched ripped fishnet tights
+    anima: drenched ripped fishnet tights, clothing detail
+    zimage_turbo: wearing drenched ripped fishnet tights
+- id: wet_fishnets_with_holes
+  label: wet fishnets with holes
+  meta:
+    field: legwear
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet fishnets with holes
+    anima: wet fishnets with holes, clothing detail
+    zimage_turbo: wearing wet fishnets with holes
+- id: soaked_fishnet_stockings_with_large_tears
+  label: soaked fishnet stockings with large tears
+  meta:
+    field: legwear
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: soaked fishnet stockings with large tears
+    anima: soaked fishnet stockings with large tears, clothing detail
+    zimage_turbo: wearing soaked fishnet stockings with large tears
+- id: wet_ripped_fishnets_clinging_to_skin
+  label: wet ripped fishnets clinging to skin
+  meta:
+    field: legwear
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet ripped fishnets clinging to skin
+    anima: wet ripped fishnets clinging to skin, clothing detail
+    zimage_turbo: wearing wet ripped fishnets clinging to skin
+- id: shiny_wet_fishnet_stockings
+  label: shiny wet fishnet stockings
+  meta:
+    field: legwear
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: shiny wet fishnet stockings
+    anima: shiny wet fishnet stockings, clothing detail
+    zimage_turbo: wearing shiny wet fishnet stockings
+- id: glossy_soaked_fishnets
+  label: glossy soaked fishnets
+  meta:
+    field: legwear
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glossy soaked fishnets
+    anima: glossy soaked fishnets, clothing detail
+    zimage_turbo: wearing glossy soaked fishnets
+- id: glistening_wet_fishnet_tights
+  label: glistening wet fishnet tights
+  meta:
+    field: legwear
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glistening wet fishnet tights
+    anima: glistening wet fishnet tights, clothing detail
+    zimage_turbo: wearing glistening wet fishnet tights
+- id: shiny_drenched_fishnets
+  label: shiny drenched fishnets
+  meta:
+    field: legwear
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: shiny drenched fishnets
+    anima: shiny drenched fishnets, clothing detail
+    zimage_turbo: wearing shiny drenched fishnets
+- id: wet_fishnets_with_glossy_sheen
+  label: wet fishnets with glossy sheen
+  meta:
+    field: legwear
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: wet fishnets with glossy sheen
+    anima: wet fishnets with glossy sheen, clothing detail
+    zimage_turbo: wearing wet fishnets with glossy sheen
+- id: fishnets_with_runs_and_ladders
+  label: fishnets with runs and ladders
+  meta:
+    field: legwear
+    group: Other Conditions
+  tags:
+    illustrious: fishnets with runs and ladders
+    anima: fishnets with runs and ladders, clothing detail
+    zimage_turbo: wearing fishnets with runs and ladders
+- id: snagged_fishnet_tights
+  label: snagged fishnet tights
+  meta:
+    field: legwear
+    group: Other Conditions
+  tags:
+    illustrious: snagged fishnet tights
+    anima: snagged fishnet tights, clothing detail
+    zimage_turbo: wearing snagged fishnet tights
+- id: worn_out_fishnet_stockings
+  label: worn out fishnet stockings
+  meta:
+    field: legwear
+    group: Other Conditions
+  tags:
+    illustrious: worn out fishnet stockings
+    anima: worn out fishnet stockings, clothing detail
+    zimage_turbo: wearing worn out fishnet stockings
+- id: over_stretched_fishnets
+  label: over-stretched fishnets
+  meta:
+    field: legwear
+    group: Other Conditions
+  tags:
+    illustrious: over-stretched fishnets
+    anima: over-stretched fishnets, clothing detail
+    zimage_turbo: wearing over-stretched fishnets
+- id: fishnets_with_uneven_mesh
+  label: fishnets with uneven mesh
+  meta:
+    field: legwear
+    group: Other Conditions
+  tags:
+    illustrious: fishnets with uneven mesh
+    anima: fishnets with uneven mesh, clothing detail
+    zimage_turbo: wearing fishnets with uneven mesh
+- id: ripped_lace_lingerie
+  label: ripped lace lingerie
+  meta:
+    field: underwear_layer
+    group: Damage States
+  tags:
+    illustrious: ripped lace lingerie
+    anima: ripped lace lingerie, clothing detail
+    zimage_turbo: wearing ripped lace lingerie
+- id: torn_bra_and_panties
+  label: torn bra and panties
+  meta:
+    field: underwear_layer
+    group: Damage States
+  tags:
+    illustrious: torn bra and panties
+    anima: torn bra and panties, clothing detail
+    zimage_turbo: wearing torn bra and panties
+- id: lingerie_with_holes
+  label: lingerie with holes
+  meta:
+    field: underwear_layer
+    group: Damage States
+  tags:
+    illustrious: lingerie with holes
+    anima: lingerie with holes, clothing detail
+    zimage_turbo: wearing lingerie with holes
+- id: partially_torn_lace_bodysuit
+  label: partially torn lace bodysuit
+  meta:
+    field: underwear_layer
+    group: Damage States
+  tags:
+    illustrious: partially torn lace bodysuit
+    anima: partially torn lace bodysuit, clothing detail
+    zimage_turbo: wearing partially torn lace bodysuit
+- id: distressed_lace_underwear
+  label: distressed lace underwear
+  meta:
+    field: underwear_layer
+    group: Damage States
+  tags:
+    illustrious: distressed lace underwear
+    anima: distressed lace underwear, clothing detail
+    zimage_turbo: wearing distressed lace underwear
+- id: wet_lace_lingerie
+  label: wet lace lingerie
+  meta:
+    field: underwear_layer
+    group: Wet States
+  tags:
+    illustrious: wet lace lingerie
+    anima: wet lace lingerie, clothing detail
+    zimage_turbo: wearing wet lace lingerie
+- id: soaked_lingerie_clinging_to_skin
+  label: soaked lingerie clinging to skin
+  meta:
+    field: underwear_layer
+    group: Wet States
+  tags:
+    illustrious: soaked lingerie clinging to skin
+    anima: soaked lingerie clinging to skin, clothing detail
+    zimage_turbo: wearing soaked lingerie clinging to skin
+- id: drenched_lace_bra_and_panties
+  label: drenched lace bra and panties
+  meta:
+    field: underwear_layer
+    group: Wet States
+  tags:
+    illustrious: drenched lace bra and panties
+    anima: drenched lace bra and panties, clothing detail
+    zimage_turbo: wearing drenched lace bra and panties
+- id: wet_lingerie_stuck_to_body
+  label: wet lingerie stuck to body
+  meta:
+    field: underwear_layer
+    group: Wet States
+  tags:
+    illustrious: wet lingerie stuck to body
+    anima: wet lingerie stuck to body, clothing detail
+    zimage_turbo: wearing wet lingerie stuck to body
+- id: completely_soaked_through_lingerie
+  label: completely soaked through lingerie
+  meta:
+    field: underwear_layer
+    group: Wet States
+  tags:
+    illustrious: completely soaked through lingerie
+    anima: completely soaked through lingerie, clothing detail
+    zimage_turbo: wearing completely soaked through lingerie
+- id: wet_ripped_lace_lingerie
+  label: wet ripped lace lingerie
+  meta:
+    field: underwear_layer
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet ripped lace lingerie
+    anima: wet ripped lace lingerie, clothing detail
+    zimage_turbo: wearing wet ripped lace lingerie
+- id: soaked_torn_lingerie
+  label: soaked torn lingerie
+  meta:
+    field: underwear_layer
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: soaked torn lingerie
+    anima: soaked torn lingerie, clothing detail
+    zimage_turbo: wearing soaked torn lingerie
+- id: wet_lace_with_holes_clinging_to_skin
+  label: wet lace with holes clinging to skin
+  meta:
+    field: underwear_layer
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet lace with holes clinging to skin
+    anima: wet lace with holes clinging to skin, clothing detail
+    zimage_turbo: wearing wet lace with holes clinging to skin
+- id: shiny_wet_satin_lingerie
+  label: shiny wet satin lingerie
+  meta:
+    field: underwear_layer
+    group: Shiny / Glossy States
+  tags:
+    illustrious: shiny wet satin lingerie
+    anima: shiny wet satin lingerie, clothing detail
+    zimage_turbo: wearing shiny wet satin lingerie
+- id: glossy_soaked_lace_bodysuit
+  label: glossy soaked lace bodysuit
+  meta:
+    field: underwear_layer
+    group: Shiny / Glossy States
+  tags:
+    illustrious: glossy soaked lace bodysuit
+    anima: glossy soaked lace bodysuit, clothing detail
+    zimage_turbo: wearing glossy soaked lace bodysuit
+- id: glistening_wet_lingerie
+  label: glistening wet lingerie
+  meta:
+    field: underwear_layer
+    group: Shiny / Glossy States
+  tags:
+    illustrious: glistening wet lingerie
+    anima: glistening wet lingerie, clothing detail
+    zimage_turbo: wearing glistening wet lingerie
+- id: sheer_wet_lingerie
+  label: sheer wet lingerie
+  meta:
+    field: underwear_layer
+    group: Other Conditions
+  tags:
+    illustrious: sheer wet lingerie
+    anima: sheer wet lingerie, clothing detail
+    zimage_turbo: wearing sheer wet lingerie
+- id: lingerie_in_sweat
+  label: lingerie in sweat
+  meta:
+    field: underwear_layer
+    group: Other Conditions
+  tags:
+    illustrious: lingerie in sweat
+    anima: lingerie in sweat, clothing detail
+    zimage_turbo: wearing lingerie in sweat
+- id: partially_removed_lingerie
+  label: partially removed lingerie
+  meta:
+    field: underwear_layer
+    group: Other Conditions
+  tags:
+    illustrious: partially removed lingerie
+    anima: partially removed lingerie, clothing detail
+    zimage_turbo: wearing partially removed lingerie
+- id: messy_and_disheveled_lingerie
+  label: messy and disheveled lingerie
+  meta:
+    field: underwear_layer
+    group: Other Conditions
+  tags:
+    illustrious: messy and disheveled lingerie
+    anima: messy and disheveled lingerie, clothing detail
+    zimage_turbo: wearing messy and disheveled lingerie
+- id: ripped_t_shirt
+  label: ripped t-shirt
+  meta:
+    field: top
+    group: Damage States
+  tags:
+    illustrious: ripped t-shirt
+    anima: ripped t-shirt, clothing detail
+    zimage_turbo: wearing ripped t-shirt
+- id: torn_white_blouse
+  label: torn white blouse
+  meta:
+    field: top
+    group: Damage States
+  tags:
+    illustrious: torn white blouse
+    anima: torn white blouse, clothing detail
+    zimage_turbo: wearing torn white blouse
+- id: t_shirt_with_large_holes
+  label: t-shirt with large holes
+  meta:
+    field: top
+    group: Damage States
+  tags:
+    illustrious: t-shirt with large holes
+    anima: t-shirt with large holes, clothing detail
+    zimage_turbo: wearing t-shirt with large holes
+- id: ripped_and_frayed_shirt
+  label: ripped and frayed shirt
+  meta:
+    field: top
+    group: Damage States
+  tags:
+    illustrious: ripped and frayed shirt
+    anima: ripped and frayed shirt, clothing detail
+    zimage_turbo: wearing ripped and frayed shirt
+- id: distressed_oversized_t_shirt
+  label: distressed oversized t-shirt
+  meta:
+    field: top
+    group: Damage States
+  tags:
+    illustrious: distressed oversized t-shirt
+    anima: distressed oversized t-shirt, clothing detail
+    zimage_turbo: wearing distressed oversized t-shirt
+- id: wet_t_shirt
+  label: wet t-shirt
+  meta:
+    field: top
+    group: Wet States
+  tags:
+    illustrious: wet t-shirt
+    anima: wet t-shirt, clothing detail
+    zimage_turbo: wearing wet t-shirt
+- id: soaked_white_t_shirt_clinging_to_body
+  label: soaked white t-shirt clinging to body
+  meta:
+    field: top
+    group: Wet States
+  tags:
+    illustrious: soaked white t-shirt clinging to body
+    anima: soaked white t-shirt clinging to body, clothing detail
+    zimage_turbo: wearing soaked white t-shirt clinging to body
+- id: drenched_blouse
+  label: drenched blouse
+  meta:
+    field: top
+    group: Wet States
+  tags:
+    illustrious: drenched blouse
+    anima: drenched blouse, clothing detail
+    zimage_turbo: wearing drenched blouse
+- id: wet_shirt_stuck_to_skin
+  label: wet shirt stuck to skin
+  meta:
+    field: top
+    group: Wet States
+  tags:
+    illustrious: wet shirt stuck to skin
+    anima: wet shirt stuck to skin, clothing detail
+    zimage_turbo: wearing wet shirt stuck to skin
+- id: completely_soaked_t_shirt
+  label: completely soaked t-shirt
+  meta:
+    field: top
+    group: Wet States
+  tags:
+    illustrious: completely soaked t-shirt
+    anima: completely soaked t-shirt, clothing detail
+    zimage_turbo: wearing completely soaked t-shirt
+- id: wet_ripped_t_shirt
+  label: wet ripped t-shirt
+  meta:
+    field: top
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet ripped t-shirt
+    anima: wet ripped t-shirt, clothing detail
+    zimage_turbo: wearing wet ripped t-shirt
+- id: soaked_torn_blouse
+  label: soaked torn blouse
+  meta:
+    field: top
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: soaked torn blouse
+    anima: soaked torn blouse, clothing detail
+    zimage_turbo: wearing soaked torn blouse
+- id: wet_t_shirt_with_holes
+  label: wet t-shirt with holes
+  meta:
+    field: top
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet t-shirt with holes
+    anima: wet t-shirt with holes, clothing detail
+    zimage_turbo: wearing wet t-shirt with holes
+- id: drenched_ripped_shirt_clinging_to_skin
+  label: drenched ripped shirt clinging to skin
+  meta:
+    field: top
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: drenched ripped shirt clinging to skin
+    anima: drenched ripped shirt clinging to skin, clothing detail
+    zimage_turbo: wearing drenched ripped shirt clinging to skin
+- id: shiny_wet_satin_blouse
+  label: shiny wet satin blouse
+  meta:
+    field: top
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: shiny wet satin blouse
+    anima: shiny wet satin blouse, clothing detail
+    zimage_turbo: wearing shiny wet satin blouse
+- id: glossy_soaked_t_shirt
+  label: glossy soaked t-shirt
+  meta:
+    field: top
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glossy soaked t-shirt
+    anima: glossy soaked t-shirt, clothing detail
+    zimage_turbo: wearing glossy soaked t-shirt
+- id: glistening_wet_button_up_shirt
+  label: glistening wet button-up shirt
+  meta:
+    field: top
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glistening wet button-up shirt
+    anima: glistening wet button-up shirt, clothing detail
+    zimage_turbo: wearing glistening wet button-up shirt
+- id: wet_t_shirt_effect
+  label: wet t-shirt effect
+  meta:
+    field: top
+    group: Other Conditions
+  tags:
+    illustrious: wet t-shirt effect
+    anima: wet t-shirt effect, clothing detail
+    zimage_turbo: wearing wet t-shirt effect
+- id: sweat_soaked_t_shirt
+  label: sweat-soaked t-shirt
+  meta:
+    field: top
+    group: Other Conditions
+  tags:
+    illustrious: sweat-soaked t-shirt
+    anima: sweat-soaked t-shirt, clothing detail
+    zimage_turbo: wearing sweat-soaked t-shirt
+- id: partially_unbuttoned_wet_shirt
+  label: partially unbuttoned wet shirt
+  meta:
+    field: top
+    group: Other Conditions
+  tags:
+    illustrious: partially unbuttoned wet shirt
+    anima: partially unbuttoned wet shirt, clothing detail
+    zimage_turbo: wearing partially unbuttoned wet shirt
+- id: wrinkled_wet_blouse
+  label: wrinkled wet blouse
+  meta:
+    field: top
+    group: Other Conditions
+  tags:
+    illustrious: wrinkled wet blouse
+    anima: wrinkled wet blouse, clothing detail
+    zimage_turbo: wearing wrinkled wet blouse
+- id: ripped_dress
+  label: ripped dress
+  meta:
+    field: dress
+    group: Damage States
+  tags:
+    illustrious: ripped dress
+    anima: ripped dress, clothing detail
+    zimage_turbo: wearing ripped dress
+- id: torn_evening_dress
+  label: torn evening dress
+  meta:
+    field: dress
+    group: Damage States
+  tags:
+    illustrious: torn evening dress
+    anima: torn evening dress, clothing detail
+    zimage_turbo: wearing torn evening dress
+- id: dress_with_large_holes
+  label: dress with large holes
+  meta:
+    field: dress
+    group: Damage States
+  tags:
+    illustrious: dress with large holes
+    anima: dress with large holes, clothing detail
+    zimage_turbo: wearing dress with large holes
+- id: partially_torn_cocktail_dress
+  label: partially torn cocktail dress
+  meta:
+    field: dress
+    group: Damage States
+  tags:
+    illustrious: partially torn cocktail dress
+    anima: partially torn cocktail dress, clothing detail
+    zimage_turbo: wearing partially torn cocktail dress
+- id: distressed_maxi_dress
+  label: distressed maxi dress
+  meta:
+    field: dress
+    group: Damage States
+  tags:
+    illustrious: distressed maxi dress
+    anima: distressed maxi dress, clothing detail
+    zimage_turbo: wearing distressed maxi dress
+- id: wet_dress
+  label: wet dress
+  meta:
+    field: dress
+    group: Wet States
+  tags:
+    illustrious: wet dress
+    anima: wet dress, clothing detail
+    zimage_turbo: wearing wet dress
+- id: soaked_dress_clinging_to_body
+  label: soaked dress clinging to body
+  meta:
+    field: dress
+    group: Wet States
+  tags:
+    illustrious: soaked dress clinging to body
+    anima: soaked dress clinging to body, clothing detail
+    zimage_turbo: wearing soaked dress clinging to body
+- id: drenched_summer_dress
+  label: drenched summer dress
+  meta:
+    field: dress
+    group: Wet States
+  tags:
+    illustrious: drenched summer dress
+    anima: drenched summer dress, clothing detail
+    zimage_turbo: wearing drenched summer dress
+- id: wet_dress_stuck_to_skin
+  label: wet dress stuck to skin
+  meta:
+    field: dress
+    group: Wet States
+  tags:
+    illustrious: wet dress stuck to skin
+    anima: wet dress stuck to skin, clothing detail
+    zimage_turbo: wearing wet dress stuck to skin
+- id: completely_soaked_through_dress
+  label: completely soaked through dress
+  meta:
+    field: dress
+    group: Wet States
+  tags:
+    illustrious: completely soaked through dress
+    anima: completely soaked through dress, clothing detail
+    zimage_turbo: wearing completely soaked through dress
+- id: wet_ripped_dress
+  label: wet ripped dress
+  meta:
+    field: dress
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet ripped dress
+    anima: wet ripped dress, clothing detail
+    zimage_turbo: wearing wet ripped dress
+- id: soaked_torn_evening_dress
+  label: soaked torn evening dress
+  meta:
+    field: dress
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: soaked torn evening dress
+    anima: soaked torn evening dress, clothing detail
+    zimage_turbo: wearing soaked torn evening dress
+- id: wet_dress_with_holes_clinging_to_figure
+  label: wet dress with holes clinging to figure
+  meta:
+    field: dress
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet dress with holes clinging to figure
+    anima: wet dress with holes clinging to figure, clothing detail
+    zimage_turbo: wearing wet dress with holes clinging to figure
+- id: shiny_wet_satin_dress
+  label: shiny wet satin dress
+  meta:
+    field: dress
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: shiny wet satin dress
+    anima: shiny wet satin dress, clothing detail
+    zimage_turbo: wearing shiny wet satin dress
+- id: glossy_soaked_silk_dress
+  label: glossy soaked silk dress
+  meta:
+    field: dress
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glossy soaked silk dress
+    anima: glossy soaked silk dress, clothing detail
+    zimage_turbo: wearing glossy soaked silk dress
+- id: glistening_wet_cocktail_dress
+  label: glistening wet cocktail dress
+  meta:
+    field: dress
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glistening wet cocktail dress
+    anima: glistening wet cocktail dress, clothing detail
+    zimage_turbo: wearing glistening wet cocktail dress
+- id: wet_dress_effect
+  label: wet dress effect
+  meta:
+    field: dress
+    group: Other Conditions
+  tags:
+    illustrious: wet dress effect
+    anima: wet dress effect, clothing detail
+    zimage_turbo: wearing wet dress effect
+- id: rain_soaked_dress
+  label: rain-soaked dress
+  meta:
+    field: dress
+    group: Other Conditions
+  tags:
+    illustrious: rain-soaked dress
+    anima: rain-soaked dress, clothing detail
+    zimage_turbo: wearing rain-soaked dress
+- id: partially_unzipped_wet_dress
+  label: partially unzipped wet dress
+  meta:
+    field: dress
+    group: Other Conditions
+  tags:
+    illustrious: partially unzipped wet dress
+    anima: partially unzipped wet dress, clothing detail
+    zimage_turbo: wearing partially unzipped wet dress
+- id: sweat_drenched_dress
+  label: sweat-drenched dress
+  meta:
+    field: dress
+    group: Other Conditions
+  tags:
+    illustrious: sweat-drenched dress
+    anima: sweat-drenched dress, clothing detail
+    zimage_turbo: wearing sweat-drenched dress
+- id: ripped_jeans
+  label: ripped jeans
+  meta:
+    field: bottom
+    group: Damage States
+  tags:
+    illustrious: ripped jeans
+    anima: ripped jeans, clothing detail
+    zimage_turbo: wearing ripped jeans
+- id: torn_black_jeans
+  label: torn black jeans
+  meta:
+    field: bottom
+    group: Damage States
+  tags:
+    illustrious: torn black jeans
+    anima: torn black jeans, clothing detail
+    zimage_turbo: wearing torn black jeans
+- id: jeans_with_holes_on_knees
+  label: jeans with holes on knees
+  meta:
+    field: bottom
+    group: Damage States
+  tags:
+    illustrious: jeans with holes on knees
+    anima: jeans with holes on knees, clothing detail
+    zimage_turbo: wearing jeans with holes on knees
+- id: heavily_ripped_distressed_jeans
+  label: heavily ripped distressed jeans
+  meta:
+    field: bottom
+    group: Damage States
+  tags:
+    illustrious: heavily ripped distressed jeans
+    anima: heavily ripped distressed jeans, clothing detail
+    zimage_turbo: wearing heavily ripped distressed jeans
+- id: jeans_with_large_tears
+  label: jeans with large tears
+  meta:
+    field: bottom
+    group: Damage States
+  tags:
+    illustrious: jeans with large tears
+    anima: jeans with large tears, clothing detail
+    zimage_turbo: wearing jeans with large tears
+- id: wet_jeans
+  label: wet jeans
+  meta:
+    field: bottom
+    group: Wet States
+  tags:
+    illustrious: wet jeans
+    anima: wet jeans, clothing detail
+    zimage_turbo: wearing wet jeans
+- id: soaked_jeans_clinging_to_legs
+  label: soaked jeans clinging to legs
+  meta:
+    field: bottom
+    group: Wet States
+  tags:
+    illustrious: soaked jeans clinging to legs
+    anima: soaked jeans clinging to legs, clothing detail
+    zimage_turbo: wearing soaked jeans clinging to legs
+- id: drenched_denim_pants
+  label: drenched denim pants
+  meta:
+    field: bottom
+    group: Wet States
+  tags:
+    illustrious: drenched denim pants
+    anima: drenched denim pants, clothing detail
+    zimage_turbo: wearing drenched denim pants
+- id: wet_jeans_stuck_to_skin
+  label: wet jeans stuck to skin
+  meta:
+    field: bottom
+    group: Wet States
+  tags:
+    illustrious: wet jeans stuck to skin
+    anima: wet jeans stuck to skin, clothing detail
+    zimage_turbo: wearing wet jeans stuck to skin
+- id: rain_soaked_jeans
+  label: rain-soaked jeans
+  meta:
+    field: bottom
+    group: Wet States
+  tags:
+    illustrious: rain-soaked jeans
+    anima: rain-soaked jeans, clothing detail
+    zimage_turbo: wearing rain-soaked jeans
+- id: wet_ripped_jeans
+  label: wet ripped jeans
+  meta:
+    field: bottom
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet ripped jeans
+    anima: wet ripped jeans, clothing detail
+    zimage_turbo: wearing wet ripped jeans
+- id: soaked_torn_jeans
+  label: soaked torn jeans
+  meta:
+    field: bottom
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: soaked torn jeans
+    anima: soaked torn jeans, clothing detail
+    zimage_turbo: wearing soaked torn jeans
+- id: wet_jeans_with_holes
+  label: wet jeans with holes
+  meta:
+    field: bottom
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet jeans with holes
+    anima: wet jeans with holes, clothing detail
+    zimage_turbo: wearing wet jeans with holes
+- id: drenched_ripped_denim_clinging_to_legs
+  label: drenched ripped denim clinging to legs
+  meta:
+    field: bottom
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: drenched ripped denim clinging to legs
+    anima: drenched ripped denim clinging to legs, clothing detail
+    zimage_turbo: wearing drenched ripped denim clinging to legs
+- id: shiny_wet_leather_pants
+  label: shiny wet leather pants
+  meta:
+    field: bottom
+    group: Shiny / Glossy States
+  tags:
+    illustrious: shiny wet leather pants
+    anima: shiny wet leather pants, clothing detail
+    zimage_turbo: wearing shiny wet leather pants
+- id: glossy_soaked_jeans
+  label: glossy soaked jeans
+  meta:
+    field: bottom
+    group: Shiny / Glossy States
+  tags:
+    illustrious: glossy soaked jeans
+    anima: glossy soaked jeans, clothing detail
+    zimage_turbo: wearing glossy soaked jeans
+- id: glistening_wet_coated_denim
+  label: glistening wet coated denim
+  meta:
+    field: bottom
+    group: Shiny / Glossy States
+  tags:
+    illustrious: glistening wet coated denim
+    anima: glistening wet coated denim, clothing detail
+    zimage_turbo: wearing glistening wet coated denim
+- id: faded_and_ripped_jeans
+  label: faded and ripped jeans
+  meta:
+    field: bottom
+    group: Other Conditions
+  tags:
+    illustrious: faded and ripped jeans
+    anima: faded and ripped jeans, clothing detail
+    zimage_turbo: wearing faded and ripped jeans
+- id: dirty_wet_jeans
+  label: dirty wet jeans
+  meta:
+    field: bottom
+    group: Other Conditions
+  tags:
+    illustrious: dirty wet jeans
+    anima: dirty wet jeans, clothing detail
+    zimage_turbo: wearing dirty wet jeans
+- id: over_stretched_wet_jeans
+  label: over-stretched wet jeans
+  meta:
+    field: bottom
+    group: Other Conditions
+  tags:
+    illustrious: over-stretched wet jeans
+    anima: over-stretched wet jeans, clothing detail
+    zimage_turbo: wearing over-stretched wet jeans
+- id: ripped_leather_jacket
+  label: ripped leather jacket
+  meta:
+    field: jacket
+    group: Damage States
+  tags:
+    illustrious: ripped leather jacket
+    anima: ripped leather jacket, clothing detail
+    zimage_turbo: wearing ripped leather jacket
+- id: torn_coat
+  label: torn coat
+  meta:
+    field: jacket
+    group: Damage States
+  tags:
+    illustrious: torn coat
+    anima: torn coat, clothing detail
+    zimage_turbo: wearing torn coat
+- id: jacket_with_holes
+  label: jacket with holes
+  meta:
+    field: jacket
+    group: Damage States
+  tags:
+    illustrious: jacket with holes
+    anima: jacket with holes, clothing detail
+    zimage_turbo: wearing jacket with holes
+- id: distressed_denim_jacket
+  label: distressed denim jacket
+  meta:
+    field: jacket
+    group: Damage States
+  tags:
+    illustrious: distressed denim jacket
+    anima: distressed denim jacket, clothing detail
+    zimage_turbo: wearing distressed denim jacket
+- id: partially_torn_trench_coat
+  label: partially torn trench coat
+  meta:
+    field: jacket
+    group: Damage States
+  tags:
+    illustrious: partially torn trench coat
+    anima: partially torn trench coat, clothing detail
+    zimage_turbo: wearing partially torn trench coat
+- id: wet_leather_jacket
+  label: wet leather jacket
+  meta:
+    field: jacket
+    group: Wet States
+  tags:
+    illustrious: wet leather jacket
+    anima: wet leather jacket, clothing detail
+    zimage_turbo: wearing wet leather jacket
+- id: soaked_coat
+  label: soaked coat
+  meta:
+    field: jacket
+    group: Wet States
+  tags:
+    illustrious: soaked coat
+    anima: soaked coat, clothing detail
+    zimage_turbo: wearing soaked coat
+- id: drenched_raincoat
+  label: drenched raincoat
+  meta:
+    field: jacket
+    group: Wet States
+  tags:
+    illustrious: drenched raincoat
+    anima: drenched raincoat, clothing detail
+    zimage_turbo: wearing drenched raincoat
+- id: wet_jacket_clinging_to_body
+  label: wet jacket clinging to body
+  meta:
+    field: jacket
+    group: Wet States
+  tags:
+    illustrious: wet jacket clinging to body
+    anima: wet jacket clinging to body, clothing detail
+    zimage_turbo: wearing wet jacket clinging to body
+- id: completely_soaked_outerwear
+  label: completely soaked outerwear
+  meta:
+    field: jacket
+    group: Wet States
+  tags:
+    illustrious: completely soaked outerwear
+    anima: completely soaked outerwear, clothing detail
+    zimage_turbo: wearing completely soaked outerwear
+- id: wet_ripped_leather_jacket
+  label: wet ripped leather jacket
+  meta:
+    field: jacket
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet ripped leather jacket
+    anima: wet ripped leather jacket, clothing detail
+    zimage_turbo: wearing wet ripped leather jacket
+- id: soaked_torn_coat
+  label: soaked torn coat
+  meta:
+    field: jacket
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: soaked torn coat
+    anima: soaked torn coat, clothing detail
+    zimage_turbo: wearing soaked torn coat
+- id: wet_jacket_with_holes
+  label: wet jacket with holes
+  meta:
+    field: jacket
+    group: Wet + Ripped Combinations
+  tags:
+    illustrious: wet jacket with holes
+    anima: wet jacket with holes, clothing detail
+    zimage_turbo: wearing wet jacket with holes
+- id: shiny_wet_leather_jacket
+  label: shiny wet leather jacket
+  meta:
+    field: jacket
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: shiny wet leather jacket
+    anima: shiny wet leather jacket, clothing detail
+    zimage_turbo: wearing shiny wet leather jacket
+- id: glossy_soaked_coat
+  label: glossy soaked coat
+  meta:
+    field: jacket
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glossy soaked coat
+    anima: glossy soaked coat, clothing detail
+    zimage_turbo: wearing glossy soaked coat
+- id: glistening_wet_raincoat
+  label: glistening wet raincoat
+  meta:
+    field: jacket
+    group: Shiny / Glossy Wet States
+  tags:
+    illustrious: glistening wet raincoat
+    anima: glistening wet raincoat, clothing detail
+    zimage_turbo: wearing glistening wet raincoat
+- id: heavy_wet_coat
+  label: heavy wet coat
+  meta:
+    field: jacket
+    group: Other Conditions
+  tags:
+    illustrious: heavy wet coat
+    anima: heavy wet coat, clothing detail
+    zimage_turbo: wearing heavy wet coat
+- id: rain_drenched_jacket
+  label: rain-drenched jacket
+  meta:
+    field: jacket
+    group: Other Conditions
+  tags:
+    illustrious: rain-drenched jacket
+    anima: rain-drenched jacket, clothing detail
+    zimage_turbo: wearing rain-drenched jacket
+- id: wet_and_dirty_outerwear
+  label: wet and dirty outerwear
+  meta:
+    field: jacket
+    group: Other Conditions
+  tags:
+    illustrious: wet and dirty outerwear
+    anima: wet and dirty outerwear, clothing detail
+    zimage_turbo: wearing wet and dirty outerwear
+- id: partially_open_wet_coat
+  label: partially open wet coat
+  meta:
+    field: jacket
+    group: Other Conditions
+  tags:
+    illustrious: partially open wet coat
+    anima: partially open wet coat, clothing detail
+    zimage_turbo: wearing partially open wet coat

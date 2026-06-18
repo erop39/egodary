@@ -1,0 +1,87 @@
+groups:
+  indoor:
+  - bedroom
+  - luxury_apartment
+  - office
+  - library
+  - cyber_lab
+  - classroom
+  - temple
+  - gothic_castle
+  - bathhouse
+  - spaceship_interior
+  - coffee_shop
+  - bakery
+  - bookstore
+  - shopping_mall
+  - cinema
+  - arcade
+  - gym
+  - spa
+  - hotel_suite
+  - penthouse
+  - luxury_villa
+  - rooftop_infinity_pool
+  - private_island
+  - wine_cellar
+  - royal_palace
+  - luxury_casino
+  outdoor:
+  - city_street
+  - rooftop
+  - park
+  - beach
+  - forest
+  - bamboo_grove
+  - mountain
+  - desert
+  - snowy_field
+  - flower_garden
+  fantasy:
+  - floating_islands
+  - ancient_ruins
+  - elven_forest
+  - crystal_cave
+  - dragon_lair
+  - magical_academy
+  cyberpunk:
+  - neon_alley
+  - megacity_street
+  - datacenter
+  - holographic_market
+  - rainy_backstreet
+  space:
+  - space_station
+  - spaceship_bridge
+  - alien_planet
+  - zero_g_chamber
+  - observation_deck
+  transport:
+  - sports_car
+  - supercar
+  - classic_car
+  - muscle_car
+  - luxury_sedan
+  - convertible
+  - drift_car
+  - cyberpunk_vehicle
+  - luxury_train_cabin
+  - high_speed_train
+  - subway_train
+  - old_steam_train
+  - orient_express
+  - private_jet
+  - airliner_cabin
+  - fighter_jet
+  - helicopter_cockpit
+  - airship
+  - luxury_yacht
+  - sailing_yacht
+  - cruise_ship
+  - pirate_ship
+  - fishing_boat
+  - submarine
+  - starship_bridge
+  - escape_pod
+  - hangar_bay
+  - orbital_station

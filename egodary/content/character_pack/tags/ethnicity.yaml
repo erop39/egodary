@@ -1,0 +1,99 @@
+id: character.ethnicity
+title: Ethnicity
+items:
+- id: caucasian
+  label: Caucasian
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: caucasian
+    anima: caucasian, detailed body
+    zimage_turbo: with caucasian
+- id: east_asian
+  label: East Asian
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: east asian
+    anima: east asian, detailed body
+    zimage_turbo: with east asian
+- id: southeast_asian
+  label: Southeast Asian
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: southeast asian
+    anima: southeast asian, detailed body
+    zimage_turbo: with southeast asian
+- id: south_asian
+  label: South Asian
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: south asian
+    anima: south asian, detailed body
+    zimage_turbo: with south asian
+- id: latina
+  label: Latina
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: latina
+    anima: latina, detailed body
+    zimage_turbo: with latina
+- id: black__african
+  label: Black / African
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: black / african
+    anima: black / african, detailed body
+    zimage_turbo: with black / african
+- id: mixed
+  label: Mixed
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: mixed
+    anima: mixed, detailed body
+    zimage_turbo: with mixed
+- id: arab__middle_eastern
+  label: Arab / Middle Eastern
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: arab / middle eastern
+    anima: arab / middle eastern, detailed body
+    zimage_turbo: with arab / middle eastern
+- id: mediterranean
+  label: Mediterranean
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: mediterranean
+    anima: mediterranean, detailed body
+    zimage_turbo: with mediterranean
+- id: slavic
+  label: Slavic
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: slavic
+    anima: slavic, detailed body
+    zimage_turbo: with slavic
+- id: nordic
+  label: Nordic
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: nordic
+    anima: nordic, detailed body
+    zimage_turbo: with nordic
+- id: eurasian
+  label: Eurasian
+  meta:
+    subgroup: ethnicity
+  tags:
+    illustrious: eurasian
+    anima: eurasian, detailed body
+    zimage_turbo: with eurasian

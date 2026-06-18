@@ -1,0 +1,251 @@
+id: outfit.jacket
+title: Jacket
+items:
+- id: none
+  label: None (no jacket)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: no jacket
+    anima: no jacket
+    zimage_turbo: without jacket
+- id: cropped_denim_jacket
+  label: Cropped Denim Jacket
+  tags:
+    illustrious: cropped denim jacket
+    anima: cropped denim jacket, styled outfit
+    zimage_turbo: wearing cropped denim jacket
+  meta:
+    subgroup: cropped
+- id: cropped_leather_jacket
+  label: Cropped Leather Jacket
+  tags:
+    illustrious: cropped leather jacket
+    anima: cropped leather jacket, styled outfit
+    zimage_turbo: wearing cropped leather jacket
+  meta:
+    subgroup: cropped
+- id: cropped_latex_jacket
+  label: Cropped Latex Jacket
+  tags:
+    illustrious: cropped latex jacket
+    anima: cropped latex jacket, styled outfit
+    zimage_turbo: wearing cropped latex jacket
+  meta:
+    subgroup: cropped
+- id: cropped_vinyl_jacket
+  label: Cropped Vinyl Jacket
+  tags:
+    illustrious: cropped vinyl jacket
+    anima: cropped vinyl jacket, styled outfit
+    zimage_turbo: wearing cropped vinyl jacket
+  meta:
+    subgroup: cropped
+- id: cropped_biker_jacket
+  label: Cropped Biker Jacket
+  tags:
+    illustrious: cropped biker jacket
+    anima: cropped biker jacket, styled outfit
+    zimage_turbo: wearing cropped biker jacket
+  meta:
+    subgroup: cropped
+- id: cropped_harness_jacket
+  label: Cropped Harness Jacket
+  tags:
+    illustrious: cropped harness jacket
+    anima: cropped harness jacket, styled outfit
+    zimage_turbo: wearing cropped harness jacket
+  meta:
+    subgroup: cropped
+- id: cropped_bolero_jacket
+  label: Cropped Bolero Jacket
+  tags:
+    illustrious: cropped bolero jacket
+    anima: cropped bolero jacket, styled outfit
+    zimage_turbo: wearing cropped bolero jacket
+  meta:
+    subgroup: cropped
+- id: cropped_open_front_jacket
+  label: Cropped Open Front Jacket
+  tags:
+    illustrious: cropped open front jacket
+    anima: cropped open front jacket, styled outfit
+    zimage_turbo: wearing cropped open front jacket
+  meta:
+    subgroup: cropped
+- id: long_leather_coat
+  label: Long Leather Coat
+  tags:
+    illustrious: long leather coat
+    anima: long leather coat, styled outfit
+    zimage_turbo: wearing long leather coat
+  meta:
+    subgroup: long_dramatic
+- id: long_latex_coat
+  label: Long Latex Coat
+  tags:
+    illustrious: long latex coat
+    anima: long latex coat, styled outfit
+    zimage_turbo: wearing long latex coat
+  meta:
+    subgroup: long_dramatic
+- id: dramatic_cape_jacket
+  label: Dramatic Cape Jacket
+  tags:
+    illustrious: dramatic cape jacket
+    anima: dramatic cape jacket, styled outfit
+    zimage_turbo: wearing dramatic cape jacket
+  meta:
+    subgroup: long_dramatic
+- id: long_vinyl_trench
+  label: Long Vinyl Trench
+  tags:
+    illustrious: long vinyl trench
+    anima: long vinyl trench, styled outfit
+    zimage_turbo: wearing long vinyl trench
+  meta:
+    subgroup: long_dramatic
+- id: floor_length_leather
+  label: Floor Length Leather
+  tags:
+    illustrious: floor length leather
+    anima: floor length leather, styled outfit
+    zimage_turbo: wearing floor length leather
+  meta:
+    subgroup: long_dramatic
+- id: long_sheer_coat
+  label: Long Sheer Coat
+  tags:
+    illustrious: long sheer coat
+    anima: long sheer coat, styled outfit
+    zimage_turbo: wearing long sheer coat
+  meta:
+    subgroup: long_dramatic
+- id: long_wetlook_coat
+  label: Long Wetlook Coat
+  tags:
+    illustrious: long wetlook coat
+    anima: long wetlook coat, styled outfit
+    zimage_turbo: wearing long wetlook coat
+  meta:
+    subgroup: long_dramatic
+- id: long_harness_coat
+  label: Long Harness Coat
+  tags:
+    illustrious: long harness coat
+    anima: long harness coat, styled outfit
+    zimage_turbo: wearing long harness coat
+  meta:
+    subgroup: long_dramatic
+- id: shiny_black_leather_jacket
+  label: Shiny Black Leather Jacket
+  tags:
+    illustrious: shiny black leather jacket
+    anima: shiny black leather jacket, styled outfit
+    zimage_turbo: wearing shiny black leather jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: red_latex_jacket
+  label: Red Latex Jacket
+  tags:
+    illustrious: red latex jacket
+    anima: red latex jacket, styled outfit
+    zimage_turbo: wearing red latex jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: vinyl_biker_jacket
+  label: Vinyl Biker Jacket
+  tags:
+    illustrious: vinyl biker jacket
+    anima: vinyl biker jacket, styled outfit
+    zimage_turbo: wearing vinyl biker jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: wetlook_leather_jacket
+  label: Wetlook Leather Jacket
+  tags:
+    illustrious: wetlook leather jacket
+    anima: wetlook leather jacket, styled outfit
+    zimage_turbo: wearing wetlook leather jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: strappy_leather_jacket
+  label: Strappy Leather Jacket
+  tags:
+    illustrious: strappy leather jacket
+    anima: strappy leather jacket, styled outfit
+    zimage_turbo: wearing strappy leather jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: harness_detail_jacket
+  label: Harness Detail Jacket
+  tags:
+    illustrious: harness detail jacket
+    anima: harness detail jacket, styled outfit
+    zimage_turbo: wearing harness detail jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: open_front_latex_jacket
+  label: Open Front Latex Jacket
+  tags:
+    illustrious: open front latex jacket
+    anima: open front latex jacket, styled outfit
+    zimage_turbo: wearing open front latex jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: bondage_style_jacket
+  label: Bondage Style Jacket
+  tags:
+    illustrious: bondage style jacket
+    anima: bondage style jacket, styled outfit
+    zimage_turbo: wearing bondage style jacket
+  meta:
+    subgroup: leather_latex_fetish
+- id: sheer_mesh_jacket
+  label: Sheer Mesh Jacket
+  tags:
+    illustrious: sheer mesh jacket
+    anima: sheer mesh jacket, styled outfit
+    zimage_turbo: wearing sheer mesh jacket
+  meta:
+    subgroup: sheer_revealing
+- id: see_through_vinyl_jacket
+  label: See-Through Vinyl Jacket
+  tags:
+    illustrious: see-through vinyl jacket
+    anima: see-through vinyl jacket, styled outfit
+    zimage_turbo: wearing see-through vinyl jacket
+  meta:
+    subgroup: sheer_revealing
+- id: lace_long_jacket
+  label: Lace Long Jacket
+  tags:
+    illustrious: lace long jacket
+    anima: lace long jacket, styled outfit
+    zimage_turbo: wearing lace long jacket
+  meta:
+    subgroup: sheer_revealing
+- id: fishnet_outer_layer
+  label: Fishnet Outer Layer
+  tags:
+    illustrious: fishnet outer layer
+    anima: fishnet outer layer, styled outfit
+    zimage_turbo: wearing fishnet outer layer
+  meta:
+    subgroup: sheer_revealing
+- id: transparent_raincoat_style
+  label: Transparent Raincoat Style
+  tags:
+    illustrious: transparent raincoat style
+    anima: transparent raincoat style, styled outfit
+    zimage_turbo: wearing transparent raincoat style
+  meta:
+    subgroup: sheer_revealing
+- id: sheer_open_jacket
+  label: Sheer Open Jacket
+  tags:
+    illustrious: sheer open jacket
+    anima: sheer open jacket, styled outfit
+    zimage_turbo: wearing sheer open jacket
+  meta:
+    subgroup: sheer_revealing

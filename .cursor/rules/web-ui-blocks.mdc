@@ -1,0 +1,65 @@
+---
+description: Отступы и вложенность UI-блоков eGOdary (index.html + app.css)
+globs: egodary/web/static/**/*
+alwaysApply: false
+---
+
+# eGOdary — правила вёрстки новых блоков
+
+При добавлении карточек/секций в веб-UI **не ломай существующий ритм отступов**.
+
+## Вкладки с деревом (Style, Character, Outfit, …)
+
+Структура панели:
+
+```html
+<section class="panel" data-panel="…">
+  <div class="card">…опциональный верхний блок…</div>
+  <div class="card">…ещё один блок…</div>   <!-- margin-top: 16px от соседа -->
+  <div id="style-content">                  <!-- или сразу .outfit-layout -->
+    <div class="outfit-layout">…</div>
+  </div>
+</section>
+```
+
+- Соседние **прямые дети** `.panel`: `.card`, `#style-content`, `.outfit-layout` — между ними **16px** (`margin-top` через селекторы в `app.css`, блок ~485).
+- После добавления новой `.card` между существующими — **обнови CSS**, если селектор `+` перестал срабатывать. Уже есть: `.panel > .card + .card`.
+- Внутри `#style-content > .outfit-layout` **не добавляй** `margin-top` (правило сбрасывает в 0).
+- Карточка: класс `.card`, `padding: 16px`, без лишних внешних margin у корня.
+
+## Подблок внутри одной карточки
+
+Если блок логически часть той же карточки (не отдельная карточка):
+
+```html
+<div class="card">
+  …
+  <div class="card-subsection">…</div>
+</div>
+```
+
+```css
+.card-subsection {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+```
+
+## Advanced и сетки
+
+- Используй `.card-grid` (`gap: 16px`) — не дублируй margin вручную.
+- `span-2` — для широких карточек на всю сетку.
+
+## Типографика и контролы
+
+- Заголовок: `.card-title` (uppercase, 12px, `margin-bottom: 12px`).
+- Подсказка: `.card-hint` (`margin-bottom: 12px`).
+- Переключатели On/Off: `.chip-row` + `renderChips(…, { showControls: false })`.
+- Не добавляй произвольные `margin: 10px 0` на корневые элементы карточки — опирайся на `.card-hint` и gap у списков.
+
+## Чеклист перед коммитом UI
+
+1. Новый блок — сосед или вложение? Выбери паттерн выше.
+2. Проверь отступ 16px до соседа сверху/снизу на вкладке.
+3. Сверь с соседней вкладкой (Character: card → outfit-layout).

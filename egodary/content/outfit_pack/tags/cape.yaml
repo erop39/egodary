@@ -1,0 +1,235 @@
+id: outfit.cape
+title: Cape
+items:
+- id: none
+  label: None (no cape)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: no cape
+    anima: no cape
+    zimage_turbo: without cape
+- id: long_flowing_cape
+  label: Long Flowing Cape
+  tags:
+    illustrious: long flowing cape
+    anima: long flowing cape, styled outfit
+    zimage_turbo: wearing long flowing cape
+  meta:
+    subgroup: long_dramatic
+- id: latex_long_cape
+  label: Latex Long Cape
+  tags:
+    illustrious: latex long cape
+    anima: latex long cape, styled outfit
+    zimage_turbo: wearing latex long cape
+  meta:
+    subgroup: long_dramatic
+- id: vinyl_dramatic_cape
+  label: Vinyl Dramatic Cape
+  tags:
+    illustrious: vinyl dramatic cape
+    anima: vinyl dramatic cape, styled outfit
+    zimage_turbo: wearing vinyl dramatic cape
+  meta:
+    subgroup: long_dramatic
+- id: sheer_long_cape
+  label: Sheer Long Cape
+  tags:
+    illustrious: sheer long cape
+    anima: sheer long cape, styled outfit
+    zimage_turbo: wearing sheer long cape
+  meta:
+    subgroup: long_dramatic
+- id: wetlook_long_cape
+  label: Wetlook Long Cape
+  tags:
+    illustrious: wetlook long cape
+    anima: wetlook long cape, styled outfit
+    zimage_turbo: wearing wetlook long cape
+  meta:
+    subgroup: long_dramatic
+- id: harness_detail_cape
+  label: Harness Detail Cape
+  tags:
+    illustrious: harness detail cape
+    anima: harness detail cape, styled outfit
+    zimage_turbo: wearing harness detail cape
+  meta:
+    subgroup: long_dramatic
+- id: open_front_long_cape
+  label: Open Front Long Cape
+  tags:
+    illustrious: open front long cape
+    anima: open front long cape, styled outfit
+    zimage_turbo: wearing open front long cape
+  meta:
+    subgroup: long_dramatic
+- id: floor_length_cape
+  label: Floor Length Cape
+  tags:
+    illustrious: floor length cape
+    anima: floor length cape, styled outfit
+    zimage_turbo: wearing floor length cape
+  meta:
+    subgroup: long_dramatic
+- id: short_capelet
+  label: Short Capelet
+  tags:
+    illustrious: short capelet
+    anima: short capelet, styled outfit
+    zimage_turbo: wearing short capelet
+  meta:
+    subgroup: short_cropped
+- id: cropped_harness_cape
+  label: Cropped Harness Cape
+  tags:
+    illustrious: cropped harness cape
+    anima: cropped harness cape, styled outfit
+    zimage_turbo: wearing cropped harness cape
+  meta:
+    subgroup: short_cropped
+- id: micro_cape
+  label: Micro Cape
+  tags:
+    illustrious: micro cape
+    anima: micro cape, styled outfit
+    zimage_turbo: wearing micro cape
+  meta:
+    subgroup: short_cropped
+- id: bolero_cape
+  label: Bolero Cape
+  tags:
+    illustrious: bolero cape
+    anima: bolero cape, styled outfit
+    zimage_turbo: wearing bolero cape
+  meta:
+    subgroup: short_cropped
+- id: short_sheer_capelet
+  label: Short Sheer Capelet
+  tags:
+    illustrious: short sheer capelet
+    anima: short sheer capelet, styled outfit
+    zimage_turbo: wearing short sheer capelet
+  meta:
+    subgroup: short_cropped
+- id: vinyl_short_cape
+  label: Vinyl Short Cape
+  tags:
+    illustrious: vinyl short cape
+    anima: vinyl short cape, styled outfit
+    zimage_turbo: wearing vinyl short cape
+  meta:
+    subgroup: short_cropped
+- id: hooded_latex_cape
+  label: Hooded Latex Cape
+  tags:
+    illustrious: hooded latex cape
+    anima: hooded latex cape, styled outfit
+    zimage_turbo: wearing hooded latex cape
+  meta:
+    subgroup: hooded_fetish
+- id: hooded_vinyl_cape
+  label: Hooded Vinyl Cape
+  tags:
+    illustrious: hooded vinyl cape
+    anima: hooded vinyl cape, styled outfit
+    zimage_turbo: wearing hooded vinyl cape
+  meta:
+    subgroup: hooded_fetish
+- id: sheer_hooded_cape
+  label: Sheer Hooded Cape
+  tags:
+    illustrious: sheer hooded cape
+    anima: sheer hooded cape, styled outfit
+    zimage_turbo: wearing sheer hooded cape
+  meta:
+    subgroup: hooded_fetish
+- id: harness_hooded_cape
+  label: Harness Hooded Cape
+  tags:
+    illustrious: harness hooded cape
+    anima: harness hooded cape, styled outfit
+    zimage_turbo: wearing harness hooded cape
+  meta:
+    subgroup: hooded_fetish
+- id: wetlook_hooded_cape
+  label: Wetlook Hooded Cape
+  tags:
+    illustrious: wetlook hooded cape
+    anima: wetlook hooded cape, styled outfit
+    zimage_turbo: wearing wetlook hooded cape
+  meta:
+    subgroup: hooded_fetish
+- id: bondage_hooded_cape
+  label: Bondage Hooded Cape
+  tags:
+    illustrious: bondage hooded cape
+    anima: bondage hooded cape, styled outfit
+    zimage_turbo: wearing bondage hooded cape
+  meta:
+    subgroup: hooded_fetish
+- id: strappy_hooded_cape
+  label: Strappy Hooded Cape
+  tags:
+    illustrious: strappy hooded cape
+    anima: strappy hooded cape, styled outfit
+    zimage_turbo: wearing strappy hooded cape
+  meta:
+    subgroup: hooded_fetish
+- id: open_hooded_cape
+  label: Open Hooded Cape
+  tags:
+    illustrious: open hooded cape
+    anima: open hooded cape, styled outfit
+    zimage_turbo: wearing open hooded cape
+  meta:
+    subgroup: hooded_fetish
+- id: completely_sheer_cape
+  label: Completely Sheer Cape
+  tags:
+    illustrious: completely sheer cape
+    anima: completely sheer cape, styled outfit
+    zimage_turbo: wearing completely sheer cape
+  meta:
+    subgroup: sheer_revealing
+- id: see_through_mesh_cape
+  label: See-Through Mesh Cape
+  tags:
+    illustrious: see-through mesh cape
+    anima: see-through mesh cape, styled outfit
+    zimage_turbo: wearing see-through mesh cape
+  meta:
+    subgroup: sheer_revealing
+- id: lace_cape
+  label: Lace Cape
+  tags:
+    illustrious: lace cape
+    anima: lace cape, styled outfit
+    zimage_turbo: wearing lace cape
+  meta:
+    subgroup: sheer_revealing
+- id: fishnet_cape
+  label: Fishnet Cape
+  tags:
+    illustrious: fishnet cape
+    anima: fishnet cape, styled outfit
+    zimage_turbo: wearing fishnet cape
+  meta:
+    subgroup: sheer_revealing
+- id: transparent_vinyl_cape
+  label: Transparent Vinyl Cape
+  tags:
+    illustrious: transparent vinyl cape
+    anima: transparent vinyl cape, styled outfit
+    zimage_turbo: wearing transparent vinyl cape
+  meta:
+    subgroup: sheer_revealing
+- id: wet_sheer_cape
+  label: Wet Sheer Cape
+  tags:
+    illustrious: wet sheer cape
+    anima: wet sheer cape, styled outfit
+    zimage_turbo: wearing wet sheer cape
+  meta:
+    subgroup: sheer_revealing

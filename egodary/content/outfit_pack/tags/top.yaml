@@ -1,0 +1,483 @@
+id: outfit.top
+title: Top
+items:
+- id: none
+  label: None (no top)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: topless, bare breasts, no top
+    anima: topless, bare breasts, no top
+    zimage_turbo: topless with bare breasts and no top
+- id: black_harness_top
+  label: Black Harness Top
+  tags:
+    illustrious: black harness top
+    anima: black harness top, styled outfit
+    zimage_turbo: wearing black harness top
+  meta:
+    subgroup: harness_strappy
+- id: strappy_cage_top
+  label: Strappy Cage Top
+  tags:
+    illustrious: strappy cage top
+    anima: strappy cage top, styled outfit
+    zimage_turbo: wearing strappy cage top
+  meta:
+    subgroup: harness_strappy
+- id: bondage_harness_bra
+  label: Bondage Harness Bra
+  tags:
+    illustrious: bondage harness bra
+    anima: bondage harness bra, styled outfit
+    zimage_turbo: wearing bondage harness bra
+  meta:
+    subgroup: harness_strappy
+- id: multiple_strap_top
+  label: Multiple Strap Top
+  tags:
+    illustrious: multiple strap top
+    anima: multiple strap top, styled outfit
+    zimage_turbo: wearing multiple strap top
+  meta:
+    subgroup: harness_strappy
+- id: underboob_harness
+  label: Underboob Harness
+  tags:
+    illustrious: underboob harness
+    anima: underboob harness, styled outfit
+    zimage_turbo: wearing underboob harness
+  meta:
+    subgroup: harness_strappy
+- id: chest_harness_top
+  label: Chest Harness Top
+  tags:
+    illustrious: chest harness top
+    anima: chest harness top, styled outfit
+    zimage_turbo: wearing chest harness top
+  meta:
+    subgroup: harness_strappy
+- id: strappy_bralette
+  label: Strappy Bralette
+  tags:
+    illustrious: strappy bralette
+    anima: strappy bralette, styled outfit
+    zimage_turbo: wearing strappy bralette
+  meta:
+    subgroup: harness_strappy
+- id: open_cup_harness
+  label: Open Cup Harness
+  tags:
+    illustrious: open cup harness
+    anima: open cup harness, styled outfit
+    zimage_turbo: wearing open cup harness
+  meta:
+    subgroup: harness_strappy
+- id: full_body_harness_top
+  label: Full Body Harness Top
+  tags:
+    illustrious: full body harness top
+    anima: full body harness top, styled outfit
+    zimage_turbo: wearing full body harness top
+  meta:
+    subgroup: harness_strappy
+- id: minimal_strap_top
+  label: Minimal Strap Top
+  tags:
+    illustrious: minimal strap top
+    anima: minimal strap top, styled outfit
+    zimage_turbo: wearing minimal strap top
+  meta:
+    subgroup: harness_strappy
+- id: sheer_mesh_crop_top
+  label: Sheer Mesh Crop Top
+  tags:
+    illustrious: sheer mesh crop top
+    anima: sheer mesh crop top, styled outfit
+    zimage_turbo: wearing sheer mesh crop top
+  meta:
+    subgroup: sheer_crop
+- id: see_through_long_sleeve_crop
+  label: See-Through Long Sleeve Crop
+  tags:
+    illustrious: see-through long sleeve crop
+    anima: see-through long sleeve crop, styled outfit
+    zimage_turbo: wearing see-through long sleeve crop
+  meta:
+    subgroup: sheer_crop
+- id: lace_sheer_crop
+  label: Lace Sheer Crop
+  tags:
+    illustrious: lace sheer crop
+    anima: lace sheer crop, styled outfit
+    zimage_turbo: wearing lace sheer crop
+  meta:
+    subgroup: sheer_crop
+- id: transparent_vinyl_crop
+  label: Transparent Vinyl Crop
+  tags:
+    illustrious: transparent vinyl crop
+    anima: transparent vinyl crop, styled outfit
+    zimage_turbo: wearing transparent vinyl crop
+  meta:
+    subgroup: sheer_crop
+- id: fishnet_crop_top
+  label: Fishnet Crop Top
+  tags:
+    illustrious: fishnet crop top
+    anima: fishnet crop top, styled outfit
+    zimage_turbo: wearing fishnet crop top
+  meta:
+    subgroup: sheer_crop
+- id: sheer_off_shoulder_crop
+  label: Sheer Off-Shoulder Crop
+  tags:
+    illustrious: sheer off-shoulder crop
+    anima: sheer off-shoulder crop, styled outfit
+    zimage_turbo: wearing sheer off-shoulder crop
+  meta:
+    subgroup: sheer_crop
+- id: wetlook_sheer_crop
+  label: Wetlook Sheer Crop
+  tags:
+    illustrious: wetlook sheer crop
+    anima: wetlook sheer crop, styled outfit
+    zimage_turbo: wearing wetlook sheer crop
+  meta:
+    subgroup: sheer_crop
+- id: completely_transparent_crop
+  label: Completely Transparent Crop
+  tags:
+    illustrious: completely transparent crop
+    anima: completely transparent crop, styled outfit
+    zimage_turbo: wearing completely transparent crop
+  meta:
+    subgroup: sheer_crop
+- id: latex_bodysuit
+  label: Latex Bodysuit
+  tags:
+    illustrious: latex bodysuit
+    anima: latex bodysuit, styled outfit
+    zimage_turbo: wearing latex bodysuit
+  meta:
+    subgroup: bodysuits
+- id: strappy_bodysuit
+  label: Strappy Bodysuit
+  tags:
+    illustrious: strappy bodysuit
+    anima: strappy bodysuit, styled outfit
+    zimage_turbo: wearing strappy bodysuit
+  meta:
+    subgroup: bodysuits
+- id: high_cut_leotard
+  label: High Cut Leotard
+  tags:
+    illustrious: high cut leotard
+    anima: high cut leotard, styled outfit
+    zimage_turbo: wearing high cut leotard
+  meta:
+    subgroup: bodysuits
+- id: crotchless_bodysuit
+  label: Crotchless Bodysuit
+  tags:
+    illustrious: crotchless bodysuit
+    anima: crotchless bodysuit, styled outfit
+    zimage_turbo: wearing crotchless bodysuit
+  meta:
+    subgroup: bodysuits
+- id: vinyl_bodysuit
+  label: Vinyl Bodysuit
+  tags:
+    illustrious: vinyl bodysuit
+    anima: vinyl bodysuit, styled outfit
+    zimage_turbo: wearing vinyl bodysuit
+  meta:
+    subgroup: bodysuits
+- id: sheer_bodysuit
+  label: Sheer Bodysuit
+  tags:
+    illustrious: sheer bodysuit
+    anima: sheer bodysuit, styled outfit
+    zimage_turbo: wearing sheer bodysuit
+  meta:
+    subgroup: bodysuits
+- id: harness_bodysuit
+  label: Harness Bodysuit
+  tags:
+    illustrious: harness bodysuit
+    anima: harness bodysuit, styled outfit
+    zimage_turbo: wearing harness bodysuit
+  meta:
+    subgroup: bodysuits
+- id: open_front_bodysuit
+  label: Open Front Bodysuit
+  tags:
+    illustrious: open front bodysuit
+    anima: open front bodysuit, styled outfit
+    zimage_turbo: wearing open front bodysuit
+  meta:
+    subgroup: bodysuits
+- id: tight_latex_crop_top
+  label: Tight Latex Crop Top
+  tags:
+    illustrious: tight latex crop top
+    anima: tight latex crop top, styled outfit
+    zimage_turbo: wearing tight latex crop top
+  meta:
+    subgroup: latex_vinyl
+- id: glossy_vinyl_long_sleeve
+  label: Glossy Vinyl Long Sleeve
+  tags:
+    illustrious: glossy vinyl long sleeve
+    anima: glossy vinyl long sleeve, styled outfit
+    zimage_turbo: wearing glossy vinyl long sleeve
+  meta:
+    subgroup: latex_vinyl
+- id: latex_off_shoulder_top
+  label: Latex Off-Shoulder Top
+  tags:
+    illustrious: latex off-shoulder top
+    anima: latex off-shoulder top, styled outfit
+    zimage_turbo: wearing latex off-shoulder top
+  meta:
+    subgroup: latex_vinyl
+- id: vinyl_underboob_top
+  label: Vinyl Underboob Top
+  tags:
+    illustrious: vinyl underboob top
+    anima: vinyl underboob top, styled outfit
+    zimage_turbo: wearing vinyl underboob top
+  meta:
+    subgroup: latex_vinyl
+- id: latex_turtleneck_crop
+  label: Latex Turtleneck Crop
+  tags:
+    illustrious: latex turtleneck crop
+    anima: latex turtleneck crop, styled outfit
+    zimage_turbo: wearing latex turtleneck crop
+  meta:
+    subgroup: latex_vinyl
+- id: shiny_wetlook_top
+  label: Shiny Wetlook Top
+  tags:
+    illustrious: shiny wetlook top
+    anima: shiny wetlook top, styled outfit
+    zimage_turbo: wearing shiny wetlook top
+  meta:
+    subgroup: latex_vinyl
+- id: latex_keyhole_top
+  label: Latex Keyhole Top
+  tags:
+    illustrious: latex keyhole top
+    anima: latex keyhole top, styled outfit
+    zimage_turbo: wearing latex keyhole top
+  meta:
+    subgroup: latex_vinyl
+- id: vinyl_strappy_crop
+  label: Vinyl Strappy Crop
+  tags:
+    illustrious: vinyl strappy crop
+    anima: vinyl strappy crop, styled outfit
+    zimage_turbo: wearing vinyl strappy crop
+  meta:
+    subgroup: latex_vinyl
+- id: extreme_micro_crop
+  label: Extreme Micro Crop
+  tags:
+    illustrious: extreme micro crop
+    anima: extreme micro crop, styled outfit
+    zimage_turbo: wearing extreme micro crop
+  meta:
+    subgroup: micro_extreme
+- id: underboob_only_top
+  label: Underboob Only Top
+  tags:
+    illustrious: underboob only top
+    anima: underboob only top, styled outfit
+    zimage_turbo: wearing underboob only top
+  meta:
+    subgroup: micro_extreme
+- id: nipple_pasties__straps
+  label: Nipple Pasties + Straps
+  tags:
+    illustrious: nipple pasties + straps
+    anima: nipple pasties + straps, styled outfit
+    zimage_turbo: wearing nipple pasties + straps
+  meta:
+    subgroup: micro_extreme
+- id: micro_bandeau
+  label: Micro Bandeau
+  tags:
+    illustrious: micro bandeau
+    anima: micro bandeau, styled outfit
+    zimage_turbo: wearing micro bandeau
+  meta:
+    subgroup: micro_extreme
+- id: slingshot_top
+  label: Slingshot Top
+  tags:
+    illustrious: slingshot top
+    anima: slingshot top, styled outfit
+    zimage_turbo: wearing slingshot top
+  meta:
+    subgroup: micro_extreme
+- id: minimal_tape_top
+  label: Minimal Tape Top
+  tags:
+    illustrious: minimal tape top
+    anima: minimal tape top, styled outfit
+    zimage_turbo: wearing minimal tape top
+  meta:
+    subgroup: micro_extreme
+- id: transparent_white_shirt
+  label: Transparent White Shirt
+  tags:
+    illustrious: transparent white shirt
+    anima: transparent white shirt, styled outfit
+    zimage_turbo: wearing transparent white shirt
+  meta:
+    subgroup: transparent_sheer_tops
+- id: sheer_button_up_shirt
+  label: Sheer Button-Up Shirt
+  tags:
+    illustrious: sheer button-up shirt
+    anima: sheer button-up shirt, styled outfit
+    zimage_turbo: wearing sheer button-up shirt
+  meta:
+    subgroup: transparent_sheer_tops
+- id: see_through_blouse
+  label: See-Through Blouse
+  tags:
+    illustrious: see-through blouse
+    anima: see-through blouse, styled outfit
+    zimage_turbo: wearing see-through blouse
+  meta:
+    subgroup: transparent_sheer_tops
+- id: wet_transparent_shirt
+  label: Wet Transparent Shirt
+  tags:
+    illustrious: wet transparent shirt
+    anima: wet transparent shirt, styled outfit
+    zimage_turbo: wearing wet transparent shirt
+  meta:
+    subgroup: transparent_sheer_tops
+- id: transparent_school_shirt
+  label: Transparent School Shirt
+  tags:
+    illustrious: transparent school shirt
+    anima: transparent school shirt, styled outfit
+    zimage_turbo: wearing transparent school shirt
+  meta:
+    subgroup: transparent_sheer_tops
+- id: sheer_office_shirt
+  label: Sheer Office Shirt
+  tags:
+    illustrious: sheer office shirt
+    anima: sheer office shirt, styled outfit
+    zimage_turbo: wearing sheer office shirt
+  meta:
+    subgroup: transparent_sheer_tops
+- id: transparent_crop_top
+  label: Transparent Crop Top
+  tags:
+    illustrious: transparent crop top
+    anima: transparent crop top, styled outfit
+    zimage_turbo: wearing transparent crop top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: clear_plastic_crop_top
+  label: Clear Plastic Crop Top
+  tags:
+    illustrious: clear plastic crop top
+    anima: clear plastic crop top, styled outfit
+    zimage_turbo: wearing clear plastic crop top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: neon_transparent_crop_top
+  label: Neon Transparent Crop Top
+  tags:
+    illustrious: neon transparent crop top
+    anima: neon transparent crop top, styled outfit
+    zimage_turbo: wearing neon transparent crop top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: sheer_long_sleeve_crop_top
+  label: Sheer Long Sleeve Crop Top
+  tags:
+    illustrious: sheer long sleeve crop top
+    anima: sheer long sleeve crop top, styled outfit
+    zimage_turbo: wearing sheer long sleeve crop top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: sheer_turtleneck
+  label: Sheer Turtleneck
+  tags:
+    illustrious: sheer turtleneck
+    anima: sheer turtleneck, styled outfit
+    zimage_turbo: wearing sheer turtleneck
+  meta:
+    subgroup: transparent_sheer_tops
+- id: transparent_tank_top
+  label: Transparent Tank Top
+  tags:
+    illustrious: transparent tank top
+    anima: transparent tank top, styled outfit
+    zimage_turbo: wearing transparent tank top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: see_through_camisole
+  label: See-Through Camisole
+  tags:
+    illustrious: see-through camisole
+    anima: see-through camisole, styled outfit
+    zimage_turbo: wearing see-through camisole
+  meta:
+    subgroup: transparent_sheer_tops
+- id: sheer_off_shoulder_top
+  label: Sheer Off-Shoulder Top
+  tags:
+    illustrious: sheer off-shoulder top
+    anima: sheer off-shoulder top, styled outfit
+    zimage_turbo: wearing sheer off-shoulder top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: transparent_halter_top
+  label: Transparent Halter Top
+  tags:
+    illustrious: transparent halter top
+    anima: transparent halter top, styled outfit
+    zimage_turbo: wearing transparent halter top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: wet_see_through_t_shirt
+  label: Wet See-Through T-Shirt
+  tags:
+    illustrious: wet see-through t-shirt
+    anima: wet see-through t-shirt, styled outfit
+    zimage_turbo: wearing wet see-through t-shirt
+  meta:
+    subgroup: transparent_sheer_tops
+- id: sheer_mesh_long_sleeve_top
+  label: Sheer Mesh Long Sleeve Top
+  tags:
+    illustrious: sheer mesh long sleeve top
+    anima: sheer mesh long sleeve top, styled outfit
+    zimage_turbo: wearing sheer mesh long sleeve top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: transparent_vinyl_top
+  label: Transparent Vinyl Top
+  tags:
+    illustrious: transparent vinyl top
+    anima: transparent vinyl top, styled outfit
+    zimage_turbo: wearing transparent vinyl top
+  meta:
+    subgroup: transparent_sheer_tops
+- id: sheer_lace_top
+  label: Sheer Lace Top
+  tags:
+    illustrious: sheer lace top
+    anima: sheer lace top, styled outfit
+    zimage_turbo: wearing sheer lace top
+  meta:
+    subgroup: transparent_sheer_tops

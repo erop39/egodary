@@ -1,0 +1,251 @@
+id: outfit.legwear
+title: Legwear
+items:
+- id: none
+  label: None (no legwear)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: bare legs, no legwear
+    anima: bare legs, no legwear
+    zimage_turbo: with bare legs and no legwear
+- id: sheer_pantyhose
+  label: Sheer Pantyhose
+  tags:
+    illustrious: sheer pantyhose
+    anima: sheer pantyhose, styled outfit
+    zimage_turbo: wearing sheer pantyhose
+  meta:
+    subgroup: classic
+- id: opaque_black_tights
+  label: Opaque Black Tights
+  tags:
+    illustrious: opaque black tights
+    anima: opaque black tights, styled outfit
+    zimage_turbo: wearing opaque black tights
+  meta:
+    subgroup: classic
+- id: classic_fishnet_tights
+  label: Classic Fishnet Tights
+  tags:
+    illustrious: classic fishnet tights
+    anima: classic fishnet tights, styled outfit
+    zimage_turbo: wearing classic fishnet tights
+  meta:
+    subgroup: classic
+- id: lace_top_thigh_highs
+  label: Lace Top Thigh Highs
+  tags:
+    illustrious: lace top thigh highs
+    anima: lace top thigh highs, styled outfit
+    zimage_turbo: wearing lace top thigh highs
+  meta:
+    subgroup: classic
+- id: stay_up_stockings
+  label: Stay-Up Stockings
+  tags:
+    illustrious: stay-up stockings
+    anima: stay-up stockings, styled outfit
+    zimage_turbo: wearing stay-up stockings
+  meta:
+    subgroup: classic
+- id: garter_belt__stockings
+  label: Garter Belt + Stockings
+  tags:
+    illustrious: garter belt + stockings
+    anima: garter belt + stockings, styled outfit
+    zimage_turbo: wearing garter belt + stockings
+  meta:
+    subgroup: classic
+- id: fishnet_with_garter
+  label: Fishnet with Garter
+  tags:
+    illustrious: fishnet with garter
+    anima: fishnet with garter, styled outfit
+    zimage_turbo: wearing fishnet with garter
+  meta:
+    subgroup: classic
+- id: sheer_thigh_high_stockings
+  label: Sheer Thigh High Stockings
+  tags:
+    illustrious: sheer thigh high stockings
+    anima: sheer thigh high stockings, styled outfit
+    zimage_turbo: wearing sheer thigh high stockings
+  meta:
+    subgroup: classic
+- id: shiny_pantyhose
+  label: Shiny Pantyhose
+  tags:
+    illustrious: shiny pantyhose
+    anima: shiny pantyhose, styled outfit
+    zimage_turbo: wearing shiny pantyhose
+  meta:
+    subgroup: classic
+- id: latex_stockings
+  label: Latex Stockings
+  tags:
+    illustrious: latex stockings
+    anima: latex stockings, styled outfit
+    zimage_turbo: wearing latex stockings
+  meta:
+    subgroup: classic
+- id: vinyl_thigh_highs
+  label: Vinyl Thigh Highs
+  tags:
+    illustrious: vinyl thigh highs
+    anima: vinyl thigh highs, styled outfit
+    zimage_turbo: wearing vinyl thigh highs
+  meta:
+    subgroup: classic
+- id: ripped_fishnets
+  label: Ripped Fishnets
+  tags:
+    illustrious: ripped fishnets
+    anima: ripped fishnets, styled outfit
+    zimage_turbo: wearing ripped fishnets
+  meta:
+    subgroup: classic
+- id: patterned_sexy_tights
+  label: Patterned Sexy Tights
+  tags:
+    illustrious: patterned sexy tights
+    anima: patterned sexy tights, styled outfit
+    zimage_turbo: wearing patterned sexy tights
+  meta:
+    subgroup: classic
+- id: hold_up_lace_stockings
+  label: Hold-Up Lace Stockings
+  tags:
+    illustrious: hold-up lace stockings
+    anima: hold-up lace stockings, styled outfit
+    zimage_turbo: wearing hold-up lace stockings
+  meta:
+    subgroup: classic
+- id: cuban_heel_stockings
+  label: Cuban Heel Stockings
+  tags:
+    illustrious: cuban heel stockings
+    anima: cuban heel stockings, styled outfit
+    zimage_turbo: wearing cuban heel stockings
+  meta:
+    subgroup: classic
+- id: strappy_leg_harness
+  label: Strappy Leg Harness
+  tags:
+    illustrious: strappy leg harness
+    anima: strappy leg harness, styled outfit
+    zimage_turbo: wearing strappy leg harness
+  meta:
+    subgroup: classic
+- id: sheer_seamed_stockings
+  label: Sheer Seamed Stockings
+  tags:
+    illustrious: sheer seamed stockings
+    anima: sheer seamed stockings, styled outfit
+    zimage_turbo: wearing sheer seamed stockings
+  meta:
+    subgroup: classic
+- id: over_the_knee_fishnets
+  label: Over-the-Knee Fishnets
+  tags:
+    illustrious: over-the-knee fishnets
+    anima: over-the-knee fishnets, styled outfit
+    zimage_turbo: wearing over-the-knee fishnets
+  meta:
+    subgroup: classic
+- id: bondage_strap_legwear
+  label: Bondage Strap Legwear
+  tags:
+    illustrious: bondage strap legwear
+    anima: bondage strap legwear, styled outfit
+    zimage_turbo: wearing bondage strap legwear
+  meta:
+    subgroup: classic
+- id: wetlook_thigh_highs
+  label: Wetlook Thigh Highs
+  tags:
+    illustrious: wetlook thigh highs
+    anima: wetlook thigh highs, styled outfit
+    zimage_turbo: wearing wetlook thigh highs
+  meta:
+    subgroup: classic
+- id: neon_green_thigh_high_socks
+  label: Neon Green Thigh-High Socks
+  tags:
+    illustrious: neon green thigh-high socks
+    anima: neon green thigh-high socks, styled outfit
+    zimage_turbo: wearing neon green thigh-high socks
+  meta:
+    subgroup: neon_legwear
+- id: neon_pink_thigh_high_socks
+  label: Neon Pink Thigh-High Socks
+  tags:
+    illustrious: neon pink thigh-high socks
+    anima: neon pink thigh-high socks, styled outfit
+    zimage_turbo: wearing neon pink thigh-high socks
+  meta:
+    subgroup: neon_legwear
+- id: striped_neon_leg_warmers
+  label: Striped Neon Leg Warmers
+  tags:
+    illustrious: striped neon leg warmers
+    anima: striped neon leg warmers, styled outfit
+    zimage_turbo: wearing striped neon leg warmers
+  meta:
+    subgroup: neon_legwear
+- id: neon_green_and_black_thigh_highs
+  label: Neon Green and Black Thigh-Highs
+  tags:
+    illustrious: neon green and black thigh-highs
+    anima: neon green and black thigh-highs, styled outfit
+    zimage_turbo: wearing neon green and black thigh-highs
+  meta:
+    subgroup: neon_legwear
+- id: bright_neon_knee_high_socks
+  label: Bright Neon Knee-High Socks
+  tags:
+    illustrious: bright neon knee-high socks
+    anima: bright neon knee-high socks, styled outfit
+    zimage_turbo: wearing bright neon knee-high socks
+  meta:
+    subgroup: neon_legwear
+- id: neon_striped_thigh_highs
+  label: Neon Striped Thigh-Highs
+  tags:
+    illustrious: neon striped thigh-highs
+    anima: neon striped thigh-highs, styled outfit
+    zimage_turbo: wearing neon striped thigh-highs
+  meta:
+    subgroup: neon_legwear
+- id: glowing_neon_leg_warmers
+  label: Glowing Neon Leg Warmers
+  tags:
+    illustrious: glowing neon leg warmers
+    anima: glowing neon leg warmers, styled outfit
+    zimage_turbo: wearing glowing neon leg warmers
+  meta:
+    subgroup: neon_legwear
+- id: neon_green_over_the_knee_socks
+  label: Neon Green Over-the-Knee Socks
+  tags:
+    illustrious: neon green over-the-knee socks
+    anima: neon green over-the-knee socks, styled outfit
+    zimage_turbo: wearing neon green over-the-knee socks
+  meta:
+    subgroup: neon_legwear
+- id: two_tone_neon_socks
+  label: Two-Tone Neon Socks
+  tags:
+    illustrious: two-tone neon socks
+    anima: two-tone neon socks, styled outfit
+    zimage_turbo: wearing two-tone neon socks
+  meta:
+    subgroup: neon_legwear
+- id: neon_accent_thigh_highs
+  label: Neon Accent Thigh-Highs
+  tags:
+    illustrious: neon accent thigh-highs
+    anima: neon accent thigh-highs, styled outfit
+    zimage_turbo: wearing neon accent thigh-highs
+  meta:
+    subgroup: neon_legwear

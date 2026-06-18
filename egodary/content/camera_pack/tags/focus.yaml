@@ -1,0 +1,75 @@
+id: camera.focus
+title: Focus & Depth of Field
+items:
+- id: shallow_depth_of_field
+  label: Shallow Depth of Field
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: shallow depth of field
+    anima: shallow depth of field, cinematic framing
+    zimage_turbo: with shallow depth of field
+- id: deep_depth_of_field
+  label: Deep Depth of Field
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: deep depth of field
+    anima: deep depth of field, cinematic framing
+    zimage_turbo: with deep depth of field
+- id: sharp_focus_on_face
+  label: Sharp focus on face
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: sharp focus on face
+    anima: sharp focus on face, cinematic framing
+    zimage_turbo: with sharp focus on face
+- id: sharp_focus_on_eyes
+  label: Sharp focus on eyes
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: sharp focus on eyes
+    anima: sharp focus on eyes, cinematic framing
+    zimage_turbo: with sharp focus on eyes
+- id: focus_on_lips
+  label: Focus on lips
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: focus on lips
+    anima: focus on lips, cinematic framing
+    zimage_turbo: with focus on lips
+- id: bokeh_background
+  label: Bokeh background
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: bokeh background
+    anima: bokeh background, cinematic framing
+    zimage_turbo: with bokeh background
+- id: creamy_bokeh
+  label: Creamy bokeh
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: creamy bokeh
+    anima: creamy bokeh, cinematic framing
+    zimage_turbo: with creamy bokeh
+- id: foreground_blur
+  label: Foreground blur
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: foreground blur
+    anima: foreground blur, cinematic framing
+    zimage_turbo: with foreground blur
+- id: background_blur_strong
+  label: Background blur (strong)
+  meta:
+    subgroup: focus_dof
+  tags:
+    illustrious: background blur (strong)
+    anima: background blur (strong), cinematic framing
+    zimage_turbo: with background blur (strong)

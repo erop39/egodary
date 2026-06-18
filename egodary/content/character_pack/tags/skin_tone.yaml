@@ -1,0 +1,67 @@
+id: character.skin_tone
+title: Skin Tone
+items:
+- id: fair__porcelain
+  label: Fair / Porcelain
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: fair / porcelain
+    anima: fair / porcelain, detailed body
+    zimage_turbo: with fair / porcelain
+- id: light_beige
+  label: Light beige
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: light beige
+    anima: light beige, detailed body
+    zimage_turbo: with light beige
+- id: warm_tan
+  label: Warm tan
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: warm tan
+    anima: warm tan, detailed body
+    zimage_turbo: with warm tan
+- id: golden__olive
+  label: Golden / Olive
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: golden / olive
+    anima: golden / olive, detailed body
+    zimage_turbo: with golden / olive
+- id: tan
+  label: Tan
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: tan
+    anima: tan, detailed body
+    zimage_turbo: with tan
+- id: deep_tan
+  label: Deep tan
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: deep tan
+    anima: deep tan, detailed body
+    zimage_turbo: with deep tan
+- id: dark__ebony
+  label: Dark / Ebony
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: dark / ebony
+    anima: dark / ebony, detailed body
+    zimage_turbo: with dark / ebony
+- id: pale_with_pink_undertones
+  label: Pale with pink undertones
+  meta:
+    subgroup: tone
+  tags:
+    illustrious: pale with pink undertones
+    anima: pale with pink undertones, detailed body
+    zimage_turbo: with pale with pink undertones

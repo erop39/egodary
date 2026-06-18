@@ -1,0 +1,203 @@
+id: face.eye_color
+title: Eye Color
+items:
+- id: blue
+  label: Blue
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: blue eyes
+    anima: blue eyes, detailed face
+    zimage_turbo: with blue eyes
+- id: light_blue
+  label: Light Blue
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: light blue eyes
+    anima: light blue eyes, detailed face
+    zimage_turbo: with light blue eyes
+- id: deep_blue
+  label: Deep Blue
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: deep blue eyes
+    anima: deep blue eyes, detailed face
+    zimage_turbo: with deep blue eyes
+- id: green
+  label: Green
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: green eyes
+    anima: green eyes, detailed face
+    zimage_turbo: with green eyes
+- id: hazel
+  label: Hazel
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: hazel eyes
+    anima: hazel eyes, detailed face
+    zimage_turbo: with hazel eyes
+- id: light_brown
+  label: Light Brown
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: light brown eyes
+    anima: light brown eyes, detailed face
+    zimage_turbo: with light brown eyes
+- id: dark_brown
+  label: Dark Brown
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: dark brown eyes
+    anima: dark brown eyes, detailed face
+    zimage_turbo: with dark brown eyes
+- id: black
+  label: Black
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: black eyes
+    anima: black eyes, detailed face
+    zimage_turbo: with black eyes
+- id: gray
+  label: Gray
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: gray eyes
+    anima: gray eyes, detailed face
+    zimage_turbo: with gray eyes
+- id: silver_gray
+  label: Silver Gray
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: silver gray eyes
+    anima: silver gray eyes, detailed face
+    zimage_turbo: with silver gray eyes
+- id: violet__purple
+  label: Violet / Purple
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: violet / purple eyes
+    anima: violet / purple eyes, detailed face
+    zimage_turbo: with violet / purple eyes
+- id: red
+  label: Red
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: red eyes
+    anima: red eyes, detailed face
+    zimage_turbo: with red eyes
+- id: amber__golden
+  label: Amber / Golden
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: amber / golden eyes
+    anima: amber / golden eyes, detailed face
+    zimage_turbo: with amber / golden eyes
+- id: heterochromia_different_colors
+  label: Heterochromia (different colors)
+  meta:
+    subgroup: natural
+  tags:
+    illustrious: heterochromia (different colors) eyes
+    anima: heterochromia (different colors) eyes, detailed face
+    zimage_turbo: with heterochromia (different colors) eyes
+- id: glowing_blue
+  label: Glowing Blue
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing blue eyes
+    anima: glowing blue eyes, detailed face
+    zimage_turbo: with glowing blue eyes
+- id: glowing_cyan
+  label: Glowing Cyan
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing cyan eyes
+    anima: glowing cyan eyes, detailed face
+    zimage_turbo: with glowing cyan eyes
+- id: glowing_green
+  label: Glowing Green
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing green eyes
+    anima: glowing green eyes, detailed face
+    zimage_turbo: with glowing green eyes
+- id: glowing_purple
+  label: Glowing Purple
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing purple eyes
+    anima: glowing purple eyes, detailed face
+    zimage_turbo: with glowing purple eyes
+- id: glowing_red
+  label: Glowing Red
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing red eyes
+    anima: glowing red eyes, detailed face
+    zimage_turbo: with glowing red eyes
+- id: glowing_gold
+  label: Glowing Gold
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing gold eyes
+    anima: glowing gold eyes, detailed face
+    zimage_turbo: with glowing gold eyes
+- id: glowing_pink
+  label: Glowing Pink
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing pink eyes
+    anima: glowing pink eyes, detailed face
+    zimage_turbo: with glowing pink eyes
+- id: glowing_white
+  label: Glowing White
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: glowing white eyes
+    anima: glowing white eyes, detailed face
+    zimage_turbo: with glowing white eyes
+- id: neon_blue
+  label: Neon Blue
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: neon blue eyes
+    anima: neon blue eyes, detailed face
+    zimage_turbo: with neon blue eyes
+- id: neon_pink
+  label: Neon Pink
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: neon pink eyes
+    anima: neon pink eyes, detailed face
+    zimage_turbo: with neon pink eyes
+- id: neon_green
+  label: Neon Green
+  meta:
+    subgroup: fantasy_glowing
+  tags:
+    illustrious: neon green eyes
+    anima: neon green eyes, detailed face
+    zimage_turbo: with neon green eyes

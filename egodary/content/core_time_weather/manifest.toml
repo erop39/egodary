@@ -1,0 +1,14 @@
+# Первый реальный content-pack — живой пример формата для всех будущих паков.
+# Перенос TIME_TAGS / WEATHER_TAGS из eGen 8.6 без изменений содержания.
+
+[plugin]
+id = "core_time_weather"
+name = "Core: Time of Day & Weather"
+version = "1.0.0"
+kind = "content_pack"
+author = "eGOdary core"
+requires_core = ">=0.1.0"
+depends_on = []
+
+[content]
+tags_file = "tags.yaml"

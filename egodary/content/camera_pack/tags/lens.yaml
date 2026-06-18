@@ -1,0 +1,51 @@
+id: camera.lens
+title: Focal Length
+items:
+- id: 24mm_wide_angle
+  label: 24mm (wide angle)
+  meta:
+    subgroup: focal_length
+  tags:
+    illustrious: 24mm lens
+    anima: 24mm lens, cinematic framing
+    zimage_turbo: with 24mm lens
+- id: 35mm
+  label: 35mm
+  meta:
+    subgroup: focal_length
+  tags:
+    illustrious: 35mm lens
+    anima: 35mm lens, cinematic framing
+    zimage_turbo: with 35mm lens
+- id: 50mm_standard
+  label: 50mm (standard)
+  meta:
+    subgroup: focal_length
+  tags:
+    illustrious: 50mm lens
+    anima: 50mm lens, cinematic framing
+    zimage_turbo: with 50mm lens
+- id: 85mm_portrait
+  label: 85mm (portrait)
+  meta:
+    subgroup: focal_length
+  tags:
+    illustrious: 85mm lens
+    anima: 85mm lens, cinematic framing
+    zimage_turbo: with 85mm lens
+- id: 105mm
+  label: 105mm
+  meta:
+    subgroup: focal_length
+  tags:
+    illustrious: 105mm lens
+    anima: 105mm lens, cinematic framing
+    zimage_turbo: with 105mm lens
+- id: 135mm_strong_compression
+  label: 135mm (strong compression)
+  meta:
+    subgroup: focal_length
+  tags:
+    illustrious: 135mm lens
+    anima: 135mm lens, cinematic framing
+    zimage_turbo: with 135mm lens

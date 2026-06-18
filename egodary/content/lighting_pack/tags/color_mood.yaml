@@ -1,0 +1,147 @@
+id: lighting.color_mood
+title: Color Temperature & Mood
+items:
+- id: warm_golden_lighting
+  label: Warm golden lighting
+  meta:
+    subgroup: warm
+  tags:
+    illustrious: warm golden lighting
+    anima: warm golden lighting, cinematic lighting
+    zimage_turbo: with warm golden lighting
+- id: warm_orange_lighting
+  label: Warm orange lighting
+  meta:
+    subgroup: warm
+  tags:
+    illustrious: warm orange lighting
+    anima: warm orange lighting, cinematic lighting
+    zimage_turbo: with warm orange lighting
+- id: candlelight__fireplace
+  label: Candlelight / fireplace
+  meta:
+    subgroup: warm
+  tags:
+    illustrious: candlelight / fireplace
+    anima: candlelight / fireplace, cinematic lighting
+    zimage_turbo: with candlelight / fireplace
+- id: sunset_lighting
+  label: Sunset lighting
+  meta:
+    subgroup: warm
+  tags:
+    illustrious: sunset lighting
+    anima: sunset lighting, cinematic lighting
+    zimage_turbo: with sunset lighting
+- id: cozy_warm_light
+  label: Cozy warm light
+  meta:
+    subgroup: warm
+  tags:
+    illustrious: cozy warm light
+    anima: cozy warm light, cinematic lighting
+    zimage_turbo: with cozy warm light
+- id: cool_blue_lighting
+  label: Cool blue lighting
+  meta:
+    subgroup: cool
+  tags:
+    illustrious: cool blue lighting
+    anima: cool blue lighting, cinematic lighting
+    zimage_turbo: with cool blue lighting
+- id: cold_moonlight
+  label: Cold moonlight
+  meta:
+    subgroup: cool
+  tags:
+    illustrious: cold moonlight
+    anima: cold moonlight, cinematic lighting
+    zimage_turbo: with cold moonlight
+- id: neon_blue_and_pink
+  label: Neon blue and pink
+  meta:
+    subgroup: cool
+  tags:
+    illustrious: neon blue and pink
+    anima: neon blue and pink, cinematic lighting
+    zimage_turbo: with neon blue and pink
+- id: cyberpunk_neon_lighting
+  label: Cyberpunk neon lighting
+  meta:
+    subgroup: cool
+  tags:
+    illustrious: cyberpunk neon lighting
+    anima: cyberpunk neon lighting, cinematic lighting
+    zimage_turbo: with cyberpunk neon lighting
+- id: cold_sterile_light
+  label: Cold sterile light
+  meta:
+    subgroup: cool
+  tags:
+    illustrious: cold sterile light
+    anima: cold sterile light, cinematic lighting
+    zimage_turbo: with cold sterile light
+- id: red_lighting_passionate__dangerous
+  label: Red lighting (passionate / dangerous)
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: red lighting (passionate / dangerous)
+    anima: red lighting (passionate / dangerous), cinematic lighting
+    zimage_turbo: with red lighting (passionate / dangerous)
+- id: purple__magenta_lighting
+  label: Purple / magenta lighting
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: purple / magenta lighting
+    anima: purple / magenta lighting, cinematic lighting
+    zimage_turbo: with purple / magenta lighting
+- id: pink_neon_lighting
+  label: Pink neon lighting
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: pink neon lighting
+    anima: pink neon lighting, cinematic lighting
+    zimage_turbo: with pink neon lighting
+- id: green_neon_lighting
+  label: Green neon lighting
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: green neon lighting
+    anima: green neon lighting, cinematic lighting
+    zimage_turbo: with green neon lighting
+- id: rgb__multicolored_lighting
+  label: RGB / multicolored lighting
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: rgb / multicolored lighting
+    anima: rgb / multicolored lighting, cinematic lighting
+    zimage_turbo: with rgb / multicolored lighting
+- id: blacklight__uv_lighting
+  label: Blacklight / UV lighting
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: blacklight / uv lighting
+    anima: blacklight / uv lighting, cinematic lighting
+    zimage_turbo: with blacklight / uv lighting
+- id: moody_teal_and_orange
+  label: Moody teal and orange
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: moody teal and orange
+    anima: moody teal and orange, cinematic lighting
+    zimage_turbo: with moody teal and orange
+- id: dramatic_red_and_black
+  label: Dramatic red and black
+  meta:
+    subgroup: colored_stylized
+  tags:
+    illustrious: dramatic red and black
+    anima: dramatic red and black, cinematic lighting
+    zimage_turbo: with dramatic red and black

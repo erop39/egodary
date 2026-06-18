@@ -1,0 +1,171 @@
+id: environment.situation
+title: Scene / Situation
+items:
+- id: backed_against_a_wall__bulkhead
+  label: Backed against a wall / bulkhead
+  meta:
+    subgroup: pressed_cornered
+  tags:
+    illustrious: backed against a wall / bulkhead
+    anima: backed against a wall / bulkhead, cinematic scene composition
+    zimage_turbo: backed against a wall / bulkhead, dramatic scene
+- id: pressed_flat_against_surface
+  label: Pressed flat against surface
+  meta:
+    subgroup: pressed_cornered
+  tags:
+    illustrious: pressed flat against surface
+    anima: pressed flat against surface, cinematic scene composition
+    zimage_turbo: pressed flat against surface, dramatic scene
+- id: cornered__pinned_to_the_wall
+  label: Cornered / Pinned to the wall
+  meta:
+    subgroup: pressed_cornered
+  tags:
+    illustrious: cornered / pinned to the wall
+    anima: cornered / pinned to the wall, cinematic scene composition
+    zimage_turbo: cornered / pinned to the wall, dramatic scene
+- id: trapped_between_objects
+  label: Trapped between objects
+  meta:
+    subgroup: pressed_cornered
+  tags:
+    illustrious: trapped between objects
+    anima: trapped between objects, cinematic scene composition
+    zimage_turbo: trapped between objects, dramatic scene
+- id: robotic_arms_moving_around_her
+  label: Robotic arms moving around her
+  meta:
+    subgroup: interacting_objects
+  tags:
+    illustrious: robotic arms moving around her
+    anima: robotic arms moving around her, cinematic scene composition
+    zimage_turbo: robotic arms moving around her, dramatic scene
+- id: avoid_moving_machinery
+  label: Avoid moving machinery
+  meta:
+    subgroup: interacting_objects
+  tags:
+    illustrious: avoid moving machinery
+    anima: avoid moving machinery, cinematic scene composition
+    zimage_turbo: avoid moving machinery, dramatic scene
+- id: interacting_with_consoles__machinery
+  label: Interacting with consoles / machinery
+  meta:
+    subgroup: interacting_objects
+  tags:
+    illustrious: interacting with consoles / machinery
+    anima: interacting with consoles / machinery, cinematic scene composition
+    zimage_turbo: interacting with consoles / machinery, dramatic scene
+- id: leaning_against_bulkhead
+  label: Leaning against bulkhead
+  meta:
+    subgroup: interacting_objects
+  tags:
+    illustrious: leaning against bulkhead
+    anima: leaning against bulkhead, cinematic scene composition
+    zimage_turbo: leaning against bulkhead, dramatic scene
+- id: pressed_to_the_glass_window
+  label: Pressed to the glass/window
+  meta:
+    subgroup: interacting_objects
+  tags:
+    illustrious: pressed to the glass/window
+    anima: pressed to the glass/window, cinematic scene composition
+    zimage_turbo: pressed to the glass/window, dramatic scene
+- id: mechanically_restrained
+  label: Mechanically restrained
+  meta:
+    subgroup: restrained_captured
+  tags:
+    illustrious: mechanically restrained
+    anima: mechanically restrained, cinematic scene composition
+    zimage_turbo: mechanically restrained, dramatic scene
+- id: tied__bound_to_structure
+  label: Tied / bound to structure
+  meta:
+    subgroup: restrained_captured
+  tags:
+    illustrious: tied / bound to structure
+    anima: tied / bound to structure, cinematic scene composition
+    zimage_turbo: tied / bound to structure, dramatic scene
+- id: held_by_robotic_arms
+  label: Held by robotic arms
+  meta:
+    subgroup: restrained_captured
+  tags:
+    illustrious: held by robotic arms
+    anima: held by robotic arms, cinematic scene composition
+    zimage_turbo: held by robotic arms, dramatic scene
+- id: suspended
+  label: Suspended
+  meta:
+    subgroup: restrained_captured
+  tags:
+    illustrious: suspended
+    anima: suspended, cinematic scene composition
+    zimage_turbo: suspended, dramatic scene
+- id: dodging__evading
+  label: Dodging / Evading
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: dodging / evading
+    anima: dodging / evading, cinematic scene composition
+    zimage_turbo: dodging / evading, dramatic scene
+- id: running_through_environment
+  label: Running through environment
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: running through environment
+    anima: running through environment, cinematic scene composition
+    zimage_turbo: running through environment, dramatic scene
+- id: hiding
+  label: Hiding
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: hiding
+    anima: hiding, cinematic scene composition
+    zimage_turbo: hiding, dramatic scene
+- id: searching__investigating
+  label: Searching / Investigating
+  meta:
+    subgroup: dynamic_action
+  tags:
+    illustrious: searching / investigating
+    anima: searching / investigating, cinematic scene composition
+    zimage_turbo: searching / investigating, dramatic scene
+- id: pressed_against_someone_something
+  label: Pressed against someone/something
+  meta:
+    subgroup: intimate_fetish
+  tags:
+    illustrious: pressed against someone/something
+    anima: pressed against someone/something, cinematic scene composition
+    zimage_turbo: pressed against someone/something, dramatic scene
+- id: pinned_down
+  label: Pinned down
+  meta:
+    subgroup: intimate_fetish
+  tags:
+    illustrious: pinned down
+    anima: pinned down, cinematic scene composition
+    zimage_turbo: pinned down, dramatic scene
+- id: lifted__carried
+  label: Lifted / Carried
+  meta:
+    subgroup: intimate_fetish
+  tags:
+    illustrious: lifted / carried
+    anima: lifted / carried, cinematic scene composition
+    zimage_turbo: lifted / carried, dramatic scene
+- id: forced_against_surface
+  label: Forced against surface
+  meta:
+    subgroup: intimate_fetish
+  tags:
+    illustrious: forced against surface
+    anima: forced against surface, cinematic scene composition
+    zimage_turbo: forced against surface, dramatic scene

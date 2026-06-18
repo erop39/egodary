@@ -1,0 +1,11 @@
+groups:
+- category_id: fetish.elements
+  ids:
+  - ball_gag
+  - bit_gag
+  reason: Mutually exclusive fetish elements
+- category_id: fetish.elements
+  ids:
+  - blindfold
+  - sensory_deprivation
+  reason: Mutually exclusive fetish elements

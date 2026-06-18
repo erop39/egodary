@@ -1,0 +1,123 @@
+id: lighting.quality
+title: Lighting Quality
+items:
+- id: soft_diffused_light
+  label: Soft diffused light
+  meta:
+    subgroup: soft_hard
+  tags:
+    illustrious: soft diffused light
+    anima: soft diffused light, cinematic lighting
+    zimage_turbo: with soft diffused light
+- id: hard_direct_light
+  label: Hard direct light
+  meta:
+    subgroup: soft_hard
+  tags:
+    illustrious: hard direct light
+    anima: hard direct light, cinematic lighting
+    zimage_turbo: with hard direct light
+- id: very_soft_gentle_light
+  label: Very soft gentle light
+  meta:
+    subgroup: soft_hard
+  tags:
+    illustrious: very soft gentle light
+    anima: very soft gentle light, cinematic lighting
+    zimage_turbo: with very soft gentle light
+- id: harsh_dramatic_light
+  label: Harsh dramatic light
+  meta:
+    subgroup: soft_hard
+  tags:
+    illustrious: harsh dramatic light
+    anima: harsh dramatic light, cinematic lighting
+    zimage_turbo: with harsh dramatic light
+- id: moody_soft_shadows
+  label: Moody soft shadows
+  meta:
+    subgroup: soft_hard
+  tags:
+    illustrious: moody soft shadows
+    anima: moody soft shadows, cinematic lighting
+    zimage_turbo: with moody soft shadows
+- id: cinematic_soft_lighting
+  label: Cinematic soft lighting
+  meta:
+    subgroup: special
+  tags:
+    illustrious: cinematic soft lighting
+    anima: cinematic soft lighting, cinematic lighting
+    zimage_turbo: with cinematic soft lighting
+- id: high_contrast_lighting
+  label: High contrast lighting
+  meta:
+    subgroup: special
+  tags:
+    illustrious: high contrast lighting
+    anima: high contrast lighting, cinematic lighting
+    zimage_turbo: with high contrast lighting
+- id: low_contrast_lighting
+  label: Low contrast lighting
+  meta:
+    subgroup: special
+  tags:
+    illustrious: low contrast lighting
+    anima: low contrast lighting, cinematic lighting
+    zimage_turbo: with low contrast lighting
+- id: glowing__ethereal_light
+  label: Glowing / ethereal light
+  meta:
+    subgroup: special
+  tags:
+    illustrious: glowing / ethereal light
+    anima: glowing / ethereal light, cinematic lighting
+    zimage_turbo: with glowing / ethereal light
+- id: hazy__atmospheric_light
+  label: Hazy / atmospheric light
+  meta:
+    subgroup: special
+  tags:
+    illustrious: hazy / atmospheric light
+    anima: hazy / atmospheric light, cinematic lighting
+    zimage_turbo: with hazy / atmospheric light
+- id: sharp_shadows
+  label: Sharp shadows
+  meta:
+    subgroup: special
+  tags:
+    illustrious: sharp shadows
+    anima: sharp shadows, cinematic lighting
+    zimage_turbo: with sharp shadows
+- id: soft_shadows
+  label: Soft shadows
+  meta:
+    subgroup: special
+  tags:
+    illustrious: soft shadows
+    anima: soft shadows, cinematic lighting
+    zimage_turbo: with soft shadows
+- id: volumetric_god_rays
+  label: Volumetric god rays
+  meta:
+    subgroup: special
+  tags:
+    illustrious: volumetric god rays
+    anima: volumetric god rays, cinematic lighting
+    zimage_turbo: with volumetric god rays
+- id: crepuscular_rays
+  label: Crepuscular rays
+  meta:
+    subgroup: special
+  tags:
+    illustrious: crepuscular rays
+    anima: crepuscular rays, cinematic lighting
+    zimage_turbo: with crepuscular rays
+- id: subtle_rim_light
+  label: Subtle rim light
+  meta:
+    subgroup: special
+  tags:
+    illustrious: subtle rim light
+    anima: subtle rim light, cinematic lighting
+    zimage_turbo: with subtle rim light

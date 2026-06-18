@@ -1,0 +1,139 @@
+id: camera.composition
+title: Composition
+items:
+- id: rule_of_thirds
+  label: Rule of Thirds
+  meta:
+    subgroup: classic
+  tags:
+    illustrious: rule of thirds
+    anima: rule of thirds, cinematic framing
+    zimage_turbo: with rule of thirds
+- id: centered_composition
+  label: Centered composition
+  meta:
+    subgroup: classic
+  tags:
+    illustrious: centered composition
+    anima: centered composition, cinematic framing
+    zimage_turbo: with centered composition
+- id: symmetrical_composition
+  label: Symmetrical composition
+  meta:
+    subgroup: classic
+  tags:
+    illustrious: symmetrical composition
+    anima: symmetrical composition, cinematic framing
+    zimage_turbo: with symmetrical composition
+- id: asymmetrical_composition
+  label: Asymmetrical composition
+  meta:
+    subgroup: classic
+  tags:
+    illustrious: asymmetrical composition
+    anima: asymmetrical composition, cinematic framing
+    zimage_turbo: with asymmetrical composition
+- id: leading_lines
+  label: Leading lines
+  meta:
+    subgroup: classic
+  tags:
+    illustrious: leading lines
+    anima: leading lines, cinematic framing
+    zimage_turbo: with leading lines
+- id: negative_space
+  label: Negative space
+  meta:
+    subgroup: classic
+  tags:
+    illustrious: negative space
+    anima: negative space, cinematic framing
+    zimage_turbo: with negative space
+- id: cinematic_composition
+  label: Cinematic composition
+  meta:
+    subgroup: cinematic
+  tags:
+    illustrious: cinematic composition
+    anima: cinematic composition, cinematic framing
+    zimage_turbo: with cinematic composition
+- id: dramatic_angle
+  label: Dramatic angle
+  meta:
+    subgroup: cinematic
+  tags:
+    illustrious: dramatic angle
+    anima: dramatic angle, cinematic framing
+    zimage_turbo: with dramatic angle
+- id: low_key_composition
+  label: Low key composition
+  meta:
+    subgroup: cinematic
+  tags:
+    illustrious: low key composition
+    anima: low key composition, cinematic framing
+    zimage_turbo: with low key composition
+- id: high_key_composition
+  label: High key composition
+  meta:
+    subgroup: cinematic
+  tags:
+    illustrious: high key composition
+    anima: high key composition, cinematic framing
+    zimage_turbo: with high key composition
+- id: silhouette_composition
+  label: Silhouette composition
+  meta:
+    subgroup: cinematic
+  tags:
+    illustrious: silhouette composition
+    anima: silhouette composition, cinematic framing
+    zimage_turbo: with silhouette composition
+- id: rim_lighting_composition
+  label: Rim lighting composition
+  meta:
+    subgroup: cinematic
+  tags:
+    illustrious: rim lighting composition
+    anima: rim lighting composition, cinematic framing
+    zimage_turbo: with rim lighting composition
+- id: focus_on_body_curves
+  label: Focus on body curves
+  meta:
+    subgroup: nsfw_composition
+  tags:
+    illustrious: focus on body curves
+    anima: focus on body curves, cinematic framing
+    zimage_turbo: with focus on body curves
+- id: emphasis_on_legs__thighs
+  label: Emphasis on legs / thighs
+  meta:
+    subgroup: nsfw_composition
+  tags:
+    illustrious: emphasis on legs / thighs
+    anima: emphasis on legs / thighs, cinematic framing
+    zimage_turbo: with emphasis on legs / thighs
+- id: emphasis_on_chest
+  label: Emphasis on chest
+  meta:
+    subgroup: nsfw_composition
+  tags:
+    illustrious: emphasis on chest
+    anima: emphasis on chest, cinematic framing
+    zimage_turbo: with emphasis on chest
+- id: emphasis_on_ass_from_behind
+  label: Emphasis on ass (from behind)
+  meta:
+    subgroup: nsfw_composition
+  tags:
+    illustrious: emphasis on ass (from behind)
+    anima: emphasis on ass (from behind), cinematic framing
+    zimage_turbo: with emphasis on ass (from behind)
+- id: intimate_close_framing
+  label: Intimate close framing
+  meta:
+    subgroup: nsfw_composition
+  tags:
+    illustrious: intimate close framing
+    anima: intimate close framing, cinematic framing
+    zimage_turbo: with intimate close framing

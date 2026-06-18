@@ -1,0 +1,45 @@
+meta:
+  id: general
+  version: "1.0.0"
+  title: General Compatibility Rules
+  source: Prompt_System_Compatibility_Rules.pdf
+  description: >
+    Cross-category penalties, bonuses, and quality scoring.
+    Character hyper/extreme details belong in Fetish Elements only.
+
+scoring:
+  base_score: 100
+  level_thresholds:
+    - [90, "Отлично"]
+    - [75, "Хорошо"]
+    - [60, "Средне"]
+    - [40, "Плохо"]
+    - [0, "Очень плохо"]
+  severity_penalties:
+    hard: -45
+    hard_block: -45
+    strong: -30
+    strong_warning: -28
+    medium: -18
+    weak: -8
+    soft_warning: -8
+    overload: -15
+    style_mismatch: -22
+  tier_bonuses:
+    good: 8
+    strong: 12
+    excellent: 18
+    hint: 5
+
+policies:
+  - id: character_no_hyper
+    severity: hard_block
+    category: character
+    message: Hyper and extreme body details must stay in Fetish Elements.
+  - id: fetish_max_recommended
+    severity: overload
+    category: fetish
+    message: Recommended maximum 4–5 active fetish elements.
+
+includes:
+  - ../cross_rules.yaml

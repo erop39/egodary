@@ -1,0 +1,75 @@
+id: character.height_build
+title: Height & Stature
+items:
+- id: very_short__petite
+  label: Very short / Petite
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: very short / petite
+    anima: very short / petite, detailed body
+    zimage_turbo: with very short / petite
+- id: short
+  label: Short
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: short
+    anima: short, detailed body
+    zimage_turbo: with short
+- id: average_height
+  label: Average height
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: average height
+    anima: average height, detailed body
+    zimage_turbo: with average height
+- id: tall
+  label: Tall
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: tall
+    anima: tall, detailed body
+    zimage_turbo: with tall
+- id: very_tall
+  label: Very tall
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: very tall
+    anima: very tall, detailed body
+    zimage_turbo: with very tall
+- id: shortstack_short__curvy
+  label: Shortstack (short + curvy)
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: shortstack (short + curvy)
+    anima: shortstack (short + curvy), detailed body
+    zimage_turbo: with shortstack (short + curvy)
+- id: tall_and_slender
+  label: Tall and slender
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: tall and slender
+    anima: tall and slender, detailed body
+    zimage_turbo: with tall and slender
+- id: tall_and_voluptuous
+  label: Tall and voluptuous
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: tall and voluptuous
+    anima: tall and voluptuous, detailed body
+    zimage_turbo: with tall and voluptuous
+- id: compact_and_curvy
+  label: Compact and curvy
+  meta:
+    subgroup: stature
+  tags:
+    illustrious: compact and curvy
+    anima: compact and curvy, detailed body
+    zimage_turbo: with compact and curvy

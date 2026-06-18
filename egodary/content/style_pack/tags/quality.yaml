@@ -1,0 +1,115 @@
+id: style.quality
+title: Rendering Quality
+items:
+- id: masterpiece
+  label: Masterpiece
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: masterpiece
+    anima: masterpiece
+    zimage_turbo: masterpiece
+- id: best_quality
+  label: Best quality
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: best quality
+    anima: best quality
+    zimage_turbo: best quality
+- id: high_quality
+  label: High quality
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: high quality
+    anima: high quality
+    zimage_turbo: high quality
+- id: very_detailed
+  label: Very detailed
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: very detailed
+    anima: very detailed
+    zimage_turbo: very detailed
+- id: extremely_detailed
+  label: Extremely detailed
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: extremely detailed
+    anima: extremely detailed
+    zimage_turbo: extremely detailed
+- id: intricate_details
+  label: Intricate details
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: intricate details
+    anima: intricate details
+    zimage_turbo: intricate details
+- id: sharp_focus
+  label: Sharp focus
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: sharp focus
+    anima: sharp focus
+    zimage_turbo: sharp focus
+- id: high_resolution
+  label: High resolution
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: high resolution
+    anima: high resolution
+    zimage_turbo: high resolution
+- id: 8k
+  label: 8k
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: 8k
+    anima: 8k
+    zimage_turbo: 8k
+- id: ultra_detailed
+  label: Ultra detailed
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: ultra detailed
+    anima: ultra detailed
+    zimage_turbo: ultra detailed
+- id: clean_lines
+  label: Clean lines
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: clean lines
+    anima: clean lines
+    zimage_turbo: clean lines
+- id: beautiful_rendering
+  label: Beautiful rendering
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: beautiful rendering
+    anima: beautiful rendering
+    zimage_turbo: beautiful rendering
+- id: professional_illustration
+  label: Professional illustration
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: professional illustration
+    anima: professional illustration
+    zimage_turbo: professional illustration
+- id: high_end_anime_production_quality
+  label: High-end anime production quality
+  meta:
+    subgroup: rendering_quality
+  tags:
+    illustrious: high-end anime production quality
+    anima: high-end anime production quality
+    zimage_turbo: high-end anime production quality

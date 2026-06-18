@@ -1,0 +1,67 @@
+id: character.age_appearance
+title: Age Appearance
+items:
+- id: 18_20_young_adult
+  label: 18–20 (young adult)
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: 18–20 (young adult)
+    anima: 18–20 (young adult), detailed body
+    zimage_turbo: with 18–20 (young adult)
+- id: '21_25'
+  label: 21–25
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: 21–25
+    anima: 21–25, detailed body
+    zimage_turbo: with 21–25
+- id: '26_30'
+  label: 26–30
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: 26–30
+    anima: 26–30, detailed body
+    zimage_turbo: with 26–30
+- id: '31_35'
+  label: 31–35
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: 31–35
+    anima: 31–35, detailed body
+    zimage_turbo: with 31–35
+- id: '36_40'
+  label: 36–40
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: 36–40
+    anima: 36–40, detailed body
+    zimage_turbo: with 36–40
+- id: mature_beauty_35_45
+  label: Mature beauty (35–45)
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: mature beauty (35–45)
+    anima: mature beauty (35–45), detailed body
+    zimage_turbo: with mature beauty (35–45)
+- id: milf_appearance
+  label: MILF appearance
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: milf appearance
+    anima: milf appearance, detailed body
+    zimage_turbo: with milf appearance
+- id: ageless__timeless_beauty
+  label: Ageless / Timeless beauty
+  meta:
+    subgroup: ranges
+  tags:
+    illustrious: ageless / timeless beauty
+    anima: ageless / timeless beauty, detailed body
+    zimage_turbo: with ageless / timeless beauty

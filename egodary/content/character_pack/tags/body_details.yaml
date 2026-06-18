@@ -1,0 +1,147 @@
+id: character.body_details
+title: Body Details
+items:
+- id: smooth_skin
+  label: Smooth skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: smooth skin
+    anima: smooth skin, detailed body
+    zimage_turbo: with smooth skin
+- id: soft_skin
+  label: Soft skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: soft skin
+    anima: soft skin, detailed body
+    zimage_turbo: with soft skin
+- id: silky_skin
+  label: Silky skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: silky skin
+    anima: silky skin, detailed body
+    zimage_turbo: with silky skin
+- id: toned_skin
+  label: Toned skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: toned skin
+    anima: toned skin, detailed body
+    zimage_turbo: with toned skin
+- id: oily__shiny_skin
+  label: Oily / Shiny skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: oily / shiny skin
+    anima: oily / shiny skin, detailed body
+    zimage_turbo: with oily / shiny skin
+- id: dewy_skin
+  label: Dewy skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: dewy skin
+    anima: dewy skin, detailed body
+    zimage_turbo: with dewy skin
+- id: matte_skin
+  label: Matte skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: matte skin
+    anima: matte skin, detailed body
+    zimage_turbo: with matte skin
+- id: light_sweat
+  label: Light sweat
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: light sweat
+    anima: light sweat, detailed body
+    zimage_turbo: with light sweat
+- id: glowing_skin
+  label: Glowing skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: glowing skin
+    anima: glowing skin, detailed body
+    zimage_turbo: with glowing skin
+- id: light_freckles_on_body
+  label: Light freckles on body
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: light freckles on body
+    anima: light freckles on body, detailed body
+    zimage_turbo: with light freckles on body
+- id: beauty_marks__moles
+  label: Beauty marks / moles
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: beauty marks / moles
+    anima: beauty marks / moles, detailed body
+    zimage_turbo: with beauty marks / moles
+- id: subtle_stretch_marks
+  label: Subtle stretch marks
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: subtle stretch marks
+    anima: subtle stretch marks, detailed body
+    zimage_turbo: with subtle stretch marks
+- id: light_cellulite
+  label: Light cellulite
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: light cellulite
+    anima: light cellulite, detailed body
+    zimage_turbo: with light cellulite
+- id: subtle_muscle_definition
+  label: Subtle muscle definition
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: subtle muscle definition
+    anima: subtle muscle definition, detailed body
+    zimage_turbo: with subtle muscle definition
+- id: soft_stomach
+  label: Soft stomach
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: soft stomach
+    anima: soft stomach, detailed body
+    zimage_turbo: with soft stomach
+- id: toned_stomach
+  label: Toned stomach
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: toned stomach
+    anima: toned stomach, detailed body
+    zimage_turbo: with toned stomach
+- id: sensitive_skin
+  label: Sensitive skin
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: sensitive skin
+    anima: sensitive skin, detailed body
+    zimage_turbo: with sensitive skin
+- id: easily_flushed_skin
+  label: Easily flushed skin
+  meta:
+    subgroup: additional_details
+  tags:
+    illustrious: easily flushed skin
+    anima: easily flushed skin, detailed body
+    zimage_turbo: with easily flushed skin

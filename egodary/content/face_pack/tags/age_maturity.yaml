@@ -1,0 +1,163 @@
+id: face.age_maturity
+title: Age & Maturity
+items:
+- id: fresh_18_20_years_old
+  label: Fresh 18-20 years old
+  meta:
+    subgroup: young_adult
+  tags:
+    illustrious: fresh 18-20 years old
+    anima: fresh 18-20 years old, detailed face
+    zimage_turbo: with fresh 18-20 years old
+- id: young_college_girl_look
+  label: Young college girl look
+  meta:
+    subgroup: young_adult
+  tags:
+    illustrious: young college girl look
+    anima: young college girl look, detailed face
+    zimage_turbo: with young college girl look
+- id: innocent_youthful_face
+  label: Innocent youthful face
+  meta:
+    subgroup: young_adult
+  tags:
+    illustrious: innocent youthful face
+    anima: innocent youthful face, detailed face
+    zimage_turbo: with innocent youthful face
+- id: early_20s_fresh_face
+  label: Early 20s fresh face
+  meta:
+    subgroup: young_adult
+  tags:
+    illustrious: early 20s fresh face
+    anima: early 20s fresh face, detailed face
+    zimage_turbo: with early 20s fresh face
+- id: barely_legal_appearance
+  label: Barely legal appearance
+  meta:
+    subgroup: young_adult
+  tags:
+    illustrious: barely legal appearance
+    anima: barely legal appearance, detailed face
+    zimage_turbo: with barely legal appearance
+- id: mature_beautiful_woman_28_35
+  label: Mature beautiful woman (28-35)
+  meta:
+    subgroup: mature_milf
+  tags:
+    illustrious: mature beautiful woman (28-35)
+    anima: mature beautiful woman (28-35), detailed face
+    zimage_turbo: with mature beautiful woman (28-35)
+- id: milf_face
+  label: MILF face
+  meta:
+    subgroup: mature_milf
+  tags:
+    illustrious: milf face
+    anima: milf face, detailed face
+    zimage_turbo: with milf face
+- id: elegant_mature_beauty
+  label: Elegant mature beauty
+  meta:
+    subgroup: mature_milf
+  tags:
+    illustrious: elegant mature beauty
+    anima: elegant mature beauty, detailed face
+    zimage_turbo: with elegant mature beauty
+- id: sophisticated_30
+  label: Sophisticated 30+
+  meta:
+    subgroup: mature_milf
+  tags:
+    illustrious: sophisticated 30+
+    anima: sophisticated 30+, detailed face
+    zimage_turbo: with sophisticated 30+
+- id: experienced_seductive_look
+  label: Experienced seductive look
+  meta:
+    subgroup: mature_milf
+  tags:
+    illustrious: experienced seductive look
+    anima: experienced seductive look, detailed face
+    zimage_turbo: with experienced seductive look
+- id: ageless_beauty
+  label: Ageless beauty
+  meta:
+    subgroup: ageless_stylized
+  tags:
+    illustrious: ageless beauty
+    anima: ageless beauty, detailed face
+    zimage_turbo: with ageless beauty
+- id: doll_like_timeless_face
+  label: Doll-like timeless face
+  meta:
+    subgroup: ageless_stylized
+  tags:
+    illustrious: doll-like timeless face
+    anima: doll-like timeless face, detailed face
+    zimage_turbo: with doll-like timeless face
+- id: ethereal_beauty
+  label: Ethereal beauty
+  meta:
+    subgroup: ageless_stylized
+  tags:
+    illustrious: ethereal beauty
+    anima: ethereal beauty, detailed face
+    zimage_turbo: with ethereal beauty
+- id: fantasy_race_appearance_elf_succubus_etc.
+  label: Fantasy race appearance (elf, succubus, etc.)
+  meta:
+    subgroup: ageless_stylized
+  tags:
+    illustrious: fantasy race appearance (elf, succubus, etc.)
+    anima: fantasy race appearance (elf, succubus, etc.), detailed face
+    zimage_turbo: with fantasy race appearance (elf, succubus, etc.)
+- id: perfect_ageless_skin
+  label: Perfect ageless skin
+  meta:
+    subgroup: ageless_stylized
+  tags:
+    illustrious: perfect ageless skin
+    anima: perfect ageless skin, detailed face
+    zimage_turbo: with perfect ageless skin
+- id: cute__youthful
+  label: Cute & youthful
+  meta:
+    subgroup: specific_vibes
+  tags:
+    illustrious: cute & youthful
+    anima: cute & youthful, detailed face
+    zimage_turbo: with cute & youthful
+- id: seductive_mature
+  label: Seductive mature
+  meta:
+    subgroup: specific_vibes
+  tags:
+    illustrious: seductive mature
+    anima: seductive mature, detailed face
+    zimage_turbo: with seductive mature
+- id: innocent_but_corrupted
+  label: Innocent but corrupted
+  meta:
+    subgroup: specific_vibes
+  tags:
+    illustrious: innocent but corrupted
+    anima: innocent but corrupted, detailed face
+    zimage_turbo: with innocent but corrupted
+- id: broken_in__used_look
+  label: Broken-in / used look
+  meta:
+    subgroup: specific_vibes
+  tags:
+    illustrious: broken-in / used look
+    anima: broken-in / used look, detailed face
+    zimage_turbo: with broken-in / used look
+- id: fresh_and_untouched
+  label: Fresh and untouched
+  meta:
+    subgroup: specific_vibes
+  tags:
+    illustrious: fresh and untouched
+    anima: fresh and untouched, detailed face
+    zimage_turbo: with fresh and untouched

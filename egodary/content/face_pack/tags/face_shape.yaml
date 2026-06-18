@@ -1,0 +1,195 @@
+id: face.face_shape
+title: Face Shape
+items:
+- id: oval_face
+  label: Oval face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: oval face
+    anima: oval face, detailed face
+    zimage_turbo: with oval face
+- id: round_face
+  label: Round face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: round face
+    anima: round face, detailed face
+    zimage_turbo: with round face
+- id: square_face
+  label: Square face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: square face
+    anima: square face, detailed face
+    zimage_turbo: with square face
+- id: heart_shaped_face
+  label: Heart-shaped face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: heart-shaped face
+    anima: heart-shaped face, detailed face
+    zimage_turbo: with heart-shaped face
+- id: diamond_face
+  label: Diamond face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: diamond face
+    anima: diamond face, detailed face
+    zimage_turbo: with diamond face
+- id: long_rectangular_face
+  label: Long rectangular face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: long rectangular face
+    anima: long rectangular face, detailed face
+    zimage_turbo: with long rectangular face
+- id: triangle_face
+  label: Triangle face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: triangle face
+    anima: triangle face, detailed face
+    zimage_turbo: with triangle face
+- id: inverted_triangle_face
+  label: Inverted triangle face
+  meta:
+    subgroup: basic_shapes
+  tags:
+    illustrious: inverted triangle face
+    anima: inverted triangle face, detailed face
+    zimage_turbo: with inverted triangle face
+- id: soft_heart_shaped_face
+  label: Soft heart-shaped face
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: soft heart-shaped face
+    anima: soft heart-shaped face, detailed face
+    zimage_turbo: with soft heart-shaped face
+- id: delicate_oval_face
+  label: Delicate oval face
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: delicate oval face
+    anima: delicate oval face, detailed face
+    zimage_turbo: with delicate oval face
+- id: v_shaped_face_sharp_jaw__wide_forehead
+  label: V-shaped face (sharp jaw + wide forehead)
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: v-shaped face (sharp jaw + wide forehead)
+    anima: v-shaped face (sharp jaw + wide forehead), detailed face
+    zimage_turbo: with v-shaped face (sharp jaw + wide forehead)
+- id: soft_round_face_bimbo_style
+  label: Soft round face (bimbo style)
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: soft round face (bimbo style)
+    anima: soft round face (bimbo style), detailed face
+    zimage_turbo: with soft round face (bimbo style)
+- id: symmetrical_perfect_oval
+  label: Symmetrical perfect oval
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: symmetrical perfect oval
+    anima: symmetrical perfect oval, detailed face
+    zimage_turbo: with symmetrical perfect oval
+- id: slightly_elongated_face
+  label: Slightly elongated face
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: slightly elongated face
+    anima: slightly elongated face, detailed face
+    zimage_turbo: with slightly elongated face
+- id: youthful_round_face
+  label: Youthful round face
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: youthful round face
+    anima: youthful round face, detailed face
+    zimage_turbo: with youthful round face
+- id: mature_elegant_oval
+  label: Mature elegant oval
+  meta:
+    subgroup: feminine_attractive
+  tags:
+    illustrious: mature elegant oval
+    anima: mature elegant oval, detailed face
+    zimage_turbo: with mature elegant oval
+- id: extreme_bimbo_face_very_soft_round_small_chin
+  label: Extreme bimbo face (very soft, round, small chin)
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: extreme bimbo face (very soft, round, small chin)
+    anima: extreme bimbo face (very soft, round, small chin), detailed face
+    zimage_turbo: with extreme bimbo face (very soft, round, small chin)
+- id: doll_like_face
+  label: Doll-like face
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: doll-like face
+    anima: doll-like face, detailed face
+    zimage_turbo: with doll-like face
+- id: cat_like_face_sharp_features
+  label: Cat-like face (sharp features)
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: cat-like face (sharp features)
+    anima: cat-like face (sharp features), detailed face
+    zimage_turbo: with cat-like face (sharp features)
+- id: babyface_very_youthful
+  label: Babyface (very youthful)
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: babyface (very youthful)
+    anima: babyface (very youthful), detailed face
+    zimage_turbo: with babyface (very youthful)
+- id: sharp_model_face
+  label: Sharp model face
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: sharp model face
+    anima: sharp model face, detailed face
+    zimage_turbo: with sharp model face
+- id: soft_submissive_face
+  label: Soft submissive face
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: soft submissive face
+    anima: soft submissive face, detailed face
+    zimage_turbo: with soft submissive face
+- id: angular_dominant_face
+  label: Angular dominant face
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: angular dominant face
+    anima: angular dominant face, detailed face
+    zimage_turbo: with angular dominant face
+- id: ethereal__alien_like_face
+  label: Ethereal / alien-like face
+  meta:
+    subgroup: fetish_stylized
+  tags:
+    illustrious: ethereal / alien-like face
+    anima: ethereal / alien-like face, detailed face
+    zimage_turbo: with ethereal / alien-like face

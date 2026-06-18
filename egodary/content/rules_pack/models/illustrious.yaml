@@ -1,0 +1,40 @@
+meta:
+  id: illustrious_gen
+  model_id: illustrious
+  version: "1.0.0"
+  title: Illustrious generation rules
+  prompt_style: tags
+
+format:
+  bucket_order:
+    - quality
+    - subject
+    - character
+    - face
+    - hair
+    - makeup
+    - outfit
+    - pose
+    - scene
+    - lighting
+    - atmosphere
+    - style
+    - fetish
+    - extra
+    - camera
+  technical_suffix:
+    - clean anatomy
+    - coherent composition
+  dedupe_tags: true
+  separator: ", "
+  tag_case: lower
+  generation_defaults:
+    cfg_scale: 7.0
+    steps: 28
+    sampler: euler_a
+
+negative:
+  template: >
+    lowres, bad anatomy, bad hands, text, error, missing fingers,
+    extra digit, fewer digits, cropped, worst quality, low quality,
+    normal quality, jpeg artifacts, signature, watermark, username, blurry

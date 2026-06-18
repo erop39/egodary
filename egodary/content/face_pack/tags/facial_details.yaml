@@ -1,0 +1,107 @@
+id: face.facial_details
+title: Facial Details
+items:
+- id: cute_dimples
+  label: Cute dimples
+  meta:
+    subgroup: positive_attractive
+  tags:
+    illustrious: cute dimples
+    anima: cute dimples, detailed face
+    zimage_turbo: with cute dimples
+- id: light_freckles_on_cheeks_and_nose
+  label: Light freckles on cheeks and nose
+  meta:
+    subgroup: positive_attractive
+  tags:
+    illustrious: light freckles on cheeks and nose
+    anima: light freckles on cheeks and nose, detailed face
+    zimage_turbo: with light freckles on cheeks and nose
+- id: beauty_mark_above_lip
+  label: Beauty mark above lip
+  meta:
+    subgroup: positive_attractive
+  tags:
+    illustrious: beauty mark above lip
+    anima: beauty mark above lip, detailed face
+    zimage_turbo: with beauty mark above lip
+- id: subtle_blush
+  label: Subtle blush
+  meta:
+    subgroup: positive_attractive
+  tags:
+    illustrious: subtle blush
+    anima: subtle blush, detailed face
+    zimage_turbo: with subtle blush
+- id: natural_glow
+  label: Natural glow
+  meta:
+    subgroup: positive_attractive
+  tags:
+    illustrious: natural glow
+    anima: natural glow, detailed face
+    zimage_turbo: with natural glow
+- id: heavy_blush_aroused
+  label: Heavy blush (aroused)
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: heavy blush (aroused)
+    anima: heavy blush (aroused), detailed face
+    zimage_turbo: with heavy blush (aroused)
+- id: tear_streaks_on_cheeks
+  label: Tear streaks on cheeks
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: tear streaks on cheeks
+    anima: tear streaks on cheeks, detailed face
+    zimage_turbo: with tear streaks on cheeks
+- id: saliva_on_lips_and_chin
+  label: Saliva on lips and chin
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: saliva on lips and chin
+    anima: saliva on lips and chin, detailed face
+    zimage_turbo: with saliva on lips and chin
+- id: flushed_face_and_ears
+  label: Flushed face and ears
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: flushed face and ears
+    anima: flushed face and ears, detailed face
+    zimage_turbo: with flushed face and ears
+- id: sweat_on_forehead_and_upper_lip
+  label: Sweat on forehead and upper lip
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: sweat on forehead and upper lip
+    anima: sweat on forehead and upper lip, detailed face
+    zimage_turbo: with sweat on forehead and upper lip
+- id: red_bitten_lips
+  label: Red bitten lips
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: red bitten lips
+    anima: red bitten lips, detailed face
+    zimage_turbo: with red bitten lips
+- id: smudged_makeup_after_intense_activity
+  label: Smudged makeup (after intense activity)
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: smudged makeup (after intense activity)
+    anima: smudged makeup (after intense activity), detailed face
+    zimage_turbo: with smudged makeup (after intense activity)
+- id: glossy_wet_skin_on_face
+  label: Glossy wet skin on face
+  meta:
+    subgroup: erotic_nsfw
+  tags:
+    illustrious: glossy wet skin on face
+    anima: glossy wet skin on face, detailed face
+    zimage_turbo: with glossy wet skin on face

@@ -1,0 +1,187 @@
+id: face.eyebrows
+title: Eyebrows
+items:
+- id: straight_eyebrows
+  label: Straight eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: straight eyebrows
+    anima: straight eyebrows, detailed face
+    zimage_turbo: with straight eyebrows
+- id: soft_arched_eyebrows
+  label: Soft arched eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: soft arched eyebrows
+    anima: soft arched eyebrows, detailed face
+    zimage_turbo: with soft arched eyebrows
+- id: high_arched_eyebrows
+  label: High arched eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: high arched eyebrows
+    anima: high arched eyebrows, detailed face
+    zimage_turbo: with high arched eyebrows
+- id: low_set_eyebrows
+  label: Low set eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: low set eyebrows
+    anima: low set eyebrows, detailed face
+    zimage_turbo: with low set eyebrows
+- id: rounded_eyebrows
+  label: Rounded eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: rounded eyebrows
+    anima: rounded eyebrows, detailed face
+    zimage_turbo: with rounded eyebrows
+- id: angular_sharp_eyebrows
+  label: Angular sharp eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: angular sharp eyebrows
+    anima: angular sharp eyebrows, detailed face
+    zimage_turbo: with angular sharp eyebrows
+- id: s_shaped_eyebrows
+  label: S-shaped eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: s-shaped eyebrows
+    anima: s-shaped eyebrows, detailed face
+    zimage_turbo: with s-shaped eyebrows
+- id: flat_eyebrows
+  label: Flat eyebrows
+  meta:
+    subgroup: shape
+  tags:
+    illustrious: flat eyebrows
+    anima: flat eyebrows, detailed face
+    zimage_turbo: with flat eyebrows
+- id: thin_elegant_eyebrows
+  label: Thin elegant eyebrows
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: thin elegant eyebrows
+    anima: thin elegant eyebrows, detailed face
+    zimage_turbo: with thin elegant eyebrows
+- id: medium_natural_eyebrows
+  label: Medium natural eyebrows
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: medium natural eyebrows
+    anima: medium natural eyebrows, detailed face
+    zimage_turbo: with medium natural eyebrows
+- id: thick_full_eyebrows
+  label: Thick full eyebrows
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: thick full eyebrows
+    anima: thick full eyebrows, detailed face
+    zimage_turbo: with thick full eyebrows
+- id: very_thin_arched_bimbo_classic
+  label: Very thin arched (bimbo/classic)
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: very thin arched (bimbo/classic)
+    anima: very thin arched (bimbo/classic), detailed face
+    zimage_turbo: with very thin arched (bimbo/classic)
+- id: fluffy_thick_eyebrows
+  label: Fluffy thick eyebrows
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: fluffy thick eyebrows
+    anima: fluffy thick eyebrows, detailed face
+    zimage_turbo: with fluffy thick eyebrows
+- id: microbladed_sharp_eyebrows
+  label: Microbladed sharp eyebrows
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: microbladed sharp eyebrows
+    anima: microbladed sharp eyebrows, detailed face
+    zimage_turbo: with microbladed sharp eyebrows
+- id: natural_messy_eyebrows
+  label: Natural messy eyebrows
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: natural messy eyebrows
+    anima: natural messy eyebrows, detailed face
+    zimage_turbo: with natural messy eyebrows
+- id: perfectly_groomed_thin_brows
+  label: Perfectly groomed thin brows
+  meta:
+    subgroup: thickness_style
+  tags:
+    illustrious: perfectly groomed thin brows
+    anima: perfectly groomed thin brows, detailed face
+    zimage_turbo: with perfectly groomed thin brows
+- id: neutral_position
+  label: Neutral position
+  meta:
+    subgroup: position_expression
+  tags:
+    illustrious: neutral position
+    anima: neutral position, detailed face
+    zimage_turbo: with neutral position
+- id: slightly_raised_surprised_aroused
+  label: Slightly raised (surprised/aroused)
+  meta:
+    subgroup: position_expression
+  tags:
+    illustrious: slightly raised (surprised/aroused)
+    anima: slightly raised (surprised/aroused), detailed face
+    zimage_turbo: with slightly raised (surprised/aroused)
+- id: furrowed_intense_angry_pleasure
+  label: Furrowed (intense/angry pleasure)
+  meta:
+    subgroup: position_expression
+  tags:
+    illustrious: furrowed (intense/angry pleasure)
+    anima: furrowed (intense/angry pleasure), detailed face
+    zimage_turbo: with furrowed (intense/angry pleasure)
+- id: relaxed_soft_position
+  label: Relaxed soft position
+  meta:
+    subgroup: position_expression
+  tags:
+    illustrious: relaxed soft position
+    anima: relaxed soft position, detailed face
+    zimage_turbo: with relaxed soft position
+- id: one_eyebrow_raised_teasing
+  label: One eyebrow raised (teasing)
+  meta:
+    subgroup: position_expression
+  tags:
+    illustrious: one eyebrow raised (teasing)
+    anima: one eyebrow raised (teasing), detailed face
+    zimage_turbo: with one eyebrow raised (teasing)
+- id: low_and_seductive
+  label: Low and seductive
+  meta:
+    subgroup: position_expression
+  tags:
+    illustrious: low and seductive
+    anima: low and seductive, detailed face
+    zimage_turbo: with low and seductive
+- id: high_and_innocent
+  label: High and innocent
+  meta:
+    subgroup: position_expression
+  tags:
+    illustrious: high and innocent
+    anima: high and innocent, detailed face
+    zimage_turbo: with high and innocent

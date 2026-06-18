@@ -1,0 +1,193 @@
+id: style.artist_style
+title: Artist Styles
+items:
+- id: alfonso_azpiri_style
+  label: Alfonso Azpiri style
+  meta:
+    subgroup: retro_pinup
+  tags:
+    illustrious: alfonso azpiri style
+    anima: in the style of Alfonso Azpiri, alfonso azpiri style, heavily inspired
+      by Alfonso Azpiri
+    zimage_turbo: in the style of Alfonso Azpiri, heavily inspired by Alfonso Azpiri,
+      artstation, Alfonso Azpiri
+- id: hajime_sorayama_style
+  label: Hajime Sorayama style
+  meta:
+    subgroup: retro_pinup
+  tags:
+    illustrious: hajime sorayama style
+    anima: in the style of Hajime Sorayama, hajime sorayama style, heavily inspired
+      by Hajime Sorayama
+    zimage_turbo: in the style of Hajime Sorayama, heavily inspired by Hajime Sorayama,
+      artstation, Hajime Sorayama
+- id: boris_vallejo_style
+  label: Boris Vallejo style
+  meta:
+    subgroup: retro_pinup
+  tags:
+    illustrious: boris vallejo style
+    anima: in the style of Boris Vallejo, boris vallejo style, heavily inspired by
+      Boris Vallejo
+    zimage_turbo: in the style of Boris Vallejo, heavily inspired by Boris Vallejo,
+      artstation, Boris Vallejo
+- id: julie_bell_style
+  label: Julie Bell style
+  meta:
+    subgroup: retro_pinup
+  tags:
+    illustrious: julie bell style
+    anima: in the style of Julie Bell, julie bell style, heavily inspired by Julie
+      Bell
+    zimage_turbo: in the style of Julie Bell, heavily inspired by Julie Bell, artstation,
+      Julie Bell
+- id: frank_frazetta_style
+  label: Frank Frazetta style
+  meta:
+    subgroup: retro_pinup
+  tags:
+    illustrious: frank frazetta style
+    anima: in the style of Frank Frazetta, frank frazetta style, heavily inspired
+      by Frank Frazetta
+    zimage_turbo: in the style of Frank Frazetta, heavily inspired by Frank Frazetta,
+      artstation, Frank Frazetta
+- id: chris_achilleos_style
+  label: Chris Achilleos style
+  meta:
+    subgroup: retro_pinup
+  tags:
+    illustrious: chris achilleos style
+    anima: in the style of Chris Achilleos, chris achilleos style, heavily inspired
+      by Chris Achilleos
+    zimage_turbo: in the style of Chris Achilleos, heavily inspired by Chris Achilleos,
+      artstation, Chris Achilleos
+- id: masamune_shirow_style
+  label: Masamune Shirow style
+  meta:
+    subgroup: cyberpunk_scifi
+  tags:
+    illustrious: masamune shirow style
+    anima: in the style of Masamune Shirow, masamune shirow style, heavily inspired
+      by Masamune Shirow
+    zimage_turbo: in the style of Masamune Shirow, heavily inspired by Masamune Shirow,
+      artstation, Masamune Shirow
+- id: syd_mead_style
+  label: Syd Mead style
+  meta:
+    subgroup: cyberpunk_scifi
+  tags:
+    illustrious: syd mead style
+    anima: in the style of Syd Mead, syd mead style, heavily inspired by Syd Mead
+    zimage_turbo: in the style of Syd Mead, heavily inspired by Syd Mead, artstation,
+      Syd Mead
+- id: moebius_style
+  label: Moebius style
+  meta:
+    subgroup: cyberpunk_scifi
+  tags:
+    illustrious: moebius style
+    anima: in the style of Moebius, moebius style, heavily inspired by Moebius
+    zimage_turbo: in the style of Moebius, heavily inspired by Moebius, artstation,
+      Moebius
+- id: simon_stålenhag_style
+  label: Simon Stålenhag style
+  meta:
+    subgroup: cyberpunk_scifi
+  tags:
+    illustrious: simon stålenhag style
+    anima: in the style of Simon Stålenhag, simon stålenhag style, heavily inspired
+      by Simon Stålenhag
+    zimage_turbo: in the style of Simon Stålenhag, heavily inspired by Simon Stålenhag,
+      artstation, Simon Stålenhag
+- id: ilya_kuvshinov_style
+  label: Ilya Kuvshinov style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: ilya kuvshinov style
+    anima: in the style of Ilya Kuvshinov, ilya kuvshinov style, heavily inspired
+      by Ilya Kuvshinov
+    zimage_turbo: in the style of Ilya Kuvshinov, heavily inspired by Ilya Kuvshinov,
+      artstation, Ilya Kuvshinov
+- id: wlop_style
+  label: WLOP style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: wlop style
+    anima: in the style of WLOP, wlop style, heavily inspired by WLOP
+    zimage_turbo: in the style of WLOP, heavily inspired by WLOP, artstation, WLOP
+- id: artgerm_style
+  label: Artgerm style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: artgerm style
+    anima: in the style of Artgerm, artgerm style, heavily inspired by Artgerm
+    zimage_turbo: in the style of Artgerm, heavily inspired by Artgerm, artstation,
+      Artgerm
+- id: ross_tran_style
+  label: Ross Tran style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: ross tran style
+    anima: in the style of Ross Tran, ross tran style, heavily inspired by Ross Tran
+    zimage_turbo: in the style of Ross Tran, heavily inspired by Ross Tran, artstation,
+      Ross Tran
+- id: sakimichan_style
+  label: Sakimichan style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: sakimichan style
+    anima: in the style of Sakimichan, sakimichan style, heavily inspired by Sakimichan
+    zimage_turbo: in the style of Sakimichan, heavily inspired by Sakimichan, artstation,
+      Sakimichan
+- id: loish_style
+  label: Loish style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: loish style
+    anima: in the style of Loish, loish style, heavily inspired by Loish
+    zimage_turbo: in the style of Loish, heavily inspired by Loish, artstation, Loish
+- id: alphonse_mucha_style
+  label: Alphonse Mucha style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: alphonse mucha style
+    anima: in the style of Alphonse Mucha, alphonse mucha style, heavily inspired
+      by Alphonse Mucha
+    zimage_turbo: in the style of Alphonse Mucha, heavily inspired by Alphonse Mucha,
+      artstation, Alphonse Mucha
+- id: greg_rutkowski_style
+  label: Greg Rutkowski style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: greg rutkowski style
+    anima: in the style of Greg Rutkowski, greg rutkowski style, heavily inspired
+      by Greg Rutkowski
+    zimage_turbo: in the style of Greg Rutkowski, heavily inspired by Greg Rutkowski,
+      artstation, Greg Rutkowski
+- id: zdzisław_beksiński_style
+  label: Zdzisław Beksiński style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: zdzisław beksiński style
+    anima: in the style of Zdzisław Beksiński, zdzisław beksiński style, heavily inspired
+      by Zdzisław Beksiński
+    zimage_turbo: in the style of Zdzisław Beksiński, heavily inspired by Zdzisław
+      Beksiński, artstation, Zdzisław Beksiński
+- id: junji_ito_style
+  label: Junji Ito style
+  meta:
+    subgroup: other_artists
+  tags:
+    illustrious: junji ito style
+    anima: in the style of Junji Ito, junji ito style, heavily inspired by Junji Ito
+    zimage_turbo: in the style of Junji Ito, heavily inspired by Junji Ito, artstation,
+      Junji Ito

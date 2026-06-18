@@ -1,0 +1,43 @@
+id: character.waist
+title: Waist
+items:
+- id: slim_waist
+  label: Slim waist
+  meta:
+    subgroup: waist
+  tags:
+    illustrious: slim waist
+    anima: slim waist, detailed body
+    zimage_turbo: with slim waist
+- id: narrow_waist
+  label: Narrow waist
+  meta:
+    subgroup: waist
+  tags:
+    illustrious: narrow waist
+    anima: narrow waist, detailed body
+    zimage_turbo: with narrow waist
+- id: soft_waist
+  label: Soft waist
+  meta:
+    subgroup: waist
+  tags:
+    illustrious: soft waist
+    anima: soft waist, detailed body
+    zimage_turbo: with soft waist
+- id: toned_waist
+  label: Toned waist
+  meta:
+    subgroup: waist
+  tags:
+    illustrious: toned waist
+    anima: toned waist, detailed body
+    zimage_turbo: with toned waist
+- id: defined_waist
+  label: Defined waist
+  meta:
+    subgroup: waist
+  tags:
+    illustrious: defined waist
+    anima: defined waist, detailed body
+    zimage_turbo: with defined waist

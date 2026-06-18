@@ -1,0 +1,411 @@
+id: outfit.dress
+title: Dress
+items:
+- id: none
+  label: None (no dress)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: no dress
+    anima: no dress
+    zimage_turbo: without dress
+- id: micro_mini_dress
+  label: Micro Mini Dress
+  tags:
+    illustrious: micro mini dress
+    anima: micro mini dress, styled outfit
+    zimage_turbo: wearing micro mini dress
+  meta:
+    subgroup: micro_mini
+- id: pleated_micro_dress
+  label: Pleated Micro Dress
+  tags:
+    illustrious: pleated micro dress
+    anima: pleated micro dress, styled outfit
+    zimage_turbo: wearing pleated micro dress
+  meta:
+    subgroup: micro_mini
+- id: latex_micro_dress
+  label: Latex Micro Dress
+  tags:
+    illustrious: latex micro dress
+    anima: latex micro dress, styled outfit
+    zimage_turbo: wearing latex micro dress
+  meta:
+    subgroup: micro_mini
+- id: vinyl_micro_dress
+  label: Vinyl Micro Dress
+  tags:
+    illustrious: vinyl micro dress
+    anima: vinyl micro dress, styled outfit
+    zimage_turbo: wearing vinyl micro dress
+  meta:
+    subgroup: micro_mini
+- id: sheer_micro_dress
+  label: Sheer Micro Dress
+  tags:
+    illustrious: sheer micro dress
+    anima: sheer micro dress, styled outfit
+    zimage_turbo: wearing sheer micro dress
+  meta:
+    subgroup: micro_mini
+- id: bodycon_micro_dress
+  label: Bodycon Micro Dress
+  tags:
+    illustrious: bodycon micro dress
+    anima: bodycon micro dress, styled outfit
+    zimage_turbo: wearing bodycon micro dress
+  meta:
+    subgroup: micro_mini
+- id: high_slit_micro_dress
+  label: High Slit Micro Dress
+  tags:
+    illustrious: high slit micro dress
+    anima: high slit micro dress, styled outfit
+    zimage_turbo: wearing high slit micro dress
+  meta:
+    subgroup: micro_mini
+- id: strappy_micro_dress
+  label: Strappy Micro Dress
+  tags:
+    illustrious: strappy micro dress
+    anima: strappy micro dress, styled outfit
+    zimage_turbo: wearing strappy micro dress
+  meta:
+    subgroup: micro_mini
+- id: wetlook_micro_dress
+  label: Wetlook Micro Dress
+  tags:
+    illustrious: wetlook micro dress
+    anima: wetlook micro dress, styled outfit
+    zimage_turbo: wearing wetlook micro dress
+  meta:
+    subgroup: micro_mini
+- id: cutout_micro_dress
+  label: Cutout Micro Dress
+  tags:
+    illustrious: cutout micro dress
+    anima: cutout micro dress, styled outfit
+    zimage_turbo: wearing cutout micro dress
+  meta:
+    subgroup: micro_mini
+- id: harness_micro_dress
+  label: Harness Micro Dress
+  tags:
+    illustrious: harness micro dress
+    anima: harness micro dress, styled outfit
+    zimage_turbo: wearing harness micro dress
+  meta:
+    subgroup: micro_mini
+- id: see_through_micro_dress
+  label: See-Through Micro Dress
+  tags:
+    illustrious: see-through micro dress
+    anima: see-through micro dress, styled outfit
+    zimage_turbo: wearing see-through micro dress
+  meta:
+    subgroup: micro_mini
+- id: sheer_mesh_dress
+  label: Sheer Mesh Dress
+  tags:
+    illustrious: sheer mesh dress
+    anima: sheer mesh dress, styled outfit
+    zimage_turbo: wearing sheer mesh dress
+  meta:
+    subgroup: sheer
+- id: see_through_long_dress
+  label: See-Through Long Dress
+  tags:
+    illustrious: see-through long dress
+    anima: see-through long dress, styled outfit
+    zimage_turbo: wearing see-through long dress
+  meta:
+    subgroup: sheer
+- id: lace_sheer_dress
+  label: Lace Sheer Dress
+  tags:
+    illustrious: lace sheer dress
+    anima: lace sheer dress, styled outfit
+    zimage_turbo: wearing lace sheer dress
+  meta:
+    subgroup: sheer
+- id: transparent_vinyl_dress
+  label: Transparent Vinyl Dress
+  tags:
+    illustrious: transparent vinyl dress
+    anima: transparent vinyl dress, styled outfit
+    zimage_turbo: wearing transparent vinyl dress
+  meta:
+    subgroup: sheer
+- id: sheer_high_slit_dress
+  label: Sheer High Slit Dress
+  tags:
+    illustrious: sheer high slit dress
+    anima: sheer high slit dress, styled outfit
+    zimage_turbo: wearing sheer high slit dress
+  meta:
+    subgroup: sheer
+- id: fishnet_overlay_dress
+  label: Fishnet Overlay Dress
+  tags:
+    illustrious: fishnet overlay dress
+    anima: fishnet overlay dress, styled outfit
+    zimage_turbo: wearing fishnet overlay dress
+  meta:
+    subgroup: sheer
+- id: sheer_wetlook_dress
+  label: Sheer Wetlook Dress
+  tags:
+    illustrious: sheer wetlook dress
+    anima: sheer wetlook dress, styled outfit
+    zimage_turbo: wearing sheer wetlook dress
+  meta:
+    subgroup: sheer
+- id: completely_see_through_mini
+  label: Completely See-Through Mini
+  tags:
+    illustrious: completely see-through mini
+    anima: completely see-through mini, styled outfit
+    zimage_turbo: wearing completely see-through mini
+  meta:
+    subgroup: sheer
+- id: sheer_backless_dress
+  label: Sheer Backless Dress
+  tags:
+    illustrious: sheer backless dress
+    anima: sheer backless dress, styled outfit
+    zimage_turbo: wearing sheer backless dress
+  meta:
+    subgroup: sheer
+- id: sheer_cutout_dress
+  label: Sheer Cutout Dress
+  tags:
+    illustrious: sheer cutout dress
+    anima: sheer cutout dress, styled outfit
+    zimage_turbo: wearing sheer cutout dress
+  meta:
+    subgroup: sheer
+- id: tight_latex_mini_dress
+  label: Tight Latex Mini Dress
+  tags:
+    illustrious: tight latex mini dress
+    anima: tight latex mini dress, styled outfit
+    zimage_turbo: wearing tight latex mini dress
+  meta:
+    subgroup: latex_vinyl
+- id: glossy_vinyl_dress
+  label: Glossy Vinyl Dress
+  tags:
+    illustrious: glossy vinyl dress
+    anima: glossy vinyl dress, styled outfit
+    zimage_turbo: wearing glossy vinyl dress
+  meta:
+    subgroup: latex_vinyl
+- id: black_latex_long_dress
+  label: Black Latex Long Dress
+  tags:
+    illustrious: black latex long dress
+    anima: black latex long dress, styled outfit
+    zimage_turbo: wearing black latex long dress
+  meta:
+    subgroup: latex_vinyl
+- id: red_latex_mini_dress
+  label: Red Latex Mini Dress
+  tags:
+    illustrious: red latex mini dress
+    anima: red latex mini dress, styled outfit
+    zimage_turbo: wearing red latex mini dress
+  meta:
+    subgroup: latex_vinyl
+- id: wetlook_vinyl_mini
+  label: Wetlook Vinyl Mini
+  tags:
+    illustrious: wetlook vinyl mini
+    anima: wetlook vinyl mini, styled outfit
+    zimage_turbo: wearing wetlook vinyl mini
+  meta:
+    subgroup: latex_vinyl
+- id: latex_high_slit_dress
+  label: Latex High Slit Dress
+  tags:
+    illustrious: latex high slit dress
+    anima: latex high slit dress, styled outfit
+    zimage_turbo: wearing latex high slit dress
+  meta:
+    subgroup: latex_vinyl
+- id: shiny_vinyl_bodycon
+  label: Shiny Vinyl Bodycon
+  tags:
+    illustrious: shiny vinyl bodycon
+    anima: shiny vinyl bodycon, styled outfit
+    zimage_turbo: wearing shiny vinyl bodycon
+  meta:
+    subgroup: latex_vinyl
+- id: latex_cutout_dress
+  label: Latex Cutout Dress
+  tags:
+    illustrious: latex cutout dress
+    anima: latex cutout dress, styled outfit
+    zimage_turbo: wearing latex cutout dress
+  meta:
+    subgroup: latex_vinyl
+- id: vinyl_strappy_dress
+  label: Vinyl Strappy Dress
+  tags:
+    illustrious: vinyl strappy dress
+    anima: vinyl strappy dress, styled outfit
+    zimage_turbo: wearing vinyl strappy dress
+  meta:
+    subgroup: latex_vinyl
+- id: latex_harness_dress
+  label: Latex Harness Dress
+  tags:
+    illustrious: latex harness dress
+    anima: latex harness dress, styled outfit
+    zimage_turbo: wearing latex harness dress
+  meta:
+    subgroup: latex_vinyl
+- id: extreme_high_slit_dress
+  label: Extreme High Slit Dress
+  tags:
+    illustrious: extreme high slit dress
+    anima: extreme high slit dress, styled outfit
+    zimage_turbo: wearing extreme high slit dress
+  meta:
+    subgroup: high_slit_cutout
+- id: side_cutout_dress
+  label: Side Cutout Dress
+  tags:
+    illustrious: side cutout dress
+    anima: side cutout dress, styled outfit
+    zimage_turbo: wearing side cutout dress
+  meta:
+    subgroup: high_slit_cutout
+- id: deep_cleavage_cutout
+  label: Deep Cleavage Cutout
+  tags:
+    illustrious: deep cleavage cutout
+    anima: deep cleavage cutout, styled outfit
+    zimage_turbo: wearing deep cleavage cutout
+  meta:
+    subgroup: high_slit_cutout
+- id: backless_high_slit
+  label: Backless High Slit
+  tags:
+    illustrious: backless high slit
+    anima: backless high slit, styled outfit
+    zimage_turbo: wearing backless high slit
+  meta:
+    subgroup: high_slit_cutout
+- id: waist_cutout_dress
+  label: Waist Cutout Dress
+  tags:
+    illustrious: waist cutout dress
+    anima: waist cutout dress, styled outfit
+    zimage_turbo: wearing waist cutout dress
+  meta:
+    subgroup: high_slit_cutout
+- id: multiple_cutouts_dress
+  label: Multiple Cutouts Dress
+  tags:
+    illustrious: multiple cutouts dress
+    anima: multiple cutouts dress, styled outfit
+    zimage_turbo: wearing multiple cutouts dress
+  meta:
+    subgroup: high_slit_cutout
+- id: slit_to_hip_dress
+  label: Slit to Hip Dress
+  tags:
+    illustrious: slit to hip dress
+    anima: slit to hip dress, styled outfit
+    zimage_turbo: wearing slit to hip dress
+  meta:
+    subgroup: high_slit_cutout
+- id: keyhole_cutout_dress
+  label: Keyhole Cutout Dress
+  tags:
+    illustrious: keyhole cutout dress
+    anima: keyhole cutout dress, styled outfit
+    zimage_turbo: wearing keyhole cutout dress
+  meta:
+    subgroup: high_slit_cutout
+- id: underboob_cutout_dress
+  label: Underboob Cutout Dress
+  tags:
+    illustrious: underboob cutout dress
+    anima: underboob cutout dress, styled outfit
+    zimage_turbo: wearing underboob cutout dress
+  meta:
+    subgroup: high_slit_cutout
+- id: asymmetric_cutout_dress
+  label: Asymmetric Cutout Dress
+  tags:
+    illustrious: asymmetric cutout dress
+    anima: asymmetric cutout dress, styled outfit
+    zimage_turbo: wearing asymmetric cutout dress
+  meta:
+    subgroup: high_slit_cutout
+- id: strappy_harness_bodysuit_dress
+  label: Strappy Harness Bodysuit Dress
+  tags:
+    illustrious: strappy harness bodysuit dress
+    anima: strappy harness bodysuit dress, styled outfit
+    zimage_turbo: wearing strappy harness bodysuit dress
+  meta:
+    subgroup: bodysuit_harness
+- id: latex_bodysuit_dress
+  label: Latex Bodysuit Dress
+  tags:
+    illustrious: latex bodysuit dress
+    anima: latex bodysuit dress, styled outfit
+    zimage_turbo: wearing latex bodysuit dress
+  meta:
+    subgroup: bodysuit_harness
+- id: open_front_bodysuit_dress
+  label: Open Front Bodysuit Dress
+  tags:
+    illustrious: open front bodysuit dress
+    anima: open front bodysuit dress, styled outfit
+    zimage_turbo: wearing open front bodysuit dress
+  meta:
+    subgroup: bodysuit_harness
+- id: crotchless_bodysuit_dress
+  label: Crotchless Bodysuit Dress
+  tags:
+    illustrious: crotchless bodysuit dress
+    anima: crotchless bodysuit dress, styled outfit
+    zimage_turbo: wearing crotchless bodysuit dress
+  meta:
+    subgroup: bodysuit_harness
+- id: bondage_harness_dress
+  label: Bondage Harness Dress
+  tags:
+    illustrious: bondage harness dress
+    anima: bondage harness dress, styled outfit
+    zimage_turbo: wearing bondage harness dress
+  meta:
+    subgroup: bodysuit_harness
+- id: sheer_bodysuit_dress
+  label: Sheer Bodysuit Dress
+  tags:
+    illustrious: sheer bodysuit dress
+    anima: sheer bodysuit dress, styled outfit
+    zimage_turbo: wearing sheer bodysuit dress
+  meta:
+    subgroup: bodysuit_harness
+- id: vinyl_cutout_bodysuit
+  label: Vinyl Cutout Bodysuit
+  tags:
+    illustrious: vinyl cutout bodysuit
+    anima: vinyl cutout bodysuit, styled outfit
+    zimage_turbo: wearing vinyl cutout bodysuit
+  meta:
+    subgroup: bodysuit_harness
+- id: full_body_harness_dress
+  label: Full Body Harness Dress
+  tags:
+    illustrious: full body harness dress
+    anima: full body harness dress, styled outfit
+    zimage_turbo: wearing full body harness dress
+  meta:
+    subgroup: bodysuit_harness

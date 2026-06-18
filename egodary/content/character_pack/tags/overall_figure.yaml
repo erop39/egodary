@@ -1,0 +1,51 @@
+id: character.overall_figure
+title: Overall Figure
+items:
+- id: hourglass_proportions
+  label: Hourglass proportions
+  meta:
+    subgroup: figure
+  tags:
+    illustrious: hourglass proportions
+    anima: hourglass proportions, detailed body
+    zimage_turbo: with hourglass proportions
+- id: curvy_proportions
+  label: Curvy proportions
+  meta:
+    subgroup: figure
+  tags:
+    illustrious: curvy proportions
+    anima: curvy proportions, detailed body
+    zimage_turbo: with curvy proportions
+- id: balanced_proportions
+  label: Balanced proportions
+  meta:
+    subgroup: figure
+  tags:
+    illustrious: balanced proportions
+    anima: balanced proportions, detailed body
+    zimage_turbo: with balanced proportions
+- id: pear_shaped_figure
+  label: Pear-shaped figure
+  meta:
+    subgroup: figure
+  tags:
+    illustrious: pear-shaped figure
+    anima: pear-shaped figure, detailed body
+    zimage_turbo: with pear-shaped figure
+- id: voluptuous_lower_body
+  label: Voluptuous lower body
+  meta:
+    subgroup: figure
+  tags:
+    illustrious: voluptuous lower body
+    anima: voluptuous lower body, detailed body
+    zimage_turbo: with voluptuous lower body
+- id: athletic_proportions
+  label: Athletic proportions
+  meta:
+    subgroup: figure
+  tags:
+    illustrious: athletic proportions
+    anima: athletic proportions, detailed body
+    zimage_turbo: with athletic proportions

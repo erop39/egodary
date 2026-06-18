@@ -1,0 +1,123 @@
+id: camera.framing
+title: Framing / Shot Type
+items:
+- id: extreme_close_up_face_eyes_lips
+  label: Extreme Close-Up (face/eyes/lips)
+  meta:
+    subgroup: close_intimate
+  tags:
+    illustrious: extreme close-up (face/eyes/lips)
+    anima: extreme close-up (face/eyes/lips), cinematic framing
+    zimage_turbo: with extreme close-up (face/eyes/lips)
+- id: close_up
+  label: Close-Up
+  meta:
+    subgroup: close_intimate
+  tags:
+    illustrious: close-up
+    anima: close-up, cinematic framing
+    zimage_turbo: with close-up
+- id: tight_close_up
+  label: Tight Close-Up
+  meta:
+    subgroup: close_intimate
+  tags:
+    illustrious: tight close-up
+    anima: tight close-up, cinematic framing
+    zimage_turbo: with tight close-up
+- id: portrait
+  label: Portrait
+  meta:
+    subgroup: close_intimate
+  tags:
+    illustrious: portrait
+    anima: portrait, cinematic framing
+    zimage_turbo: with portrait
+- id: upper_body
+  label: Upper Body
+  meta:
+    subgroup: medium_shots
+  tags:
+    illustrious: upper body
+    anima: upper body, cinematic framing
+    zimage_turbo: with upper body
+- id: cowboy_shot_thighs
+  label: Cowboy Shot (thighs)
+  meta:
+    subgroup: medium_shots
+  tags:
+    illustrious: cowboy shot (thighs)
+    anima: cowboy shot (thighs), cinematic framing
+    zimage_turbo: with cowboy shot (thighs)
+- id: medium_shot
+  label: Medium Shot
+  meta:
+    subgroup: medium_shots
+  tags:
+    illustrious: medium shot
+    anima: medium shot, cinematic framing
+    zimage_turbo: with medium shot
+- id: full_body
+  label: Full Body
+  meta:
+    subgroup: full_wide
+  tags:
+    illustrious: full body
+    anima: full body, cinematic framing
+    zimage_turbo: with full body
+- id: full_body_with_space
+  label: Full Body with space
+  meta:
+    subgroup: full_wide
+  tags:
+    illustrious: full body with space
+    anima: full body with space, cinematic framing
+    zimage_turbo: with full body with space
+- id: wide_shot
+  label: Wide Shot
+  meta:
+    subgroup: full_wide
+  tags:
+    illustrious: wide shot
+    anima: wide shot, cinematic framing
+    zimage_turbo: with wide shot
+- id: extreme_wide_shot
+  label: Extreme Wide Shot
+  meta:
+    subgroup: full_wide
+  tags:
+    illustrious: extreme wide shot
+    anima: extreme wide shot, cinematic framing
+    zimage_turbo: with extreme wide shot
+- id: over_the_shoulder_shot
+  label: Over the Shoulder Shot
+  meta:
+    subgroup: special_framing
+  tags:
+    illustrious: over the shoulder shot
+    anima: over the shoulder shot, cinematic framing
+    zimage_turbo: with over the shoulder shot
+- id: from_behind
+  label: From Behind
+  meta:
+    subgroup: special_framing
+  tags:
+    illustrious: from behind
+    anima: from behind, cinematic framing
+    zimage_turbo: with from behind
+- id: mirror_reflection_shot
+  label: Mirror Reflection Shot
+  meta:
+    subgroup: special_framing
+  tags:
+    illustrious: mirror reflection shot
+    anima: mirror reflection shot, cinematic framing
+    zimage_turbo: with mirror reflection shot
+- id: split_diopter__two_focus_planes
+  label: Split Diopter / Two focus planes
+  meta:
+    subgroup: special_framing
+  tags:
+    illustrious: split diopter / two focus planes
+    anima: split diopter / two focus planes, cinematic framing
+    zimage_turbo: with split diopter / two focus planes

@@ -1,0 +1,123 @@
+id: style.technique
+title: Technique / Styling
+items:
+- id: clean_lines_and_shading
+  label: Clean lines and shading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: clean lines and shading
+    anima: clean lines and shading
+    zimage_turbo: clean lines and shading
+- id: soft_shading
+  label: Soft shading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: soft shading
+    anima: soft shading
+    zimage_turbo: soft shading
+- id: cell_shading
+  label: Cell shading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: cell shading
+    anima: cell shading
+    zimage_turbo: cell shading
+- id: detailed_shading
+  label: Detailed shading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: detailed shading
+    anima: detailed shading
+    zimage_turbo: detailed shading
+- id: gradient_shading
+  label: Gradient shading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: gradient shading
+    anima: gradient shading
+    zimage_turbo: gradient shading
+- id: dramatic_shading
+  label: Dramatic shading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: dramatic shading
+    anima: dramatic shading
+    zimage_turbo: dramatic shading
+- id: soft_glow
+  label: Soft glow
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: soft glow
+    anima: soft glow
+    zimage_turbo: soft glow
+- id: rim_lighting_emphasis
+  label: Rim lighting emphasis
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: rim lighting emphasis
+    anima: rim lighting emphasis
+    zimage_turbo: rim lighting emphasis
+- id: volumetric_lighting
+  label: Volumetric lighting
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: volumetric lighting
+    anima: volumetric lighting
+    zimage_turbo: volumetric lighting
+- id: beautiful_color_grading
+  label: Beautiful color grading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: beautiful color grading
+    anima: beautiful color grading
+    zimage_turbo: beautiful color grading
+- id: cinematic_color_grading
+  label: Cinematic color grading
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: cinematic color grading
+    anima: cinematic color grading
+    zimage_turbo: cinematic color grading
+- id: high_contrast
+  label: High contrast
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: high contrast
+    anima: high contrast
+    zimage_turbo: high contrast
+- id: low_contrast
+  label: Low contrast
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: low contrast
+    anima: low contrast
+    zimage_turbo: low contrast
+- id: vibrant_colors
+  label: Vibrant colors
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: vibrant colors
+    anima: vibrant colors
+    zimage_turbo: vibrant colors
+- id: muted_colors
+  label: Muted colors
+  meta:
+    subgroup: technique
+  tags:
+    illustrious: muted colors
+    anima: muted colors
+    zimage_turbo: muted colors

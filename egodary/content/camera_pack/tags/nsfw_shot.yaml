@@ -1,0 +1,147 @@
+id: camera.nsfw_shot
+title: NSFW-Specific Shots
+items:
+- id: low_angle_dominance_shot
+  label: Low angle dominance shot
+  meta:
+    subgroup: power_submission
+  tags:
+    illustrious: low angle dominance shot
+    anima: low angle dominance shot, cinematic framing
+    zimage_turbo: with low angle dominance shot
+- id: high_angle_submission_shot
+  label: High angle submission shot
+  meta:
+    subgroup: power_submission
+  tags:
+    illustrious: high angle submission shot
+    anima: high angle submission shot, cinematic framing
+    zimage_turbo: with high angle submission shot
+- id: looking_up_from_below
+  label: Looking up from below
+  meta:
+    subgroup: power_submission
+  tags:
+    illustrious: looking up from below
+    anima: looking up from below, cinematic framing
+    zimage_turbo: with looking up from below
+- id: looking_down_from_above
+  label: Looking down from above
+  meta:
+    subgroup: power_submission
+  tags:
+    illustrious: looking down from above
+    anima: looking down from above, cinematic framing
+    zimage_turbo: with looking down from above
+- id: extreme_close_up_on_lips
+  label: Extreme close-up on lips
+  meta:
+    subgroup: intimate_teasing
+  tags:
+    illustrious: extreme close-up on lips
+    anima: extreme close-up on lips, cinematic framing
+    zimage_turbo: with extreme close-up on lips
+- id: extreme_close_up_on_eyes
+  label: Extreme close-up on eyes
+  meta:
+    subgroup: intimate_teasing
+  tags:
+    illustrious: extreme close-up on eyes
+    anima: extreme close-up on eyes, cinematic framing
+    zimage_turbo: with extreme close-up on eyes
+- id: close_up_on_neck_and_cleavage
+  label: Close-up on neck and cleavage
+  meta:
+    subgroup: intimate_teasing
+  tags:
+    illustrious: close-up on neck and cleavage
+    anima: close-up on neck and cleavage, cinematic framing
+    zimage_turbo: with close-up on neck and cleavage
+- id: focus_on_inner_thighs
+  label: Focus on inner thighs
+  meta:
+    subgroup: intimate_teasing
+  tags:
+    illustrious: focus on inner thighs
+    anima: focus on inner thighs, cinematic framing
+    zimage_turbo: with focus on inner thighs
+- id: focus_on_ass_bent_over
+  label: Focus on ass (bent over)
+  meta:
+    subgroup: intimate_teasing
+  tags:
+    illustrious: focus on ass (bent over)
+    anima: focus on ass (bent over), cinematic framing
+    zimage_turbo: with focus on ass (bent over)
+- id: pov_male_gaze
+  label: POV (male gaze)
+  meta:
+    subgroup: pov_immersive
+  tags:
+    illustrious: pov (male gaze)
+    anima: pov (male gaze), cinematic framing
+    zimage_turbo: with pov (male gaze)
+- id: pov_from_below
+  label: POV from below
+  meta:
+    subgroup: pov_immersive
+  tags:
+    illustrious: pov from below
+    anima: pov from below, cinematic framing
+    zimage_turbo: with pov from below
+- id: over_the_shoulder_pov
+  label: Over the shoulder POV
+  meta:
+    subgroup: pov_immersive
+  tags:
+    illustrious: over the shoulder pov
+    anima: over the shoulder pov, cinematic framing
+    zimage_turbo: with over the shoulder pov
+- id: mirror_pov
+  label: Mirror POV
+  meta:
+    subgroup: pov_immersive
+  tags:
+    illustrious: mirror pov
+    anima: mirror pov, cinematic framing
+    zimage_turbo: with mirror pov
+- id: dutch_angle_erotic_tension
+  label: Dutch angle erotic tension
+  meta:
+    subgroup: dynamic_kinky
+  tags:
+    illustrious: dutch angle erotic tension
+    anima: dutch angle erotic tension, cinematic framing
+    zimage_turbo: with dutch angle erotic tension
+- id: low_angle_looking_up_skirt
+  label: Low angle looking up skirt
+  meta:
+    subgroup: dynamic_kinky
+  tags:
+    illustrious: low angle looking up skirt
+    anima: low angle looking up skirt, cinematic framing
+    zimage_turbo: with low angle looking up skirt
+- id: high_angle_on_kneeling_figure
+  label: High angle on kneeling figure
+  meta:
+    subgroup: dynamic_kinky
+  tags:
+    illustrious: high angle on kneeling figure
+    anima: high angle on kneeling figure, cinematic framing
+    zimage_turbo: with high angle on kneeling figure
+- id: bent_over_from_behind_framing
+  label: Bent over from behind framing
+  meta:
+    subgroup: dynamic_kinky
+  tags:
+    illustrious: bent over from behind framing
+    anima: bent over from behind framing, cinematic framing
+    zimage_turbo: with bent over from behind framing
+- id: legs_spread_framing
+  label: Legs spread framing
+  meta:
+    subgroup: dynamic_kinky
+  tags:
+    illustrious: legs spread framing
+    anima: legs spread framing, cinematic framing
+    zimage_turbo: with legs spread framing

@@ -1,0 +1,131 @@
+id: outfit.underwear_layer
+title: Underwear Layer
+items:
+- id: none
+  label: None (no underwear layer)
+  meta:
+    subgroup: none
+  tags:
+    illustrious: no underwear layer
+    anima: no underwear layer
+    zimage_turbo: without underwear layer
+- id: classic_lace_panties
+  label: Classic Lace Panties
+  tags:
+    illustrious: classic lace panties
+    anima: classic lace panties, styled outfit
+    zimage_turbo: wearing classic lace panties
+- id: classic_thong
+  label: Classic Thong
+  tags:
+    illustrious: classic thong
+    anima: classic thong, styled outfit
+    zimage_turbo: wearing classic thong
+- id: g_string
+  label: G-String
+  tags:
+    illustrious: g-string
+    anima: g-string, styled outfit
+    zimage_turbo: wearing g-string
+- id: tanga
+  label: Tanga
+  tags:
+    illustrious: tanga
+    anima: tanga, styled outfit
+    zimage_turbo: wearing tanga
+- id: boyshorts
+  label: Boyshorts
+  tags:
+    illustrious: boyshorts
+    anima: boyshorts, styled outfit
+    zimage_turbo: wearing boyshorts
+- id: crotchless_panties
+  label: Crotchless Panties
+  tags:
+    illustrious: crotchless panties
+    anima: crotchless panties, styled outfit
+    zimage_turbo: wearing crotchless panties
+- id: open_crotch_thong
+  label: Open Crotch Thong
+  tags:
+    illustrious: open crotch thong
+    anima: open crotch thong, styled outfit
+    zimage_turbo: wearing open crotch thong
+- id: strappy_harness_panties
+  label: Strappy Harness Panties
+  tags:
+    illustrious: strappy harness panties
+    anima: strappy harness panties, styled outfit
+    zimage_turbo: wearing strappy harness panties
+- id: latex_panties
+  label: Latex Panties
+  tags:
+    illustrious: latex panties
+    anima: latex panties, styled outfit
+    zimage_turbo: wearing latex panties
+- id: vinyl_panties
+  label: Vinyl Panties
+  tags:
+    illustrious: vinyl panties
+    anima: vinyl panties, styled outfit
+    zimage_turbo: wearing vinyl panties
+- id: sheer_mesh_panties
+  label: Sheer Mesh Panties
+  tags:
+    illustrious: sheer mesh panties
+    anima: sheer mesh panties, styled outfit
+    zimage_turbo: wearing sheer mesh panties
+- id: high_cut_brazilian
+  label: High-Cut Brazilian
+  tags:
+    illustrious: high-cut brazilian
+    anima: high-cut brazilian, styled outfit
+    zimage_turbo: wearing high-cut brazilian
+- id: micro_g_string
+  label: Micro G-String
+  tags:
+    illustrious: micro g-string
+    anima: micro g-string, styled outfit
+    zimage_turbo: wearing micro g-string
+- id: pearl_thong
+  label: Pearl Thong
+  tags:
+    illustrious: pearl thong
+    anima: pearl thong, styled outfit
+    zimage_turbo: wearing pearl thong
+- id: crotchless_lace_panties
+  label: Crotchless Lace Panties
+  tags:
+    illustrious: crotchless lace panties
+    anima: crotchless lace panties, styled outfit
+    zimage_turbo: wearing crotchless lace panties
+- id: bondage_harness_bottom
+  label: Bondage Harness Bottom
+  tags:
+    illustrious: bondage harness bottom
+    anima: bondage harness bottom, styled outfit
+    zimage_turbo: wearing bondage harness bottom
+- id: see_through_crotchless
+  label: See-Through Crotchless
+  tags:
+    illustrious: see-through crotchless
+    anima: see-through crotchless, styled outfit
+    zimage_turbo: wearing see-through crotchless
+- id: strappy_open_panties
+  label: Strappy Open Panties
+  tags:
+    illustrious: strappy open panties
+    anima: strappy open panties, styled outfit
+    zimage_turbo: wearing strappy open panties
+- id: wetlook_micro_panties
+  label: Wetlook Micro Panties
+  tags:
+    illustrious: wetlook micro panties
+    anima: wetlook micro panties, styled outfit
+    zimage_turbo: wearing wetlook micro panties
+- id: extreme_micro_thong
+  label: Extreme Micro Thong
+  tags:
+    illustrious: extreme micro thong
+    anima: extreme micro thong, styled outfit
+    zimage_turbo: wearing extreme micro thong

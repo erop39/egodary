@@ -1,0 +1,439 @@
+# Cross-category compatibility rules (camera, lighting, environment, fetish, face).
+# Matched by egodary.core.rule_matching — penalties emit UI warnings when emit_warning: true.
+
+penalties:
+  - id: camera_close_full_hard
+    severity: hard_block
+    emit_warning: true
+    penalty: -45
+    message: "Extreme Close-Up + Full Body"
+    recommendation: "Уберите Full Body или замените Framing на Close-Up / Portrait"
+    clear: camera.nsfw_shot
+    when:
+      camera_all_groups:
+        - - extreme_close_up_face_eyes_lips
+          - tight_close_up
+          - close_up
+          - extreme_close_up_on_lips
+          - extreme_close_up_on_eyes
+        - - full_body
+          - full_body_with_space
+          - wide_shot
+          - extreme_wide_shot
+
+  - id: camera_low_ecu_strong
+    severity: strong_warning
+    emit_warning: true
+    penalty: -30
+    recommendation: "Смените угол на eye-level или используйте medium/wide framing"
+    message: Low angle + extreme close-up may heavily distort the face.
+    when:
+      camera_angle:
+        - low_angle
+        - extreme_low_angle
+        - low_angle_looking_up_dominance
+        - low_angle_from_floor_level
+      camera_framing:
+        - extreme_close_up_face_eyes_lips
+        - tight_close_up
+
+  - id: camera_24mm_close_strong
+    severity: strong_warning
+    emit_warning: true
+    penalty: -28
+    recommendation: "Для close-up используйте 50–105mm lens"
+    message: 24mm close-up causes strong facial distortion.
+    when:
+      camera_lens: 24mm_wide_angle
+      camera_framing:
+        - extreme_close_up_face_eyes_lips
+        - close_up
+        - tight_close_up
+        - portrait
+
+  - id: camera_long_lens_full_strong
+    severity: strong_warning
+    emit_warning: true
+    message: 105mm+ with full body compresses the figure too much.
+    when:
+      camera_lens:
+        - 105mm
+        - 135mm_strong_compression
+      camera_framing:
+        - full_body
+        - full_body_with_space
+        - wide_shot
+        - extreme_wide_shot
+
+  - id: camera_dutch_static_soft
+    severity: soft_warning
+    emit_warning: true
+    message: Dutch angle works best with dynamic or tense poses.
+    when:
+      pose_empty: true
+      camera_angle:
+        - dutch_angle
+        - dutch_angle_for_tension
+
+  - id: camera_full_long_lens_soft
+    severity: soft_warning
+    emit_warning: true
+    message: Full body framing works best with 24–50mm lenses.
+    when:
+      camera_framing:
+        - full_body
+        - full_body_with_space
+      camera_lens:
+        - 85mm_portrait
+        - 105mm
+        - 135mm_strong_compression
+
+  - id: lighting_high_key_heavy_fetish
+    severity: strong_warning
+    emit_warning: true
+    message: High key lighting clashes with heavy fetish / restraint elements.
+    when:
+      lighting_light_type: high_key_lighting
+      fetish_any:
+        - collar_and_leash
+        - rope_bondage_shibari
+        - chains
+        - harness_restraints
+        - suspension_ropes
+        - pet_play_elements_ears_tail_collar
+        - mind_break
+        - full_body_harness
+
+  - id: lighting_low_key_neon
+    severity: strong_warning
+    emit_warning: true
+    message: Low key lighting with very bright neon colors may look incoherent.
+    when:
+      lighting_light_type: low_key_lighting
+      lighting_color_mood:
+        - neon_blue_and_pink
+        - cyberpunk_neon_lighting
+        - pink_neon_lighting
+        - green_neon_lighting
+        - rgb__multicolored_lighting
+
+  - id: lighting_underlight_gentle_face
+    severity: strong_warning
+    emit_warning: true
+    message: Underlighting fights gentle / romantic facial expressions.
+    when:
+      lighting_direction: underlighting_from_below__unsettling__erotic
+      face_facial_expression:
+        - coy_smile_with_head_tilt
+        - soft_come_here_expression
+        - looking_down_shyly_but_aroused
+        - shy_but_aroused
+        - afterglow_soft_smile__flushed_cheeks
+
+  - id: lighting_too_many_fields
+    severity: soft_warning
+    emit_warning: true
+    message: Consider limiting lighting to 1–2 strong choices for cleaner results.
+    when:
+      lighting_fields_gt: 3
+
+  - id: env_luxury_heavy_fetish
+    severity: strong_warning
+    emit_warning: true
+    message: Luxury bedroom / penthouse clashes with heavy BDSM or dungeon fetish.
+    when:
+      environment_location_in_group: luxury
+      fetish_any:
+        - collar_and_leash
+        - rope_bondage_shibari
+        - chains
+        - harness_restraints
+        - suspension_ropes
+        - pet_play_elements_ears_tail_collar
+        - mind_break
+        - full_body_harness
+        - gas_mask
+        - wax_play_marks
+
+  - id: env_neon_gentle_face
+    severity: strong_warning
+    emit_warning: true
+    message: Neon cyberpunk environment may fight gentle romantic expressions.
+    when:
+      environment_location_in_group: neon_cyberpunk
+      face_facial_expression:
+        - coy_smile_with_head_tilt
+        - soft_come_here_expression
+        - looking_down_shyly_but_aroused
+        - shy_but_aroused
+
+  - id: env_abandoned_studio
+    severity: strong_warning
+    emit_warning: true
+    message: Abandoned setting with bright studio lighting may look incoherent.
+    when:
+      environment_location_in_group: abandoned
+      lighting_light_type:
+        - soft_studio_lighting
+        - hard_studio_lighting
+
+  - id: env_dungeon_high_key
+    severity: strong_warning
+    emit_warning: true
+    message: Dungeon location with high key lighting rarely reads well.
+    when:
+      environment_location_in_group: dungeon
+      lighting_light_type: high_key_lighting
+
+  - id: fetish_collar_dominant_face
+    severity: strong_warning
+    emit_warning: true
+    message: Collar + leash with a dominant face expression sends mixed signals.
+    when:
+      fetish_any:
+        - collar_and_leash
+      face_facial_expression:
+        - dominant_smirk
+        - commanding_look
+        - i_own_you_expression
+        - playful_dominant
+        - confident_seductive_gaze
+
+  - id: fetish_mindbreak_elegant
+    severity: strong_warning
+    emit_warning: true
+    message: Mind break elements clash with elegant beauty archetype.
+    when:
+      fetish_any:
+        - mind_break
+        - broken_expression
+        - ahegao_face
+      face_beauty_archetype: elegant_refined_beauty
+
+  - id: fetish_petplay_dominant_face
+    severity: strong_warning
+    emit_warning: true
+    message: Pet play elements with a dominant face expression may look incoherent.
+    when:
+      fetish_any:
+        - pet_play_elements_ears_tail_collar
+      face_facial_expression:
+        - dominant_smirk
+        - commanding_look
+        - i_own_you_expression
+        - playful_dominant
+
+  - id: fetish_too_many_elements
+    severity: overload
+    emit_warning: true
+    penalty: -12
+    recommendation: "Сократите число активных фетиш-тегов до 5–6"
+    message: More than 5 fetish elements often dilutes the scene — consider trimming.
+    when:
+      fetish_count_gt: 5
+
+  - id: fetish_overload_7
+    severity: overload
+    emit_warning: true
+    penalty: -15
+    recommendation: "Сократите число активных фетиш-тегов до 5–6"
+    message: "Перегрузка: 7+ фетиш-элементов"
+    when:
+      fetish_count_min: 7
+
+  - id: lighting_neon_warm_color
+    severity: strong_warning
+    emit_warning: true
+    penalty: -16
+    recommendation: "Согласуйте color mood с неоном (cool blue / cyber tones)"
+    message: Neon light with warm candle tones may look incoherent.
+    when:
+      lighting_light_type:
+        - neon_lighting
+        - led_strip_lighting
+      lighting_color_mood:
+        - candlelight__fireplace
+        - cozy_warm_light
+        - warm_golden_lighting
+
+  - id: global_neon_candle
+    severity: strong_warning
+    emit_warning: true
+    message: Neon environment with candlelight sources may fight each other.
+    when:
+      environment_location_in_group: neon_cyberpunk
+      lighting_light_type: candlelight
+
+  - id: global_ahegao_elegant
+    severity: strong_warning
+    emit_warning: true
+    message: Ahegao / broken expressions clash with elegant beauty archetype.
+    when:
+      face_beauty_archetype: elegant_refined_beauty
+      any:
+        - face_facial_expression:
+            - classic_ahegao_tongue_out_eyes_rolled_up
+            - broken_ahegao_mind_broken_expression
+            - broken__mind_broken_expression
+        - fetish_any:
+            - ahegao_face
+            - mind_break
+            - broken_expression
+
+  - id: character_large_breasts_camera_hint
+    severity: soft_warning
+    emit_warning: true
+    message: Large / huge breasts read best with low angle or close-up upper body framing.
+    recommendation: "Попробуйте Low Angle или Close-Up / Upper Body в Camera"
+    when:
+      character_breast_size:
+        - large_breasts
+        - very_large_breasts
+        - huge_breasts
+
+  - id: character_shortstack_framing_hint
+    severity: soft_warning
+    emit_warning: true
+    message: Shortstack proportions suit cowboy shot or upper body framing.
+    recommendation: "Используйте Cowboy Shot или Upper Body в Camera"
+    when:
+      character_any:
+        - shortstack
+        - shortstack_short__curvy
+
+  - id: character_tall_full_body_hint
+    severity: soft_warning
+    emit_warning: true
+    message: Tall stature works best with full body framing at eye level.
+    recommendation: "Full Body + Eye Level в Camera"
+    when:
+      character_any:
+        - tall
+        - very_tall
+        - tall_and_slender
+        - tall_and_voluptuous
+
+  - id: character_thick_lower_body_pose_hint
+    severity: soft_warning
+    emit_warning: true
+    message: Thick thighs and big ass pair well with squatting, kneeling, or on-all-fours poses.
+    recommendation: "Смотрите Pose — squatting / kneeling / on all fours"
+    when:
+      character_all:
+        - thick_thighs
+        - big_ass
+
+  - id: character_voluptuous_lighting_hint
+    severity: soft_warning
+    emit_warning: true
+    message: Voluptuous / curvy bodies benefit from side lighting and subtle rim light.
+    recommendation: "Side lighting + rim light в Lighting"
+    when:
+      character_any:
+        - curvy
+        - voluptuous
+        - voluptuous_lower_body
+        - curvy_proportions
+
+bonuses:
+  - id: low_key_rim_restraints
+    tier: good
+    bonus: 8
+    message: "Low key + Rim + Restraints"
+    when:
+      lighting_light_type: low_key_lighting
+      lighting_direction:
+        - rim_lighting
+        - edge_lighting
+        - backlit_silhouette
+      fetish_any:
+        - silk_ropes
+        - leather_cuffs
+        - metal_handcuffs
+        - collar_and_leash
+        - ribbons
+
+  - id: ahegao_synergy
+    tier: strong
+    bonus: 12
+    message: "Ahegao + Drooling + Close-Up + Low key"
+    when:
+      face_facial_expression:
+        - classic_ahegao_tongue_out_eyes_rolled_up
+        - ahegao_with_drooling
+        - light_ahegao_half_lidded_tongue_slightly_out
+      camera_framing:
+        - extreme_close_up_face_eyes_lips
+        - close_up
+        - tight_close_up
+        - portrait
+      lighting_light_type: low_key_lighting
+
+  - id: submissive_collar_high_angle_dungeon
+    tier: excellent
+    bonus: 18
+    message: "Submissive + Collar + High Angle + Dungeon"
+    when:
+      face_facial_expression:
+        - submissive__obedient_look
+        - completely_submissive_no_resistance
+      fetish_any:
+        - collar_and_leash
+      camera_angle:
+        - high_angle
+        - extreme_high_angle
+        - high_angle_looking_down_vulnerability
+        - high_angle_from_above_submission
+      environment_location:
+        - basement__dungeon
+        - luxury_bdsm_club
+        - gothic_castle_interior
+
+  - id: submissive_low_angle_hint
+    message: Submissive / broken face pairs well with low-angle lighting.
+    when:
+      face_facial_expression:
+        - submissive__obedient_look
+        - broken__mind_broken_expression
+        - completely_submissive_no_resistance
+      camera_angle:
+        - low_angle
+        - low_angle_looking_up_dominance
+        - low_angle_from_floor_level
+
+  - id: heavy_fetish_dark_env_hint
+    message: Heavy fetish reads better with low key lighting and dark moody locations.
+    when:
+      fetish_any:
+        - collar_and_leash
+        - rope_bondage_shibari
+        - chains
+        - mind_break
+      any:
+        - lighting_light_type: low_key_lighting
+        - environment_location_in_group: dark_moody
+
+  - id: gentle_fetish_luxury_hint
+    message: Gentle elements suit luxury or candlelit environments.
+    when:
+      fetish_any:
+        - aftercare_elements
+        - silk_ropes
+      any:
+        - environment_location_in_group: luxury
+        - environment_location: candlelit_room
+
+  - id: cyberpunk_neon_light_hint
+    message: Cyberpunk locations pair well with neon or cyberpunk lighting.
+    when:
+      environment_location_in_group: neon_cyberpunk
+      lighting_light_type: neon_lighting
+
+  - id: fetish_good_combo_collar_submissive
+    message: Collar + leash pairs well with submissive / obedient expressions.
+    when:
+      fetish_any:
+        - collar_and_leash
+      face_facial_expression:
+        - submissive__obedient_look
+        - completely_submissive_no_resistance

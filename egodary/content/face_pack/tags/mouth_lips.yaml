@@ -1,0 +1,243 @@
+id: face.mouth_lips
+title: Mouth & Lips
+items:
+- id: full_plump_lips
+  label: Full plump lips
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: full plump lips
+    anima: full plump lips, detailed face
+    zimage_turbo: with full plump lips
+- id: extremely_full_bimbo_lips
+  label: Extremely full bimbo lips
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: extremely full bimbo lips
+    anima: extremely full bimbo lips, detailed face
+    zimage_turbo: with extremely full bimbo lips
+- id: heart_shaped_lips
+  label: Heart-shaped lips
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: heart-shaped lips
+    anima: heart-shaped lips, detailed face
+    zimage_turbo: with heart-shaped lips
+- id: wide_mouth
+  label: Wide mouth
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: wide mouth
+    anima: wide mouth, detailed face
+    zimage_turbo: with wide mouth
+- id: small_delicate_lips
+  label: Small delicate lips
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: small delicate lips
+    anima: small delicate lips, detailed face
+    zimage_turbo: with small delicate lips
+- id: downturned_lips
+  label: Downturned lips
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: downturned lips
+    anima: downturned lips, detailed face
+    zimage_turbo: with downturned lips
+- id: upturned_lips_natural_smile
+  label: Upturned lips (natural smile)
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: upturned lips (natural smile)
+    anima: upturned lips (natural smile), detailed face
+    zimage_turbo: with upturned lips (natural smile)
+- id: thin_lips
+  label: Thin lips
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: thin lips
+    anima: thin lips, detailed face
+    zimage_turbo: with thin lips
+- id: very_thick_lower_lip
+  label: Very thick lower lip
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: very thick lower lip
+    anima: very thick lower lip, detailed face
+    zimage_turbo: with very thick lower lip
+- id: asymmetrical_lips
+  label: Asymmetrical lips
+  meta:
+    subgroup: lip_shape_size
+  tags:
+    illustrious: asymmetrical lips
+    anima: asymmetrical lips, detailed face
+    zimage_turbo: with asymmetrical lips
+- id: glossy_wet_lips
+  label: Glossy wet lips
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: glossy wet lips
+    anima: glossy wet lips, detailed face
+    zimage_turbo: with glossy wet lips
+- id: shiny_plump_lips
+  label: Shiny plump lips
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: shiny plump lips
+    anima: shiny plump lips, detailed face
+    zimage_turbo: with shiny plump lips
+- id: matte_lips
+  label: Matte lips
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: matte lips
+    anima: matte lips, detailed face
+    zimage_turbo: with matte lips
+- id: slightly_chapped_lips_erotic
+  label: Slightly chapped lips (erotic)
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: slightly chapped lips (erotic)
+    anima: slightly chapped lips (erotic), detailed face
+    zimage_turbo: with slightly chapped lips (erotic)
+- id: lip_gloss__drool
+  label: Lip gloss + drool
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: lip gloss + drool
+    anima: lip gloss + drool, detailed face
+    zimage_turbo: with lip gloss + drool
+- id: wet_lips_with_saliva_string
+  label: Wet lips with saliva string
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: wet lips with saliva string
+    anima: wet lips with saliva string, detailed face
+    zimage_turbo: with wet lips with saliva string
+- id: plump_glossy_lips
+  label: Plump glossy lips
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: plump glossy lips
+    anima: plump glossy lips, detailed face
+    zimage_turbo: with plump glossy lips
+- id: overlined_lips
+  label: Overlined lips
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: overlined lips
+    anima: overlined lips, detailed face
+    zimage_turbo: with overlined lips
+- id: natural_soft_lips
+  label: Natural soft lips
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: natural soft lips
+    anima: natural soft lips, detailed face
+    zimage_turbo: with natural soft lips
+- id: metallic_shimmer_lips
+  label: Metallic/shimmer lips
+  meta:
+    subgroup: lip_details_texture
+  tags:
+    illustrious: metallic/shimmer lips
+    anima: metallic/shimmer lips, detailed face
+    zimage_turbo: with metallic/shimmer lips
+- id: slightly_parted_lips
+  label: Slightly parted lips
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: slightly parted lips
+    anima: slightly parted lips, detailed face
+    zimage_turbo: with slightly parted lips
+- id: mouth_open_in_moan
+  label: Mouth open in moan
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: mouth open in moan
+    anima: mouth open in moan, detailed face
+    zimage_turbo: with mouth open in moan
+- id: mouth_open_with_tongue_visible
+  label: Mouth open with tongue visible
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: mouth open with tongue visible
+    anima: mouth open with tongue visible, detailed face
+    zimage_turbo: with mouth open with tongue visible
+- id: biting_lower_lip
+  label: Biting lower lip
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: biting lower lip
+    anima: biting lower lip, detailed face
+    zimage_turbo: with biting lower lip
+- id: tongue_slightly_out
+  label: Tongue slightly out
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: tongue slightly out
+    anima: tongue slightly out, detailed face
+    zimage_turbo: with tongue slightly out
+- id: tongue_fully_out_ahegao_style
+  label: Tongue fully out (ahegao style)
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: tongue fully out (ahegao style)
+    anima: tongue fully out (ahegao style), detailed face
+    zimage_turbo: with tongue fully out (ahegao style)
+- id: lips_pursed
+  label: Lips pursed
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: lips pursed
+    anima: lips pursed, detailed face
+    zimage_turbo: with lips pursed
+- id: smiling_with_teeth
+  label: Smiling with teeth
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: smiling with teeth
+    anima: smiling with teeth, detailed face
+    zimage_turbo: with smiling with teeth
+- id: soft_smile
+  label: Soft smile
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: soft smile
+    anima: soft smile, detailed face
+    zimage_turbo: with soft smile
+- id: pouty_lips
+  label: Pouty lips
+  meta:
+    subgroup: mouth_expressions_static
+  tags:
+    illustrious: pouty lips
+    anima: pouty lips, detailed face
+    zimage_turbo: with pouty lips

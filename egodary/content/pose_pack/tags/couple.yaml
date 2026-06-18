@@ -1,0 +1,515 @@
+id: pose.couple
+title: Couple Pose
+items:
+- id: standing_hug_from_behind_hands_on_waist
+  label: Standing hug from behind, hands on waist
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing hug from behind, hands on waist
+    anima: standing hug from behind, hands on waist, dynamic pose
+    zimage_turbo: in standing hug from behind, hands on waist
+- id: standing_face_to_face_foreheads_touching
+  label: Standing face to face, foreheads touching
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing face to face, foreheads touching
+    anima: standing face to face, foreheads touching, dynamic pose
+    zimage_turbo: in standing face to face, foreheads touching
+- id: standing_with_partner_behind_hands_exploring
+  label: Standing with partner behind, hands exploring
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing with partner behind, hands exploring
+    anima: standing with partner behind, hands exploring, dynamic pose
+    zimage_turbo: in standing with partner behind, hands exploring
+- id: standing_kiss_with_hands_in_hair
+  label: Standing kiss with hands in hair
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing kiss with hands in hair
+    anima: standing kiss with hands in hair, dynamic pose
+    zimage_turbo: in standing kiss with hands in hair
+- id: standing_embrace_one_leg_wrapped_around
+  label: Standing embrace, one leg wrapped around
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing embrace, one leg wrapped around
+    anima: standing embrace, one leg wrapped around, dynamic pose
+    zimage_turbo: in standing embrace, one leg wrapped around
+- id: standing_with_partner_grabbing_ass
+  label: Standing with partner grabbing ass
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing with partner grabbing ass
+    anima: standing with partner grabbing ass, dynamic pose
+    zimage_turbo: in standing with partner grabbing ass
+- id: standing_back_to_chest_hands_on_breasts
+  label: Standing back-to-chest, hands on breasts
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing back-to-chest, hands on breasts
+    anima: standing back-to-chest, hands on breasts, dynamic pose
+    zimage_turbo: in standing back-to-chest, hands on breasts
+- id: standing_slow_dance_pose
+  label: Standing slow dance pose
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing slow dance pose
+    anima: standing slow dance pose, dynamic pose
+    zimage_turbo: in standing slow dance pose
+- id: standing_with_partner_lifting_one_leg
+  label: Standing with partner lifting one leg
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing with partner lifting one leg
+    anima: standing with partner lifting one leg, dynamic pose
+    zimage_turbo: in standing with partner lifting one leg
+- id: standing_teasing_kiss_on_neck
+  label: Standing teasing kiss on neck
+  meta:
+    subgroup: standing_intimate
+  tags:
+    illustrious: standing teasing kiss on neck
+    anima: standing teasing kiss on neck, dynamic pose
+    zimage_turbo: in standing teasing kiss on neck
+- id: deep_passionate_kiss_bodies_pressed
+  label: Deep passionate kiss, bodies pressed
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: deep passionate kiss, bodies pressed
+    anima: deep passionate kiss, bodies pressed, dynamic pose
+    zimage_turbo: in deep passionate kiss, bodies pressed
+- id: kissing_while_hands_under_clothes
+  label: Kissing while hands under clothes
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: kissing while hands under clothes
+    anima: kissing while hands under clothes, dynamic pose
+    zimage_turbo: in kissing while hands under clothes
+- id: neck_kissing_while_partner_touches
+  label: Neck kissing while partner touches
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: neck kissing while partner touches
+    anima: neck kissing while partner touches, dynamic pose
+    zimage_turbo: in neck kissing while partner touches
+- id: making_out_against_wall
+  label: Making out against wall
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: making out against wall
+    anima: making out against wall, dynamic pose
+    zimage_turbo: in making out against wall
+- id: kissing_while_grinding
+  label: Kissing while grinding
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: kissing while grinding
+    anima: kissing while grinding, dynamic pose
+    zimage_turbo: in kissing while grinding
+- id: partner_kissing_chest_breasts
+  label: Partner kissing chest/breasts
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: partner kissing chest/breasts
+    anima: partner kissing chest/breasts, dynamic pose
+    zimage_turbo: in partner kissing chest/breasts
+- id: slow_sensual_kissing_with_eye_contact
+  label: Slow sensual kissing with eye contact
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: slow sensual kissing with eye contact
+    anima: slow sensual kissing with eye contact, dynamic pose
+    zimage_turbo: in slow sensual kissing with eye contact
+- id: biting_lip_during_kiss
+  label: Biting lip during kiss
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: biting lip during kiss
+    anima: biting lip during kiss, dynamic pose
+    zimage_turbo: in biting lip during kiss
+- id: kissing_while_hands_between_legs
+  label: Kissing while hands between legs
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: kissing while hands between legs
+    anima: kissing while hands between legs, dynamic pose
+    zimage_turbo: in kissing while hands between legs
+- id: passionate_embrace_with_roaming_hands
+  label: Passionate embrace with roaming hands
+  meta:
+    subgroup: kissing_foreplay
+  tags:
+    illustrious: passionate embrace with roaming hands
+    anima: passionate embrace with roaming hands, dynamic pose
+    zimage_turbo: in passionate embrace with roaming hands
+- id: standing_sex_from_behind_partner_holding_hips
+  label: Standing sex from behind (partner holding hips)
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing sex from behind (partner holding hips)
+    anima: standing sex from behind (partner holding hips), dynamic pose
+    zimage_turbo: in standing sex from behind (partner holding hips)
+- id: standing_facing_one_leg_lifted
+  label: Standing facing, one leg lifted
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing facing, one leg lifted
+    anima: standing facing, one leg lifted, dynamic pose
+    zimage_turbo: in standing facing, one leg lifted
+- id: standing_against_wall_sex
+  label: Standing against wall sex
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing against wall sex
+    anima: standing against wall sex, dynamic pose
+    zimage_turbo: in standing against wall sex
+- id: standing_carry_partner_holding_thighs
+  label: Standing carry (partner holding thighs)
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing carry (partner holding thighs)
+    anima: standing carry (partner holding thighs), dynamic pose
+    zimage_turbo: in standing carry (partner holding thighs)
+- id: standing_bent_over_sex
+  label: Standing bent over sex
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing bent over sex
+    anima: standing bent over sex, dynamic pose
+    zimage_turbo: in standing bent over sex
+- id: standing_with_one_leg_on_partners_shoulder
+  label: Standing with one leg on partner's shoulder
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing with one leg on partner's shoulder
+    anima: standing with one leg on partner's shoulder, dynamic pose
+    zimage_turbo: in standing with one leg on partner's shoulder
+- id: standing_grinding__dry_humping
+  label: Standing grinding / dry humping
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing grinding / dry humping
+    anima: standing grinding / dry humping, dynamic pose
+    zimage_turbo: in standing grinding / dry humping
+- id: standing_with_partner_inside_from_front
+  label: Standing with partner inside from front
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing with partner inside from front
+    anima: standing with partner inside from front, dynamic pose
+    zimage_turbo: in standing with partner inside from front
+- id: standing_spooning_position
+  label: Standing spooning position
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing spooning position
+    anima: standing spooning position, dynamic pose
+    zimage_turbo: in standing spooning position
+- id: standing_with_deep_penetration_angle
+  label: Standing with deep penetration angle
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing with deep penetration angle
+    anima: standing with deep penetration angle, dynamic pose
+    zimage_turbo: in standing with deep penetration angle
+- id: standing_with_hands_pinned_against_wall
+  label: Standing with hands pinned against wall
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing with hands pinned against wall
+    anima: standing with hands pinned against wall, dynamic pose
+    zimage_turbo: in standing with hands pinned against wall
+- id: standing_with_partner_lifting_completely
+  label: Standing with partner lifting completely
+  meta:
+    subgroup: sexual_standing
+  tags:
+    illustrious: standing with partner lifting completely
+    anima: standing with partner lifting completely, dynamic pose
+    zimage_turbo: in standing with partner lifting completely
+- id: kneeling_giving_oral_looking_up
+  label: Kneeling giving oral (looking up)
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: kneeling giving oral (looking up)
+    anima: kneeling giving oral (looking up), dynamic pose
+    zimage_turbo: in kneeling giving oral (looking up)
+- id: partner_performing_oral_while_standing
+  label: Partner performing oral while standing
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: partner performing oral while standing
+    anima: partner performing oral while standing, dynamic pose
+    zimage_turbo: in partner performing oral while standing
+- id: 69_position_lying
+  label: 69 position (lying)
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: 69 position (lying)
+    anima: 69 position (lying), dynamic pose
+    zimage_turbo: in 69 position (lying)
+- id: sitting_on_face
+  label: Sitting on face
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: sitting on face
+    anima: sitting on face, dynamic pose
+    zimage_turbo: in sitting on face
+- id: kneeling_between_partners_legs
+  label: Kneeling between partner's legs
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: kneeling between partner's legs
+    anima: kneeling between partner's legs, dynamic pose
+    zimage_turbo: in kneeling between partner's legs
+- id: bent_over_receiving_oral_from_behind
+  label: Bent over receiving oral from behind
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: bent over receiving oral from behind
+    anima: bent over receiving oral from behind, dynamic pose
+    zimage_turbo: in bent over receiving oral from behind
+- id: lying_with_legs_over_partners_shoulders
+  label: Lying with legs over partner's shoulders
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: lying with legs over partner's shoulders
+    anima: lying with legs over partner's shoulders, dynamic pose
+    zimage_turbo: in lying with legs over partner's shoulders
+- id: sitting_on_edge_receiving_oral
+  label: Sitting on edge receiving oral
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: sitting on edge receiving oral
+    anima: sitting on edge receiving oral, dynamic pose
+    zimage_turbo: in sitting on edge receiving oral
+- id: standing_receiving_oral
+  label: Standing receiving oral
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: standing receiving oral
+    anima: standing receiving oral, dynamic pose
+    zimage_turbo: in standing receiving oral
+- id: mutual_oral_side_by_side
+  label: Mutual oral (side by side)
+  meta:
+    subgroup: oral_foreplay
+  tags:
+    illustrious: mutual oral (side by side)
+    anima: mutual oral (side by side), dynamic pose
+    zimage_turbo: in mutual oral (side by side)
+- id: missionary_legs_spread_wide
+  label: Missionary (legs spread wide)
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: missionary (legs spread wide)
+    anima: missionary (legs spread wide), dynamic pose
+    zimage_turbo: in missionary (legs spread wide)
+- id: doggy_style_ass_up
+  label: Doggy style (ass up)
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: doggy style (ass up)
+    anima: doggy style (ass up), dynamic pose
+    zimage_turbo: in doggy style (ass up)
+- id: cowgirl__riding_facing
+  label: Cowgirl / Riding (facing)
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: cowgirl / riding (facing)
+    anima: cowgirl / riding (facing), dynamic pose
+    zimage_turbo: in cowgirl / riding (facing)
+- id: reverse_cowgirl
+  label: Reverse Cowgirl
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: reverse cowgirl
+    anima: reverse cowgirl, dynamic pose
+    zimage_turbo: in reverse cowgirl
+- id: spooning_sex
+  label: Spooning sex
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: spooning sex
+    anima: spooning sex, dynamic pose
+    zimage_turbo: in spooning sex
+- id: prone_bone_lying_flat
+  label: Prone bone (lying flat)
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: prone bone (lying flat)
+    anima: prone bone (lying flat), dynamic pose
+    zimage_turbo: in prone bone (lying flat)
+- id: legs_over_shoulders
+  label: Legs over shoulders
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: legs over shoulders
+    anima: legs over shoulders, dynamic pose
+    zimage_turbo: in legs over shoulders
+- id: mating_press
+  label: Mating press
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: mating press
+    anima: mating press, dynamic pose
+    zimage_turbo: in mating press
+- id: standing_split_penetration
+  label: Standing split penetration
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: standing split penetration
+    anima: standing split penetration, dynamic pose
+    zimage_turbo: in standing split penetration
+- id: bent_over_table_desk
+  label: Bent over table/desk
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: bent over table/desk
+    anima: bent over table/desk, dynamic pose
+    zimage_turbo: in bent over table/desk
+- id: lotus_position_sitting_face_to_face
+  label: Lotus position (sitting face to face)
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: lotus position (sitting face to face)
+    anima: lotus position (sitting face to face), dynamic pose
+    zimage_turbo: in lotus position (sitting face to face)
+- id: piledriver_extreme
+  label: Piledriver (extreme)
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: piledriver (extreme)
+    anima: piledriver (extreme), dynamic pose
+    zimage_turbo: in piledriver (extreme)
+- id: side_lying_scissors
+  label: Side-lying scissors
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: side-lying scissors
+    anima: side-lying scissors, dynamic pose
+    zimage_turbo: in side-lying scissors
+- id: deep_missionary_with_legs_folded
+  label: Deep missionary with legs folded
+  meta:
+    subgroup: penetration
+  tags:
+    illustrious: deep missionary with legs folded
+    anima: deep missionary with legs folded, dynamic pose
+    zimage_turbo: in deep missionary with legs folded
+- id: cuddling_naked__semi_naked
+  label: Cuddling naked / semi-naked
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: cuddling naked / semi-naked
+    anima: cuddling naked / semi-naked, dynamic pose
+    zimage_turbo: in cuddling naked / semi-naked
+- id: spooning_embrace
+  label: Spooning embrace
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: spooning embrace
+    anima: spooning embrace, dynamic pose
+    zimage_turbo: in spooning embrace
+- id: gentle_touching_after_sex
+  label: Gentle touching after sex
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: gentle touching after sex
+    anima: gentle touching after sex, dynamic pose
+    zimage_turbo: in gentle touching after sex
+- id: kissing_forehead__neck_softly
+  label: Kissing forehead / neck softly
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: kissing forehead / neck softly
+    anima: kissing forehead / neck softly, dynamic pose
+    zimage_turbo: in kissing forehead / neck softly
+- id: lying_together_hands_intertwined
+  label: Lying together, hands intertwined
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: lying together, hands intertwined
+    anima: lying together, hands intertwined, dynamic pose
+    zimage_turbo: in lying together, hands intertwined
+- id: partner_caressing_body
+  label: Partner caressing body
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: partner caressing body
+    anima: partner caressing body, dynamic pose
+    zimage_turbo: in partner caressing body
+- id: playful_teasing__tickling
+  label: Playful teasing / tickling
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: playful teasing / tickling
+    anima: playful teasing / tickling, dynamic pose
+    zimage_turbo: in playful teasing / tickling
+- id: afterglow_pose_relaxed_satisfied
+  label: Afterglow pose (relaxed, satisfied)
+  meta:
+    subgroup: tease_aftercare
+  tags:
+    illustrious: afterglow pose (relaxed, satisfied)
+    anima: afterglow pose (relaxed, satisfied), dynamic pose
+    zimage_turbo: in afterglow pose (relaxed, satisfied)

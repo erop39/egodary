@@ -1,0 +1,67 @@
+id: character.breast_shape
+title: Breast Shape
+items:
+- id: perky_breasts
+  label: Perky breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: perky breasts
+    anima: perky breasts, detailed body
+    zimage_turbo: with perky breasts
+- id: round_breasts
+  label: Round breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: round breasts
+    anima: round breasts, detailed body
+    zimage_turbo: with round breasts
+- id: teardrop_breasts
+  label: Teardrop breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: teardrop breasts
+    anima: teardrop breasts, detailed body
+    zimage_turbo: with teardrop breasts
+- id: full_breasts
+  label: Full breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: full breasts
+    anima: full breasts, detailed body
+    zimage_turbo: with full breasts
+- id: heavy_breasts
+  label: Heavy breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: heavy breasts
+    anima: heavy breasts, detailed body
+    zimage_turbo: with heavy breasts
+- id: natural_breasts
+  label: Natural breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: natural breasts
+    anima: natural breasts, detailed body
+    zimage_turbo: with natural breasts
+- id: firm_breasts
+  label: Firm breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: firm breasts
+    anima: firm breasts, detailed body
+    zimage_turbo: with firm breasts
+- id: soft_breasts
+  label: Soft breasts
+  meta:
+    subgroup: shapes
+  tags:
+    illustrious: soft breasts
+    anima: soft breasts, detailed body
+    zimage_turbo: with soft breasts

@@ -1,0 +1,235 @@
+id: face.beauty_archetype
+title: Beauty Archetype
+items:
+- id: classic_beauty
+  label: Classic beauty
+  meta:
+    subgroup: classic_elegant
+  tags:
+    illustrious: classic beauty
+    anima: classic beauty, detailed face
+    zimage_turbo: with classic beauty
+- id: elegant_refined_beauty
+  label: Elegant refined beauty
+  meta:
+    subgroup: classic_elegant
+  tags:
+    illustrious: elegant refined beauty
+    anima: elegant refined beauty, detailed face
+    zimage_turbo: with elegant refined beauty
+- id: timeless_beauty
+  label: Timeless beauty
+  meta:
+    subgroup: classic_elegant
+  tags:
+    illustrious: timeless beauty
+    anima: timeless beauty, detailed face
+    zimage_turbo: with timeless beauty
+- id: sophisticated_beauty
+  label: Sophisticated beauty
+  meta:
+    subgroup: classic_elegant
+  tags:
+    illustrious: sophisticated beauty
+    anima: sophisticated beauty, detailed face
+    zimage_turbo: with sophisticated beauty
+- id: model_beauty
+  label: Model beauty
+  meta:
+    subgroup: classic_elegant
+  tags:
+    illustrious: model beauty
+    anima: model beauty, detailed face
+    zimage_turbo: with model beauty
+- id: cute_girl_next_door
+  label: Cute girl next door
+  meta:
+    subgroup: cute_innocent
+  tags:
+    illustrious: cute girl next door
+    anima: cute girl next door, detailed face
+    zimage_turbo: with cute girl next door
+- id: innocent_beauty
+  label: Innocent beauty
+  meta:
+    subgroup: cute_innocent
+  tags:
+    illustrious: innocent beauty
+    anima: innocent beauty, detailed face
+    zimage_turbo: with innocent beauty
+- id: adorable__kawaii
+  label: Adorable / kawaii
+  meta:
+    subgroup: cute_innocent
+  tags:
+    illustrious: adorable / kawaii
+    anima: adorable / kawaii, detailed face
+    zimage_turbo: with adorable / kawaii
+- id: sweet_and_pure
+  label: Sweet and pure
+  meta:
+    subgroup: cute_innocent
+  tags:
+    illustrious: sweet and pure
+    anima: sweet and pure, detailed face
+    zimage_turbo: with sweet and pure
+- id: shy_cute_type
+  label: Shy cute type
+  meta:
+    subgroup: cute_innocent
+  tags:
+    illustrious: shy cute type
+    anima: shy cute type, detailed face
+    zimage_turbo: with shy cute type
+- id: bimbo_beauty
+  label: Bimbo beauty
+  meta:
+    subgroup: fetish_extreme
+  tags:
+    illustrious: bimbo beauty
+    anima: bimbo beauty, detailed face
+    zimage_turbo: with bimbo beauty
+- id: doll_like_beauty
+  label: Doll-like beauty
+  meta:
+    subgroup: fetish_extreme
+  tags:
+    illustrious: doll-like beauty
+    anima: doll-like beauty, detailed face
+    zimage_turbo: with doll-like beauty
+- id: hyper_feminine
+  label: Hyper feminine
+  meta:
+    subgroup: fetish_extreme
+  tags:
+    illustrious: hyper feminine
+    anima: hyper feminine, detailed face
+    zimage_turbo: with hyper feminine
+- id: succubus__demonic_beauty
+  label: Succubus / demonic beauty
+  meta:
+    subgroup: fetish_extreme
+  tags:
+    illustrious: succubus / demonic beauty
+    anima: succubus / demonic beauty, detailed face
+    zimage_turbo: with succubus / demonic beauty
+- id: broken_beauty
+  label: Broken beauty
+  meta:
+    subgroup: fetish_extreme
+  tags:
+    illustrious: broken beauty
+    anima: broken beauty, detailed face
+    zimage_turbo: with broken beauty
+- id: corrupted_innocent
+  label: Corrupted innocent
+  meta:
+    subgroup: fetish_extreme
+  tags:
+    illustrious: corrupted innocent
+    anima: corrupted innocent, detailed face
+    zimage_turbo: with corrupted innocent
+- id: mind_broken_beauty
+  label: Mind-broken beauty
+  meta:
+    subgroup: fetish_extreme
+  tags:
+    illustrious: mind-broken beauty
+    anima: mind-broken beauty, detailed face
+    zimage_turbo: with mind-broken beauty
+- id: seductive_vixen
+  label: Seductive vixen
+  meta:
+    subgroup: seductive_erotic
+  tags:
+    illustrious: seductive vixen
+    anima: seductive vixen, detailed face
+    zimage_turbo: with seductive vixen
+- id: femme_fatale
+  label: Femme fatale
+  meta:
+    subgroup: seductive_erotic
+  tags:
+    illustrious: femme fatale
+    anima: femme fatale, detailed face
+    zimage_turbo: with femme fatale
+- id: bedroom_eyes_beauty
+  label: Bedroom eyes beauty
+  meta:
+    subgroup: seductive_erotic
+  tags:
+    illustrious: bedroom eyes beauty
+    anima: bedroom eyes beauty, detailed face
+    zimage_turbo: with bedroom eyes beauty
+- id: pure_lust_appearance
+  label: Pure lust appearance
+  meta:
+    subgroup: seductive_erotic
+  tags:
+    illustrious: pure lust appearance
+    anima: pure lust appearance, detailed face
+    zimage_turbo: with pure lust appearance
+- id: erotic_goddess
+  label: Erotic goddess
+  meta:
+    subgroup: seductive_erotic
+  tags:
+    illustrious: erotic goddess
+    anima: erotic goddess, detailed face
+    zimage_turbo: with erotic goddess
+- id: submissive_beauty
+  label: Submissive beauty
+  meta:
+    subgroup: seductive_erotic
+  tags:
+    illustrious: submissive beauty
+    anima: submissive beauty, detailed face
+    zimage_turbo: with submissive beauty
+- id: dominant_beauty
+  label: Dominant beauty
+  meta:
+    subgroup: seductive_erotic
+  tags:
+    illustrious: dominant beauty
+    anima: dominant beauty, detailed face
+    zimage_turbo: with dominant beauty
+- id: exotic_beauty
+  label: Exotic beauty
+  meta:
+    subgroup: exotic_unique
+  tags:
+    illustrious: exotic beauty
+    anima: exotic beauty, detailed face
+    zimage_turbo: with exotic beauty
+- id: mixed_ethnicity_beauty
+  label: Mixed ethnicity beauty
+  meta:
+    subgroup: exotic_unique
+  tags:
+    illustrious: mixed ethnicity beauty
+    anima: mixed ethnicity beauty, detailed face
+    zimage_turbo: with mixed ethnicity beauty
+- id: ethereal__otherworldly
+  label: Ethereal / otherworldly
+  meta:
+    subgroup: exotic_unique
+  tags:
+    illustrious: ethereal / otherworldly
+    anima: ethereal / otherworldly, detailed face
+    zimage_turbo: with ethereal / otherworldly
+- id: dark_feminine_beauty
+  label: Dark feminine beauty
+  meta:
+    subgroup: exotic_unique
+  tags:
+    illustrious: dark feminine beauty
+    anima: dark feminine beauty, detailed face
+    zimage_turbo: with dark feminine beauty
+- id: unique_striking_beauty
+  label: Unique striking beauty
+  meta:
+    subgroup: exotic_unique
+  tags:
+    illustrious: unique striking beauty
+    anima: unique striking beauty, detailed face
+    zimage_turbo: with unique striking beauty
