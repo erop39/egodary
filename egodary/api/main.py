@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 import os
 import re
 from pathlib import Path
@@ -32,12 +33,17 @@ from egodary.persistence.schema import (
     get_character_preset,
     get_favorite,
     list_character_presets,
+    list_user_presets,
     list_favorites,
+    get_user_preset,
+    update_user_preset,
+    delete_user_preset,
     migrate_runtime_subgroup_to_subcategory,
     rollback_runtime_subcategory_to_subgroup,
     list_unknown_tags,
     record_unknown_tags,
     save_character_preset,
+    save_user_preset,
     save_favorite,
     save_generation_history,
     save_runtime_tag_item,
@@ -49,10 +55,6 @@ from egodary.persistence.schema import (
 
 STATIC_DIR = Path(__file__).resolve().parents[1] / "web" / "static"
 
-app = FastAPI(title="eGOdary API", version="0.1.15")
-
-
-@app.on_event("startup")
 def startup_prewarm_engine() -> None:
     if os.getenv("PYTEST_CURRENT_TEST"):
         return
@@ -60,6 +62,15 @@ def startup_prewarm_engine() -> None:
         get_engine()
     except Exception:
         pass
+
+
+@asynccontextmanager
+async def app_lifespan(_: FastAPI):
+    startup_prewarm_engine()
+    yield
+
+
+app = FastAPI(title="eGOdary API", version="0.1.21", lifespan=app_lifespan)
 
 
 @app.get("/api/health")
@@ -268,6 +279,66 @@ def get_character_library_item(preset_id: int):
 def remove_character_preset(preset_id: int):
     if not delete_character_preset(preset_id):
         raise HTTPException(status_code=404, detail="Character preset not found")
+    return {"ok": True}
+
+
+class UserPresetSaveRequest(BaseModel):
+    scope: str
+    name: str
+    payload: dict[str, Any]
+    hint: str | None = None
+
+
+class UserPresetUpdateRequest(BaseModel):
+    name: str | None = None
+    payload: dict[str, Any] | None = None
+    hint: str | None = None
+
+
+@app.get("/api/user-presets")
+def get_user_presets(scope: str, limit: int = 100):
+    if not scope.strip():
+        raise HTTPException(status_code=400, detail="scope is required")
+    return list_user_presets(scope.strip(), limit=limit)
+
+
+@app.post("/api/user-presets")
+def add_user_preset(body: UserPresetSaveRequest):
+    try:
+        row_id = save_user_preset(body.scope, body.name, body.payload, hint=body.hint)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"id": row_id}
+
+
+@app.get("/api/user-presets/{preset_id}")
+def get_user_preset_detail(preset_id: int):
+    item = get_user_preset(preset_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="User preset not found")
+    return item
+
+
+@app.put("/api/user-presets/{preset_id}")
+def edit_user_preset(preset_id: int, body: UserPresetUpdateRequest):
+    try:
+        updated = update_user_preset(
+            preset_id,
+            name=body.name,
+            payload=body.payload,
+            hint=body.hint,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if not updated:
+        raise HTTPException(status_code=404, detail="User preset not found")
+    return {"ok": True}
+
+
+@app.delete("/api/user-presets/{preset_id}")
+def remove_user_preset(preset_id: int):
+    if not delete_user_preset(preset_id):
+        raise HTTPException(status_code=404, detail="User preset not found")
     return {"ok": True}
 
 
@@ -550,7 +621,8 @@ def prompt_import_classify(payload: PromptImportClassifyRequest):
     if payload.use_ollama and (not llm_status["enabled"] or not llm_status["healthy"]):
         raise HTTPException(status_code=400, detail=llm_status["last_error"] or "LLM is unavailable")
     parsed = parse_imported_prompt(payload.prompt, payload.model_id, registry)
-    recorded_unknown_count = record_unknown_tags(parsed.unknown, payload.prompt) if parsed.unknown else 0
+    if parsed.unknown:
+        record_unknown_tags(parsed.unknown, payload.prompt)
     core = extract_core(parsed.normalized_clean, payload.model_id, registry)
     deduped, classified = classify_new_tags(parsed.unknown, core, registry, use_ollama=payload.use_ollama)
     updated_unknown_count = 0
@@ -1019,6 +1091,10 @@ def tag_studio_items(
 ):
     registry = get_runtime_registry()
     rows: list[dict[str, Any]] = []
+    overlay_by_category: dict[str, set[str]] = {}
+    if hasattr(registry, "list_overlay_items"):
+        for cid, item, _ in registry.list_overlay_items():
+            overlay_by_category.setdefault(cid, set()).add(item.id)
     q_norm = (q or "").strip().lower()
     for cid in registry.category_ids():
         if category_id and cid != category_id:
@@ -1048,7 +1124,7 @@ def tag_studio_items(
                     "category_id": cid,
                     "subcategory_id": item_subcategory,
                     "item": item.model_dump(),
-                    "overlay": False,
+                    "overlay": item.id in overlay_by_category.get(cid, set()),
                 }
             )
             if len(rows) >= limit:
@@ -1171,6 +1247,7 @@ def tag_studio_deduplicate(category_id: str | None = None, fuzzy_threshold: floa
         category = registry.get_category(cid)
         if category is None:
             continue
+        subcategory_by_item_id = {item.id: _item_subcategory(item) for item in category.items}
         for item in category.items:
             matches = service.find_matches(phrase=item.label, category_id=cid, items=category.items)
             for match in matches:
@@ -1181,7 +1258,9 @@ def tag_studio_deduplicate(category_id: str | None = None, fuzzy_threshold: floa
                         "category_id": cid,
                         "source_item_id": item.id,
                         "source_label": item.label,
+                        "source_subcategory": subcategory_by_item_id.get(item.id, ""),
                         "match": match.__dict__,
+                        "match_subcategory": subcategory_by_item_id.get(match.item_id, ""),
                     }
                 )
     return {"findings": findings, "count": len(findings)}

@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 import yaml
 from fastapi.testclient import TestClient
 
 from egodary.api.main import app
-from egodary.app import get_runtime_registry, reset_engine_cache
+from egodary.app import reset_engine_cache
 from egodary.bootstrap import build_app
 from egodary.core.models import TagItem
 from egodary.core.overlay_export import export_overlay_to_plugins_user

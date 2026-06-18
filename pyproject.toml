@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "egodary"
-version = "0.1.15"
+version = "0.1.21"
 description = "Plugin-based prompt generator engine for Illustrious / Anima / Z-Image Turbo"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -12,6 +12,7 @@ license = { text = "Proprietary" }
 authors = [{ name = "Egor" }]
 dependencies = [
     "pydantic>=2.6",
+    "pydantic-settings>=2.6",
     "PyYAML>=6.0",
     "typer>=0.12",
     "rich>=13.7",

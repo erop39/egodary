@@ -348,6 +348,122 @@ def delete_character_preset(preset_id: int) -> bool:
     return changed
 
 
+def _user_preset_field_count(payload: dict) -> int:
+    return sum(1 for val in (payload or {}).values() if val)
+
+
+def save_user_preset(scope: str, name: str, payload: dict, *, hint: str | None = None) -> int:
+    cleaned_scope = scope.strip()
+    cleaned_name = name.strip()
+    if not cleaned_scope:
+        raise ValueError("Preset scope is required")
+    if not cleaned_name:
+        raise ValueError("Preset name is required")
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO user_presets(scope, name, payload_json, hint)
+        VALUES (?, ?, ?, ?)
+        """,
+        (cleaned_scope, cleaned_name, json.dumps(payload, ensure_ascii=False), hint or None),
+    )
+    conn.commit()
+    row_id = int(cur.lastrowid)
+    conn.close()
+    return row_id
+
+
+def list_user_presets(scope: str, limit: int = 100) -> list[dict]:
+    conn = get_connection()
+    cur = conn.cursor()
+    rows = cur.execute(
+        """
+        SELECT id, scope, name, payload_json, hint, created_at, updated_at
+        FROM user_presets
+        WHERE scope = ?
+        ORDER BY id DESC
+        LIMIT ?
+        """,
+        (scope.strip(), limit),
+    ).fetchall()
+    conn.close()
+    result: list[dict] = []
+    for row in rows:
+        item = dict(row)
+        try:
+            payload = json.loads(item.pop("payload_json") or "{}")
+        except json.JSONDecodeError:
+            payload = {}
+        item["payload"] = payload
+        item["field_count"] = _user_preset_field_count(payload)
+        result.append(item)
+    return result
+
+
+def get_user_preset(preset_id: int) -> dict | None:
+    conn = get_connection()
+    cur = conn.cursor()
+    row = cur.execute(
+        """
+        SELECT id, scope, name, payload_json, hint, created_at, updated_at
+        FROM user_presets WHERE id = ?
+        """,
+        (preset_id,),
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    item = dict(row)
+    item["payload"] = json.loads(item.pop("payload_json") or "{}")
+    item["field_count"] = _user_preset_field_count(item["payload"])
+    return item
+
+
+def update_user_preset(
+    preset_id: int,
+    *,
+    name: str | None = None,
+    payload: dict | None = None,
+    hint: str | None = None,
+) -> bool:
+    fields: list[str] = []
+    values: list[object] = []
+    if name is not None:
+        cleaned = name.strip()
+        if not cleaned:
+            raise ValueError("Preset name is required")
+        fields.append("name = ?")
+        values.append(cleaned)
+    if payload is not None:
+        fields.append("payload_json = ?")
+        values.append(json.dumps(payload, ensure_ascii=False))
+    if hint is not None:
+        fields.append("hint = ?")
+        values.append(hint or None)
+    if not fields:
+        return False
+    fields.append("updated_at = CURRENT_TIMESTAMP")
+    values.append(preset_id)
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(f"UPDATE user_presets SET {', '.join(fields)} WHERE id = ?", values)
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+def delete_user_preset(preset_id: int) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM user_presets WHERE id = ?", (preset_id,))
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
 def save_runtime_tag_items(registry: RuntimeRegistry) -> int:
     conn = get_connection()
     cur = conn.cursor()

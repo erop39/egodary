@@ -13,6 +13,7 @@ __all__ = [
     "ConvertAnalyzeResult",
     "CorePrompt",
     "NormalizedPrompt",
+    "PromptFormat",
     "convert_analyze",
     "convert_to_json",
     "convert_to_model",

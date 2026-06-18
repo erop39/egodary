@@ -322,6 +322,11 @@ body {
   color: var(--count);
 }
 
+.tree-count.tree-count-preset,
+.selection-count.tree-count-preset {
+  color: var(--warn);
+}
+
 .tree-count:empty,
 .selection-count:empty {
   display: none;
@@ -439,6 +444,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+  min-width: 0;
 }
 
 .chip-controls {
@@ -456,6 +463,45 @@ body {
   grid-template-columns: 248px 1fr;
   gap: 20px;
   min-height: 420px;
+  align-items: stretch;
+}
+
+/* Preset list fills the detail card — no dead space below */
+.outfit-layout:has(.scope-preset-panel) {
+  min-height: 420px;
+  max-height: calc(100vh - 180px);
+}
+
+.outfit-layout:has(.scope-preset-panel) .outfit-tree {
+  max-height: none;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.outfit-detail:has(.scope-preset-panel) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.outfit-detail:has(.scope-preset-panel) .card-title,
+.outfit-detail:has(.scope-preset-panel) .card-hint {
+  flex-shrink: 0;
+}
+
+.outfit-detail:has(.scope-preset-panel) .scope-preset-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.outfit-detail:has(.scope-preset-panel) .scope-preset-list {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
 }
 
 .outfit-tree {
@@ -482,9 +528,14 @@ body {
 }
 
 .outfit-tree-item.active {
-  background: linear-gradient(90deg, rgba(75, 123, 236, 0.25), transparent);
+  background: rgba(75, 123, 236, 0.18);
   color: var(--text);
   box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.outfit-tree-item.active[data-preset-leaf] {
+  background: rgba(245, 158, 11, 0.14);
+  box-shadow: inset 3px 0 0 var(--warn);
 }
 
 .outfit-tree-item.child {
@@ -506,6 +557,7 @@ body {
 
 .outfit-detail {
   min-height: 420px;
+  min-width: 0;
 }
 
 .panel > .card + .card,
@@ -666,6 +718,142 @@ body {
 .chip.chip-preset:hover {
   background: rgba(0, 210, 211, 0.12);
   border-color: var(--accent);
+}
+
+.chip.chip-preset.active,
+.chip.chip-preset.active:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.scope-preset-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.scope-preset-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.scope-preset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.scope-preset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-panel);
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.scope-preset-item:hover {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: var(--bg-card-hover);
+}
+
+.scope-preset-item.active {
+  border-color: var(--warn);
+  background: rgba(245, 158, 11, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.28);
+}
+
+.scope-preset-meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.scope-preset-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.scope-preset-hint {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.scope-preset-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.scope-preset-actions button {
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.scope-preset-actions .scope-preset-apply {
+  color: var(--warn);
+  border-color: rgba(245, 158, 11, 0.5);
+  font-weight: 600;
+}
+
+.scope-preset-actions .scope-preset-apply:hover {
+  color: #fff;
+  background: var(--warn);
+  border-color: var(--warn);
+}
+
+.scope-preset-toolbar .btn-preset-save {
+  border-color: rgba(245, 158, 11, 0.55);
+  color: var(--warn);
+}
+
+.scope-preset-toolbar .btn-preset-save:hover {
+  border-color: var(--warn);
+  color: #fff;
+  background: rgba(245, 158, 11, 0.22);
+}
+
+.scope-preset-actions .scope-preset-rename {
+  color: #87a8ff;
+  border-color: rgba(135, 168, 255, 0.45);
+}
+
+.scope-preset-actions .scope-preset-delete:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.scope-preset-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  padding: 4px 0;
 }
 
 .camera-presets-card {
@@ -906,6 +1094,143 @@ select:disabled {
 
 .tagstudio-help-list li {
   margin-bottom: 6px;
+}
+
+.tagstudio-output {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  font-size: 12px;
+}
+
+.tagstudio-output-empty {
+  color: var(--text-muted);
+}
+
+.tagstudio-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tagstudio-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--bg-card);
+  font-size: 11px;
+}
+
+.tagstudio-section-title {
+  margin: 8px 0 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tagstudio-list {
+  margin: 0;
+  padding-left: 18px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.tagstudio-list li {
+  margin-bottom: 6px;
+  line-height: 1.45;
+}
+
+.tagstudio-main {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tagstudio-meta {
+  color: var(--text-muted);
+}
+
+.tagstudio-raw-json {
+  margin: 8px 0 0;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 180px;
+  overflow: auto;
+}
+
+.tagstudio-lister {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.tagstudio-lister-active-only {
+  align-self: end;
+  margin: 0 0 6px;
+}
+
+.tagstudio-lister-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.tagstudio-lister-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--bg-card);
+  cursor: pointer;
+}
+
+.tagstudio-lister-item:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.tagstudio-lister-item.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.tagstudio-lister-title {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tagstudio-lister-subline {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.tagstudio-lister-overlay {
+  color: #79d08b;
+}
+
+.tagstudio-lister-core {
+  color: #f0be79;
+}
+
+.card-subsection {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 
 .import-report-unknown li {

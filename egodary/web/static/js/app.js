@@ -14,6 +14,9 @@ let favoritesGenDefaults = null;
 let activeFavoriteId = null;
 let editingFavoriteId = null;
 let addTagCategoriesCache = [];
+let tagStudioListerItems = [];
+let tagStudioSelectedTagRow = null;
+let tagStudioListerInitialized = false;
 
 function createDefaultCharacter() {
   return {
@@ -296,6 +299,7 @@ const POSE_TREE = [
 ];
 
 const itemSubgroupMaps = {};
+const itemLabelCache = {};
 const fieldSelectionModes = new Map();
 let conflictPreviewTimer = null;
 let conflictPreviewRequest = 0;
@@ -336,7 +340,10 @@ const TAB_COUNTS = {
     if (state.appearance.hair_color) count += 1;
     return count;
   },
-  face: () => FACE_VIBE_FIELDS.filter((field) => state.face[field]).length,
+  face: () => FACE_VIBE_FIELDS.filter((field) => {
+    const value = state.face[field];
+    return typeof value === "string" ? Boolean(value) : Array.isArray(value) && value.length > 0;
+  }).length,
   style: () => {
     if (!state.style.enabled) return 0;
     return (state.style.art_style ? 1 : 0)
@@ -385,19 +392,21 @@ function isFaceVibeLeafId(leafId) {
   return Boolean(findTreeLeaf(leafId, getFaceVibeTree()));
 }
 
-const TREE_PANELS = [
-  { tree: getCharacterStructureTree(), elId: "character-tree" },
-  { tree: getFaceVibeTree(), elId: "face-tree" },
-  { tree: OUTFIT_TREE, elId: "outfit-tree" },
-  { tree: MAKEUP_TREE, elId: "makeup-tree" },
-  { tree: ACCESSORIES_TREE, elId: "accessories-tree" },
-  { tree: POSE_TREE, elId: "pose-tree" },
-  { tree: window.CAMERA_TREE || [], elId: "camera-tree" },
-  { tree: window.LIGHTING_TREE || [], elId: "lighting-tree" },
-  { tree: window.ENVIRONMENT_TREE || [], elId: "environment-tree" },
-  { tree: window.STYLE_TREE || [], elId: "style-tree" },
-  { tree: window.FETISH_TREE || [], elId: "fetish-tree" },
-];
+function getTreePanels() {
+  return [
+    { getTree: getCharacterTree, elId: "character-tree" },
+    { getTree: getFaceTree, elId: "face-tree" },
+    { getTree: getOutfitTree, elId: "outfit-tree" },
+    { getTree: getMakeupTree, elId: "makeup-tree" },
+    { getTree: getAccessoriesTree, elId: "accessories-tree" },
+    { getTree: getPoseTree, elId: "pose-tree" },
+    { getTree: getCameraTree, elId: "camera-tree" },
+    { getTree: getLightingTree, elId: "lighting-tree" },
+    { getTree: getEnvironmentTree, elId: "environment-tree" },
+    { getTree: getStyleTree, elId: "style-tree" },
+    { getTree: getFetishTree, elId: "fetish-tree" },
+  ];
+}
 
 const selectionCountEls = new Map();
 let clothingConditionsByField = null;
@@ -512,7 +521,9 @@ function clearConditionForField(field) {
 
 function registerCategoryItems(categoryId, items) {
   if (!itemSubgroupMaps[categoryId]) itemSubgroupMaps[categoryId] = {};
+  if (!itemLabelCache[categoryId]) itemLabelCache[categoryId] = {};
   for (const item of items) {
+    itemLabelCache[categoryId][item.id] = item.label;
     const subcategory = item.meta?.subcategory_id || item.meta?.subgroup;
     if (subcategory) {
       itemSubgroupMaps[categoryId][item.id] = subcategory;
@@ -550,9 +561,16 @@ function setFieldSelectionMode(scopeKey, mode) {
 
 function getFieldSelectionMode(scopeKey, count = 0) {
   const stored = fieldSelectionModes.get(scopeKey);
+  if (count > 0) {
+    if (stored === "random" || stored === "preset") return stored;
+    return "item";
+  }
   if (stored) return stored;
-  if (count > 0) return "item";
   return "none";
+}
+
+function resetFieldSelectionModes() {
+  fieldSelectionModes.clear();
 }
 
 function getStateValueForTreeNode(node) {
@@ -595,6 +613,13 @@ function valueMatchesNodeSubgroup(node, value) {
 
 function getTreeLeafSelectionState(node) {
   const scopeKey = nodeSelectionScopeKey(node);
+  if (node.presetPanel && node.presetScope) {
+    const activeId = getActiveScopePresetId(node.presetScope);
+    let count = 0;
+    if (node.presetPanel === "builtin" && activeId.startsWith("builtin:")) count = 1;
+    if (node.presetPanel === "custom" && activeId.startsWith("user:")) count = 1;
+    return { count, mode: count > 0 ? "preset" : "none", scopeKey: node.presetScope };
+  }
   if (node.categoryId?.startsWith("style.") && !state.style?.enabled) {
     return { count: 0, mode: "off", scopeKey };
   }
@@ -618,13 +643,19 @@ function getTreeLeafSelectionState(node) {
 
 function applyCountDisplay(el, { count, mode }) {
   if (!el) return;
-  el.classList.remove("tree-count-random", "tree-count-off", "tree-count-item");
-  if (mode === "off") {
+  el.classList.remove("tree-count-random", "tree-count-off", "tree-count-item", "tree-count-preset");
+  const effectiveMode = count > 0 && mode === "off" ? "item" : mode;
+  if (effectiveMode === "off") {
     el.textContent = "0";
     el.classList.add("tree-count-off");
     return;
   }
-  if (mode === "random" && count > 0) {
+  if (effectiveMode === "preset" && count > 0) {
+    el.textContent = String(count);
+    el.classList.add("tree-count-preset");
+    return;
+  }
+  if (effectiveMode === "random" && count > 0) {
     el.textContent = String(count);
     el.classList.add("tree-count-random");
     return;
@@ -708,11 +739,8 @@ function updateTreeCountsInContainer(nodes, container) {
 }
 
 function refreshAllTreeCounts() {
-  updateTreeCountsInContainer(getCharacterStructureTree(), document.getElementById("character-tree"));
-  updateTreeCountsInContainer(getFaceVibeTree(), document.getElementById("face-tree"));
-  for (const { tree, elId } of TREE_PANELS) {
-    if (elId === "character-tree" || elId === "face-tree") continue;
-    updateTreeCountsInContainer(tree, document.getElementById(elId));
+  for (const { getTree, elId } of getTreePanels()) {
+    updateTreeCountsInContainer(getTree(), document.getElementById(elId));
   }
 }
 
@@ -1056,9 +1084,7 @@ function refreshAllPanels() {
   initMakeupPanel();
   initAccessoriesPanel();
   initPosePanel();
-  initCameraPresets();
   initCameraPanel();
-  initLightingPresets();
   initLightingPanel();
   initFetishPanel();
   initStaticChips();
@@ -1546,6 +1572,7 @@ function buildSubgroupScopeIds(categoryId, subgroup, items) {
 }
 
 function applyImportTouched(imported, touched) {
+  resetFieldSelectionModes();
   for (const path of touched) {
     if (path === "pose") {
       state.pose = imported.pose || "";
@@ -1828,7 +1855,7 @@ function setEnvironmentLeafValue(leaf, value) {
 }
 
 function initEnvironmentPanel() {
-  const tree = window.ENVIRONMENT_TREE || [];
+  const tree = getEnvironmentTree();
   if (!tree.length) {
     const chips = document.getElementById("environment-chips");
     if (chips) {
@@ -1839,6 +1866,20 @@ function initEnvironmentPanel() {
 
   const selectLeaf = (leaf) => {
     if (!leaf) return;
+    if (leaf.presetPanel && leaf.presetScope) {
+      activeEnvironmentLeafId = leaf.id;
+      const treeEl = document.getElementById("environment-tree");
+      treeEl.innerHTML = "";
+      renderCategoryTree(tree, treeEl, activeEnvironmentLeafId, selectLeaf);
+      showScopePresetLeaf(
+        leaf.presetScope,
+        leaf,
+        document.getElementById("environment-chips"),
+        document.getElementById("environment-detail-title"),
+        null,
+      );
+      return;
+    }
     activeEnvironmentLeafId = leaf.id;
     const isMulti = Boolean(leaf.multi);
     const detailSelectionKey = "environment-tree-detail";
@@ -1864,6 +1905,7 @@ function initEnvironmentPanel() {
     renderCategoryTree(tree, treeEl, activeEnvironmentLeafId, selectLeaf);
 
     const container = document.getElementById("environment-chips");
+    container.className = "chip-panel";
     const opts = leaf.subgroup ? { subgroup: leaf.subgroup } : {};
     if (isMulti) {
       loadCategoryMultiChips(
@@ -1872,6 +1914,7 @@ function initEnvironmentPanel() {
         () => getEnvironmentLeafValue(leaf),
         (v) => {
           setEnvironmentLeafValue(leaf, v);
+          clearActiveScopePreset("environment");
           notifyStateChange();
         },
         { max: 2, randomCount: 1, ...opts },
@@ -1883,6 +1926,7 @@ function initEnvironmentPanel() {
         () => getEnvironmentLeafValue(leaf),
         (v) => {
           setEnvironmentLeafValue(leaf, v);
+          clearActiveScopePreset("environment");
           notifyStateChange();
         },
         opts,
@@ -1891,7 +1935,7 @@ function initEnvironmentPanel() {
   };
 
   refreshEnvironmentPanel = () => {
-    selectLeaf(findTreeLeaf(activeEnvironmentLeafId, tree) || tree[0]?.children?.[0]);
+    selectLeaf(findTreeLeaf(activeEnvironmentLeafId, getEnvironmentTree()) || getEnvironmentTree()[0]?.children?.[0]);
   };
   refreshEnvironmentPanel();
 }
@@ -2042,7 +2086,7 @@ function initStyleEnabledChips() {
 function initStylePanel() {
   initStyleEnabledChips();
   initQualityBoostersPanel();
-  const tree = window.STYLE_TREE || [];
+  const tree = getStyleTree();
   if (!tree.length) {
     const chips = document.getElementById("style-chips");
     if (chips) {
@@ -2052,7 +2096,23 @@ function initStylePanel() {
   }
 
   const selectLeaf = (leaf) => {
-    if (!leaf || !state.style.enabled) return;
+    if (!leaf) return;
+    if (leaf.presetPanel && leaf.presetScope) {
+      activeStyleLeafId = leaf.id;
+      const treeEl = document.getElementById("style-tree");
+      treeEl.innerHTML = "";
+      renderCategoryTree(tree, treeEl, activeStyleLeafId, selectLeaf);
+      const container = document.getElementById("style-chips");
+      showScopePresetLeaf(
+        leaf.presetScope,
+        leaf,
+        container,
+        document.getElementById("style-detail-title"),
+        null,
+      );
+      return;
+    }
+    if (!state.style.enabled) return;
     activeStyleLeafId = leaf.id;
     const isMulti = Boolean(leaf.multi);
     const detailSelectionKey = "style-tree-detail";
@@ -2078,6 +2138,7 @@ function initStylePanel() {
     renderCategoryTree(tree, treeEl, activeStyleLeafId, selectLeaf);
 
     const container = document.getElementById("style-chips");
+    container.className = "chip-panel";
     const opts = leaf.subgroup ? { subgroup: leaf.subgroup } : {};
     if (isMulti) {
       const multiOpts = STYLE_MULTI_LIMITS[leaf.field] || { max: 4, randomCount: 1 };
@@ -2087,6 +2148,7 @@ function initStylePanel() {
         () => state.style[leaf.field] || [],
         (v) => {
           state.style[leaf.field] = v;
+          clearActiveScopePreset("style");
           notifyStateChange();
         },
         { ...multiOpts, ...opts },
@@ -2098,6 +2160,7 @@ function initStylePanel() {
         () => state.style[leaf.field] || "",
         (v) => {
           state.style[leaf.field] = v;
+          clearActiveScopePreset("style");
           notifyStateChange();
         },
         opts,
@@ -2107,8 +2170,14 @@ function initStylePanel() {
 
   refreshStylePanel = () => {
     initStyleEnabledChips();
+    const styleTree = getStyleTree();
+    const currentLeaf = findTreeLeaf(activeStyleLeafId, styleTree);
+    if (currentLeaf?.presetPanel) {
+      selectLeaf(currentLeaf);
+      return;
+    }
     if (!state.style.enabled) return;
-    selectLeaf(findTreeLeaf(activeStyleLeafId, tree) || tree[0]?.children?.[0]);
+    selectLeaf(currentLeaf || styleTree.find((n) => n.children)?.children?.[0] || styleTree[0]);
   };
   refreshStylePanel();
 }
@@ -2125,7 +2194,7 @@ function findTreeLeaf(leafId, nodes) {
   return null;
 }
 
-function findOutfitLeaf(leafId, nodes = OUTFIT_TREE) {
+function findOutfitLeaf(leafId, nodes = getOutfitTree()) {
   return findTreeLeaf(leafId, nodes);
 }
 
@@ -2155,6 +2224,7 @@ function renderCategoryTree(nodes, container, activeLeafId, onSelect, depth = 0,
     const btn = document.createElement("button");
     btn.type = "button";
     btn.dataset.nodeId = node.id;
+    if (node.presetPanel) btn.dataset.presetLeaf = node.presetPanel;
     btn.className = "outfit-tree-item"
       + (depth > 0 ? " child" : "")
       + (node.id === activeLeafId ? " active" : "")
@@ -2218,17 +2288,32 @@ function handleOutfitFieldChange(leaf, value) {
 
 function selectOutfitLeaf(leaf) {
   activeOutfitLeafId = leaf.id;
+  const outfitTree = getOutfitTree();
   document.getElementById("outfit-detail-title").textContent = leaf.label;
   const tree = document.getElementById("outfit-tree");
   tree.innerHTML = "";
-  renderOutfitTree(OUTFIT_TREE, tree);
+  renderOutfitTree(outfitTree, tree);
 
+  if (leaf.presetPanel && leaf.presetScope) {
+    showScopePresetLeaf(
+      leaf.presetScope,
+      leaf,
+      document.getElementById("outfit-chips"),
+      document.getElementById("outfit-detail-title"),
+      null,
+    );
+    return;
+  }
+
+  const chipsEl = document.getElementById("outfit-chips");
+  chipsEl.className = "chip-panel";
   loadCategoryChips(
-    document.getElementById("outfit-chips"),
+    chipsEl,
     leaf.categoryId,
     () => state.outfit[leaf.field],
     async (v) => {
       handleOutfitFieldChange(leaf, v);
+      clearActiveScopePreset("outfit");
       await renderConditionDropdown(leaf);
     },
     leaf.subgroup ? { subgroup: leaf.subgroup } : {},
@@ -2253,16 +2338,44 @@ function initCategoryTreePanel({
   tree,
   treeElId,
   titleElId,
+  hintElId = null,
   chipsElId,
   getActiveLeafId,
   setActiveLeafId,
   getFieldValue,
   setFieldValue,
   multiOpts = null,
+  presetScope = null,
+  defaultHint = "",
 }) {
+  const resolveTree = () => {
+    const base = typeof tree === "function" ? tree() : tree;
+    if (!presetScope) return base;
+    const cfg = SCOPE_PRESET_REGISTRY[presetScope];
+    return injectPresetsIntoTree(base, presetScope, cfg?.getBuiltinPresets);
+  };
+
   const detailSelectionKey = `${treeElId}-detail`;
   const selectLeaf = (leaf) => {
     setActiveLeafId(leaf.id);
+    const resolvedTree = resolveTree();
+    const treeEl = document.getElementById(treeElId);
+    treeEl.innerHTML = "";
+    renderCategoryTree(resolvedTree, treeEl, getActiveLeafId(), selectLeaf);
+
+    const container = document.getElementById(chipsElId);
+    const titleEl = document.getElementById(titleElId);
+    const hintEl = hintElId ? document.getElementById(hintElId) : null;
+
+    if (leaf.presetPanel && leaf.presetScope) {
+      if (titleEl) titleEl.textContent = leaf.label;
+      showScopePresetLeaf(leaf.presetScope, leaf, container, titleEl, hintEl);
+      return;
+    }
+
+    if (hintEl) hintEl.textContent = defaultHint;
+    container.className = "chip-panel";
+
     const isMulti = Boolean(leaf.multi);
     if (isMulti) {
       setDetailTitleWithSelectionCount(titleElId, leaf.label, detailSelectionKey, () => {
@@ -2277,15 +2390,16 @@ function initCategoryTreePanel({
       setDetailTitleWithSelectionCount(titleElId, leaf.label, detailSelectionKey, () => {
         const value = getFieldValue();
         if (Array.isArray(value)) return value;
-        return value || "";
+        if (!leaf.subgroup) return value || "";
+        return valueMatchesNodeSubgroup(leaf, value) ? value : "";
       }, nodeSelectionScopeKey(leaf));
       updateSelectionCounts();
     }
-    const treeEl = document.getElementById(treeElId);
-    treeEl.innerHTML = "";
-    renderCategoryTree(tree, treeEl, getActiveLeafId(), selectLeaf);
 
-    const container = document.getElementById(chipsElId);
+    const onFieldChange = (v) => {
+      setFieldValue(v);
+      if (presetScope) clearActiveScopePreset(presetScope);
+    };
     const chipOpts = {
       ...(leaf.subgroup ? { subgroup: leaf.subgroup } : {}),
       selectionScope: nodeSelectionScopeKey(leaf),
@@ -2295,15 +2409,16 @@ function initCategoryTreePanel({
         container,
         leaf.categoryId,
         getFieldValue,
-        setFieldValue,
+        onFieldChange,
         { ...multiOpts, ...chipOpts },
       );
     } else {
-      loadCategoryChips(container, leaf.categoryId, getFieldValue, setFieldValue, chipOpts);
+      loadCategoryChips(container, leaf.categoryId, getFieldValue, onFieldChange, chipOpts);
     }
   };
 
-  selectLeaf(findTreeLeaf(getActiveLeafId(), tree));
+  const resolvedTree = resolveTree();
+  selectLeaf(findTreeLeaf(getActiveLeafId(), resolvedTree) || resolvedTree[0]?.children?.[0] || resolvedTree[0]);
 }
 
 function initOutfitPanel() {
@@ -2361,18 +2476,19 @@ function initCharacterPanel() {
     return;
   }
   initCategoryTreePanel({
-    tree,
+    tree: getCharacterStructureTree,
+    presetScope: "character",
     treeElId: "character-tree",
     titleElId: "character-detail-title",
     chipsElId: "character-chips",
     getActiveLeafId: () => activeCharacterLeafId,
     setActiveLeafId: (id) => { activeCharacterLeafId = id; },
     getFieldValue: () => {
-      const leaf = findTreeLeaf(activeCharacterLeafId, tree);
+      const leaf = findTreeLeaf(activeCharacterLeafId, getCharacterTree());
       return resolveCharacterLeafAccess(leaf)?.get() ?? "";
     },
     setFieldValue: (v) => {
-      const leaf = findTreeLeaf(activeCharacterLeafId, tree);
+      const leaf = findTreeLeaf(activeCharacterLeafId, getCharacterTree());
       resolveCharacterLeafAccess(leaf)?.set(v);
     },
     multiOpts: { max: 6, randomCount: 2 },
@@ -2389,18 +2505,19 @@ function initFacePanel() {
     return;
   }
   initCategoryTreePanel({
-    tree,
+    tree: getFaceVibeTree,
+    presetScope: "face",
     treeElId: "face-tree",
     titleElId: "face-detail-title",
     chipsElId: "face-chips",
     getActiveLeafId: () => activeFaceLeafId,
     setActiveLeafId: (id) => { activeFaceLeafId = id; },
     getFieldValue: () => {
-      const leaf = findTreeLeaf(activeFaceLeafId, tree);
+      const leaf = findTreeLeaf(activeFaceLeafId, getFaceTree());
       return leaf?.field ? (state.face[leaf.field] || "") : "";
     },
     setFieldValue: (v) => {
-      const leaf = findTreeLeaf(activeFaceLeafId, tree);
+      const leaf = findTreeLeaf(activeFaceLeafId, getFaceTree());
       if (leaf?.field) state.face[leaf.field] = v;
     },
   });
@@ -2409,6 +2526,7 @@ function initFacePanel() {
 function initMakeupPanel() {
   initCategoryTreePanel({
     tree: MAKEUP_TREE,
+    presetScope: "makeup",
     treeElId: "makeup-tree",
     titleElId: "makeup-detail-title",
     chipsElId: "makeup-chips",
@@ -2434,6 +2552,7 @@ function initAccessoriesPanel() {
   }
   initCategoryTreePanel({
     tree: ACCESSORIES_TREE,
+    presetScope: "accessories",
     treeElId: "accessories-tree",
     titleElId: "accessories-detail-title",
     chipsElId: "accessories-chips",
@@ -2448,6 +2567,7 @@ function initAccessoriesPanel() {
 }
 
 function initPosePanel() {
+  const poseTree = getPoseTree();
   const selectLeaf = (leaf) => {
     if (isPoseLeafDisabled(leaf)) {
       toast("Couple poses require Group mode (2girls)");
@@ -2457,28 +2577,44 @@ function initPosePanel() {
     document.getElementById("pose-detail-title").textContent = leaf.label;
     const treeEl = document.getElementById("pose-tree");
     treeEl.innerHTML = "";
-    renderCategoryTree(POSE_TREE, treeEl, activePoseLeafId, selectLeaf, 0, { isDisabled: isPoseLeafDisabled });
+    renderCategoryTree(poseTree, treeEl, activePoseLeafId, selectLeaf, 0, { isDisabled: isPoseLeafDisabled });
 
+    if (leaf.presetPanel && leaf.presetScope) {
+      showScopePresetLeaf(
+        leaf.presetScope,
+        leaf,
+        document.getElementById("pose-chips"),
+        document.getElementById("pose-detail-title"),
+        document.getElementById("pose-detail-hint"),
+      );
+      return;
+    }
+
+    const chipsEl = document.getElementById("pose-chips");
+    chipsEl.className = "chip-panel";
     loadCategoryChips(
-      document.getElementById("pose-chips"),
+      chipsEl,
       leaf.categoryId,
       () => state.pose,
-      (v) => { state.pose = v; },
+      (v) => {
+        state.pose = v;
+        clearActiveScopePreset("pose");
+      },
       leaf.subgroup ? { subgroup: leaf.subgroup } : {},
     );
   };
 
-  const leaf = findTreeLeaf(activePoseLeafId, POSE_TREE);
+  const leaf = findTreeLeaf(activePoseLeafId, poseTree);
   if (!leaf || isPoseLeafDisabled(leaf)) {
     if (leaf?.categoryId === "pose.couple") state.pose = "";
     activePoseLeafId = "pose_standing_seductive";
   }
-  selectLeaf(findTreeLeaf(activePoseLeafId, POSE_TREE));
+  selectLeaf(findTreeLeaf(activePoseLeafId, poseTree));
 }
 
 function onGroupModeChanged() {
   state.group_mode = document.getElementById("opt-group-mode").checked;
-  const activeLeaf = findTreeLeaf(activePoseLeafId, POSE_TREE);
+  const activeLeaf = findTreeLeaf(activePoseLeafId, getPoseTree());
   if (activeLeaf?.categoryId === "pose.couple" && !state.group_mode) {
     state.pose = "";
     activePoseLeafId = "pose_standing_seductive";
@@ -2489,111 +2625,734 @@ function onGroupModeChanged() {
 
 let activeCameraLeafId = "camera_angle_standard_angles";
 
-function applyCameraPreset(preset) {
-  for (const [field, value] of Object.entries(preset.camera || {})) {
-    if (Object.prototype.hasOwnProperty.call(state.camera, field)) {
-      state.camera[field] = value;
+const activeScopePresetIds = {};
+
+const CAMERA_PRESET_FIELDS = ["angle", "framing", "lens", "focus", "composition", "nsfw_shot"];
+const LIGHTING_PRESET_FIELDS = ["light_type", "direction", "quality", "color_mood", "nsfw"];
+const OUTFIT_PRESET_FIELDS = ["dress", "top", "bottom", "underwear_layer", "legwear", "jacket", "footwear", "gloves", "cape"];
+const STYLE_PRESET_FIELDS = ["art_style", "artist_style", "quality", "aesthetic", "technique"];
+
+function getActiveScopePresetId(scope) {
+  return activeScopePresetIds[scope] || "";
+}
+
+function setActiveScopePresetId(scope, key) {
+  if (key) activeScopePresetIds[scope] = key;
+  else delete activeScopePresetIds[scope];
+}
+
+function injectPresetsIntoTree(baseTree, scopeKey, getBuiltinPresets) {
+  const builtins = typeof getBuiltinPresets === "function" ? getBuiltinPresets() : (getBuiltinPresets || []);
+  const hasBuiltin = Array.isArray(builtins) && builtins.length > 0;
+  const children = [];
+  if (hasBuiltin) {
+    children.push({
+      id: `${scopeKey}_presets_builtin`,
+      label: "Built-in presets",
+      presetScope: scopeKey,
+      presetPanel: "builtin",
+    });
+  }
+  children.push({
+    id: `${scopeKey}_presets_custom`,
+    label: "Custom presets",
+    presetScope: scopeKey,
+    presetPanel: "custom",
+  });
+  return [{ id: `${scopeKey}_presets`, label: "Presets", children }, ...(baseTree || [])];
+}
+
+function collectCategoryIdsFromTree(nodes, ids = new Set()) {
+  for (const node of nodes || []) {
+    if (node.categoryId) ids.add(node.categoryId);
+    if (node.children) collectCategoryIdsFromTree(node.children, ids);
+  }
+  return ids;
+}
+
+function collectPayloadTagIds(payload) {
+  const ids = [];
+  function walk(value) {
+    if (!value) return;
+    if (typeof value === "string") {
+      if (value) ids.push(value);
+      return;
     }
+    if (Array.isArray(value)) {
+      value.forEach(walk);
+      return;
+    }
+    if (typeof value === "object") Object.values(value).forEach(walk);
   }
-  initCameraPanel();
+  walk(payload);
+  return ids;
+}
+
+function scopePresetPayloadCount(payload) {
+  let count = 0;
+  function walk(value) {
+    if (!value) return;
+    if (typeof value === "string") {
+      if (value) count += 1;
+      return;
+    }
+    if (Array.isArray(value)) {
+      count += value.filter(Boolean).length;
+      return;
+    }
+    if (typeof value === "object") Object.values(value).forEach(walk);
+  }
+  walk(payload);
+  return count;
+}
+
+function buildScopePresetHint(scope, payload) {
+  const categoryIds = resolveScopeCategoryIds(scope);
+  const ids = collectPayloadTagIds(payload);
+  const labels = ids.map((id) => {
+    for (const categoryId of categoryIds) {
+      if (itemLabelCache[categoryId]?.[id]) return itemLabelCache[categoryId][id];
+    }
+    return id;
+  });
+  return labels.join(" + ");
+}
+
+async function ensureScopePresetItemLabels(scope) {
+  await Promise.all(
+    resolveScopeCategoryIds(scope).map(async (categoryId) => {
+      if (itemLabelCache[categoryId] && Object.keys(itemLabelCache[categoryId]).length > 0) return;
+      const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
+      registerCategoryItems(categoryId, data.items);
+    }),
+  );
+}
+
+function clearActiveScopePreset(scope) {
+  if (!getActiveScopePresetId(scope)) return;
+  setActiveScopePresetId(scope, "");
+  const cfg = SCOPE_PRESET_REGISTRY[scope];
+  if (cfg?.getTree && cfg.treeElId) {
+    updateTreeCountsInContainer(cfg.getTree(), document.getElementById(cfg.treeElId));
+  }
+  const leafId = cfg?.getActiveLeafId?.();
+  const leaf = leafId && cfg?.getTree ? findTreeLeaf(leafId, cfg.getTree()) : null;
+  if (leaf?.presetPanel && cfg?.chipsElId) {
+    renderScopePresetPanel(scope, leaf.presetPanel, document.getElementById(cfg.chipsElId));
+  }
+}
+
+function normalizeScopePresetPayload(scope, payload) {
+  if (!payload || typeof payload !== "object") return {};
+  if (scope === "face") {
+    const face = {};
+    const src = (payload.face && typeof payload.face === "object") ? payload.face : payload;
+    for (const field of FACE_VIBE_FIELDS) {
+      const val = src[field] ?? payload[field];
+      if (val) face[field] = val;
+    }
+    return { face };
+  }
+  if (scope === "makeup" && Array.isArray(payload.makeup)) return { makeup: payload.makeup };
+  if (scope === "accessories" && Array.isArray(payload.accessories)) return { accessories: payload.accessories };
+  if (scope === "pose" && payload.pose) return { pose: payload.pose };
+  if (scope === "fetish" && Array.isArray(payload.elements)) return { elements: payload.elements };
+  if (scope === "outfit" && payload.outfit) return { outfit: payload.outfit };
+  if (scope === "environment") return payload;
+  if (scope === "style") return payload;
+  if (scope === "camera") return payload.camera ? payload.camera : payload;
+  if (scope === "lighting") return payload;
+  if (scope === "character") return payload;
+  return payload;
+}
+
+async function applyScopePreset(scope, presetKey, label, payload) {
+  setActiveScopePresetId(scope, presetKey);
+  resetFieldSelectionModes();
+  const normalized = normalizeScopePresetPayload(scope, payload || {});
+  SCOPE_PRESET_REGISTRY[scope].applyPayload(normalized);
+  await preloadSubgroupMaps();
+  SCOPE_PRESET_REGISTRY[scope].refreshPanel();
   notifyStateChange();
-  toast(`Preset: ${preset.label}`);
+  toast(`Preset: ${label}`);
 }
 
-function initCameraPresets() {
-  const container = document.getElementById("camera-preset-chips");
-  if (!container) return;
-  container.innerHTML = "";
-  for (const preset of window.CAMERA_PRESETS || []) {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "chip chip-preset";
-    chip.textContent = preset.label;
-    chip.title = preset.hint || preset.label;
-    chip.onclick = () => applyCameraPreset(preset);
-    container.appendChild(chip);
+function renderScopePresetListItem(scope, { key, name, hint, onApply, onRename, onDelete }) {
+  const row = document.createElement("div");
+  row.className = "scope-preset-item" + (getActiveScopePresetId(scope) === key ? " active" : "");
+  row.innerHTML = `
+    <div class="scope-preset-meta">
+      <div class="scope-preset-name">${escapeHtml(name)}</div>
+      ${hint ? `<div class="scope-preset-hint">${escapeHtml(hint)}</div>` : ""}
+    </div>
+    <div class="scope-preset-actions"></div>`;
+  row.onclick = (e) => {
+    if (e.target.closest("button")) return;
+    onApply();
+  };
+  const actions = row.querySelector(".scope-preset-actions");
+  const applyBtn = document.createElement("button");
+  applyBtn.type = "button";
+  applyBtn.className = "scope-preset-apply";
+  applyBtn.textContent = "Применить";
+  applyBtn.onclick = (e) => {
+    e.stopPropagation();
+    onApply();
+  };
+  actions.appendChild(applyBtn);
+  if (onRename) {
+    const renameBtn = document.createElement("button");
+    renameBtn.type = "button";
+    renameBtn.className = "scope-preset-rename";
+    renameBtn.textContent = "✎";
+    renameBtn.title = "Переименовать";
+    renameBtn.onclick = (e) => {
+      e.stopPropagation();
+      onRename();
+    };
+    actions.appendChild(renameBtn);
+  }
+  if (onDelete) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "scope-preset-delete";
+    deleteBtn.textContent = "✕";
+    deleteBtn.title = "Удалить";
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      onDelete();
+    };
+    actions.appendChild(deleteBtn);
+  }
+  return row;
+}
+
+async function saveUserScopePresetFromState(scope) {
+  const cfg = SCOPE_PRESET_REGISTRY[scope];
+  const payload = cfg.snapshotPayload();
+  if (!scopePresetPayloadCount(payload)) {
+    toast(cfg.emptySaveMessage || "Выберите хотя бы один параметр");
+    return;
+  }
+  try {
+    await ensureScopePresetItemLabels(scope);
+    const hint = buildScopePresetHint(scope, payload);
+    const defaultName = hint.slice(0, 80) || cfg.defaultSaveName || "Preset";
+    const name = window.prompt("Название пресета", defaultName);
+    if (!name?.trim()) return;
+    await api("/user-presets", {
+      method: "POST",
+      body: JSON.stringify({ scope, name: name.trim(), payload, hint }),
+    });
+    toast("Пресет сохранён");
+    const leaf = findTreeLeaf(cfg.getActiveLeafId(), cfg.getTree());
+    if (leaf?.presetPanel === "custom" && cfg.chipsElId) {
+      renderScopePresetPanel(scope, "custom", document.getElementById(cfg.chipsElId));
+    }
+  } catch (err) {
+    toast("Ошибка: " + err.message);
   }
 }
 
-function initCameraPanel() {
-  const tree = window.CAMERA_TREE || [];
-  initCategoryTreePanel({
-    tree,
+async function renderScopePresetPanel(scope, kind, container) {
+  if (!container) return;
+  const cfg = SCOPE_PRESET_REGISTRY[scope];
+  container.innerHTML = "";
+  container.className = "scope-preset-panel";
+
+  if (kind === "custom") {
+    const toolbar = document.createElement("div");
+    toolbar.className = "scope-preset-toolbar";
+    const saveBtn = document.createElement("button");
+    saveBtn.type = "button";
+    saveBtn.className = "btn btn-secondary btn-sm btn-preset-save";
+    saveBtn.textContent = "+ Сохранить текущие настройки";
+    saveBtn.onclick = () => saveUserScopePresetFromState(scope);
+    toolbar.appendChild(saveBtn);
+    container.appendChild(toolbar);
+  }
+
+  const list = document.createElement("div");
+  list.className = "scope-preset-list";
+  container.appendChild(list);
+
+  if (kind === "builtin") {
+    const presets = cfg.getBuiltinPresets();
+    if (!presets.length) {
+      list.innerHTML = '<p class="scope-preset-empty">Built-in presets not loaded.</p>';
+      return;
+    }
+    for (const preset of presets) {
+      list.appendChild(
+        renderScopePresetListItem(scope, {
+          key: `builtin:${preset.id}`,
+          name: preset.label,
+          hint: preset.hint || "",
+          onApply: () => applyScopePreset(scope, `builtin:${preset.id}`, preset.label, preset.payload),
+        }),
+      );
+    }
+    return;
+  }
+
+  list.innerHTML = '<p class="scope-preset-empty">Загрузка…</p>';
+  try {
+    const rows = await api(`/user-presets?scope=${encodeURIComponent(scope)}&limit=100`);
+    list.innerHTML = "";
+    if (!rows.length) {
+      list.innerHTML = `
+        <p class="scope-preset-empty">Пока пусто.</p>
+        <p class="scope-preset-empty">${escapeHtml(cfg.customEmptyHint || "")}</p>`;
+      return;
+    }
+    for (const preset of rows) {
+      list.appendChild(
+        renderScopePresetListItem(scope, {
+          key: `user:${preset.id}`,
+          name: preset.name,
+          hint: preset.hint || buildScopePresetHint(scope, preset.payload || {}),
+          onApply: () => applyScopePreset(scope, `user:${preset.id}`, preset.name, preset.payload || {}),
+          onRename: async () => {
+            const nextName = window.prompt("Новое название", preset.name);
+            if (!nextName?.trim() || nextName.trim() === preset.name) return;
+            try {
+              await api(`/user-presets/${preset.id}`, {
+                method: "PUT",
+                body: JSON.stringify({ name: nextName.trim() }),
+              });
+              toast("Переименовано");
+              renderScopePresetPanel(scope, "custom", container);
+            } catch (err) {
+              toast("Ошибка: " + err.message);
+            }
+          },
+          onDelete: async () => {
+            if (!window.confirm(`Удалить «${preset.name}»?`)) return;
+            try {
+              await api(`/user-presets/${preset.id}`, { method: "DELETE" });
+              if (getActiveScopePresetId(scope) === `user:${preset.id}`) setActiveScopePresetId(scope, "");
+              toast("Удалено");
+              renderScopePresetPanel(scope, "custom", container);
+            } catch (err) {
+              toast("Ошибка: " + err.message);
+            }
+          },
+        }),
+      );
+    }
+  } catch (err) {
+    list.innerHTML = `<p class="scope-preset-empty" style="color:#eb3b5a">${escapeHtml(err.message)}</p>`;
+  }
+}
+
+function showScopePresetLeaf(scope, leaf, container, titleEl, hintEl) {
+  const cfg = SCOPE_PRESET_REGISTRY[scope];
+  if (titleEl) titleEl.textContent = leaf.label;
+  if (hintEl) {
+    hintEl.textContent = leaf.presetPanel === "builtin" ? cfg.builtinHint : cfg.customHint;
+  }
+  renderScopePresetPanel(scope, leaf.presetPanel, container);
+}
+
+const SCOPE_PRESET_REGISTRY = {
+  style: {
+    scope: "style",
+    treeElId: "style-tree",
+    chipsElId: "style-chips",
+    getActiveLeafId: () => activeStyleLeafId,
+    getTree: () => getStyleTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: () => [...collectCategoryIdsFromTree(window.STYLE_TREE || [])],
+    snapshotPayload: () => {
+      if (!state.style.enabled) return {};
+      const payload = {};
+      for (const field of STYLE_PRESET_FIELDS) {
+        const value = state.style[field];
+        if (Array.isArray(value) ? value.length : value) {
+          payload[field] = Array.isArray(value) ? [...value] : value;
+        }
+      }
+      return payload;
+    },
+    applyPayload: (payload) => {
+      state.style.enabled = true;
+      for (const field of STYLE_PRESET_FIELDS) {
+        if (field in payload) {
+          state.style[field] = Array.isArray(state.style[field])
+            ? (Array.isArray(payload[field]) ? payload[field] : [])
+            : (payload[field] || "");
+        }
+      }
+    },
+    refreshPanel: () => initStylePanel(),
+    emptySaveMessage: "Выберите хотя бы один параметр стиля",
+    defaultSaveName: "Style preset",
+    builtinHint: "",
+    customHint: "Сохранение текущих тегов стиля · переименование и удаление",
+    customEmptyHint: "Настройте стиль в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  character: {
+    scope: "character",
+    treeElId: "character-tree",
+    chipsElId: "character-chips",
+    getActiveLeafId: () => activeCharacterLeafId,
+    getTree: () => getCharacterTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: () => [...collectCategoryIdsFromTree(getCharacterStructureTree())],
+    snapshotPayload: () => buildCharacterLibraryPayload(),
+    applyPayload: (payload) => applyCharacterLibraryPayload(payload),
+    refreshPanel: () => initCharacterPanel(),
+    emptySaveMessage: "Выберите параметры персонажа",
+    defaultSaveName: "Character preset",
+    customHint: "Сохранение Character + Face + Hair · переименование и удаление",
+    customEmptyHint: "Настройте персонажа в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  face: {
+    scope: "face",
+    treeElId: "face-tree",
+    chipsElId: "face-chips",
+    getActiveLeafId: () => activeFaceLeafId,
+    getTree: () => getFaceTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: () => [...collectCategoryIdsFromTree(getFaceVibeTree())],
+    snapshotPayload: () => {
+      const face = {};
+      for (const field of FACE_VIBE_FIELDS) {
+        if (state.face[field]) face[field] = state.face[field];
+      }
+      return Object.keys(face).length ? { face } : {};
+    },
+    applyPayload: (payload) => {
+      const face = payload.face || {};
+      for (const field of FACE_VIBE_FIELDS) {
+        if (Object.prototype.hasOwnProperty.call(face, field)) {
+          state.face[field] = face[field] || "";
+        }
+      }
+    },
+    refreshPanel: () => initFacePanel(),
+    emptySaveMessage: "Выберите хотя бы один параметр лица",
+    defaultSaveName: "Face preset",
+    customHint: "Сохранение текущих тегов лица · переименование и удаление",
+    customEmptyHint: "Настройте лицо в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  makeup: {
+    scope: "makeup",
+    treeElId: "makeup-tree",
+    chipsElId: "makeup-chips",
+    getActiveLeafId: () => activeMakeupLeafId,
+    getTree: () => getMakeupTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: ["appearance.makeup"],
+    snapshotPayload: () => (state.appearance.makeup.length ? { makeup: [...state.appearance.makeup] } : {}),
+    applyPayload: (payload) => {
+      state.appearance.makeup = Array.isArray(payload.makeup) ? payload.makeup.slice(0, 6) : [];
+    },
+    refreshPanel: () => initMakeupPanel(),
+    emptySaveMessage: "Выберите хотя бы один тег макияжа",
+    defaultSaveName: "Makeup preset",
+    customHint: "Сохранение текущего макияжа · переименование и удаление",
+    customEmptyHint: "Выберите макияж в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  outfit: {
+    scope: "outfit",
+    treeElId: "outfit-tree",
+    chipsElId: "outfit-chips",
+    getActiveLeafId: () => activeOutfitLeafId,
+    getTree: () => getOutfitTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: () => [...collectCategoryIdsFromTree(OUTFIT_TREE)],
+    snapshotPayload: () => {
+      const outfit = JSON.parse(JSON.stringify(state.outfit));
+      const hasField = OUTFIT_PRESET_FIELDS.some((f) => outfit[f])
+        || Object.values(outfit.conditions || {}).some(Boolean);
+      return hasField ? { outfit } : {};
+    },
+    applyPayload: (payload) => {
+      if (!payload.outfit) return;
+      const o = payload.outfit;
+      for (const field of OUTFIT_PRESET_FIELDS) state.outfit[field] = o[field] || "";
+      state.outfit.conditions = {
+        ...createDefaultState().outfit.conditions,
+        ...(o.conditions || {}),
+      };
+    },
+    refreshPanel: () => initOutfitPanel(),
+    emptySaveMessage: "Выберите хотя бы один элемент одежды",
+    defaultSaveName: "Outfit preset",
+    customHint: "Сохранение текущего outfit · переименование и удаление",
+    customEmptyHint: "Настройте одежду в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  accessories: {
+    scope: "accessories",
+    treeElId: "accessories-tree",
+    chipsElId: "accessories-chips",
+    getActiveLeafId: () => activeAccessoriesLeafId,
+    getTree: () => getAccessoriesTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: ["appearance.accessories"],
+    snapshotPayload: () => (
+      state.appearance.accessories.length ? { accessories: [...state.appearance.accessories] } : {}
+    ),
+    applyPayload: (payload) => {
+      state.appearance.accessories = Array.isArray(payload.accessories) ? payload.accessories.slice(0, 4) : [];
+    },
+    refreshPanel: () => initAccessoriesPanel(),
+    emptySaveMessage: "Выберите хотя бы один аксессуар",
+    defaultSaveName: "Accessories preset",
+    customHint: "Сохранение текущих аксессуаров · переименование и удаление",
+    customEmptyHint: "Выберите аксессуары в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  pose: {
+    scope: "pose",
+    treeElId: "pose-tree",
+    chipsElId: "pose-chips",
+    getActiveLeafId: () => activePoseLeafId,
+    getTree: () => getPoseTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: () => [...collectCategoryIdsFromTree(POSE_TREE)],
+    snapshotPayload: () => (state.pose ? { pose: state.pose } : {}),
+    applyPayload: (payload) => {
+      state.pose = payload.pose || "";
+    },
+    refreshPanel: () => initPosePanel(),
+    emptySaveMessage: "Выберите позу",
+    defaultSaveName: "Pose preset",
+    customHint: "Сохранение текущей позы · переименование и удаление",
+    customEmptyHint: "Выберите позу в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  camera: {
+    scope: "camera",
     treeElId: "camera-tree",
-    titleElId: "camera-detail-title",
     chipsElId: "camera-chips",
     getActiveLeafId: () => activeCameraLeafId,
-    setActiveLeafId: (id) => { activeCameraLeafId = id; },
-    getFieldValue: () => {
-      const leaf = findTreeLeaf(activeCameraLeafId, tree);
-      return leaf?.field ? state.camera[leaf.field] : "";
+    getTree: () => getCameraTree(),
+    getBuiltinPresets: () => (window.CAMERA_PRESETS || []).map((p) => ({
+      id: p.id,
+      label: p.label,
+      hint: p.hint || "",
+      payload: p.camera || {},
+    })),
+    categoryIds: ["camera.angle", "camera.framing", "camera.lens", "camera.focus", "camera.composition", "camera.nsfw_shot"],
+    snapshotPayload: () => {
+      const payload = {};
+      for (const field of CAMERA_PRESET_FIELDS) {
+        if (state.camera[field]) payload[field] = state.camera[field];
+      }
+      return payload;
     },
-    setFieldValue: (v) => {
-      const leaf = findTreeLeaf(activeCameraLeafId, tree);
-      if (leaf?.field) state.camera[leaf.field] = v;
+    applyPayload: (payload) => {
+      for (const field of CAMERA_PRESET_FIELDS) {
+        state.camera[field] = payload[field] || "";
+      }
     },
-  });
+    refreshPanel: () => initCameraPanel(),
+    emptySaveMessage: "Выберите хотя бы один параметр камеры",
+    defaultSaveName: "Camera preset",
+    builtinHint: "30 готовых комбинаций · один активный пресет · клик по строке или «Применить»",
+    customHint: "Сохранение текущих тегов камеры · переименование и удаление",
+    customEmptyHint: "Настройте камеру в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  lighting: {
+    scope: "lighting",
+    treeElId: "lighting-tree",
+    chipsElId: "lighting-chips",
+    getActiveLeafId: () => activeLightingLeafId,
+    getTree: () => getLightingTree(),
+    getBuiltinPresets: () => (window.LIGHTING_PRESETS || []).map((p) => ({
+      id: p.id,
+      label: p.label,
+      hint: p.hint || "",
+      payload: { lighting: p.lighting || {}, camera: p.camera || {} },
+    })),
+    categoryIds: ["lighting.light_type", "lighting.direction", "lighting.quality", "lighting.color_mood", "lighting.nsfw", "camera.angle", "camera.framing"],
+    snapshotPayload: () => {
+      const payload = { lighting: {} };
+      for (const field of LIGHTING_PRESET_FIELDS) {
+        if (state.lighting[field]) payload.lighting[field] = state.lighting[field];
+      }
+      return scopePresetPayloadCount(payload.lighting) ? payload : {};
+    },
+    applyPayload: (payload) => {
+      for (const field of LIGHTING_PRESET_FIELDS) {
+        state.lighting[field] = payload.lighting?.[field] || "";
+      }
+      if (payload.camera) {
+        for (const field of CAMERA_PRESET_FIELDS) {
+          if (payload.camera[field]) state.camera[field] = payload.camera[field];
+        }
+        clearActiveScopePreset("camera");
+        initCameraPanel();
+      }
+    },
+    refreshPanel: () => initLightingPanel(),
+    emptySaveMessage: "Выберите хотя бы один параметр освещения",
+    defaultSaveName: "Lighting preset",
+    builtinHint: "Готовые комбинации освещения (+ камера) · один активный пресет",
+    customHint: "Сохранение текущих тегов освещения · переименование и удаление",
+    customEmptyHint: "Настройте освещение в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  environment: {
+    scope: "environment",
+    treeElId: "environment-tree",
+    chipsElId: "environment-chips",
+    getActiveLeafId: () => activeEnvironmentLeafId,
+    getTree: () => getEnvironmentTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: () => [...collectCategoryIdsFromTree(window.ENVIRONMENT_TREE || [])],
+    snapshotPayload: () => {
+      const payload = {};
+      const scene = {};
+      for (const field of ["time", "weather", "season"]) {
+        if (state.scene[field]) scene[field] = state.scene[field];
+      }
+      if (Object.keys(scene).length) payload.scene = scene;
+      const environment = {};
+      if (state.environment.location) environment.location = state.environment.location;
+      if (state.environment.situation) environment.situation = state.environment.situation;
+      if (state.environment.modifiers?.length) environment.modifiers = [...state.environment.modifiers];
+      if (Object.keys(environment).length) payload.environment = environment;
+      return payload;
+    },
+    applyPayload: (payload) => {
+      for (const field of ["time", "weather", "season"]) {
+        state.scene[field] = payload.scene?.[field] || "";
+      }
+      state.environment.location = payload.environment?.location || "";
+      state.environment.situation = payload.environment?.situation || "";
+      state.environment.modifiers = Array.isArray(payload.environment?.modifiers)
+        ? payload.environment.modifiers.slice(0, 2)
+        : [];
+    },
+    refreshPanel: () => initEnvironmentPanel(),
+    emptySaveMessage: "Выберите хотя бы один параметр окружения",
+    defaultSaveName: "Environment preset",
+    customHint: "Сохранение текущего окружения · переименование и удаление",
+    customEmptyHint: "Настройте окружение в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+  fetish: {
+    scope: "fetish",
+    treeElId: "fetish-tree",
+    chipsElId: "fetish-chips",
+    getActiveLeafId: () => activeFetishLeafId,
+    getTree: () => getFetishTree(),
+    getBuiltinPresets: () => [],
+    categoryIds: () => [...collectCategoryIdsFromTree(window.FETISH_TREE || [])],
+    snapshotPayload: () => (
+      state.fetish.elements.length ? { elements: [...state.fetish.elements] } : {}
+    ),
+    applyPayload: (payload) => {
+      state.fetish.elements = Array.isArray(payload.elements) ? payload.elements.slice(0, 5) : [];
+    },
+    refreshPanel: () => initFetishPanel(),
+    emptySaveMessage: "Выберите хотя бы один элемент фетиша",
+    defaultSaveName: "Fetish preset",
+    customHint: "Сохранение текущих элементов · переименование и удаление",
+    customEmptyHint: "Выберите элементы в подгруппах ниже и нажмите «+ Сохранить текущие настройки».",
+  },
+};
+
+function resolveScopeCategoryIds(scope) {
+  const cfg = SCOPE_PRESET_REGISTRY[scope];
+  const ids = cfg.categoryIds;
+  return typeof ids === "function" ? ids() : (ids || []);
+}
+
+function getStyleTree() {
+  return injectPresetsIntoTree(window.STYLE_TREE || [], "style", []);
+}
+
+function getCharacterTree() {
+  return injectPresetsIntoTree(getCharacterStructureTree(), "character", []);
+}
+
+function getFaceTree() {
+  return injectPresetsIntoTree(getFaceVibeTree(), "face", []);
+}
+
+function getMakeupTree() {
+  return injectPresetsIntoTree(MAKEUP_TREE, "makeup", []);
+}
+
+function getOutfitTree() {
+  return injectPresetsIntoTree(OUTFIT_TREE, "outfit", []);
+}
+
+function getAccessoriesTree() {
+  return injectPresetsIntoTree(ACCESSORIES_TREE, "accessories", []);
+}
+
+function getPoseTree() {
+  return injectPresetsIntoTree(POSE_TREE, "pose", []);
+}
+
+function getCameraTree() {
+  return injectPresetsIntoTree(window.CAMERA_TREE || [], "camera", SCOPE_PRESET_REGISTRY.camera.getBuiltinPresets);
+}
+
+function getLightingTree() {
+  return injectPresetsIntoTree(window.LIGHTING_TREE || [], "lighting", SCOPE_PRESET_REGISTRY.lighting.getBuiltinPresets);
+}
+
+function getEnvironmentTree() {
+  return injectPresetsIntoTree(window.ENVIRONMENT_TREE || [], "environment", []);
+}
+
+function getFetishTree() {
+  return injectPresetsIntoTree(window.FETISH_TREE || [], "fetish", []);
 }
 
 let activeLightingLeafId = "lighting_light_type_natural";
 let activeFetishLeafId = "fetish_bdsm_restraints_items";
 
-function applyLightingPreset(preset) {
-  for (const [field, value] of Object.entries(preset.lighting || {})) {
-    if (Object.prototype.hasOwnProperty.call(state.lighting, field)) {
-      state.lighting[field] = value;
-    }
-  }
-  for (const [field, value] of Object.entries(preset.camera || {})) {
-    if (Object.prototype.hasOwnProperty.call(state.camera, field)) {
-      state.camera[field] = value;
-    }
-  }
-  initLightingPanel();
-  initCameraPanel();
-  notifyStateChange();
-  toast(`Preset: ${preset.label}`);
-}
-
-function initLightingPresets() {
-  const container = document.getElementById("lighting-preset-chips");
-  if (!container) return;
-  container.innerHTML = "";
-  for (const preset of window.LIGHTING_PRESETS || []) {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "chip chip-preset";
-    chip.textContent = preset.label;
-    chip.title = preset.hint || preset.label;
-    chip.onclick = () => applyLightingPreset(preset);
-    container.appendChild(chip);
-  }
-}
-
 function initLightingPanel() {
-  const tree = window.LIGHTING_TREE || [];
   initCategoryTreePanel({
-    tree,
+    tree: () => window.LIGHTING_TREE || [],
+    presetScope: "lighting",
     treeElId: "lighting-tree",
     titleElId: "lighting-detail-title",
+    hintElId: "lighting-detail-hint",
     chipsElId: "lighting-chips",
     getActiveLeafId: () => activeLightingLeafId,
     setActiveLeafId: (id) => { activeLightingLeafId = id; },
     getFieldValue: () => {
-      const leaf = findTreeLeaf(activeLightingLeafId, tree);
+      const leaf = findTreeLeaf(activeLightingLeafId, getLightingTree());
       return leaf?.field ? state.lighting[leaf.field] : "";
     },
     setFieldValue: (v) => {
-      const leaf = findTreeLeaf(activeLightingLeafId, tree);
+      const leaf = findTreeLeaf(activeLightingLeafId, getLightingTree());
       if (leaf?.field) state.lighting[leaf.field] = v;
     },
+    defaultHint: "Одна опция на категорию · Off / Random / single-select",
+  });
+}
+
+function initCameraPanel() {
+  initCategoryTreePanel({
+    tree: () => window.CAMERA_TREE || [],
+    presetScope: "camera",
+    treeElId: "camera-tree",
+    titleElId: "camera-detail-title",
+    hintElId: "camera-detail-hint",
+    chipsElId: "camera-chips",
+    getActiveLeafId: () => activeCameraLeafId,
+    setActiveLeafId: (id) => { activeCameraLeafId = id; },
+    getFieldValue: () => {
+      const leaf = findTreeLeaf(activeCameraLeafId, getCameraTree());
+      return leaf?.field ? state.camera[leaf.field] : "";
+    },
+    setFieldValue: (v) => {
+      const leaf = findTreeLeaf(activeCameraLeafId, getCameraTree());
+      if (leaf?.field) state.camera[leaf.field] = v;
+    },
+    defaultHint: "Одна опция на категорию · Off / Random / single-select",
   });
 }
 
 function initFetishPanel() {
-  const tree = window.FETISH_TREE || [];
   initCategoryTreePanel({
-    tree,
+    tree: () => window.FETISH_TREE || [],
+    presetScope: "fetish",
     treeElId: "fetish-tree",
     titleElId: "fetish-detail-title",
     chipsElId: "fetish-chips",
@@ -2653,7 +3412,10 @@ function switchTab(tab) {
   if (tab === "style") refreshStylePanel();
   if (tab === "character") loadCharacterLibrary();
   if (tab === "prompting") initPromptingPanel();
-  if (tab === "tagstudio") loadTagStudioPanel();
+  if (tab === "tagstudio") {
+    initTagStudioLister().catch((e) => toast("Ошибка: " + e.message));
+    loadTagStudioPanel().catch((e) => toast("Ошибка: " + e.message));
+  }
   if (tab === "favorites") loadFavorites();
   if (tab === "llm") loadLlmPanel();
   if (tab === "advanced") loadAdvancedMeta();
@@ -2671,7 +3433,68 @@ async function loadTagStudioPanel() {
   if (subcategoryId) params.set("subcategory_id", subcategoryId);
   params.set("limit", "200");
   const data = await api(`/tag-studio/items?${params.toString()}`);
-  output.textContent = JSON.stringify(data, null, 2);
+  renderTagStudioItemsOutput(output, data, { q, categoryId, subcategoryId });
+}
+
+function renderTagStudioMessage(output, message) {
+  output.innerHTML = `<div class="tagstudio-output-empty">${escapeHtml(message)}</div>`;
+}
+
+function formatTagStudioPath(label, categoryId, subcategoryId) {
+  const subgroup = subcategoryId || "none";
+  return `<span class="tagstudio-main">${escapeHtml(label || "—")}</span> — <span class="tagstudio-meta">${escapeHtml(categoryId || "—")} — ${escapeHtml(subgroup)}</span>`;
+}
+
+function renderTagStudioItemsOutput(output, data, filters = {}) {
+  const items = Array.isArray(data?.items) ? data.items : [];
+  if (!items.length) {
+    renderTagStudioMessage(output, "Ничего не найдено. Измените фильтр или запрос Search.");
+    return;
+  }
+  const categoryCount = new Map();
+  const subgroupCount = new Map();
+  let aliasesTotal = 0;
+  for (const row of items) {
+    const item = row?.item || {};
+    const meta = item.meta || {};
+    const categoryId = row?.category_id || "—";
+    const subgroup = row?.subcategory_id || meta.subcategory_id || meta.subgroup || "none";
+    categoryCount.set(categoryId, (categoryCount.get(categoryId) || 0) + 1);
+    subgroupCount.set(subgroup, (subgroupCount.get(subgroup) || 0) + 1);
+    aliasesTotal += Array.isArray(meta.aliases) ? meta.aliases.length : 0;
+  }
+  const topCategories = Array.from(categoryCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([categoryId, count]) => `<span class="tagstudio-badge">${escapeHtml(categoryId)}: ${count}</span>`)
+    .join("");
+  const rows = items.map((row) => {
+    const item = row?.item || {};
+    const meta = item.meta || {};
+    const subgroup = row?.subcategory_id || meta.subcategory_id || meta.subgroup || "none";
+    const aliases = Array.isArray(meta.aliases) && meta.aliases.length
+      ? ` · aliases: ${escapeHtml(meta.aliases.slice(0, 4).join(", "))}${meta.aliases.length > 4 ? " …" : ""}`
+      : "";
+    return `<li>${formatTagStudioPath(item.label, row?.category_id, subgroup)}<span class="tagstudio-meta">${aliases}</span></li>`;
+  });
+  const activeFilters = [
+    filters.q ? `Search: ${escapeHtml(filters.q)}` : "",
+    filters.categoryId ? `Category: ${escapeHtml(filters.categoryId)}` : "",
+    filters.subcategoryId ? `Subcategory: ${escapeHtml(filters.subcategoryId)}` : "",
+  ].filter(Boolean).join(" · ");
+  output.innerHTML = `
+    <div class="tagstudio-summary">
+      <span class="tagstudio-badge">Найдено тегов: ${items.length}</span>
+      <span class="tagstudio-badge">Категорий: ${categoryCount.size}</span>
+      <span class="tagstudio-badge">Подгрупп: ${subgroupCount.size}</span>
+      <span class="tagstudio-badge">Всего aliases: ${aliasesTotal}</span>
+    </div>
+    ${activeFilters ? `<div class="tagstudio-meta">${activeFilters}</div>` : ""}
+    <div class="tagstudio-section-title">Топ категорий</div>
+    <div class="tagstudio-summary">${topCategories || '<span class="tagstudio-badge">—</span>'}</div>
+    <div class="tagstudio-section-title">ТЭГ — категория — подгруппа</div>
+    <ol class="tagstudio-list">${rows.join("")}</ol>
+  `;
 }
 
 async function runTagStudioDedupe() {
@@ -2682,7 +3505,45 @@ async function runTagStudioDedupe() {
   if (categoryId) params.set("category_id", categoryId);
   params.set("fuzzy_threshold", "0.9");
   const data = await api(`/tag-studio/deduplicate?${params.toString()}`);
-  output.textContent = JSON.stringify(data, null, 2);
+  renderTagStudioDedupeOutput(output, data, categoryId);
+}
+
+function renderTagStudioDedupeOutput(output, data, categoryId = "") {
+  const findings = Array.isArray(data?.findings) ? data.findings : [];
+  if (!findings.length) {
+    renderTagStudioMessage(output, "Дубликатов не найдено.");
+    return;
+  }
+  const typeCount = new Map();
+  const uniqueSource = new Set();
+  for (const row of findings) {
+    const type = row?.match?.match_type || "unknown";
+    typeCount.set(type, (typeCount.get(type) || 0) + 1);
+    uniqueSource.add(`${row?.category_id || ""}|${row?.source_item_id || ""}`);
+  }
+  const typeBadges = Array.from(typeCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, count]) => `<span class="tagstudio-badge">${escapeHtml(type)}: ${count}</span>`)
+    .join("");
+  const rows = findings.map((row) => {
+    const sourceSub = row?.source_subcategory || "none";
+    const matchSub = row?.match_subcategory || "none";
+    const score = Number.isFinite(row?.match?.score) ? Number(row.match.score).toFixed(3) : "—";
+    const sourcePath = formatTagStudioPath(row?.source_label, row?.category_id, sourceSub);
+    const matchPath = formatTagStudioPath(row?.match?.label, row?.category_id, matchSub);
+    return `<li>${sourcePath}<br><span class="tagstudio-meta">↔ ${matchPath} · ${escapeHtml(row?.match?.match_type || "unknown")} · score: ${score}</span></li>`;
+  });
+  output.innerHTML = `
+    <div class="tagstudio-summary">
+      <span class="tagstudio-badge">Найдено совпадений: ${findings.length}</span>
+      <span class="tagstudio-badge">Уникальных исходных тегов: ${uniqueSource.size}</span>
+      ${categoryId ? `<span class="tagstudio-badge">Category: ${escapeHtml(categoryId)}</span>` : ""}
+    </div>
+    <div class="tagstudio-section-title">Типы совпадений</div>
+    <div class="tagstudio-summary">${typeBadges}</div>
+    <div class="tagstudio-section-title">Потенциальные дубли</div>
+    <ol class="tagstudio-list">${rows.join("")}</ol>
+  `;
 }
 
 async function runTagStudioMigration() {
@@ -2692,7 +3553,7 @@ async function runTagStudioMigration() {
     method: "POST",
     body: JSON.stringify({ status: "active" }),
   });
-  output.textContent = JSON.stringify(data, null, 2);
+  renderTagStudioOperationOutput(output, "Migration", data, ["migrated", "updated", "skipped", "errors"]);
   toast(`Migration done: ${data.migrated || 0}`);
 }
 
@@ -2703,8 +3564,289 @@ async function runTagStudioRollback() {
     method: "POST",
     body: JSON.stringify({ status: "active" }),
   });
-  output.textContent = JSON.stringify(data, null, 2);
+  renderTagStudioOperationOutput(output, "Rollback", data, ["rolled_back", "updated", "skipped", "errors"]);
   toast(`Rollback done: ${data.rolled_back || 0}`);
+}
+
+function renderTagStudioOperationOutput(output, title, data, keys = []) {
+  const badges = keys
+    .filter((key) => key in (data || {}))
+    .map((key) => `<span class="tagstudio-badge">${escapeHtml(key)}: ${escapeHtml(String(data[key]))}</span>`)
+    .join("");
+  output.innerHTML = `
+    <div class="tagstudio-summary">
+      <span class="tagstudio-badge">${escapeHtml(title)}</span>
+      ${badges}
+    </div>
+    <div class="tagstudio-section-title">Подробности</div>
+    <pre class="tagstudio-raw-json">${escapeHtml(JSON.stringify(data, null, 2))}</pre>
+  `;
+}
+
+function tagStudioRowKey(row) {
+  return `${row?.category_id || ""}::${row?.item?.id || ""}`;
+}
+
+function getTagStudioRowSubcategory(row) {
+  return row?.subcategory_id || row?.item?.meta?.subcategory_id || row?.item?.meta?.subgroup || "";
+}
+
+function setSelectOptions(selectEl, options, selected = "") {
+  if (!selectEl) return;
+  selectEl.innerHTML = "";
+  for (const row of options) {
+    const opt = document.createElement("option");
+    opt.value = row.value;
+    opt.textContent = row.label;
+    selectEl.appendChild(opt);
+  }
+  if (selected && options.some((row) => row.value === selected)) {
+    selectEl.value = selected;
+  } else if (options.length) {
+    selectEl.value = options[0].value;
+  }
+}
+
+async function loadTagStudioCategorySelects() {
+  const categories = await loadAddTagCategories();
+  const listerCategory = document.getElementById("tagstudio-lister-category");
+  const moveCategory = document.getElementById("tagstudio-move-category");
+  const options = categories.map((row) => ({
+    value: row.id,
+    label: `${row.title} (${row.id})`,
+  }));
+  setSelectOptions(listerCategory, options);
+  setSelectOptions(moveCategory, options);
+  return categories;
+}
+
+async function loadTagStudioSubcategorySelect(categoryId, selectEl, opts = {}) {
+  const { anyLabel = "Все подгруппы", noneLabel = "none", includeAny = true } = opts;
+  if (!selectEl) return [];
+  if (!categoryId) {
+    setSelectOptions(selectEl, [{ value: "", label: anyLabel }]);
+    selectEl.dataset.hasSubcategories = "0";
+    return [];
+  }
+  const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
+  const values = Array.isArray(data?.subcategories) ? data.subcategories.filter(Boolean) : [];
+  const options = [];
+  if (includeAny) options.push({ value: "", label: anyLabel });
+  if (!values.length) {
+    options.push({ value: "", label: noneLabel });
+    setSelectOptions(selectEl, options);
+    selectEl.dataset.hasSubcategories = "0";
+    return [];
+  }
+  for (const sub of values) options.push({ value: sub, label: sub });
+  setSelectOptions(selectEl, options);
+  selectEl.dataset.hasSubcategories = "1";
+  return values;
+}
+
+function renderTagStudioListerList(items) {
+  const root = document.getElementById("tagstudio-lister-list");
+  if (!root) return;
+  if (!items.length) {
+    root.innerHTML = '<div class="tagstudio-output-empty">Теги не найдены для выбранного фильтра.</div>';
+    return;
+  }
+  root.innerHTML = items.map((row) => {
+    const item = row.item || {};
+    const subgroup = getTagStudioRowSubcategory(row) || "none";
+    const overlayClass = row.overlay ? "tagstudio-lister-overlay" : "tagstudio-lister-core";
+    const overlayText = row.overlay ? "runtime" : "core";
+    const key = tagStudioRowKey(row);
+    const activeClass = tagStudioSelectedTagRow && tagStudioRowKey(tagStudioSelectedTagRow) === key ? " active" : "";
+    return `
+      <button type="button" class="tagstudio-lister-item${activeClass}" data-key="${escapeHtml(key)}">
+        <div class="tagstudio-lister-title">${escapeHtml(item.label || item.id || "—")}</div>
+        <div class="tagstudio-lister-subline">${escapeHtml(row.category_id || "—")} — ${escapeHtml(subgroup)} · <span class="${overlayClass}">${overlayText}</span></div>
+      </button>
+    `;
+  }).join("");
+  root.querySelectorAll(".tagstudio-lister-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.key || "";
+      const row = tagStudioListerItems.find((entry) => tagStudioRowKey(entry) === key);
+      if (!row) return;
+      selectTagStudioListerRow(row);
+    });
+  });
+}
+
+function renderTagStudioSelectionState() {
+  const metaEl = document.getElementById("tagstudio-selected-meta");
+  const descInput = document.getElementById("tagstudio-edit-description");
+  const saveBtn = document.getElementById("btn-tagstudio-save-description");
+  const moveBtn = document.getElementById("btn-tagstudio-move-tag");
+  const deleteBtn = document.getElementById("btn-tagstudio-delete-tag");
+  if (!metaEl || !descInput || !saveBtn || !moveBtn || !deleteBtn) return;
+  if (!tagStudioSelectedTagRow) {
+    metaEl.textContent = "Выберите тег в списке выше.";
+    descInput.value = "";
+    saveBtn.disabled = true;
+    moveBtn.disabled = true;
+    deleteBtn.disabled = true;
+    return;
+  }
+  const row = tagStudioSelectedTagRow;
+  const subgroup = getTagStudioRowSubcategory(row) || "none";
+  const mode = row.overlay ? "runtime (можно менять)" : "core (только просмотр)";
+  metaEl.textContent = `${row.item.label} — ${row.category_id} — ${subgroup} · ${mode}`;
+  descInput.value = row.item.meta?.description || "";
+  const editable = Boolean(row.overlay);
+  saveBtn.disabled = !editable;
+  moveBtn.disabled = !editable;
+  deleteBtn.disabled = !editable;
+}
+
+async function syncTagStudioMoveSubcategory(categoryId, selected = "") {
+  const moveSubcategory = document.getElementById("tagstudio-move-subcategory");
+  if (!moveSubcategory) return;
+  const values = await loadTagStudioSubcategorySelect(categoryId, moveSubcategory, {
+    anyLabel: "none",
+    noneLabel: "none",
+    includeAny: false,
+  });
+  if (selected && values.includes(selected)) moveSubcategory.value = selected;
+}
+
+async function selectTagStudioListerRow(row) {
+  tagStudioSelectedTagRow = row;
+  renderTagStudioListerList(tagStudioListerItems);
+  const moveCategory = document.getElementById("tagstudio-move-category");
+  if (moveCategory) {
+    moveCategory.value = row.category_id || "";
+    await syncTagStudioMoveSubcategory(moveCategory.value, getTagStudioRowSubcategory(row));
+  }
+  renderTagStudioSelectionState();
+}
+
+async function loadTagStudioLister() {
+  const categoryId = document.getElementById("tagstudio-lister-category")?.value || "";
+  const subcategoryId = document.getElementById("tagstudio-lister-subcategory")?.value || "";
+  const activeOnly = Boolean(document.getElementById("tagstudio-lister-active-only")?.checked);
+  const summary = document.getElementById("tagstudio-lister-summary");
+  const params = new URLSearchParams();
+  if (categoryId) params.set("category_id", categoryId);
+  if (subcategoryId) params.set("subcategory_id", subcategoryId);
+  params.set("active_only", activeOnly ? "true" : "false");
+  params.set("limit", "500");
+  const data = await api(`/tag-studio/items?${params.toString()}`);
+  tagStudioListerItems = Array.isArray(data?.items) ? data.items : [];
+  const previousKey = tagStudioSelectedTagRow ? tagStudioRowKey(tagStudioSelectedTagRow) : "";
+  const stillExists = tagStudioListerItems.find((row) => tagStudioRowKey(row) === previousKey);
+  tagStudioSelectedTagRow = stillExists || null;
+  if (summary) {
+    summary.textContent = `Найдено: ${tagStudioListerItems.length} · Category: ${categoryId || "all"} · Subcategory: ${subcategoryId || "all"} · ${activeOnly ? "active only" : "active + inactive"}`;
+  }
+  renderTagStudioListerList(tagStudioListerItems);
+  renderTagStudioSelectionState();
+}
+
+async function handleTagStudioSaveDescription() {
+  if (!tagStudioSelectedTagRow) return toast("Сначала выберите тег");
+  if (!tagStudioSelectedTagRow.overlay) return toast("Core-теги нельзя редактировать в Tag Studio");
+  const description = document.getElementById("tagstudio-edit-description")?.value.trim() || "";
+  const categoryId = tagStudioSelectedTagRow.category_id;
+  const itemId = tagStudioSelectedTagRow.item.id;
+  await api(`/categories/${encodeURIComponent(categoryId)}/items/${encodeURIComponent(itemId)}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      description: description || null,
+      persist: true,
+      source: "user",
+    }),
+  });
+  toast("Описание обновлено");
+  await Promise.all([loadTagStudioLister(), loadTagStudioPanel()]);
+}
+
+async function handleTagStudioMoveTag() {
+  if (!tagStudioSelectedTagRow) return toast("Сначала выберите тег");
+  if (!tagStudioSelectedTagRow.overlay) return toast("Core-теги нельзя перемещать в Tag Studio");
+  const toCategoryId = document.getElementById("tagstudio-move-category")?.value || "";
+  const toSubcategoryId = document.getElementById("tagstudio-move-subcategory")?.value || "";
+  const moveSubcategory = document.getElementById("tagstudio-move-subcategory");
+  if (!toCategoryId) return toast("Выберите category назначения");
+  if (moveSubcategory?.dataset.hasSubcategories === "1" && !toSubcategoryId) {
+    return toast("Выберите подгруппу назначения");
+  }
+  const fromCategoryId = tagStudioSelectedTagRow.category_id;
+  const itemId = tagStudioSelectedTagRow.item.id;
+  await api(`/categories/${encodeURIComponent(fromCategoryId)}/items/${encodeURIComponent(itemId)}/move`, {
+    method: "POST",
+    body: JSON.stringify({
+      to_category_id: toCategoryId,
+      to_subcategory_id: toSubcategoryId || null,
+      persist: true,
+      source: "user",
+    }),
+  });
+  toast("Тег перенесен");
+  await Promise.all([loadTagStudioLister(), loadTagStudioPanel()]);
+}
+
+async function handleTagStudioDeleteTag() {
+  if (!tagStudioSelectedTagRow) return toast("Сначала выберите тег");
+  if (!tagStudioSelectedTagRow.overlay) return toast("Core-теги нельзя удалять в Tag Studio");
+  const row = tagStudioSelectedTagRow;
+  const subgroup = getTagStudioRowSubcategory(row) || "none";
+  const ok = window.confirm(`Удалить тег "${row.item.label}" из ${row.category_id} — ${subgroup}?`);
+  if (!ok) return;
+  await api(`/categories/${encodeURIComponent(row.category_id)}/items/${encodeURIComponent(row.item.id)}/deactivate?persist=true`, {
+    method: "POST",
+  });
+  toast("Тег удален (deactivate)");
+  tagStudioSelectedTagRow = null;
+  await Promise.all([loadTagStudioLister(), loadTagStudioPanel()]);
+}
+
+async function initTagStudioLister() {
+  if (tagStudioListerInitialized) return;
+  tagStudioListerInitialized = true;
+  await loadTagStudioCategorySelects();
+  const listerCategory = document.getElementById("tagstudio-lister-category");
+  const listerSubcategory = document.getElementById("tagstudio-lister-subcategory");
+  const moveCategory = document.getElementById("tagstudio-move-category");
+  const loadBtn = document.getElementById("btn-tagstudio-lister-load");
+  await loadTagStudioSubcategorySelect(listerCategory?.value || "", listerSubcategory, {
+    anyLabel: "Все подгруппы",
+    noneLabel: "none",
+    includeAny: true,
+  });
+  await syncTagStudioMoveSubcategory(moveCategory?.value || "", "");
+  listerCategory?.addEventListener("change", async () => {
+    await loadTagStudioSubcategorySelect(listerCategory.value, listerSubcategory, {
+      anyLabel: "Все подгруппы",
+      noneLabel: "none",
+      includeAny: true,
+    });
+    await loadTagStudioLister();
+  });
+  listerSubcategory?.addEventListener("change", () => {
+    loadTagStudioLister().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("tagstudio-lister-active-only")?.addEventListener("change", () => {
+    loadTagStudioLister().catch((e) => toast("Ошибка: " + e.message));
+  });
+  moveCategory?.addEventListener("change", () => {
+    syncTagStudioMoveSubcategory(moveCategory.value, "").catch((e) => toast("Ошибка: " + e.message));
+  });
+  loadBtn?.addEventListener("click", () => {
+    loadTagStudioLister().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-tagstudio-save-description")?.addEventListener("click", () => {
+    handleTagStudioSaveDescription().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-tagstudio-move-tag")?.addEventListener("click", () => {
+    handleTagStudioMoveTag().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-tagstudio-delete-tag")?.addEventListener("click", () => {
+    handleTagStudioDeleteTag().catch((e) => toast("Ошибка: " + e.message));
+  });
+  await loadTagStudioLister();
 }
 
 function initPromptingTree() {
@@ -3463,7 +4605,7 @@ function collectKnownSubgroups(categoryId, categoryData) {
     MAKEUP_TREE,
     ACCESSORIES_TREE,
     POSE_TREE,
-    window.CAMERA_TREE || [],
+    getCameraTree(),
     window.LIGHTING_TREE || [],
     window.ENVIRONMENT_TREE || [],
     window.STYLE_TREE || [],
@@ -3531,17 +4673,17 @@ async function openAddTagModal() {
     option.textContent = `${category.title} (${category.id})`;
     categorySelect.appendChild(option);
   }
-  const activeLeaf = findTreeLeaf(activeOutfitLeafId, OUTFIT_TREE)
-    || findTreeLeaf(activeCharacterLeafId, getCharacterStructureTree())
-    || findTreeLeaf(activeFaceLeafId, getFaceVibeTree())
-    || findTreeLeaf(activeMakeupLeafId, MAKEUP_TREE)
-    || findTreeLeaf(activeAccessoriesLeafId, ACCESSORIES_TREE)
-    || findTreeLeaf(activePoseLeafId, POSE_TREE)
-    || findTreeLeaf(activeCameraLeafId, window.CAMERA_TREE || [])
-    || findTreeLeaf(activeLightingLeafId, window.LIGHTING_TREE || [])
-    || findTreeLeaf(activeEnvironmentLeafId, window.ENVIRONMENT_TREE || [])
-    || findTreeLeaf(activeStyleLeafId, window.STYLE_TREE || [])
-    || findTreeLeaf(activeFetishLeafId, window.FETISH_TREE || []);
+  const activeLeaf = findTreeLeaf(activeOutfitLeafId, getOutfitTree())
+    || findTreeLeaf(activeCharacterLeafId, getCharacterTree())
+    || findTreeLeaf(activeFaceLeafId, getFaceTree())
+    || findTreeLeaf(activeMakeupLeafId, getMakeupTree())
+    || findTreeLeaf(activeAccessoriesLeafId, getAccessoriesTree())
+    || findTreeLeaf(activePoseLeafId, getPoseTree())
+    || findTreeLeaf(activeCameraLeafId, getCameraTree())
+    || findTreeLeaf(activeLightingLeafId, getLightingTree())
+    || findTreeLeaf(activeEnvironmentLeafId, getEnvironmentTree())
+    || findTreeLeaf(activeStyleLeafId, getStyleTree())
+    || findTreeLeaf(activeFetishLeafId, getFetishTree());
   if (activeLeaf?.categoryId) categorySelect.value = activeLeaf.categoryId;
   if (!categorySelect.value && categories[0]?.id) categorySelect.value = categories[0].id;
   const subgroups = await fillAddTagSubgroups(categorySelect.value);
@@ -4255,7 +5397,7 @@ function bindEvents() {
     }
   });
   document.getElementById("btn-tagstudio-refresh")?.addEventListener("click", () => {
-    loadTagStudioPanel().catch((e) => toast("Ошибка: " + e.message));
+    Promise.all([loadTagStudioPanel(), loadTagStudioLister()]).catch((e) => toast("Ошибка: " + e.message));
   });
   document.getElementById("btn-tagstudio-search")?.addEventListener("click", () => {
     loadTagStudioPanel().catch((e) => toast("Ошибка: " + e.message));
@@ -4371,6 +5513,7 @@ function bindEvents() {
       );
       applyImportTouched(data.state || {}, data.report?.touched || []);
       clearGeneratedOutput();
+      await preloadSubgroupMaps();
       refreshAllPanels();
       syncFormControlsFromState();
       renderPromptingImportReport(data);
@@ -4484,6 +5627,7 @@ function bindEvents() {
       applyImportTouched(result.state || {}, result.report?.touched || []);
       if (result.state?.model_id) state.model_id = result.state.model_id;
       clearGeneratedOutput();
+      await preloadSubgroupMaps();
       refreshAllPanels();
       syncFormControlsFromState();
       initStaticChips();

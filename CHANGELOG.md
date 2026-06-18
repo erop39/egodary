@@ -11,7 +11,23 @@
 
 ## [Unreleased]
 
+## [0.1.21] — 2026-06-18
+
+### Fixed
+- UI v0.1.21: после импорта промпта или применения пресета счётчики и chips не показывали выбранные теги (устаревший режим Off перекрывал фактический выбор); нормализация payload face-пресетов.
+
+### Added
+- UI v0.1.20: подгруппа **Presets** во всех категориях sidebar — **Built-in presets** (Camera, Lighting) и **Custom presets** (остальные); сохранение/переименование/удаление через `/api/user-presets` по scope.
+- Camera UI v0.1.19: пресеты перенесены в дерево категории (**Presets → Built-in / Custom presets**) вместо отдельной карточки с сеткой кнопок.
+- Camera v0.1.19: пользовательские camera presets — сохранение текущих тегов, переименование, удаление; API `GET/POST/PUT/DELETE /api/user-presets`.
+
 ### Changed
+- UI v0.1.20: Lighting presets перенесены из верхней карточки в дерево (**Presets → Built-in / Custom presets**); «My presets» переименованы в **Custom presets**.
+- Camera UI v0.1.19: built-in presets (30) отображаются компактным списком; один активный пресет, сброс при ручном изменении тегов.
+- Tag Studio v0.1.17: добавлен блок **ТЭГ листер** с фильтрами category/subcategory и списком тегов выбранной группы.
+- Tag Studio v0.1.17: для выбранного runtime-тега добавлены действия из UI — удалить (confirm), изменить description, перенести в другую category/subcategory.
+- Tag Studio v0.1.16: результаты Search/Dedupe/Migration/Rollback теперь выводятся в человеко-читаемом формате со сводкой, бейджами и списком вместо сырого JSON.
+- Tag Studio v0.1.16: список найденных тегов оформлен как `ТЕГ — category — subcategory`, добавлены счётчики категорий, подгрупп и aliases.
 - UI v0.1.15: кнопка `+ Add tag` перенесена из общего header в секции **Prompting** и **Tag Studio**.
 - Tag Studio v0.1.15: добавлен встроенный справочный блок с описанием полей и кнопок (Search, dedupe, migration, rollback, add tag).
 - UI v0.1.12: логотип eGOdary в sidebar (`/static/img/logo.png`) и favicon (`/static/img/favicon.png`).
@@ -39,6 +55,8 @@
 - NSFW Styler v0.1.10: «Сохранить идентичность» фиксирует только лицо/волосы/пропорции тела; одежда, поза, выражение и сцена доступны для NSFW.
 
 ### Fixed
+- API/UI v0.1.17: `GET /api/tag-studio/items` теперь корректно помечает overlay-элементы (`overlay: true/false`), чтобы операции редактирования/перемещения/удаления применялись только к runtime-тегам.
+- API v0.1.16: `GET /api/tag-studio/deduplicate` возвращает `source_subcategory` и `match_subcategory`, чтобы UI мог наглядно показывать дубли с подгруппами.
 - Add tag v0.1.15: выбор подкатегории в модалке теперь собирается из API и структуры UI, поэтому для `environment.location` всегда доступны целевые subcategory (`indoor`, `outdoor_semi`, `fantasy_stylized`).
 - Add tag v0.1.15: для категорий с подкатегориями сохранение без `Subcategory` блокируется в UI, чтобы новый тег сразу появлялся в нужной группе выбора.
 - Startup performance v0.1.14: перенесена тяжёлая cold-start инициализация engine на backend startup, чтобы первый запрос `outfit.clothing_condition` не блокировал UI на старте.

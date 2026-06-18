@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -102,7 +101,6 @@ def convert_analyze(
             detected = detect_prompt_format(work_prompt)
 
     model_target = source_model if target_model == "json" else target_model
-    json_started = time.perf_counter()
     prompt_json = _json_from_inputs(
         prompt=work_prompt,
         state=state,
@@ -113,7 +111,6 @@ def convert_analyze(
         registry=registry,
         inline_negative=inline_negative,
     )
-    json_elapsed_ms = int((time.perf_counter() - json_started) * 1000)
 
     if target_model == "json":
         return ConvertAnalyzeResult(

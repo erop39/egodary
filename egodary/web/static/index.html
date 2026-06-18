@@ -43,7 +43,7 @@
       </nav>
       <div class="sidebar-footer">
         <button type="button" class="btn btn-secondary btn-block btn-sidebar-action" id="btn-restart-server">Restart server</button>
-        <div class="meta-line">v0.1.15 · автосохранение</div>
+        <div class="meta-line">v0.1.21 · автосохранение</div>
       </div>
     </aside>
 
@@ -182,16 +182,11 @@
 
         <!-- Camera -->
         <section class="panel" data-panel="camera">
-          <div class="card camera-presets-card">
-            <div class="card-title">Camera presets</div>
-            <p class="card-hint">Быстрые комбинации ракурса · перезаписывают поля камеры</p>
-            <div class="chip-panel" id="camera-preset-chips"></div>
-          </div>
           <div class="outfit-layout">
             <nav class="outfit-tree" id="camera-tree"></nav>
             <div class="outfit-detail card">
               <div class="card-title" id="camera-detail-title">Standard Angles</div>
-              <p class="card-hint">Одна опция на категорию · Off / Random / single-select</p>
+              <p class="card-hint" id="camera-detail-hint">Одна опция на категорию · Off / Random / single-select</p>
               <div class="chip-panel" id="camera-chips"></div>
             </div>
           </div>
@@ -199,16 +194,11 @@
 
         <!-- Lighting -->
         <section class="panel" data-panel="lighting">
-          <div class="card camera-presets-card">
-            <div class="card-title">Lighting presets</div>
-            <p class="card-hint">Освещение + камера · перезаписывают выбранные поля</p>
-            <div class="chip-panel" id="lighting-preset-chips"></div>
-          </div>
           <div class="outfit-layout">
             <nav class="outfit-tree" id="lighting-tree"></nav>
             <div class="outfit-detail card">
               <div class="card-title" id="lighting-detail-title">Natural Light</div>
-              <p class="card-hint">Одна опция на категорию · Off / Random / single-select</p>
+              <p class="card-hint" id="lighting-detail-hint">Одна опция на категорию · Off / Random / single-select</p>
               <div class="chip-panel" id="lighting-chips"></div>
             </div>
           </div>
@@ -368,7 +358,51 @@
               <button type="button" class="btn btn-ghost" id="btn-tagstudio-migrate">Run migration</button>
               <button type="button" class="btn btn-ghost" id="btn-tagstudio-rollback">Rollback migration</button>
             </div>
-            <pre id="tagstudio-output" class="debug-pre">—</pre>
+            <div id="tagstudio-output" class="tagstudio-output">—</div>
+            <div class="tagstudio-lister">
+              <div class="import-report-title">ТЭГ листер</div>
+              <p class="card-hint">Выберите category и подгруппу, чтобы увидеть все теги. Для runtime-тегов доступны удаление, редактирование описания и перенос.</p>
+              <div class="field-grid">
+                <label>Category
+                  <select id="tagstudio-lister-category"></select>
+                </label>
+                <label>Subcategory
+                  <select id="tagstudio-lister-subcategory"></select>
+                </label>
+                <label class="check-row tagstudio-lister-active-only">
+                  <input type="checkbox" id="tagstudio-lister-active-only" checked />
+                  Active only
+                </label>
+              </div>
+              <div class="import-actions">
+                <button type="button" class="btn btn-secondary" id="btn-tagstudio-lister-load">Load tags</button>
+              </div>
+              <div id="tagstudio-lister-summary" class="import-report-stats">—</div>
+              <div id="tagstudio-lister-list" class="tagstudio-lister-list"></div>
+              <div class="tagstudio-selected card-subsection">
+                <div class="import-report-title">Действия с выбранным тэгом</div>
+                <div id="tagstudio-selected-meta" class="import-report-stats">Выберите тег в списке выше.</div>
+                <label class="fav-field">
+                  <span>Description</span>
+                  <input type="text" id="tagstudio-edit-description" placeholder="Описание тега" />
+                </label>
+                <div class="import-actions">
+                  <button type="button" class="btn btn-secondary" id="btn-tagstudio-save-description">Save description</button>
+                </div>
+                <div class="field-grid">
+                  <label>Move to category
+                    <select id="tagstudio-move-category"></select>
+                  </label>
+                  <label>Move to subcategory
+                    <select id="tagstudio-move-subcategory"></select>
+                  </label>
+                </div>
+                <div class="import-actions">
+                  <button type="button" class="btn btn-ghost" id="btn-tagstudio-move-tag">Move tag</button>
+                  <button type="button" class="btn btn-ghost" id="btn-tagstudio-delete-tag">Delete tag</button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

@@ -41,6 +41,16 @@ def init_db(path: Path | None = None) -> None:
             payload_json TEXT NOT NULL,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE TABLE IF NOT EXISTS user_presets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            scope TEXT NOT NULL,
+            name TEXT NOT NULL,
+            payload_json TEXT NOT NULL,
+            hint TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_user_presets_scope ON user_presets(scope);
         CREATE TABLE IF NOT EXISTS model_profiles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             model_id TEXT NOT NULL,

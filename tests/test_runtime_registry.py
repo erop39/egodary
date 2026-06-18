@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from egodary.bootstrap import build_app
-from egodary.core.models import TagCategory, TagItem
+from egodary.core.models import TagItem
 from egodary.core.runtime_registry import RuntimeRegistry
 
 

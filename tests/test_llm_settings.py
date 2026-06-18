@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import io
-import urllib.request
 from datetime import datetime, timezone
 
 from fastapi.testclient import TestClient
 
 from egodary.api.main import app
-from egodary.app import get_llm_settings, reset_engine_cache, update_llm_settings
+from egodary.app import reset_engine_cache, update_llm_settings
 from egodary.core.llm_settings import LlmHealthReport, LlmSettings
 from egodary.integrations import ollama
 from egodary.persistence.schema import load_llm_settings, save_llm_settings

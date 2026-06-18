@@ -10,11 +10,11 @@ from egodary.core.fetish_skip import should_skip_fetish_item
 from egodary.core.models import AssembledPrompt, PromptBuckets, PromptState
 from egodary.core.registry import TagRegistry
 from egodary.core.runtime_registry import RuntimeRegistry
-
-RegistryLike = TagRegistry | RuntimeRegistry
 from egodary.models_adapters.anima import AnimaAdapter
 from egodary.models_adapters.illustrious import IllustriousAdapter
 from egodary.models_adapters.zimage_turbo import ZImageTurboAdapter
+
+RegistryLike = TagRegistry | RuntimeRegistry
 
 logger = logging.getLogger(__name__)
 
