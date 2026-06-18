@@ -43,7 +43,7 @@
       </nav>
       <div class="sidebar-footer">
         <button type="button" class="btn btn-secondary btn-block btn-sidebar-action" id="btn-restart-server">Restart server</button>
-        <div class="meta-line">v0.1.14 · автосохранение</div>
+        <div class="meta-line">v0.1.15 · автосохранение</div>
       </div>
     </aside>
 
@@ -52,9 +52,6 @@
       <header class="workspace-header">
         <h1 id="panel-title">Style</h1>
         <p id="panel-desc">Художественный стиль, качество рендера и эстетика · Off убирает стиль из промпта</p>
-        <div class="import-actions">
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-open-add-tag-modal">+ Add tag</button>
-        </div>
         <ul class="conflict-warnings hidden" id="conflict-warnings"></ul>
       </header>
       <div class="workspace-scroll" id="workspace-panels">
@@ -246,7 +243,10 @@
           <div class="outfit-layout">
             <nav class="outfit-tree" id="prompting-tree"></nav>
             <div class="outfit-detail card">
-              <div class="card-title" id="prompting-detail-title">Prompt Analyze</div>
+              <div class="card-title row-between">
+                <span id="prompting-detail-title">Prompt Analyze</span>
+                <button type="button" class="btn btn-secondary btn-sm" data-open-add-tag-modal>+ Add tag</button>
+              </div>
               <p class="card-hint" id="prompting-detail-hint">Извлечение core, конвертация формата модели или JSON (v1.2), нормализация весов</p>
               <div id="prompting-panel-analyze" class="prompting-panel">
                 <div class="prompting-input-toolbar">
@@ -332,7 +332,10 @@
           <div class="card">
             <div class="card-title row-between">
               <span>Tag Studio</span>
-              <button type="button" class="btn btn-ghost btn-sm" id="btn-tagstudio-refresh">Refresh</button>
+              <div class="result-actions-inline">
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-tagstudio-refresh">Refresh</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-open-add-tag-modal>+ Add tag</button>
+              </div>
             </div>
             <p class="card-hint">Поиск и управление runtime тегами: category/subcategory, деактивация, дедупликация, миграция.</p>
             <div class="field-grid">
@@ -345,6 +348,19 @@
               <label>Subcategory
                 <input type="text" id="tagstudio-subcategory" placeholder="imported" />
               </label>
+            </div>
+            <div class="import-report">
+              <div class="import-report-title">Что делает каждый элемент Tag Studio</div>
+              <ul class="tagstudio-help-list">
+                <li><strong>Search</strong> — ищет по label, alias и description.</li>
+                <li><strong>Category</strong> — ограничивает операции одной категорией (например, <code>environment.location</code>).</li>
+                <li><strong>Subcategory</strong> — фильтрует или нацеливает действие на конкретную подкатегорию.</li>
+                <li><strong>Search</strong> (кнопка) — выводит список тегов с meta и статусом.</li>
+                <li><strong>Find duplicates</strong> — ищет потенциальные дубликаты в категории.</li>
+                <li><strong>Run migration</strong> — приводит runtime-теги к актуальной схеме subcategory.</li>
+                <li><strong>Rollback migration</strong> — откатывает миграцию runtime-тегов.</li>
+                <li><strong>+ Add tag</strong> — открывает модалку создания тега в нужной category/subcategory.</li>
+              </ul>
             </div>
             <div class="import-actions">
               <button type="button" class="btn btn-secondary" id="btn-tagstudio-search">Search</button>

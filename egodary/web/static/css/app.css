@@ -898,6 +898,16 @@ select:disabled {
   margin-bottom: 4px;
 }
 
+.tagstudio-help-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text);
+}
+
+.tagstudio-help-list li {
+  margin-bottom: 6px;
+}
+
 .import-report-unknown li {
   color: var(--warn);
 }

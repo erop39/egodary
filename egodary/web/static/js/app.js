@@ -3434,6 +3434,47 @@ function getCategoryTitleById(categoryId) {
   return hit?.title || categoryId;
 }
 
+function collectTreeSubgroupsForCategory(nodes, categoryId, subgroupSet) {
+  for (const node of nodes || []) {
+    if (Array.isArray(node.children) && node.children.length) {
+      collectTreeSubgroupsForCategory(node.children, categoryId, subgroupSet);
+      continue;
+    }
+    if (node?.categoryId !== categoryId) continue;
+    const subgroup = typeof node.subgroup === "string" ? node.subgroup.trim() : "";
+    if (subgroup) subgroupSet.add(subgroup);
+  }
+}
+
+function collectKnownSubgroups(categoryId, categoryData) {
+  const subgroupSet = new Set();
+  for (const subgroup of categoryData?.subcategories || []) {
+    const value = String(subgroup || "").trim();
+    if (value) subgroupSet.add(value);
+  }
+  for (const item of categoryData?.items || []) {
+    const subgroup = String(item.meta?.subcategory_id || item.meta?.subgroup || "").trim();
+    if (subgroup) subgroupSet.add(subgroup);
+  }
+  const trees = [
+    OUTFIT_TREE,
+    getCharacterStructureTree(),
+    getFaceVibeTree(),
+    MAKEUP_TREE,
+    ACCESSORIES_TREE,
+    POSE_TREE,
+    window.CAMERA_TREE || [],
+    window.LIGHTING_TREE || [],
+    window.ENVIRONMENT_TREE || [],
+    window.STYLE_TREE || [],
+    window.FETISH_TREE || [],
+  ];
+  for (const tree of trees) {
+    collectTreeSubgroupsForCategory(tree, categoryId, subgroupSet);
+  }
+  return Array.from(subgroupSet).sort((a, b) => String(a).localeCompare(String(b)));
+}
+
 async function loadAddTagCategories() {
   const data = await api("/categories");
   const categories = Array.isArray(data.categories) ? data.categories : [];
@@ -3447,12 +3488,7 @@ async function fillAddTagSubgroups(categoryId) {
   const subgroupSelect = document.getElementById("add-tag-subgroup");
   if (!subgroupSelect) return [];
   const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
-  const subgroupSet = new Set();
-  for (const item of data.items || []) {
-    const subgroup = item.meta?.subcategory_id || item.meta?.subgroup;
-    if (subgroup) subgroupSet.add(subgroup);
-  }
-  const subgroups = Array.from(subgroupSet).sort((a, b) => String(a).localeCompare(String(b)));
+  const subgroups = collectKnownSubgroups(categoryId, data);
   subgroupSelect.innerHTML = "";
   if (!subgroups.length) {
     const option = document.createElement("option");
@@ -3460,6 +3496,7 @@ async function fillAddTagSubgroups(categoryId) {
     option.textContent = "none";
     subgroupSelect.appendChild(option);
     subgroupSelect.disabled = true;
+    subgroupSelect.dataset.hasSubgroups = "0";
     return subgroups;
   }
   for (const subgroup of subgroups) {
@@ -3469,6 +3506,7 @@ async function fillAddTagSubgroups(categoryId) {
     subgroupSelect.appendChild(option);
   }
   subgroupSelect.disabled = false;
+  subgroupSelect.dataset.hasSubgroups = "1";
   return subgroups;
 }
 
@@ -3499,7 +3537,11 @@ async function openAddTagModal() {
     || findTreeLeaf(activeMakeupLeafId, MAKEUP_TREE)
     || findTreeLeaf(activeAccessoriesLeafId, ACCESSORIES_TREE)
     || findTreeLeaf(activePoseLeafId, POSE_TREE)
-    || findTreeLeaf(activeEnvironmentLeafId, window.ENVIRONMENT_TREE || []);
+    || findTreeLeaf(activeCameraLeafId, window.CAMERA_TREE || [])
+    || findTreeLeaf(activeLightingLeafId, window.LIGHTING_TREE || [])
+    || findTreeLeaf(activeEnvironmentLeafId, window.ENVIRONMENT_TREE || [])
+    || findTreeLeaf(activeStyleLeafId, window.STYLE_TREE || [])
+    || findTreeLeaf(activeFetishLeafId, window.FETISH_TREE || []);
   if (activeLeaf?.categoryId) categorySelect.value = activeLeaf.categoryId;
   if (!categorySelect.value && categories[0]?.id) categorySelect.value = categories[0].id;
   const subgroups = await fillAddTagSubgroups(categorySelect.value);
@@ -3520,7 +3562,8 @@ async function createTagFromModal(event) {
   const label = document.getElementById("add-tag-label")?.value.trim() || "";
   const itemId = document.getElementById("add-tag-item-id")?.value.trim() || "";
   const categoryId = document.getElementById("add-tag-category")?.value || "";
-  const subgroup = document.getElementById("add-tag-subgroup")?.value || "";
+  const subgroupSelect = document.getElementById("add-tag-subgroup");
+  const subgroup = subgroupSelect?.value || "";
   const aliasesRaw = document.getElementById("add-tag-aliases")?.value || "";
   const aliases = aliasesRaw.split(",").map((x) => x.trim()).filter(Boolean);
   const description = document.getElementById("add-tag-description")?.value.trim() || null;
@@ -3528,6 +3571,9 @@ async function createTagFromModal(event) {
   const persist = Boolean(document.getElementById("add-tag-persist")?.checked);
   if (!label) return toast("Введите значение тега");
   if (!categoryId) return toast("Выберите категорию");
+  if (subgroupSelect?.dataset.hasSubgroups === "1" && !subgroup) {
+    return toast("Выберите подкатегорию (Subcategory)");
+  }
   if (Number.isNaN(defaultWeight) || defaultWeight <= 0) return toast("Укажите корректный default weight");
   try {
     const data = await api(`/categories/${encodeURIComponent(categoryId)}/items`, {
@@ -4184,12 +4230,14 @@ function bindEvents() {
   document.querySelectorAll(".nav-item").forEach((btn) => {
     btn.onclick = () => switchTab(btn.dataset.tab);
   });
-  document.getElementById("btn-open-add-tag-modal")?.addEventListener("click", async () => {
-    try {
-      await openAddTagModal();
-    } catch (e) {
-      toast("Ошибка: " + e.message);
-    }
+  document.querySelectorAll("[data-open-add-tag-modal]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      try {
+        await openAddTagModal();
+      } catch (e) {
+        toast("Ошибка: " + e.message);
+      }
+    });
   });
   document.getElementById("add-tag-modal-close")?.addEventListener("click", closeAddTagModal);
   document.getElementById("add-tag-modal-backdrop")?.addEventListener("click", closeAddTagModal);

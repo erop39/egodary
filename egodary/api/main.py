@@ -49,7 +49,7 @@ from egodary.persistence.schema import (
 
 STATIC_DIR = Path(__file__).resolve().parents[1] / "web" / "static"
 
-app = FastAPI(title="eGOdary API", version="0.1.14")
+app = FastAPI(title="eGOdary API", version="0.1.15")
 
 
 @app.on_event("startup")

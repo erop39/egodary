@@ -12,6 +12,8 @@
 ## [Unreleased]
 
 ### Changed
+- UI v0.1.15: кнопка `+ Add tag` перенесена из общего header в секции **Prompting** и **Tag Studio**.
+- Tag Studio v0.1.15: добавлен встроенный справочный блок с описанием полей и кнопок (Search, dedupe, migration, rollback, add tag).
 - UI v0.1.12: логотип eGOdary в sidebar (`/static/img/logo.png`) и favicon (`/static/img/favicon.png`).
 - Tag Studio v0.1.13: модель тегов расширена до совместимого `category + subcategory` (dual-read/dual-write с legacy `subgroup`), добавлены поля `normalized_name`, `aliases`, `is_active`.
 - API v0.1.13: `POST /api/categories/{category_id}/items` теперь поддерживает `subcategory_id`, aliases/description/default_weight и встроенную dedupe-проверку.
@@ -37,6 +39,8 @@
 - NSFW Styler v0.1.10: «Сохранить идентичность» фиксирует только лицо/волосы/пропорции тела; одежда, поза, выражение и сцена доступны для NSFW.
 
 ### Fixed
+- Add tag v0.1.15: выбор подкатегории в модалке теперь собирается из API и структуры UI, поэтому для `environment.location` всегда доступны целевые subcategory (`indoor`, `outdoor_semi`, `fantasy_stylized`).
+- Add tag v0.1.15: для категорий с подкатегориями сохранение без `Subcategory` блокируется в UI, чтобы новый тег сразу появлялся в нужной группе выбора.
 - Startup performance v0.1.14: перенесена тяжёлая cold-start инициализация engine на backend startup, чтобы первый запрос `outfit.clothing_condition` не блокировал UI на старте.
 - LLM Settings: подключение к локальному Ollama на Windows при включённом системном прокси (обход proxy для localhost/127.0.0.1).
 - LLM Settings: JSON probe не обрывался по таймауту 15 с при холодном старте модели (используется Timeout из настроек).
