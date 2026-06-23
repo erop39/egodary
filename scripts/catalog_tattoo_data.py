@@ -1,0 +1,81 @@
+"""Tattoo & body art catalog — appearance.tattoos subgroups."""
+
+TATTOO_SUBGROUP_LABELS: dict[str, str] = {
+    "styles": "Tattoo Styles",
+    "placements": "Tattoo Placements",
+    "themes": "Tattoo Themes",
+    "specific": "Specific Tattoos",
+    "temporary": "Temporary Tattoos",
+}
+
+# subgroup -> list of (label, prompt_phrase)
+TATTOO_GROUPS: dict[str, list[tuple[str, str]]] = {
+    "styles": [
+        ("Realistic tattoo", "realistic tattoo"),
+        ("Traditional tattoo", "traditional tattoo"),
+        ("Japanese tattoo", "japanese tattoo"),
+        ("Tribal tattoo", "tribal tattoo"),
+        ("Minimalist tattoo", "minimalist tattoo"),
+        ("Watercolor tattoo", "watercolor tattoo"),
+        ("Geometric tattoo", "geometric tattoo"),
+        ("Blackwork tattoo", "blackwork tattoo"),
+        ("Neo traditional tattoo", "neo traditional tattoo"),
+        ("Dotwork tattoo", "dotwork tattoo"),
+        ("Illustrative tattoo", "illustrative tattoo"),
+        ("Cyberpunk tattoo", "cyberpunk tattoo"),
+        ("Trash polka tattoo", "trash polka tattoo"),
+    ],
+    "placements": [
+        ("Arm tattoo", "arm tattoo"),
+        ("Sleeve tattoo", "sleeve tattoo"),
+        ("Back tattoo", "back tattoo"),
+        ("Chest tattoo", "chest tattoo"),
+        ("Rib tattoo", "rib tattoo"),
+        ("Underboob tattoo", "underboob tattoo"),
+        ("Thigh tattoo", "thigh tattoo"),
+        ("Hip tattoo", "hip tattoo"),
+        ("Shoulder tattoo", "shoulder tattoo"),
+        ("Neck tattoo", "neck tattoo"),
+        ("Hand tattoo", "hand tattoo"),
+        ("Foot tattoo", "foot tattoo"),
+        ("Lower back tattoo", "lower back tattoo"),
+        ("Collarbone tattoo", "collarbone tattoo"),
+        ("Spine tattoo", "spine tattoo"),
+    ],
+    "themes": [
+        ("Rose tattoo", "rose tattoo"),
+        ("Dragon tattoo", "dragon tattoo"),
+        ("Skull tattoo", "skull tattoo"),
+        ("Flower tattoo", "flower tattoo"),
+        ("Butterfly tattoo", "butterfly tattoo"),
+        ("Snake tattoo", "snake tattoo"),
+        ("Wolf tattoo", "wolf tattoo"),
+        ("Lion tattoo", "lion tattoo"),
+        ("Text tattoo", "text tattoo"),
+        ("Mandala tattoo", "mandala tattoo"),
+        ("Anchor tattoo", "anchor tattoo"),
+        ("Heart tattoo", "heart tattoo"),
+        ("Moon tattoo", "moon tattoo"),
+        ("Star tattoo", "star tattoo"),
+        ("Geometric animal tattoo", "geometric animal tattoo"),
+        ("Religious tattoo", "religious tattoo"),
+    ],
+    "specific": [
+        ("Koi fish tattoo", "koi fish tattoo"),
+        ("Phoenix tattoo", "phoenix tattoo"),
+        ("Lotus flower tattoo", "lotus flower tattoo"),
+        ("Dagger through heart tattoo", "dagger through heart tattoo"),
+        ("Eye tattoo", "eye tattoo"),
+        ("Clock tattoo", "clock tattoo"),
+        ("Compass tattoo", "compass tattoo"),
+        ("Feather tattoo", "feather tattoo"),
+    ],
+    "temporary": [
+        ("Temporary tattoo", "temporary tattoo"),
+        ("Henna tattoo", "henna tattoo"),
+        ("Fake tattoo", "fake tattoo"),
+        ("Sticker tattoo", "sticker tattoo"),
+    ],
+}
+
+TATTOO_SUBGROUP_ORDER: tuple[str, ...] = tuple(TATTOO_SUBGROUP_LABELS.keys())

@@ -1,0 +1,211 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9970bf9..2e3f44c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,6 +11,27 @@
+ 
+ ## [Unreleased]
+ 
++### Added
++- **Перенос тега прямо из окна "Edit tag".** Раньше перенести тег в другую category/subcategory
++  можно было только отдельной формой "Move tag" внизу панели Tag Studio — теперь поля Category и
++  Subcategory есть и в самой модалке Edit, рядом с остальными полями: меняешь их и жмёшь Save,
++  тег переезжает вместе с обновлением label/aliases/тегов моделей за одно действие.
++  - Subcategory-поле — свободный текстовый ввод с datalist (как Move tag/Wildcards/Add tag).
++  - Смена category работает только для runtime-тегов — то же ограничение, что и у отдельной кнопки
++    Move tag (core-тег нельзя "телепортировать" между категориями; сначала любое сохранение в Edit
++    форкает его в runtime-копию, дальше его уже можно переносить полноценно). Для core-тега поле
++    Category в модалке заблокировано (с подсказкой), доступна только смена подгруппы внутри той
++    же категории — это уже работало раньше неявно через `PUT .../items/{id}` (форк + subcategory),
++    просто не было видно в UI.
++  - Технически: смена подгруппы внутри той же категории идёт одним `PUT` (эндпоинт уже это умел —
++    `subcategory_id` + `allow_new_subcategory`). Смена самой категории — `PUT` (без subcategory)
++    сразу следом `POST .../move` с `to_category_id` и `to_subcategory_id` за один клик Save,
++    отдельного шага не требуется.
++  - Проверено: Node-харнесс с подменой `api()` — 3 сценария (смена только подгруппы у runtime-тега,
++    смена категории у runtime-тега, смена подгруппы у core-тега) дают ожидаемую последовательность
++    запросов и тел. Сквозной curl-тест: тег создан в `outfit.dress/micro_mini`, после
++    PUT+move лежит в `outfit.top/brand_new_via_edit_modal`.
++
+ ### Fixed
+ - **Модалка «+ Add tag» — тот же баг, что и в Move tag/Wildcards, последний оставшийся случай.**
+   После фикса Move tag сделал полный аудит: прогрепал все `<select>` в `index.html`, все места в
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index 64b459c..c5d130d 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -4747,8 +4747,19 @@ const EDIT_TAG_FIELD_IDS = [
+   "edit-tag-illustrious",
+   "edit-tag-anima",
+   "edit-tag-zimage",
++  "edit-tag-subgroup",
+ ];
+ 
++async function fillEditTagSubgroups(categoryId) {
++  const subgroupInput = document.getElementById("edit-tag-subgroup");
++  const datalist = document.getElementById("edit-tag-subgroup-options");
++  if (!subgroupInput) return [];
++  const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
++  const subgroups = collectKnownSubgroups(categoryId, data);
++  if (datalist) datalist.innerHTML = subgroups.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
++  return subgroups;
++}
++
+ function setEditTagModalReadOnly(readOnly, showCoreHint = false) {
+   const saveBtn = document.getElementById("edit-tag-save");
+   const hint = document.getElementById("edit-tag-readonly-hint");
+@@ -4762,7 +4773,7 @@ function setEditTagModalReadOnly(readOnly, showCoreHint = false) {
+   hint?.classList.toggle("hidden", !showCoreHint);
+ }
+ 
+-function openEditTagModal() {
++async function openEditTagModal() {
+   if (!tagStudioSelectedTagRow) return toast("Сначала выберите тег");
+   const row = tagStudioSelectedTagRow;
+   if (row.item?.meta?.is_active === false) {
+@@ -4777,6 +4788,30 @@ function openEditTagModal() {
+   document.getElementById("edit-tag-illustrious").value = item.tags?.illustrious || "";
+   document.getElementById("edit-tag-anima").value = item.tags?.anima || "";
+   document.getElementById("edit-tag-zimage").value = item.tags?.zimage_turbo || item.tags?.zimage || "";
++
++  const categorySelect = document.getElementById("edit-tag-category");
++  const subgroupInput = document.getElementById("edit-tag-subgroup");
++  const coreHint = document.getElementById("edit-tag-core-category-hint");
++  const categories = await loadAddTagCategories();
++  if (categorySelect) {
++    categorySelect.innerHTML = "";
++    for (const category of categories) {
++      const option = document.createElement("option");
++      option.value = category.id;
++      option.textContent = `${category.title} (${category.id})`;
++      categorySelect.appendChild(option);
++    }
++    categorySelect.value = row.category_id;
++    // Moving between categories is only meaningful for runtime (overlay)
++    // tags — same restriction as the standalone "Move tag" button. Core
++    // tags can still have their subgroup changed (it forks to a runtime
++    // copy on save, same as editing any other field on a core tag).
++    categorySelect.disabled = isCore;
++  }
++  coreHint?.classList.toggle("hidden", !isCore);
++  await fillEditTagSubgroups(row.category_id);
++  if (subgroupInput) subgroupInput.value = getTagStudioRowSubcategory(row);
++
+   const title = document.getElementById("edit-tag-modal-title");
+   if (title) title.textContent = isCore ? "Edit tag (core → runtime)" : "Edit tag";
+   setEditTagModalReadOnly(false, isCore);
+@@ -4798,22 +4833,58 @@ async function saveEditTagFromModal(event) {
+     anima: document.getElementById("edit-tag-anima")?.value.trim() || "",
+     zimage_turbo: document.getElementById("edit-tag-zimage")?.value.trim() || "",
+   };
++  const newCategoryId = document.getElementById("edit-tag-category")?.value || row.category_id;
++  const newSubgroup = document.getElementById("edit-tag-subgroup")?.value.trim() || "";
++  // Category change is only offered (the select is enabled) for runtime
++  // tags — same restriction as the standalone Move tag button. wasCore is
++  // double-checked here too in case the field somehow ends up enabled.
++  const categoryChanging = !wasCore && newCategoryId && newCategoryId !== row.category_id;
+   if (!label) return toast("Введите label");
+   if (Number.isNaN(defaultWeight) || defaultWeight <= 0) return toast("Укажите корректный default weight");
++
++  const putBody = {
++    label,
++    aliases,
++    description,
++    default_weight: defaultWeight,
++    tags,
++    persist: true,
++    source: "user",
++  };
++  if (!categoryChanging) {
++    // Subgroup change within the same category — the PUT endpoint already
++    // supports this directly (and forks core tags to a runtime copy first).
++    putBody.subcategory_id = newSubgroup;
++    putBody.allow_new_subcategory = true;
++  }
+   await api(`/categories/${encodeURIComponent(row.category_id)}/items/${encodeURIComponent(row.item.id)}`, {
+     method: "PUT",
+-    body: JSON.stringify({
+-      label,
+-      aliases,
+-      description,
+-      default_weight: defaultWeight,
+-      tags,
+-      persist: true,
+-      source: "user",
+-    }),
++    body: JSON.stringify(putBody),
+   });
++
++  if (categoryChanging) {
++    // Cross-category move has to go through the dedicated move endpoint
++    // (the PUT above only ever touches the item within its current
++    // category) — call it after the PUT so we're moving the exact item
++    // id the PUT just confirmed exists, with the same single Save click
++    // also carrying the new subgroup along.
++    await api(`/categories/${encodeURIComponent(row.category_id)}/items/${encodeURIComponent(row.item.id)}/move`, {
++      method: "POST",
++      body: JSON.stringify({
++        to_category_id: newCategoryId,
++        to_subcategory_id: newSubgroup || null,
++        persist: true,
++        source: "user",
++      }),
++    });
++  }
++
+   closeEditTagModal();
+-  toast(wasCore ? "Сохранено как runtime-копия поверх core-тега" : "Тег обновлён");
++  if (categoryChanging) {
++    toast("Тег обновлён и перенесён в новую категорию/подгруппу");
++  } else {
++    toast(wasCore ? "Сохранено как runtime-копия поверх core-тега" : "Тег обновлён");
++  }
+   await Promise.all([loadTagStudioLister(), loadTagStudioPanel()]);
+ }
+ 
+@@ -4886,7 +4957,9 @@ async function initTagStudioLister() {
+   document.getElementById("btn-tagstudio-reactivate-tag")?.addEventListener("click", () => {
+     handleTagStudioReactivateTag().catch((e) => toast("Ошибка: " + e.message));
+   });
+-  document.getElementById("btn-tagstudio-edit-tag")?.addEventListener("click", () => openEditTagModal());
++  document.getElementById("btn-tagstudio-edit-tag")?.addEventListener("click", () => {
++    openEditTagModal().catch((e) => toast("Ошибка: " + e.message));
++  });
+   await loadTagStudioLister();
+ }
+ 
+@@ -6801,6 +6874,11 @@ function bindEvents() {
+   document.getElementById("edit-tag-modal-close")?.addEventListener("click", closeEditTagModal);
+   document.getElementById("edit-tag-modal-backdrop")?.addEventListener("click", closeEditTagModal);
+   document.getElementById("edit-tag-cancel")?.addEventListener("click", closeEditTagModal);
++  document.getElementById("edit-tag-category")?.addEventListener("change", (event) => {
++    const categoryId = event.target?.value || "";
++    if (!categoryId) return;
++    fillEditTagSubgroups(categoryId).catch((e) => toast("Ошибка: " + e.message));
++  });
+   document.getElementById("edit-tag-form")?.addEventListener("submit", (event) => {
+     saveEditTagFromModal(event).catch((e) => toast("Ошибка: " + e.message));
+   });
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+index bf68461..df31b27 100644
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -844,6 +844,18 @@
+       </div>
+       <form id="edit-tag-form" class="fav-form">
+         <p class="card-hint hidden" id="edit-tag-readonly-hint">Core-тег из каталога: при сохранении создаётся runtime-копия с тем же id поверх оригинала.</p>
++        <div class="field-grid">
++          <label class="fav-field">
++            <span>Category</span>
++            <select id="edit-tag-category"></select>
++          </label>
++          <label class="fav-field">
++            <span>Subcategory</span>
++            <input type="text" id="edit-tag-subgroup" list="edit-tag-subgroup-options" placeholder="существующая или новая" autocomplete="off" />
++            <datalist id="edit-tag-subgroup-options"></datalist>
++          </label>
++        </div>
++        <p class="card-hint hidden" id="edit-tag-core-category-hint">Core-тег можно перенести только в другую подгруппу той же категории — для переноса между категориями сначала сохраните (тег станет runtime), затем повторите Edit и смените категорию.</p>
+         <label class="fav-field">
+           <span>Label</span>
+           <input type="text" id="edit-tag-label" required />

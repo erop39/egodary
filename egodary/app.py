@@ -13,7 +13,12 @@ from egodary.core.pipeline import PromptEngine
 from egodary.core.runtime_registry import RuntimeRegistry
 from egodary.logging_setup import setup_logging
 from egodary.persistence.db import init_db
-from egodary.persistence.schema import load_llm_settings, load_runtime_tag_items_into_registry, save_llm_settings
+from egodary.persistence.schema import (
+    load_llm_settings,
+    load_runtime_tag_items_into_registry,
+    load_wildcards_into_registry,
+    save_llm_settings,
+)
 
 _CONTENT_DIR = Path(__file__).resolve().parent / "content"
 _engine: PromptEngine | None = None
@@ -83,6 +88,7 @@ def get_runtime_registry(*, force_reload: bool = False) -> RuntimeRegistry:
                 else:
                     _runtime_registry.set_base(base_registry)
                 load_runtime_tag_items_into_registry(_runtime_registry)
+                load_wildcards_into_registry(_runtime_registry)
                 _engine_content_stamp = stamp
     return _runtime_registry
 

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import logging
 
+from egodary.core.clothing_state_bind import collect_bound_outfit_tags
+from egodary.core.tattoos import sort_tattoo_ids
 from egodary.core.conflicts import apply_state_conflicts, is_couple_pose
 from egodary.core.quality_boosters import finalize_quality_bucket
 from egodary.core.fetish_skip import should_skip_fetish_item
@@ -74,6 +76,7 @@ class PromptEngine:
             makeup=makeup_tags,
             appearance=appearance_tags,
             outfit=self._collect_outfit_bucket(state),
+            tattoos=self._collect_tattoos_bucket(state),
             scene=self._collect_scene_bucket(state),
             situation=self._collect_situation_bucket(state),
             pose=self._collect_pose_bucket(state),
@@ -225,31 +228,54 @@ class PromptEngine:
             ("dress", "outfit.dress"),
             ("top", "outfit.top"),
             ("bottom", "outfit.bottom"),
-            ("underwear_layer", "outfit.underwear_layer"),
             ("legwear", "outfit.legwear"),
             ("jacket", "outfit.jacket"),
             ("footwear", "outfit.footwear"),
             ("gloves", "outfit.gloves"),
             ("cape", "outfit.cape"),
         ]
+        from egodary.core.conflicts import _bottom_subgroup_by_id
+
+        bottom_map = _bottom_subgroup_by_id()
         for field_name, category_suffix in field_categories:
             value = getattr(outfit, field_name)
-            if value:
-                resolved = self._resolve_selection(value, category_suffix, state.model_id)
-                if resolved:
-                    tags.extend(self._split_tags(resolved))
-            condition_id = (outfit.conditions or {}).get(field_name, "")
-            if condition_id:
-                resolved = self._resolve_selection(
-                    condition_id, "outfit.clothing_condition", state.model_id
+            # Каждая subgroup внутри outfit.bottom (skirts, shorts, underwear,
+            # transparent_plastic_skirts, ...) использует собственный ключ
+            # conditions, чтобы их wear-states не путались между собой в
+            # одном и том же поле "bottom". "long_pants" остаётся на базовом
+            # ключе "bottom" для обратной совместимости.
+            condition_key = field_name
+            if field_name == "bottom":
+                subgroup = bottom_map.get(value)
+                if subgroup and subgroup != "long_pants":
+                    condition_key = subgroup
+            condition_dims = (outfit.conditions or {}).get(condition_key) or {}
+            tags.extend(
+                collect_bound_outfit_tags(
+                    garment_value=value or "",
+                    garment_category=category_suffix,
+                    condition_dims=condition_dims,
+                    model_id=state.model_id,
+                    resolve=self._resolve_selection,
                 )
-                if resolved:
-                    tags.extend(self._split_tags(resolved))
+            )
+        return tags
+
+    def _collect_tattoos_bucket(self, state: PromptState) -> list[str]:
+        tattoo_ids = list(state.appearance.tattoos or [])
+        if not tattoo_ids:
+            return []
+        tags: list[str] = []
+        for tattoo_id in sort_tattoo_ids(self.registry, tattoo_ids):
+            resolved = self._resolve_selection(tattoo_id, "appearance.tattoos", state.model_id)
+            if resolved:
+                tags.extend(self._split_tags(resolved))
         return tags
 
     def _collect_scene_bucket(self, state: PromptState) -> list[str]:
         tags: list[str] = []
         scene = state.scene
+        env = state.environment
         mapping = [
             (scene.time, "scene.time"),
             (scene.weather, "scene.weather"),
@@ -260,13 +286,21 @@ class PromptEngine:
                 resolved = self._resolve_selection(value, category, state.model_id)
                 if resolved:
                     tags.extend(self._split_tags(resolved))
-        if scene.location:
-            loc = self._resolve_selection(scene.location, "scene.location", state.model_id)
-            if loc:
-                tags.extend(self._split_tags(loc))
-        env = state.environment
-        if env.location:
-            resolved = self._resolve_selection(env.location, "environment.location", state.model_id)
+        # environment.location (the current Indoor / Outdoor & Semi-Outdoor /
+        # Fantasy & Stylized tree) and the older scene.location are two
+        # representations of the same "where is this scene" choice, not two
+        # independent things to both include — conflicts.py and
+        # rule_matching.py already treat them as alternatives (env.location
+        # preferred, scene.location as a fallback). Adding both here used to
+        # silently double up the location whenever a session carried a
+        # leftover scene.location value (it has had no UI control since
+        # environment.location replaced it) alongside an environment.location
+        # pick, e.g. "luxury apartment ..., high-tech genetics laboratory ..."
+        # both appearing even though only the lab was selected in the UI.
+        location_value = env.location or scene.location
+        location_category = "environment.location" if env.location else "scene.location"
+        if location_value:
+            resolved = self._resolve_selection(location_value, location_category, state.model_id)
             if resolved:
                 tags.extend(self._split_tags(resolved))
         for modifier_id in env.modifiers:

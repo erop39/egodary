@@ -1,0 +1,152 @@
+diff --git a/update_and_run.bat b/update_and_run.bat
+index f5386b4..053bc3f 100644
+--- a/update_and_run.bat
++++ b/update_and_run.bat
+@@ -3,8 +3,26 @@ setlocal EnableExtensions EnableDelayedExpansion
+ cd /d "%~dp0"
+ 
+ set "SKIP_TEST=0"
+-if /I "%~1"=="--no-test" set "SKIP_TEST=1"
+-if /I "%~1"=="/no-test" set "SKIP_TEST=1"
++set "SKIP_PIP=0"
++set "SKIP_REBUILD=0"
++for %%a in (%*) do (
++    if /I "%%~a"=="--no-test" set "SKIP_TEST=1"
++    if /I "%%~a"=="/no-test" set "SKIP_TEST=1"
++    if /I "%%~a"=="--no-pip" set "SKIP_PIP=1"
++    if /I "%%~a"=="/no-pip" set "SKIP_PIP=1"
++    if /I "%%~a"=="--no-rebuild" set "SKIP_REBUILD=1"
++    if /I "%%~a"=="/no-rebuild" set "SKIP_REBUILD=1"
++    if /I "%%~a"=="--fast" (
++        set "SKIP_TEST=1"
++        set "SKIP_PIP=1"
++        set "SKIP_REBUILD=1"
++    )
++    if /I "%%~a"=="/fast" (
++        set "SKIP_TEST=1"
++        set "SKIP_PIP=1"
++        set "SKIP_REBUILD=1"
++    )
++)
+ 
+ title eGOdary - update and run
+ 
+@@ -12,6 +30,8 @@ echo.
+ echo ============================================
+ echo   eGOdary - update catalogs and run
+ echo ============================================
++echo   Flags: --no-pip --no-rebuild --no-test --fast (= all three)
++echo ============================================
+ echo.
+ 
+ set "PYTHON_CMD="
+@@ -30,57 +50,65 @@ echo Using: %PYTHON_CMD%
+ if errorlevel 1 goto :fail
+ 
+ echo.
+-echo [1/4] Installing / updating package...
+-%PYTHON_CMD% -m pip install -e ".[dev]"
+-if errorlevel 1 (
+-    echo [ERROR] pip install failed.
+-    goto :fail
++if "!SKIP_PIP!"=="0" (
++    echo [1/4] Installing / updating package...
++    %PYTHON_CMD% -m pip install -e ".[dev]" --no-build-isolation
++    if errorlevel 1 (
++        echo [ERROR] pip install failed.
++        goto :fail
++    )
++) else (
++    echo [1/4] Package install skipped - flag --no-pip
+ )
+ 
+ echo.
+-echo [2/4] Rebuilding content catalogs...
+-set "BUILD_ERR=0"
++if "!SKIP_REBUILD!"=="0" (
++    echo [2/4] Rebuilding content catalogs...
++    set "BUILD_ERR=0"
+ 
+-call :build_script "scripts\build_character_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_character_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_outfit_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_outfit_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_appearance_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_appearance_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_clothing_state_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_clothing_state_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_pose_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_pose_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_fetish_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_fetish_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_face_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_face_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_camera_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_camera_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_lighting_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_lighting_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_environment_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_environment_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_style_catalog.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_style_catalog.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-call :build_script "scripts\build_tag_tooltips_ru.py"
+-if errorlevel 1 set "BUILD_ERR=1"
++    call :build_script "scripts\build_tag_tooltips_ru.py"
++    if errorlevel 1 set "BUILD_ERR=1"
+ 
+-if "!BUILD_ERR!"=="1" (
+-    echo.
+-    echo [ERROR] One or more catalog rebuild scripts failed.
+-    goto :fail
++    if "!BUILD_ERR!"=="1" (
++        echo.
++        echo [ERROR] One or more catalog rebuild scripts failed.
++        goto :fail
++    )
++) else (
++    echo [2/4] Catalog rebuild skipped - flag --no-rebuild
+ )
+ 
+ if "!SKIP_TEST!"=="0" (
+@@ -90,7 +118,7 @@ if "!SKIP_TEST!"=="0" (
+     if errorlevel 1 (
+         echo.
+         echo [ERROR] Tests failed. Server was not started.
+-        echo To skip tests: update_and_run.bat --no-test
++        echo To skip tests: update_and_run.bat --no-test (or --fast to skip pip+rebuild+test)
+         goto :fail
+     )
+ ) else (

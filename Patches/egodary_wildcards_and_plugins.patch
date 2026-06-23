@@ -1,0 +1,498 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 15323a2..431f735 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,6 +11,57 @@
+ 
+ ## [Unreleased]
+ 
++### Added
++- **Wildcards-секция внутри подгрупп.** Каждая панель подгруппы (Outfit, Character/Hair,
++  Makeup, Accessories, Pose, Camera, Lighting, Environment, Fetish и т.д.) теперь показывает
++  блок «🧩 Wildcards» со всеми тегами, загруженными через вкладку Wildcards для родительской
++  категории этой подгруппы — независимо от того, совпадает ли `target_subgroup`, заданный при
++  загрузке, со встроенным id подгруппы в дереве. Раньше теги, загруженные с произвольным/новым
++  именем подгруппы (например `test`), не появлялись вообще нигде в интерфейсе — они уже лежали
++  в `RuntimeRegistry` и участвовали в генерации, но физически не на чем было их увидеть, т.к.
++  фильтрация чипов по подгруппе (`filterItemsBySubgroup`) требует точного совпадения id.
++  Секция читает `GET /api/wildcards/by-category/{category_id}` (новый эндпоинт) и автоматически
++  пропадает, если у категории нет включённых wildcard-файлов — либо если конкретный файл/строка
++  выключены чекбоксом во вкладке Wildcards (что и было главным требованием: «при выключении —
++  раздел не отображается»).
++  - Бэкенд: `GET /api/wildcards/by-category/{category_id}` — отдаёт только enabled wildcards
++    с их enabled строками, сгруппированными по исходному файлу.
++  - Фронтенд: `appendWildcardsSection()` дергается из `loadCategoryChips()` /
++    `loadCategoryMultiChips()` после рендера обычных чипов, с простым кэшем по categoryId
++    (инвалидируется при upload/toggle/delete wildcard) и защитой от гонки при быстром
++    переключении подгрупп (`dataset.wcToken`).
++- **Plugins-карточка во вкладке Advanced.** Бэкенд (`GET /api/plugins`,
++  `POST /api/plugins/{id}/enable|disable`) существовал, но не имел ни одного потребителя во
++  фронтенде — раздел управления плагинами из UI отсутствовал полностью (ни одного упоминания
++  `plugin` в `app.js`/`index.html`). Добавлена карточка со списком drop-in плагинов
++  (`plugins_user/`), чекбоксом enable/disable на каждый и подсказкой про необходимость
++  перезапуска сервера после переключения.
++
++### Fixed
++- **`ui_extension.register()` падал на каждом старте сервера.** Плагин `advanced_prompting`
++  вызывает `app.add_middleware(...)` в своём `register()`, а `register_ui_extensions(app)`
++  вызывался изнутри `lifespan`-хендлера — но Starlette фиксирует middleware-стек на самом первом
++  ASGI-вызове приложения, включая сам `lifespan`-scope, то есть `add_middleware()` гарантированно
++  бросает `RuntimeError: Cannot add middleware after an application has started` ещё до того, как
++  выполнится код плагина. Ошибка перехватывалась в `PluginManager.register_ui_extensions()` и
++  молча логировалась — поэтому `advanced_prompting` фактически никогда не регистрировал свою
++  UI-инъекцию ни на одном запуске. Регистрация перенесена на уровень модуля — сразу после
++  создания `FastAPI(...)`, до первого ASGI-вызова.
++- Удалена осиротевшая дублирующая папка `plugins_user/advanced_prompting.disabled` (байт-в-байт
++  совпадала с активной `advanced_prompting/`, не считая `__pycache__`) — из-за неё
++  `GET /api/plugins` отдавал один и тот же плагин дважды: включённым и выключенным одновременно.
++- Поле Subgroup на вкладке Wildcards: `<datalist id="wildcards-subgroup-options">` существовал
++  в разметке, но никогда не заполнялся — отсюда и опечатки/случайные новые подгруппы при загрузке
++  (см. пункт выше). Теперь при выборе категории подсказки подтягиваются из
++  `subcategories` соответствующего `GET /api/categories/{id}`.
++
++### Debug
++- Проверено: `pytest tests/` — 251 passed, без регрессий от переноса регистрации плагинов.
++- Проверено вручную (curl, поднятый локально `uvicorn`): чистый старт без ошибок в логе,
++  `/api/plugins` отдаёт один корректный объект, enable/disable round-trip переименовывает папку
++  туда-обратно, `/api/wildcards/by-category/appearance.hair` отдаёт ранее «потерянные» 15 тегов
++  из `hair test.txt` (target_subgroup=`test`).
++
+ ## [0.1.35] — 2026-06-20
+ 
+ ### Added
+diff --git a/egodary/api/main.py b/egodary/api/main.py
+index 8a7c2f0..3897c29 100644
+--- a/egodary/api/main.py
++++ b/egodary/api/main.py
+@@ -77,16 +77,24 @@ def startup_prewarm_engine() -> None:
+ 
+ @asynccontextmanager
+ async def app_lifespan(_: FastAPI):
+-    if not os.getenv("PYTEST_CURRENT_TEST"):
+-        from egodary.bootstrap import build_app
+-        _, plugin_manager = build_app()
+-        plugin_manager.register_ui_extensions(app)
+     startup_prewarm_engine()
+     yield
+ 
+ 
+ app = FastAPI(title="eGOdary API", version="0.1.35", lifespan=app_lifespan)
+ 
++# NOTE: ui_extension plugins (e.g. advanced_prompting) may call app.add_middleware()
++# in their register(). Starlette freezes the middleware stack on the very first
++# ASGI call it receives — including the "lifespan" scope itself — so registering
++# from inside app_lifespan() always raised "Cannot add middleware after an
++# application has started" and was silently swallowed by the loader's try/except.
++# Registration must happen here, synchronously, before the app is ever invoked.
++if not os.getenv("PYTEST_CURRENT_TEST"):
++    from egodary.bootstrap import build_app as _build_app_for_ui_extensions
++
++    _, _plugin_manager_for_ui_extensions = _build_app_for_ui_extensions()
++    _plugin_manager_for_ui_extensions.register_ui_extensions(app)
++
+ 
+ @app.get("/api/health")
+ def health():
+@@ -961,6 +969,29 @@ def wildcards_list():
+     return {"wildcards": rows}
+ 
+ 
++@app.get("/api/wildcards/by-category/{category_id}")
++def wildcards_by_category(category_id: str):
++    """Enabled wildcards (+ their enabled lines) bound to a category — used to
++    render the inline 'Wildcards' section inside every subgroup panel of that
++    category, independent of whether target_subgroup matches a built-in UI
++    subgroup id. Disabled wildcards/items are omitted entirely, so the section
++    naturally disappears in the UI when a wildcard is turned off."""
++    groups = []
++    for row in list_wildcards():
++        if row["target_category"] != category_id or not row["enabled"]:
++            continue
++        items = [item for item in list_wildcard_items(row["id"]) if item["enabled"]]
++        if not items:
++            continue
++        groups.append({
++            "id": row["id"],
++            "label": row.get("label") or row["filename"],
++            "target_subgroup": row["target_subgroup"],
++            "items": [{"item_id": item["item_id"], "label": item["label"]} for item in items],
++        })
++    return {"category_id": category_id, "wildcards": groups}
++
++
+ @app.get("/api/wildcards/{wildcard_id}")
+ def wildcards_detail(wildcard_id: int):
+     wildcard = get_wildcard(wildcard_id)
+diff --git a/egodary/web/static/css/app.css b/egodary/web/static/css/app.css
+index b43f8ec..db3096f 100644
+--- a/egodary/web/static/css/app.css
++++ b/egodary/web/static/css/app.css
+@@ -2399,6 +2399,112 @@ select:disabled {
+   }
+ }
+ 
++/* Plugins (Advanced tab) */
++.plugins-list {
++  display: grid;
++  gap: 8px;
++  margin-top: 8px;
++}
++
++.plugin-row {
++  display: flex;
++  align-items: flex-start;
++  gap: 10px;
++  padding: 10px 12px;
++  border: 1px solid var(--border);
++  border-radius: 10px;
++  background: var(--bg-card);
++}
++
++.plugin-row.disabled {
++  opacity: 0.5;
++}
++
++.plugin-row .plugin-toggle {
++  flex-shrink: 0;
++  width: 16px;
++  height: 16px;
++  margin-top: 2px;
++  cursor: pointer;
++}
++
++.plugin-row-info {
++  flex: 1;
++  min-width: 0;
++}
++
++.plugin-row-name {
++  font-size: 13px;
++  font-weight: 600;
++  color: var(--text);
++}
++
++.plugin-row-version {
++  font-weight: 400;
++  color: var(--text-muted);
++}
++
++.plugin-row-meta {
++  font-size: 11px;
++  color: var(--text-muted);
++  margin-top: 2px;
++}
++
++.plugin-row-error {
++  font-size: 11px;
++  color: var(--danger);
++  margin-top: 4px;
++}
++
++/* Wildcards section inline inside subgroup panels (Outfit/Character/etc.) */
++.wildcards-section {
++  margin-top: 14px;
++  padding-top: 12px;
++  border-top: 1px dashed var(--border);
++}
++
++.wildcards-section-title {
++  font-size: 11px;
++  font-weight: 600;
++  letter-spacing: 0.02em;
++  text-transform: uppercase;
++  color: var(--text-muted);
++  margin-bottom: 8px;
++}
++
++.wildcards-group + .wildcards-group {
++  margin-top: 10px;
++}
++
++.wildcards-group-title {
++  font-size: 12px;
++  font-weight: 600;
++  color: var(--text);
++  margin-bottom: 6px;
++}
++
++.wildcards-group-count {
++  font-weight: 400;
++  color: var(--text-muted);
++}
++
++.wildcards-group-chips {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++}
++
++.chip.wildcard-chip {
++  cursor: default;
++  border-style: dashed;
++  background: transparent;
++}
++
++.chip.wildcard-chip:hover {
++  border-color: var(--accent);
++  color: var(--text);
++}
++
+ /* Wildcards */
+ .wildcards-list {
+   display: grid;
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+index a1946b9..be45419 100644
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -574,6 +574,17 @@
+                 <button type="button" class="btn btn-ghost" id="btn-rules-download">Download YAML</button>
+               </div>
+             </div>
++            <div class="card span-2" id="plugins-card">
++              <div class="card-title row-between">
++                <span>Plugins</span>
++                <button class="btn-ghost" type="button" id="btn-refresh-plugins">Refresh</button>
++              </div>
++              <p class="card-hint">
++                Drop-in плагины из <code>plugins_user/</code>. Переключение переименовывает папку плагина
++                (<code>.disabled</code> суффикс) — изменения применяются после перезапуска сервера.
++              </p>
++              <div id="plugins-list" class="plugins-list">—</div>
++            </div>
+             <div class="card span-2">
+               <div class="card-title row-between">
+                 <span>Debug</span>
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index 5fbd33d..ae53d65 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -1927,6 +1927,63 @@ function wrapSetValForSubgroup(getVal, setVal, scopeIds, offValue = "") {
+   };
+ }
+ 
++// ---------------------------------------------------------------------------
++// Wildcards section — shown inline inside every subgroup panel, listing the
++// custom tags a user uploaded for the panel's parent category (via the
++// Wildcards tab). Shown regardless of whether the wildcard's target_subgroup
++// matches this particular leaf's subgroup id, since users often type a free
++// subgroup name that doesn't correspond to any built-in UI subgroup — without
++// this section those tags would never be visible anywhere. Hidden entirely
++// when the source wildcard (or all of its lines) is disabled.
++const wildcardsByCategoryCache = new Map();
++
++function invalidateWildcardsByCategoryCache() {
++  wildcardsByCategoryCache.clear();
++}
++
++async function fetchWildcardsForCategory(categoryId) {
++  if (!categoryId) return [];
++  if (!wildcardsByCategoryCache.has(categoryId)) {
++    wildcardsByCategoryCache.set(
++      categoryId,
++      api(`/wildcards/by-category/${encodeURIComponent(categoryId)}`)
++        .then((data) => data.wildcards || [])
++        .catch(() => []),
++    );
++  }
++  try {
++    return await wildcardsByCategoryCache.get(categoryId);
++  } catch (e) {
++    return [];
++  }
++}
++
++function wildcardsSectionGroupHtml(group) {
++  const chips = group.items
++    .map((it) => `<span class="chip wildcard-chip" title="${escapeHtml(it.label)}">${escapeHtml(it.label)}</span>`)
++    .join("");
++  return `
++    <div class="wildcards-group">
++      <div class="wildcards-group-title">${escapeHtml(group.label)} <span class="wildcards-group-count">${group.items.length}</span></div>
++      <div class="wildcards-group-chips">${chips}</div>
++    </div>`;
++}
++
++async function appendWildcardsSection(container, categoryId) {
++  if (!container || !categoryId) return;
++  const token = `${categoryId}#${Math.random()}`;
++  container.dataset.wcToken = token;
++  const groups = await fetchWildcardsForCategory(categoryId);
++  // The user may have switched to a different leaf while this was in flight —
++  // bail out so we don't append a stale section onto the wrong panel.
++  if (container.dataset.wcToken !== token) return;
++  if (!groups.length) return;
++  const section = document.createElement("div");
++  section.className = "wildcards-section";
++  section.innerHTML = `<div class="wildcards-section-title">🧩 Wildcards</div>${groups.map(wildcardsSectionGroupHtml).join("")}`;
++  container.appendChild(section);
++}
++
+ async function loadCategoryChips(container, categoryId, getVal, setVal, opts = {}) {
+   if (!container) return;
+   const { subgroup = null, selectionScope = "", ...chipOpts } = opts;
+@@ -1953,6 +2010,7 @@ async function loadCategoryChips(container, categoryId, getVal, setVal, opts = {
+       selectionScope: scopeKey,
+       categoryId,
+     });
++    if (subgroup) await appendWildcardsSection(container, categoryId);
+   } catch (e) {
+     container.innerHTML = `<span style="color:#eb3b5a;font-size:12px">${categoryId}: not loaded</span>`;
+   }
+@@ -2062,6 +2120,7 @@ async function loadCategoryMultiChips(container, categoryId, getVal, setVal, opt
+       selectionScope: scopeKey,
+       categoryId,
+     });
++    if (subgroup) await appendWildcardsSection(container, categoryId);
+   } catch (e) {
+     container.innerHTML = `<span style="color:#eb3b5a;font-size:12px">${categoryId}: not loaded</span>`;
+   }
+@@ -3827,9 +3886,26 @@ let wildcardsExpanded = new Set();
+ async function initWildcardsPanel() {
+   await loadWildcardsCategoryOptions();
+   bindWildcardsEvents();
++  await loadWildcardsSubgroupOptions(document.getElementById("wildcards-target-category")?.value || "");
+   await loadWildcardsList();
+ }
+ 
++async function loadWildcardsSubgroupOptions(categoryId) {
++  const datalist = document.getElementById("wildcards-subgroup-options");
++  if (!datalist) return;
++  if (!categoryId) {
++    datalist.innerHTML = "";
++    return;
++  }
++  try {
++    const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
++    const subs = (data.subcategories || []).filter((s) => s && s !== "none");
++    datalist.innerHTML = subs.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
++  } catch {
++    datalist.innerHTML = "";
++  }
++}
++
+ async function loadWildcardsCategoryOptions() {
+   const select = document.getElementById("wildcards-target-category");
+   if (!select) return;
+@@ -3859,6 +3935,10 @@ function bindWildcardsEvents() {
+     toast("Wildcards refreshed");
+   });
+ 
++  document.getElementById("wildcards-target-category")?.addEventListener("change", (e) => {
++    loadWildcardsSubgroupOptions(e.target.value || "");
++  });
++
+   document.getElementById("btn-wildcards-preview")?.addEventListener("click", wildcardsDoPreview);
+   document.getElementById("btn-wildcards-upload")?.addEventListener("click", wildcardsDoUpload);
+ 
+@@ -3922,6 +4002,7 @@ async function wildcardsDoUpload() {
+     document.getElementById("wildcards-filename").value = "";
+     document.getElementById("wildcards-preview").textContent = "—";
+     document.getElementById("wildcards-file-input").value = "";
++    invalidateWildcardsByCategoryCache();
+     await loadWildcardsList();
+   } catch (e) {
+     toast("Ошибка: " + e.message);
+@@ -3983,6 +4064,7 @@ function bindWildcardCardEvents() {
+           body: JSON.stringify({ enabled: cb.checked }),
+         });
+         toast(cb.checked ? "Wildcard включён" : "Wildcard отключён");
++        invalidateWildcardsByCategoryCache();
+         const card = cb.closest(".wildcard-card");
+         card?.classList.toggle("disabled", !cb.checked);
+       } catch (e) {
+@@ -4018,6 +4100,7 @@ function bindWildcardCardEvents() {
+       try {
+         await api(`/wildcards/${id}`, { method: "DELETE" });
+         toast("Wildcard удалён");
++        invalidateWildcardsByCategoryCache();
+         wildcardsExpanded.delete(id);
+         await loadWildcardsList();
+       } catch (e) {
+@@ -4046,6 +4129,7 @@ async function wildcardsLoadItems(wildcardId, container) {
+             method: "POST",
+             body: JSON.stringify({ enabled: cb.checked }),
+           });
++          invalidateWildcardsByCategoryCache();
+           cb.closest(".wildcard-item-row")?.classList.toggle("disabled", !cb.checked);
+         } catch (e) {
+           toast("Ошибка: " + e.message);
+@@ -5148,6 +5232,58 @@ function downloadRulesYaml() {
+   toast("YAML downloaded");
+ }
+ 
++async function loadPluginsPanel() {
++  const el = document.getElementById("plugins-list");
++  if (!el) return;
++  el.innerHTML = "Loading…";
++  try {
++    const data = await api("/plugins");
++    const plugins = data.plugins || [];
++    if (!plugins.length) {
++      el.innerHTML = '<span style="font-size:12px;color:var(--text-muted)">Нет drop-in плагинов в plugins_user/.</span>';
++      return;
++    }
++    el.innerHTML = plugins.map(pluginRowHtml).join("");
++    bindPluginsEvents();
++  } catch (e) {
++    el.innerHTML = `<span style="color:#eb3b5a;font-size:12px">Failed to load plugins: ${escapeHtml(e.message)}</span>`;
++  }
++}
++
++function pluginRowHtml(p) {
++  const disabledCls = p.enabled ? "" : " disabled";
++  const errorHtml = p.error ? `<div class="plugin-row-error">⚠ ${escapeHtml(p.error)}</div>` : "";
++  return `
++    <div class="plugin-row${disabledCls}" data-plugin-id="${escapeHtml(p.id)}">
++      <input type="checkbox" class="plugin-toggle" data-plugin-id="${escapeHtml(p.id)}" ${p.enabled ? "checked" : ""} title="Включить/выключить плагин" />
++      <div class="plugin-row-info">
++        <div class="plugin-row-name">${escapeHtml(p.name)} <span class="plugin-row-version">v${escapeHtml(p.version)}</span></div>
++        <div class="plugin-row-meta">${escapeHtml(p.id)} · ${escapeHtml(p.kind)}${p.has_ui ? " · UI" : ""}</div>
++        ${errorHtml}
++      </div>
++    </div>`;
++}
++
++function bindPluginsEvents() {
++  document.querySelectorAll(".plugin-toggle").forEach((cb) => {
++    cb.onchange = async () => {
++      const id = cb.dataset.pluginId;
++      const enabled = cb.checked;
++      cb.disabled = true;
++      try {
++        await api(`/plugins/${encodeURIComponent(id)}/${enabled ? "enable" : "disable"}`, { method: "POST" });
++        toast(`${enabled ? "Включён" : "Отключён"}: ${id}. Требуется перезапуск сервера (см. кнопку слева).`);
++        cb.closest(".plugin-row")?.classList.toggle("disabled", !enabled);
++      } catch (e) {
++        toast("Ошибка: " + e.message);
++        cb.checked = !enabled;
++      } finally {
++        cb.disabled = false;
++      }
++    };
++  });
++}
++
+ async function loadDebugPanel() {
+   const el = document.getElementById("debug-output");
+   if (!el) return;
+@@ -5217,7 +5353,7 @@ async function loadLlmPanel() {
+ async function loadAdvancedMeta() {
+   if (!advancedMetaLoaded) {
+     advancedMetaLoaded = true;
+-    await Promise.all([loadDebugPanel(), loadChangelogPanel()]);
++    await Promise.all([loadPluginsPanel(), loadDebugPanel(), loadChangelogPanel()]);
+   }
+   await Promise.all([loadRulesPanel(), loadAdvancedTodoPanel()]);
+ }
+@@ -6863,6 +6999,11 @@ function bindEvents() {
+     toast("Debug refreshed");
+   };
+ 
++  document.getElementById("btn-refresh-plugins")?.addEventListener("click", () => {
++    loadPluginsPanel();
++    toast("Plugins refreshed");
++  });
++
+   document.getElementById("btn-refresh-rules")?.addEventListener("click", () => {
+     loadRulesPanel();
+     toast("Rules refreshed");

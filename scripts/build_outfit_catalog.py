@@ -137,18 +137,10 @@ def main() -> None:
     write_category("outfit.cape", "Cape", with_none_item("cape", items_from_groups(CAPE_GROUPS)))
 
     bottom_items: list[dict] = []
-    underwear_layer_items: list[dict] = []
     for subgroup, labels in BOTTOM_GROUPS.items():
         for label in labels:
             bottom_items.append(tag_item(slug(label), label, subgroup=subgroup))
-            if subgroup == "underwear":
-                underwear_layer_items.append(tag_item(slug(label), label))
     write_category("outfit.bottom", "Bottom", with_none_item("bottom", bottom_items))
-    write_category(
-        "outfit.underwear_layer",
-        "Underwear Layer",
-        with_none_item("underwear_layer", underwear_layer_items),
-    )
     write_category(
         "outfit.legwear",
         "Legwear",

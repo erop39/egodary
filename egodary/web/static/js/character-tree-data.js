@@ -104,13 +104,7 @@ window.CHARACTER_TREE = [
         "field": "skin_tone",
         "categoryId": "character.skin_tone",
         "subgroup": "tone"
-      }
-    ]
-  },
-  {
-    "id": "character_group_body_details",
-    "label": "Body Details",
-    "children": [
+      },
       {
         "id": "character_body_details_skin_texture",
         "label": "Skin Texture",
@@ -120,11 +114,19 @@ window.CHARACTER_TREE = [
         "multi": true
       },
       {
-        "id": "character_body_details_additional_details",
-        "label": "Additional Details",
+        "id": "character_body_details_skin_details",
+        "label": "Skin Details",
         "field": "body_details",
         "categoryId": "character.body_details",
-        "subgroup": "additional_details",
+        "subgroup": "skin_details",
+        "multi": true
+      },
+      {
+        "id": "character_body_details_body_details",
+        "label": "Body Details",
+        "field": "body_details",
+        "categoryId": "character.body_details",
+        "subgroup": "body_details",
         "multi": true
       }
     ]

@@ -1,0 +1,11 @@
+[plugin]
+id          = "advanced_prompting"
+name        = "Advanced Prompting"
+version     = "0.1.0"
+kind        = "ui_extension"
+author      = "eGOdary"
+requires_core = ">=0.1.34"
+
+[code]
+module = "advanced_prompting.plugin"
+entry  = "plugin"

@@ -451,6 +451,56 @@ ACCESSORIES_GROUPS: dict[str, list[str]] = {
         "Neon Pink Backpack",
         "Utility Neon Backpack",
     ],
+    "gaming": [
+        "RGB Gaming Headset",
+        "Gaming Controller Charm",
+        "LED Wristband",
+        "Neon Gaming Glasses",
+        "Holographic Visor",
+    ],
+    "sport": [
+        "Athletic Sweatband",
+        "Sports Armband",
+        "Sports Goggles",
+        "Tennis Wristband",
+        "Running Belt Pouch",
+    ],
+    "angelic": [
+        "Golden Halo Headpiece",
+        "Pearl Wing Clips",
+        "Feather Wing Harness",
+        "Golden Chain Accent",
+        "Celestial Tiara Accent",
+    ],
+    "demonic": [
+        "Horn Headband",
+        "Devil Tail Clip",
+        "Pentagram Choker",
+        "Spiked Demon Collar",
+        "Bat Wing Harness",
+    ],
+    "crowns_tiaras": [
+        "Gold Crown",
+        "Silver Tiara",
+        "Flower Crown",
+        "Spiked Crown",
+        "Jeweled Diadem",
+        "Crystal Tiara",
+    ],
+    "medical": [
+        "Nurse Cap",
+        "Stethoscope",
+        "Hospital ID Badge",
+        "Arm Sling",
+        "Medical Mask Accessory",
+    ],
+    "religious": [
+        "Cross Necklace",
+        "Nun Coif Accessory",
+        "Chapel Veil Clip",
+        "Rosary Beads",
+        "Ornate Crucifix Pendant",
+    ],
 }
 
 DRESS_LAYER_SUBGROUPS = ("micro_mini", "sheer", "bodysuit_harness")
@@ -640,14 +690,6 @@ OUTFIT_NONE_ITEMS: dict[str, dict[str, object]] = {
             "illustrious": "bottomless, no bottom garment",
             "anima": "bottomless, no bottom garment",
             "zimage_turbo": "bottomless with no bottom garment",
-        },
-    },
-    "underwear_layer": {
-        "label": "None (no underwear layer)",
-        "tags": {
-            "illustrious": "no underwear layer",
-            "anima": "no underwear layer",
-            "zimage_turbo": "without underwear layer",
         },
     },
     "legwear": {

@@ -1,0 +1,69 @@
+diff --git a/update_and_run.bat b/update_and_run.bat
+index 053bc3f..5da60aa 100644
+--- a/update_and_run.bat
++++ b/update_and_run.bat
+@@ -118,7 +118,7 @@ if "!SKIP_TEST!"=="0" (
+     if errorlevel 1 (
+         echo.
+         echo [ERROR] Tests failed. Server was not started.
+-        echo To skip tests: update_and_run.bat --no-test (or --fast to skip pip+rebuild+test)
++        echo To skip tests: update_and_run.bat --no-test ^(or --fast to skip pip+rebuild+test^)
+         goto :fail
+     )
+ ) else (
+@@ -132,13 +132,21 @@ echo Open in browser: http://127.0.0.1:8000/
+ echo Stop server: Ctrl+C
+ echo.
+ 
++start "" "http://127.0.0.1:8000/"
+ %PYTHON_CMD% -m egodary.cli.main serve
+-if errorlevel 1 (
+-    echo.
+-    echo [ERROR] Server failed to start.
+-    goto :fail
+-)
+ 
++REM Note: we deliberately do NOT treat a non-zero exit here as a script
++REM failure (no [ERROR], no :fail). Stopping the dev server with Ctrl+C is
++REM the normal way to end this script, and on Windows that often makes the
++REM server process return a non-zero exit code even though nothing actually
++REM went wrong - treating it as [ERROR] + pause was confusing ("I press a
++REM key and everything just closes"). If the server genuinely failed to
++REM start (e.g. port already in use), uvicorn's own error output above is
++REM what to look at; the line below just keeps the window open long enough
++REM to read it.
++echo.
++echo Server stopped.
++pause
+ goto :eof
+ 
+ :build_script
+diff --git a/restart.bat b/restart.bat
+index 2525e4b..67f4603 100644
+--- a/restart.bat
++++ b/restart.bat
+@@ -50,17 +50,19 @@ echo Open in browser: http://127.0.0.1:%PORT%/
+ echo Stop server: Ctrl+C
+ echo.
+ 
++start "" "http://127.0.0.1:%PORT%/"
+ if "!NO_RELOAD!"=="1" (
+     %PYTHON_CMD% -m egodary.cli.main serve --no-reload
+ ) else (
+     %PYTHON_CMD% -m egodary.cli.main serve
+ )
+-if errorlevel 1 (
+-    echo.
+-    echo [ERROR] Server failed to start.
+-    goto :fail
+-)
+ 
++REM See update_and_run.bat for why we don't treat a non-zero exit here as
++REM [ERROR] + :fail - stopping with Ctrl+C normally exits non-zero too, and
++REM that's not a real failure.
++echo.
++echo Server stopped.
++pause
+ goto :eof
+ 
+ :fail

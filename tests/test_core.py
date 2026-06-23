@@ -90,7 +90,7 @@ def test_anima_dedupes_boilerplate_and_limits_lighting():
             top="extreme_micro_crop",
             bottom="wetlook_micro_panties",
             legwear="neon_green_thigh_high_socks",
-            conditions={"top": "ripped_t_shirt"},
+            conditions={"top": {"damage": "torn_ripped"}},
         ),
         pose="gripping_thighs_while_spreading",
         camera=CameraState(
@@ -182,6 +182,39 @@ def test_phase6_location_conflict_clears_weather_for_space():
     result = engine.assemble(state)
     assert "rain" not in result.positive.lower()
     assert "winter" not in result.positive.lower()
+
+
+def test_scene_location_and_environment_location_are_alternatives_not_both():
+    """Regression test: scene.location is a legacy field with no UI control
+    left in the app (superseded by environment.location's Indoor / Outdoor &
+    Semi-Outdoor / Fantasy & Stylized tree) — a leftover value from an old
+    session must not get concatenated onto whatever the user actually picks
+    in the current environment.location tree."""
+    from egodary.core.models import EnvironmentState
+
+    engine = create_engine()
+
+    # Both set: environment.location (the current UI) must win outright,
+    # the legacy scene.location value must not appear at all.
+    state_both = PromptState(
+        model_id="anima",
+        scene=SceneState(location="luxury_apartment"),
+        environment=EnvironmentState(location="penthouse"),
+    )
+    result_both = engine.assemble(state_both)
+    text_both = result_both.positive.lower()
+    assert "penthouse" in text_both
+    assert "luxury apartment with floor-to-ceiling windows" not in text_both
+
+    # Only the legacy field set: it must still work as a fallback (old
+    # sessions that never touched environment.location shouldn't lose their
+    # location entirely).
+    state_legacy_only = PromptState(
+        model_id="anima",
+        scene=SceneState(location="luxury_apartment"),
+    )
+    result_legacy_only = engine.assemble(state_legacy_only)
+    assert "luxury apartment with floor-to-ceiling windows" in result_legacy_only.positive.lower()
 
 
 def test_fetish_exclusive_gag_conflict():

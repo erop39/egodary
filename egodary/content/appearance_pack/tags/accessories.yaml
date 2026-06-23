@@ -337,3 +337,291 @@ items:
     illustrious: utility neon backpack
     anima: utility neon backpack, styled accessory
     zimage_turbo: wearing utility neon backpack
+- id: rgb_gaming_headset
+  label: RGB Gaming Headset
+  meta:
+    subgroup: gaming
+  tags:
+    illustrious: rgb gaming headset
+    anima: rgb gaming headset, styled accessory
+    zimage_turbo: wearing rgb gaming headset
+- id: gaming_controller_charm
+  label: Gaming Controller Charm
+  meta:
+    subgroup: gaming
+  tags:
+    illustrious: gaming controller charm
+    anima: gaming controller charm, styled accessory
+    zimage_turbo: wearing gaming controller charm
+- id: led_wristband
+  label: LED Wristband
+  meta:
+    subgroup: gaming
+  tags:
+    illustrious: led wristband
+    anima: led wristband, styled accessory
+    zimage_turbo: wearing led wristband
+- id: neon_gaming_glasses
+  label: Neon Gaming Glasses
+  meta:
+    subgroup: gaming
+  tags:
+    illustrious: neon gaming glasses
+    anima: neon gaming glasses, styled accessory
+    zimage_turbo: wearing neon gaming glasses
+- id: holographic_visor
+  label: Holographic Visor
+  meta:
+    subgroup: gaming
+  tags:
+    illustrious: holographic visor
+    anima: holographic visor, styled accessory
+    zimage_turbo: wearing holographic visor
+- id: athletic_sweatband
+  label: Athletic Sweatband
+  meta:
+    subgroup: sport
+  tags:
+    illustrious: athletic sweatband
+    anima: athletic sweatband, styled accessory
+    zimage_turbo: wearing athletic sweatband
+- id: sports_armband
+  label: Sports Armband
+  meta:
+    subgroup: sport
+  tags:
+    illustrious: sports armband
+    anima: sports armband, styled accessory
+    zimage_turbo: wearing sports armband
+- id: sports_goggles
+  label: Sports Goggles
+  meta:
+    subgroup: sport
+  tags:
+    illustrious: sports goggles
+    anima: sports goggles, styled accessory
+    zimage_turbo: wearing sports goggles
+- id: tennis_wristband
+  label: Tennis Wristband
+  meta:
+    subgroup: sport
+  tags:
+    illustrious: tennis wristband
+    anima: tennis wristband, styled accessory
+    zimage_turbo: wearing tennis wristband
+- id: running_belt_pouch
+  label: Running Belt Pouch
+  meta:
+    subgroup: sport
+  tags:
+    illustrious: running belt pouch
+    anima: running belt pouch, styled accessory
+    zimage_turbo: wearing running belt pouch
+- id: golden_halo_headpiece
+  label: Golden Halo Headpiece
+  meta:
+    subgroup: angelic
+  tags:
+    illustrious: golden halo headpiece
+    anima: golden halo headpiece, styled accessory
+    zimage_turbo: wearing golden halo headpiece
+- id: pearl_wing_clips
+  label: Pearl Wing Clips
+  meta:
+    subgroup: angelic
+  tags:
+    illustrious: pearl wing clips
+    anima: pearl wing clips, styled accessory
+    zimage_turbo: wearing pearl wing clips
+- id: feather_wing_harness
+  label: Feather Wing Harness
+  meta:
+    subgroup: angelic
+  tags:
+    illustrious: feather wing harness
+    anima: feather wing harness, styled accessory
+    zimage_turbo: wearing feather wing harness
+- id: golden_chain_accent
+  label: Golden Chain Accent
+  meta:
+    subgroup: angelic
+  tags:
+    illustrious: golden chain accent
+    anima: golden chain accent, styled accessory
+    zimage_turbo: wearing golden chain accent
+- id: celestial_tiara_accent
+  label: Celestial Tiara Accent
+  meta:
+    subgroup: angelic
+  tags:
+    illustrious: celestial tiara accent
+    anima: celestial tiara accent, styled accessory
+    zimage_turbo: wearing celestial tiara accent
+- id: horn_headband
+  label: Horn Headband
+  meta:
+    subgroup: demonic
+  tags:
+    illustrious: horn headband
+    anima: horn headband, styled accessory
+    zimage_turbo: wearing horn headband
+- id: devil_tail_clip
+  label: Devil Tail Clip
+  meta:
+    subgroup: demonic
+  tags:
+    illustrious: devil tail clip
+    anima: devil tail clip, styled accessory
+    zimage_turbo: wearing devil tail clip
+- id: pentagram_choker
+  label: Pentagram Choker
+  meta:
+    subgroup: demonic
+  tags:
+    illustrious: pentagram choker
+    anima: pentagram choker, styled accessory
+    zimage_turbo: wearing pentagram choker
+- id: spiked_demon_collar
+  label: Spiked Demon Collar
+  meta:
+    subgroup: demonic
+  tags:
+    illustrious: spiked demon collar
+    anima: spiked demon collar, styled accessory
+    zimage_turbo: wearing spiked demon collar
+- id: bat_wing_harness
+  label: Bat Wing Harness
+  meta:
+    subgroup: demonic
+  tags:
+    illustrious: bat wing harness
+    anima: bat wing harness, styled accessory
+    zimage_turbo: wearing bat wing harness
+- id: gold_crown
+  label: Gold Crown
+  meta:
+    subgroup: crowns_tiaras
+  tags:
+    illustrious: gold crown
+    anima: gold crown, styled accessory
+    zimage_turbo: wearing gold crown
+- id: silver_tiara
+  label: Silver Tiara
+  meta:
+    subgroup: crowns_tiaras
+  tags:
+    illustrious: silver tiara
+    anima: silver tiara, styled accessory
+    zimage_turbo: wearing silver tiara
+- id: flower_crown
+  label: Flower Crown
+  meta:
+    subgroup: crowns_tiaras
+  tags:
+    illustrious: flower crown
+    anima: flower crown, styled accessory
+    zimage_turbo: wearing flower crown
+- id: spiked_crown
+  label: Spiked Crown
+  meta:
+    subgroup: crowns_tiaras
+  tags:
+    illustrious: spiked crown
+    anima: spiked crown, styled accessory
+    zimage_turbo: wearing spiked crown
+- id: jeweled_diadem
+  label: Jeweled Diadem
+  meta:
+    subgroup: crowns_tiaras
+  tags:
+    illustrious: jeweled diadem
+    anima: jeweled diadem, styled accessory
+    zimage_turbo: wearing jeweled diadem
+- id: crystal_tiara
+  label: Crystal Tiara
+  meta:
+    subgroup: crowns_tiaras
+  tags:
+    illustrious: crystal tiara
+    anima: crystal tiara, styled accessory
+    zimage_turbo: wearing crystal tiara
+- id: nurse_cap
+  label: Nurse Cap
+  meta:
+    subgroup: medical
+  tags:
+    illustrious: nurse cap
+    anima: nurse cap, styled accessory
+    zimage_turbo: wearing nurse cap
+- id: stethoscope
+  label: Stethoscope
+  meta:
+    subgroup: medical
+  tags:
+    illustrious: stethoscope
+    anima: stethoscope, styled accessory
+    zimage_turbo: wearing stethoscope
+- id: hospital_id_badge
+  label: Hospital ID Badge
+  meta:
+    subgroup: medical
+  tags:
+    illustrious: hospital id badge
+    anima: hospital id badge, styled accessory
+    zimage_turbo: wearing hospital id badge
+- id: arm_sling
+  label: Arm Sling
+  meta:
+    subgroup: medical
+  tags:
+    illustrious: arm sling
+    anima: arm sling, styled accessory
+    zimage_turbo: wearing arm sling
+- id: medical_mask_accessory
+  label: Medical Mask Accessory
+  meta:
+    subgroup: medical
+  tags:
+    illustrious: medical mask accessory
+    anima: medical mask accessory, styled accessory
+    zimage_turbo: wearing medical mask accessory
+- id: cross_necklace
+  label: Cross Necklace
+  meta:
+    subgroup: religious
+  tags:
+    illustrious: cross necklace
+    anima: cross necklace, styled accessory
+    zimage_turbo: wearing cross necklace
+- id: nun_coif_accessory
+  label: Nun Coif Accessory
+  meta:
+    subgroup: religious
+  tags:
+    illustrious: nun coif accessory
+    anima: nun coif accessory, styled accessory
+    zimage_turbo: wearing nun coif accessory
+- id: chapel_veil_clip
+  label: Chapel Veil Clip
+  meta:
+    subgroup: religious
+  tags:
+    illustrious: chapel veil clip
+    anima: chapel veil clip, styled accessory
+    zimage_turbo: wearing chapel veil clip
+- id: rosary_beads
+  label: Rosary Beads
+  meta:
+    subgroup: religious
+  tags:
+    illustrious: rosary beads
+    anima: rosary beads, styled accessory
+    zimage_turbo: wearing rosary beads
+- id: ornate_crucifix_pendant
+  label: Ornate Crucifix Pendant
+  meta:
+    subgroup: religious
+  tags:
+    illustrious: ornate crucifix pendant
+    anima: ornate crucifix pendant, styled accessory
+    zimage_turbo: wearing ornate crucifix pendant

@@ -43,7 +43,6 @@ _MUTABLE_FIELD_PATHS: tuple[str, ...] = (
     "outfit.dress",
     "outfit.top",
     "outfit.bottom",
-    "outfit.underwear_layer",
     "outfit.legwear",
     "outfit.jacket",
     "outfit.footwear",

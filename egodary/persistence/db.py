@@ -96,6 +96,36 @@ def init_db(path: Path | None = None) -> None:
             value_json TEXT NOT NULL,
             updated_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE TABLE IF NOT EXISTS wildcards (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            filename TEXT NOT NULL,
+            label TEXT NOT NULL,
+            target_category TEXT NOT NULL,
+            target_subgroup TEXT NOT NULL,
+            enabled INTEGER NOT NULL DEFAULT 1,
+            raw_text TEXT NOT NULL,
+            item_count INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_wildcards_category ON wildcards(target_category, target_subgroup);
+        CREATE TABLE IF NOT EXISTS wildcard_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            wildcard_id INTEGER NOT NULL REFERENCES wildcards(id) ON DELETE CASCADE,
+            item_id TEXT NOT NULL,
+            label TEXT NOT NULL,
+            enabled INTEGER NOT NULL DEFAULT 1,
+            UNIQUE(wildcard_id, item_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_wildcard_items_wildcard ON wildcard_items(wildcard_id);
+        CREATE TABLE IF NOT EXISTS sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            state_json TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_generation_history_model ON generation_history(model_id);
         """
     )
     _ensure_column(cur, "favorites", "result_url", "TEXT")

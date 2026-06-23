@@ -1,14 +1,14 @@
 id: character.body_details
 title: Body Details
 items:
-- id: smooth_skin
-  label: Smooth skin
+- id: smooth_flawless_skin
+  label: Smooth flawless skin
   meta:
     subgroup: skin_texture
   tags:
-    illustrious: smooth skin
-    anima: smooth skin, detailed body
-    zimage_turbo: with smooth skin
+    illustrious: smooth flawless skin
+    anima: smooth flawless skin, detailed body
+    zimage_turbo: with smooth flawless skin
 - id: soft_skin
   label: Soft skin
   meta:
@@ -33,38 +33,14 @@ items:
     illustrious: toned skin
     anima: toned skin, detailed body
     zimage_turbo: with toned skin
-- id: oily__shiny_skin
-  label: Oily / Shiny skin
+- id: dewy__glowing_skin
+  label: Dewy / glowing skin
   meta:
     subgroup: skin_texture
   tags:
-    illustrious: oily / shiny skin
-    anima: oily / shiny skin, detailed body
-    zimage_turbo: with oily / shiny skin
-- id: dewy_skin
-  label: Dewy skin
-  meta:
-    subgroup: skin_texture
-  tags:
-    illustrious: dewy skin
-    anima: dewy skin, detailed body
-    zimage_turbo: with dewy skin
-- id: matte_skin
-  label: Matte skin
-  meta:
-    subgroup: skin_texture
-  tags:
-    illustrious: matte skin
-    anima: matte skin, detailed body
-    zimage_turbo: with matte skin
-- id: light_sweat
-  label: Light sweat
-  meta:
-    subgroup: skin_texture
-  tags:
-    illustrious: light sweat
-    anima: light sweat, detailed body
-    zimage_turbo: with light sweat
+    illustrious: dewy / glowing skin
+    anima: dewy / glowing skin, detailed body
+    zimage_turbo: with dewy / glowing skin
 - id: glowing_skin
   label: Glowing skin
   meta:
@@ -73,66 +49,146 @@ items:
     illustrious: glowing skin
     anima: glowing skin, detailed body
     zimage_turbo: with glowing skin
-- id: light_freckles_on_body
-  label: Light freckles on body
+- id: oily_shiny_skin
+  label: Oily shiny skin
   meta:
-    subgroup: additional_details
+    subgroup: skin_texture
   tags:
-    illustrious: light freckles on body
-    anima: light freckles on body, detailed body
-    zimage_turbo: with light freckles on body
+    illustrious: oily shiny skin
+    anima: oily shiny skin, detailed body
+    zimage_turbo: with oily shiny skin
+- id: matte_skin
+  label: Matte skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: matte skin
+    anima: matte skin, detailed body
+    zimage_turbo: with matte skin
+- id: wet_skin_water_oil
+  label: Wet skin (water/oil)
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: wet skin (water/oil)
+    anima: wet skin (water/oil), detailed body
+    zimage_turbo: with wet skin (water/oil)
+- id: light_sweat
+  label: Light sweat
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: light sweat
+    anima: light sweat, detailed body
+    zimage_turbo: with light sweat
+- id: slightly_sweaty_skin
+  label: Slightly sweaty skin
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: slightly sweaty skin
+    anima: slightly sweaty skin, detailed body
+    zimage_turbo: with slightly sweaty skin
+- id: glass_skin_effect
+  label: Glass skin effect
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: glass skin effect
+    anima: glass skin effect, detailed body
+    zimage_turbo: with glass skin effect
+- id: soft_natural_skin_with_pores
+  label: Soft natural skin with pores
+  meta:
+    subgroup: skin_texture
+  tags:
+    illustrious: soft natural skin with pores
+    anima: soft natural skin with pores, detailed body
+    zimage_turbo: with soft natural skin with pores
+- id: light_freckles_across_nose_and_cheeks
+  label: Light freckles across nose and cheeks
+  meta:
+    subgroup: skin_details
+  tags:
+    illustrious: light freckles across nose and cheeks
+    anima: light freckles across nose and cheeks, detailed body
+    zimage_turbo: with light freckles across nose and cheeks
+- id: heavy_freckles
+  label: Heavy freckles
+  meta:
+    subgroup: skin_details
+  tags:
+    illustrious: heavy freckles
+    anima: heavy freckles, detailed body
+    zimage_turbo: with heavy freckles
 - id: beauty_marks__moles
   label: Beauty marks / moles
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
     illustrious: beauty marks / moles
     anima: beauty marks / moles, detailed body
     zimage_turbo: with beauty marks / moles
-- id: subtle_stretch_marks
-  label: Subtle stretch marks
+- id: subtle_blush_on_cheeks
+  label: Subtle blush on cheeks
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
-    illustrious: subtle stretch marks
-    anima: subtle stretch marks, detailed body
-    zimage_turbo: with subtle stretch marks
-- id: light_cellulite
-  label: Light cellulite
+    illustrious: subtle blush on cheeks
+    anima: subtle blush on cheeks, detailed body
+    zimage_turbo: with subtle blush on cheeks
+- id: heavy_blush_aroused
+  label: Heavy blush (aroused)
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
-    illustrious: light cellulite
-    anima: light cellulite, detailed body
-    zimage_turbo: with light cellulite
-- id: subtle_muscle_definition
-  label: Subtle muscle definition
+    illustrious: heavy blush (aroused)
+    anima: heavy blush (aroused), detailed body
+    zimage_turbo: with heavy blush (aroused)
+- id: redness_around_mouth_and_cheeks
+  label: Redness around mouth and cheeks
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
-    illustrious: subtle muscle definition
-    anima: subtle muscle definition, detailed body
-    zimage_turbo: with subtle muscle definition
-- id: soft_stomach
-  label: Soft stomach
+    illustrious: redness around mouth and cheeks
+    anima: redness around mouth and cheeks, detailed body
+    zimage_turbo: with redness around mouth and cheeks
+- id: visible_veins_subtle
+  label: Visible veins (subtle)
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
-    illustrious: soft stomach
-    anima: soft stomach, detailed body
-    zimage_turbo: with soft stomach
-- id: toned_stomach
-  label: Toned stomach
+    illustrious: visible veins (subtle)
+    anima: visible veins (subtle), detailed body
+    zimage_turbo: with visible veins (subtle)
+- id: light_scars
+  label: Light scars
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
-    illustrious: toned stomach
-    anima: toned stomach, detailed body
-    zimage_turbo: with toned stomach
+    illustrious: light scars
+    anima: light scars, detailed body
+    zimage_turbo: with light scars
+- id: skin_with_goosebumps
+  label: Skin with goosebumps
+  meta:
+    subgroup: skin_details
+  tags:
+    illustrious: skin with goosebumps
+    anima: skin with goosebumps, detailed body
+    zimage_turbo: with skin with goosebumps
+- id: wet_skin_with_water_droplets
+  label: Wet skin with water droplets
+  meta:
+    subgroup: skin_details
+  tags:
+    illustrious: wet skin with water droplets
+    anima: wet skin with water droplets, detailed body
+    zimage_turbo: with wet skin with water droplets
 - id: sensitive_skin
   label: Sensitive skin
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
     illustrious: sensitive skin
     anima: sensitive skin, detailed body
@@ -140,8 +196,56 @@ items:
 - id: easily_flushed_skin
   label: Easily flushed skin
   meta:
-    subgroup: additional_details
+    subgroup: skin_details
   tags:
     illustrious: easily flushed skin
     anima: easily flushed skin, detailed body
     zimage_turbo: with easily flushed skin
+- id: light_freckles_on_body
+  label: Light freckles on body
+  meta:
+    subgroup: body_details
+  tags:
+    illustrious: light freckles on body
+    anima: light freckles on body, detailed body
+    zimage_turbo: with light freckles on body
+- id: subtle_stretch_marks
+  label: Subtle stretch marks
+  meta:
+    subgroup: body_details
+  tags:
+    illustrious: subtle stretch marks
+    anima: subtle stretch marks, detailed body
+    zimage_turbo: with subtle stretch marks
+- id: light_cellulite
+  label: Light cellulite
+  meta:
+    subgroup: body_details
+  tags:
+    illustrious: light cellulite
+    anima: light cellulite, detailed body
+    zimage_turbo: with light cellulite
+- id: subtle_muscle_definition
+  label: Subtle muscle definition
+  meta:
+    subgroup: body_details
+  tags:
+    illustrious: subtle muscle definition
+    anima: subtle muscle definition, detailed body
+    zimage_turbo: with subtle muscle definition
+- id: soft_stomach
+  label: Soft stomach
+  meta:
+    subgroup: body_details
+  tags:
+    illustrious: soft stomach
+    anima: soft stomach, detailed body
+    zimage_turbo: with soft stomach
+- id: toned_stomach
+  label: Toned stomach
+  meta:
+    subgroup: body_details
+  tags:
+    illustrious: toned stomach
+    anima: toned stomach, detailed body
+    zimage_turbo: with toned stomach

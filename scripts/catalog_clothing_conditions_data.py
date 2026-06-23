@@ -43,38 +43,7 @@ CLOTHING_CONDITIONS: dict[str, dict[str, list[str]]] = {
             "fishnets with uneven mesh",
         ],
     },
-    "underwear_layer": {
-        "Damage States": [
-            "ripped lace lingerie",
-            "torn bra and panties",
-            "lingerie with holes",
-            "partially torn lace bodysuit",
-            "distressed lace underwear",
-        ],
-        "Wet States": [
-            "wet lace lingerie",
-            "soaked lingerie clinging to skin",
-            "drenched lace bra and panties",
-            "wet lingerie stuck to body",
-            "completely soaked through lingerie",
-        ],
-        "Wet + Ripped Combinations": [
-            "wet ripped lace lingerie",
-            "soaked torn lingerie",
-            "wet lace with holes clinging to skin",
-        ],
-        "Shiny / Glossy States": [
-            "shiny wet satin lingerie",
-            "glossy soaked lace bodysuit",
-            "glistening wet lingerie",
-        ],
-        "Other Conditions": [
-            "sheer wet lingerie",
-            "lingerie in sweat",
-            "partially removed lingerie",
-            "messy and disheveled lingerie",
-        ],
-    },
+
     "top": {
         "Damage States": [
             "ripped t-shirt",

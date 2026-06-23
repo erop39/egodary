@@ -10,6 +10,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from catalog_nsfw_data import ACCESSORIES_GROUPS, HAIR_COLOR_GROUPS, HAIR_GROUPS, MAKEUP_GROUPS  # noqa: E402
+from catalog_tattoo_data import TATTOO_GROUPS, TATTOO_SUBGROUP_LABELS  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1] / "egodary" / "content" / "appearance_pack" / "tags"
 
@@ -90,6 +91,20 @@ def accessory_item(label: str, subgroup: str) -> dict:
     }
 
 
+def tattoo_item(label: str, subgroup: str, phrase: str) -> dict:
+    ill = phrase.lower()
+    return {
+        "id": slug(label),
+        "label": label,
+        "meta": {"subgroup": subgroup, "group": TATTOO_SUBGROUP_LABELS[subgroup]},
+        "tags": {
+            "illustrious": ill,
+            "anima": f"{ill}, detailed tattoo",
+            "zimage_turbo": f"with {ill}",
+        },
+    }
+
+
 def items_from_groups(groups: dict[str, list[str]], factory) -> list[dict]:
     items: list[dict] = []
     for subgroup, labels in groups.items():
@@ -118,6 +133,11 @@ def main() -> None:
         "Accessories",
         items_from_groups(ACCESSORIES_GROUPS, accessory_item),
     )
+    tattoo_items: list[dict] = []
+    for subgroup, entries in TATTOO_GROUPS.items():
+        for label, phrase in entries:
+            tattoo_items.append(tattoo_item(label, subgroup, phrase))
+    write_category("appearance.tattoos", "Tattoos & Body Art", tattoo_items)
     print(f"Wrote appearance catalog to {ROOT}")
 
 

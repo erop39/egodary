@@ -13,7 +13,7 @@ from egodary.core.registry import TagRegistry
 
 logger = logging.getLogger(__name__)
 
-OverlaySource = Literal["import", "user", "manual"]
+OverlaySource = Literal["import", "user", "manual", "wildcard"]
 ConflictPolicy = Literal["skip", "overwrite", "rename"]
 
 VARIANT_KEYS = ("illustrious", "anima", "zimage_turbo", "pony")
@@ -97,7 +97,9 @@ class RuntimeRegistry:
         if not active_overlay:
             return base_cat
         merged = copy.deepcopy(base_cat)
-        merged.items = list(base_cat.items) + list(active_overlay)
+        overlay_ids = {item.id for item in active_overlay}
+        merged.items = [item for item in base_cat.items if item.id not in overlay_ids]
+        merged.items.extend(active_overlay)
         return merged
 
     def _resolve_tag_from_item(self, item: TagItem, model_id: str, category_id: str, item_id: str) -> str | None:
@@ -241,7 +243,7 @@ class RuntimeRegistry:
         return removed
 
     def get_overlay_stats(self) -> dict:
-        by_source: dict[str, int] = {"import": 0, "user": 0, "manual": 0}
+        by_source: dict[str, int] = {"import": 0, "user": 0, "manual": 0, "wildcard": 0}
         by_category: dict[str, int] = {}
         total = 0
         for category_id, bucket in self._overlay.items():

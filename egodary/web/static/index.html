@@ -35,6 +35,7 @@
         <button class="nav-item" data-tab="fetish"><span class="nav-icon">✦</span> Fetish</button>
         <button class="nav-item" data-tab="prompting"><span class="nav-icon">✎</span> Prompting</button>
         <button class="nav-item" data-tab="tagstudio"><span class="nav-icon">🏷</span> Tag Studio</button>
+        <button class="nav-item" data-tab="wildcards"><span class="nav-icon">🃏</span> Wildcards</button>
         <button class="nav-item" data-tab="favorites"><span class="nav-icon">⭐</span> Favorites</button>
       </nav>
       <nav class="nav nav-bottom" id="system-nav">
@@ -43,7 +44,7 @@
       </nav>
       <div class="sidebar-footer">
         <button type="button" class="btn btn-secondary btn-block btn-sidebar-action" id="btn-restart-server">Restart server</button>
-        <div class="meta-line">v0.1.21 · автосохранение</div>
+        <div class="meta-line">v0.1.34 · автосохранение</div>
       </div>
     </aside>
 
@@ -143,11 +144,10 @@
               <div class="card-title" id="outfit-detail-title">Dress</div>
               <div class="chip-panel" id="outfit-chips"></div>
               <div class="condition-panel hidden" id="outfit-condition-panel">
-                <label class="condition-label" for="outfit-condition-select">Wear condition</label>
-                <div class="condition-select-wrap">
-                  <select id="outfit-condition-select" class="condition-select"></select>
-                </div>
-                <p class="condition-hint">Single-select · damage, wet, ripped &amp; glossy states</p>
+                <div class="condition-label clothing-state-title">Clothing states</div>
+                <div class="clothing-state-quick" id="clothing-state-quick"></div>
+                <div class="clothing-state-accordion" id="clothing-state-accordion"></div>
+                <p class="condition-hint">Quick presets + accordion groups · combinable per garment slot</p>
               </div>
             </div>
           </div>
@@ -323,20 +323,20 @@
             <div class="card-title row-between">
               <span>Tag Studio</span>
               <div class="result-actions-inline">
-                <button type="button" class="btn btn-ghost btn-sm" id="btn-tagstudio-refresh">Refresh</button>
-                <button type="button" class="btn btn-secondary btn-sm" data-open-add-tag-modal>+ Add tag</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-tagstudio-refresh" title="Обновить результаты Search и список листера по текущим фильтрам">Refresh</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-open-add-tag-modal title="Создать новый runtime-тег в выбранной category/subcategory">+ Add tag</button>
               </div>
             </div>
             <p class="card-hint">Поиск и управление runtime тегами: category/subcategory, деактивация, дедупликация, миграция.</p>
             <div class="field-grid">
               <label class="span-2">Search
-                <input type="text" id="tagstudio-search" placeholder="label / alias / description" />
+                <input type="text" id="tagstudio-search" placeholder="label / alias / description" title="Текст поиска по label, alias и description тега" />
               </label>
               <label>Category
-                <input type="text" id="tagstudio-category" placeholder="prompting.imported" />
+                <input type="text" id="tagstudio-category" placeholder="prompting.imported" title="Ограничить поиск одной категорией, например outfit.dress" />
               </label>
               <label>Subcategory
-                <input type="text" id="tagstudio-subcategory" placeholder="imported" />
+                <input type="text" id="tagstudio-subcategory" placeholder="imported" title="Ограничить поиск подгруппой внутри категории" />
               </label>
             </div>
             <div class="import-report">
@@ -353,15 +353,15 @@
               </ul>
             </div>
             <div class="import-actions">
-              <button type="button" class="btn btn-secondary" id="btn-tagstudio-search">Search</button>
-              <button type="button" class="btn btn-ghost" id="btn-tagstudio-dedupe">Find duplicates</button>
-              <button type="button" class="btn btn-ghost" id="btn-tagstudio-migrate">Run migration</button>
-              <button type="button" class="btn btn-ghost" id="btn-tagstudio-rollback">Rollback migration</button>
+              <button type="button" class="btn btn-secondary" id="btn-tagstudio-search" title="Найти теги по тексту и фильтрам. Кликните тег в результатах, затем Edit tag.">Search</button>
+              <button type="button" class="btn btn-ghost" id="btn-tagstudio-dedupe" title="Найти потенциальные дубликаты (одинаковые label/alias) в выбранной Category">Find duplicates</button>
+              <button type="button" class="btn btn-ghost" id="btn-tagstudio-migrate" title="Мигрировать runtime-теги на актуальную схему subcategory (subgroup → subcategory_id)">Run migration</button>
+              <button type="button" class="btn btn-ghost" id="btn-tagstudio-rollback" title="Откатить последнюю миграцию subcategory для runtime-тегов">Rollback migration</button>
             </div>
             <div id="tagstudio-output" class="tagstudio-output">—</div>
             <div class="tagstudio-lister">
               <div class="import-report-title">ТЭГ листер</div>
-              <p class="card-hint">Выберите category и подгруппу, чтобы увидеть все теги. Для runtime-тегов доступны удаление, редактирование описания и перенос.</p>
+              <p class="card-hint">Выберите category и подгруппу или используйте Search выше. Клик по тегу в результатах — выбор для Edit/Move/Delete.</p>
               <div class="field-grid">
                 <label>Category
                   <select id="tagstudio-lister-category"></select>
@@ -375,7 +375,7 @@
                 </label>
               </div>
               <div class="import-actions">
-                <button type="button" class="btn btn-secondary" id="btn-tagstudio-lister-load">Load tags</button>
+                <button type="button" class="btn btn-secondary" id="btn-tagstudio-lister-load" title="Загрузить теги по Category/Subcategory из листера (без текстового Search)">Load tags</button>
               </div>
               <div id="tagstudio-lister-summary" class="import-report-stats">—</div>
               <div id="tagstudio-lister-list" class="tagstudio-lister-list"></div>
@@ -387,26 +387,77 @@
                   <input type="text" id="tagstudio-edit-description" placeholder="Описание тега" />
                 </label>
                 <div class="import-actions">
-                  <button type="button" class="btn btn-secondary" id="btn-tagstudio-save-description">Save description</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-tagstudio-save-description" title="Сохранить только описание выбранного тега (core → runtime-копия)">Save description</button>
+                </div>
+                <div class="import-actions tagstudio-tag-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" data-open-add-tag-modal title="Создать новый runtime-тег">+ Add tag</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-tagstudio-edit-tag" title="Открыть модалку редактирования label, aliases, тегов моделей и описания">Edit tag</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-tagstudio-move-tag" title="Перенести runtime-тег в другую category/subcategory">Move tag</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-tagstudio-delete-tag" title="Мягко деактивировать runtime-тег (is_active=false)">Delete tag</button>
+                  <button type="button" class="btn btn-secondary btn-sm hidden" id="btn-tagstudio-reactivate-tag" title="Восстановить деактивированный runtime-тег">Reactivate</button>
                 </div>
                 <div class="field-grid">
                   <label>Move to category
                     <select id="tagstudio-move-category"></select>
                   </label>
                   <label>Move to subcategory
-                    <select id="tagstudio-move-subcategory"></select>
+                    <input type="text" id="tagstudio-move-subcategory" list="tagstudio-move-subcategory-options" placeholder="существующая или новая" autocomplete="off" />
+                    <datalist id="tagstudio-move-subcategory-options"></datalist>
                   </label>
                 </div>
-                <div class="import-actions">
-                  <button type="button" class="btn btn-ghost" id="btn-tagstudio-move-tag">Move tag</button>
-                  <button type="button" class="btn btn-ghost" id="btn-tagstudio-delete-tag">Delete tag</button>
-                </div>
+                <p class="card-hint tagstudio-delete-hint">Delete = soft deactivate (is_active=false). Снимите Active only, чтобы восстановить тег.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Favorites -->
+        <!-- Wildcards -->
+        <section class="panel" data-panel="wildcards">
+          <div class="card">
+            <div class="card-title row-between">
+              <span>Wildcards</span>
+              <button type="button" class="btn-ghost" id="btn-wildcards-refresh" title="Обновить список">Refresh</button>
+            </div>
+            <p class="card-hint">
+              Загрузите текстовый файл со списком фраз (по одной на строку, маркеры <code>*</code>/<code>-</code>/<code>•</code> необязательны) —
+              каждая строка станет отдельным тегом в выбранной категории/подгруппе. Алиас (id) и формат тега для каждой модели
+              генерируются автоматически из текста строки. Чекбоксы управляют включением файла целиком или отдельных строк в реальном времени.
+            </p>
+
+            <div class="field-grid">
+              <label>Category
+                <select id="wildcards-target-category"></select>
+              </label>
+              <label>Subgroup <span class="card-hint" style="display:inline">(существующая или новая)</span>
+                <input type="text" id="wildcards-target-subgroup" placeholder="trendy_2026" list="wildcards-subgroup-options" />
+                <datalist id="wildcards-subgroup-options"></datalist>
+              </label>
+              <label class="span-2">File name / label
+                <input type="text" id="wildcards-filename" placeholder="hairstyles.txt" />
+              </label>
+              <label class="span-2">Содержимое файла
+                <textarea id="wildcards-raw-text" rows="8" placeholder="Long layered hair with curtain bangs&#10;Textured lob with curtain bangs&#10;Blunt cut bob"></textarea>
+              </label>
+              <label class="span-2">Или загрузите .txt файл
+                <input type="file" id="wildcards-file-input" accept=".txt" />
+              </label>
+            </div>
+
+            <div id="wildcards-preview" class="import-report-stats">—</div>
+
+            <div class="import-actions">
+              <button type="button" class="btn btn-secondary" id="btn-wildcards-preview">Preview</button>
+              <button type="button" class="btn btn-primary" id="btn-wildcards-upload">Upload</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Загруженные wildcards</div>
+            <div id="wildcards-list" class="wildcards-list">—</div>
+          </div>
+        </section>
+
+
         <section class="panel" data-panel="favorites">
           <div class="card result-card favorites-card" id="favorites-card">
             <div class="card-title row-between">
@@ -476,6 +527,60 @@
             </div>
             <div class="import-report-stats" id="llm-status-badge">—</div>
           </div>
+
+          <!-- Forge / A1111 settings -->
+          <div class="card" id="forge-settings-card">
+            <div class="card-title row-between">
+              <span>Forge / A1111</span>
+              <button class="btn-ghost" type="button" id="btn-forge-test">Test connection</button>
+            </div>
+            <p class="card-hint">Отправка промпта напрямую в запущенный Forge или A1111. URL: обычно http://127.0.0.1:7860</p>
+            <label class="check-row"><input type="checkbox" id="forge-enabled" /> Enable Forge integration</label>
+            <div class="field-grid">
+              <label class="span-2">Base URL
+                <input id="forge-base-url" type="text" placeholder="http://127.0.0.1:7860" />
+              </label>
+              <label class="span-2">Default checkpoint (optional)
+                <input id="forge-checkpoint" type="text" placeholder="оставьте пустым — будет использован текущий" list="forge-models-list" />
+                <datalist id="forge-models-list"></datalist>
+              </label>
+              <label>Steps
+                <input id="forge-steps" type="number" min="1" max="150" step="1" />
+              </label>
+              <label>CFG Scale
+                <input id="forge-cfg" type="number" min="1" max="30" step="0.5" />
+              </label>
+              <label>Width
+                <input id="forge-width" type="number" min="64" max="2048" step="64" />
+              </label>
+              <label>Height
+                <input id="forge-height" type="number" min="64" max="2048" step="64" />
+              </label>
+              <label class="span-2">Sampler
+                <input id="forge-sampler" type="text" placeholder="DPM++ 2M" list="forge-samplers-list" />
+                <datalist id="forge-samplers-list"></datalist>
+              </label>
+              <label class="span-2">Scheduler
+                <input id="forge-scheduler" type="text" placeholder="Karras" list="forge-schedulers-list" />
+                <datalist id="forge-schedulers-list"></datalist>
+              </label>
+            </div>
+            <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Hires Fix</div>
+            <label class="check-row"><input type="checkbox" id="forge-hires-enabled" /> Enable Hires fix</label>
+            <div class="field-grid">
+              <label>Scale <input id="forge-hires-scale" type="number" min="1.1" max="4" step="0.1" /></label>
+              <label>Hires steps <input id="forge-hires-steps" type="number" min="1" max="60" step="1" /></label>
+              <label>Denoising <input id="forge-hires-denoising" type="number" min="0.05" max="1" step="0.05" /></label>
+              <label>Upscaler <input id="forge-hires-upscaler" type="text" placeholder="4x-UltraSharp" list="forge-upscalers-list" /></label>
+              <datalist id="forge-upscalers-list"></datalist>
+            </div>
+            <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Output</div>
+            <label class="check-row"><input type="checkbox" id="forge-save-images" /> Save images to Forge output folder</label>
+			<div class="import-actions">
+              <button type="button" class="btn btn-secondary" id="btn-forge-save">Save</button>
+            </div>
+            <div class="import-report-stats" id="forge-status-badge">—</div>
+          </div>
         </section>
 
         <!-- Advanced -->
@@ -524,6 +629,36 @@
                 <button type="button" class="btn btn-ghost" id="btn-rules-download">Download YAML</button>
               </div>
             </div>
+            <div class="card span-2" id="plugins-card">
+              <div class="card-title row-between">
+                <span>Plugins</span>
+                <button class="btn-ghost" type="button" id="btn-refresh-plugins">Refresh</button>
+              </div>
+              <p class="card-hint">
+                Drop-in плагины из <code>plugins_user/</code>. Переключение переименовывает папку плагина
+                (<code>.disabled</code> суффикс) — изменения применяются после перезапуска сервера.
+              </p>
+              <div id="plugins-list" class="plugins-list">—</div>
+            </div>
+
+            <!-- Generation History -->
+            <div class="card span-2" id="history-card">
+              <div class="card-title row-between">
+                <span>Generation History</span>
+                <div class="row-between" style="gap:6px">
+                  <select id="history-model-filter" class="select-sm">
+                    <option value="">All models</option>
+                    <option value="illustrious">Illustrious</option>
+                    <option value="anima">Anima</option>
+                    <option value="zimage_turbo">Z-Image Turbo</option>
+                  </select>
+                  <button class="btn-ghost" type="button" id="btn-history-refresh">Refresh</button>
+                  <button class="btn-ghost danger" type="button" id="btn-history-clear" title="Clear history">🗑</button>
+                </div>
+              </div>
+              <p class="card-hint">Последние генерации. «Load» восстанавливает полный state.</p>
+              <div id="history-list" class="history-list">—</div>
+            </div>
             <div class="card span-2">
               <div class="card-title row-between">
                 <span>Debug</span>
@@ -533,6 +668,40 @@
               <pre id="debug-output" class="debug-pre">Loading…</pre>
               <div class="card-title prompting-title-spacer">Buckets debug</div>
               <pre id="output-buckets" class="debug-pre">{}</pre>
+            </div>
+            <div class="card span-2" id="advanced-todo-card">
+              <div class="card-title row-between">
+                <span>Notes / Todo</span>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-advanced-todo-refresh">Refresh</button>
+              </div>
+              <p class="card-hint">Задачи сохраняются в SQLite и переживают перезапуск приложения.</p>
+              <div class="todo-compose">
+                <label class="todo-compose-task">Task
+                  <input type="text" id="advanced-todo-input" placeholder="Новая задача…" />
+                </label>
+                <div class="todo-compose-bar">
+                  <label class="todo-compose-priority">Priority
+                    <select id="advanced-todo-priority">
+                      <option value="low">Low</option>
+                      <option value="medium" selected>Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </label>
+                  <div class="todo-due-field todo-due-field--compact">
+                    <span class="field-caption">Due</span>
+                    <div class="todo-due-compose">
+                      <input type="date" id="advanced-todo-due" disabled />
+                      <button type="button" class="btn btn-ghost btn-sm" id="btn-advanced-todo-open-calendar" title="Открыть календарь" aria-label="Открыть календарь" disabled>📅</button>
+                      <label class="todo-no-due-inline" title="Без срока">
+                        <input type="checkbox" id="advanced-todo-no-due" checked />
+                        <span class="todo-no-due-label">Без срока</span>
+                      </label>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-advanced-todo-add">Add</button>
+                </div>
+              </div>
+              <div id="advanced-todo-list" class="todo-list">—</div>
             </div>
             <div class="card span-2">
               <div class="card-title">Changelog</div>
@@ -554,8 +723,11 @@
             <button class="btn btn-success" id="btn-random">Random</button>
           </div>
           <div class="result-actions">
-            <button class="btn btn-secondary btn-icon" id="btn-session-save" title="Сохранить JSON" aria-label="Сохранить JSON">💾</button>
+            <button class="btn btn-secondary btn-icon" id="btn-session-save-server" title="Сохранить сессию на сервере (Ctrl+S)" aria-label="Сохранить сессию">🔖</button>
+            <button class="btn btn-secondary btn-icon" id="btn-session-load-server" title="Загрузить сохранённую сессию" aria-label="Загрузить сессию">📋</button>
+            <button class="btn btn-secondary btn-icon" id="btn-session-save" title="Скачать JSON" aria-label="Скачать JSON">💾</button>
             <button class="btn btn-secondary btn-icon" id="btn-session-load" title="Загрузить JSON" aria-label="Загрузить JSON">📂</button>
+            <button class="btn btn-secondary btn-icon" id="btn-undo-state" title="Отменить последнее изменение тега (Ctrl+Z)" aria-label="Undo" disabled>↩</button>
             <button class="btn btn-secondary btn-icon" id="btn-session-reset" title="Сброс сессии" aria-label="Сброс сессии">↺</button>
           </div>
         </div>
@@ -588,6 +760,74 @@
       <div class="card result-card">
         <div class="card-title">Output options</div>
         <label class="check-row"><input type="checkbox" id="opt-group-mode" /> Group mode (2girls)</label>
+      </div>
+
+      <!-- Batch variations -->
+      <div class="card result-card" id="batch-card">
+        <div class="card-title row-between">
+          <span>Variations</span>
+          <span class="card-hint-inline" id="batch-axes-hint">all axes</span>
+        </div>
+        <div class="batch-controls">
+          <label class="batch-count-label">
+            Count: <strong id="batch-count-display">4</strong>
+            <input type="range" id="batch-count" min="1" max="8" value="4" step="1" />
+          </label>
+          <div class="batch-axes-grid">
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="time" /> Time</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="weather" /> Weather</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="season" /> Season</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="camera_angle" /> Camera angle</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="camera_framing" /> Framing</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="lighting_type" /> Lighting type</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="lighting_direction" /> Light dir</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="pose" /> Pose</label>
+            <label class="check-row"><input type="checkbox" class="batch-axis" value="expression" /> Expression</label>
+          </div>
+          <button class="btn btn-secondary" id="btn-batch-generate">Generate ×<span id="btn-batch-n">4</span></button>
+        </div>
+        <div class="batch-results hidden" id="batch-results"></div>
+      </div>
+
+      <!-- Forge send -->
+      <div class="card result-card hidden" id="forge-send-card">
+        <div class="card-title row-between">
+          <span>Send to Forge</span>
+          <span class="forge-status-dot" id="forge-status-dot" title="Forge status"></span>
+        </div>
+        <p class="card-hint" id="forge-send-hint">Forge не настроен — включите в Advanced → Forge.</p>
+
+        <!-- Quick settings (inline) -->
+        <details class="forge-quick-settings" id="forge-quick-details">
+          <summary class="forge-quick-summary">⚙ Settings</summary>
+          <div class="forge-quick-grid">
+            <label>Steps <input type="number" id="fq-steps" min="1" max="150" step="1" /></label>
+            <label>CFG <input type="number" id="fq-cfg" min="1" max="30" step="0.5" /></label>
+            <label>Width <input type="number" id="fq-width" min="64" max="2048" step="64" /></label>
+            <label>Height <input type="number" id="fq-height" min="64" max="2048" step="64" /></label>
+            <label class="span-2">Sampler <input type="text" id="fq-sampler" list="forge-samplers-list" /></label>
+          </div>
+          <div class="forge-quick-hires">
+            <label class="check-row"><input type="checkbox" id="fq-hires-enabled" /> Hires fix</label>
+            <div class="forge-quick-hires-params" id="fq-hires-params">
+              <label>Scale <input type="number" id="fq-hires-scale" min="1.1" max="4" step="0.1" /></label>
+              <label>Denoise <input type="number" id="fq-hires-denoising" min="0.05" max="1" step="0.05" /></label>
+              <label class="span-2">Upscaler <input type="text" id="fq-hires-upscaler" list="forge-upscalers-list" placeholder="4x-UltraSharp" /></label>
+            </div>
+          </div>
+          <label class="check-row"><input type="checkbox" id="fq-save-images" /> Save to Forge outputs</label>
+          <button class="btn btn-secondary btn-sm" id="btn-fq-apply" style="margin-top:6px;width:100%">Apply &amp; Save</button>
+        </details>
+
+        <button class="btn btn-secondary" id="btn-forge-send" disabled>Send to Forge ▶</button>
+        <div class="forge-result hidden" id="forge-result">
+          <img id="forge-result-img" src="" alt="Generated image" class="forge-img" />
+          <div class="forge-result-meta" id="forge-result-meta"></div>
+          <div class="forge-result-actions">
+            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-hires">↑ Send to Hires</button>
+            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-save-img" title="Скачать изображение">⬇ Save</button>
+          </div>
+        </div>
       </div>
 
       <div class="card result-card" id="quality-score-panel">
@@ -703,7 +943,8 @@
         </label>
         <label class="fav-field">
           <span>Subcategory</span>
-          <select id="add-tag-subgroup"></select>
+          <input type="text" id="add-tag-subgroup" list="add-tag-subgroup-options" placeholder="существующая или новая" autocomplete="off" />
+          <datalist id="add-tag-subgroup-options"></datalist>
         </label>
         <label class="fav-field">
           <span>Aliases (comma separated)</span>
@@ -738,11 +979,103 @@
     </div>
   </div>
 
+  <div class="fav-modal hidden" id="edit-tag-modal" role="dialog" aria-modal="true" aria-labelledby="edit-tag-modal-title">
+    <div class="fav-modal-backdrop" id="edit-tag-modal-backdrop"></div>
+    <div class="fav-modal-panel card">
+      <div class="card-title row-between">
+        <span id="edit-tag-modal-title">Edit tag</span>
+        <button type="button" class="btn-ghost fav-modal-close" id="edit-tag-modal-close" aria-label="Закрыть">✕</button>
+      </div>
+      <form id="edit-tag-form" class="fav-form">
+        <p class="card-hint hidden" id="edit-tag-readonly-hint">Core-тег из каталога: при сохранении создаётся runtime-копия с тем же id поверх оригинала.</p>
+        <div class="field-grid">
+          <label class="fav-field">
+            <span>Category</span>
+            <select id="edit-tag-category"></select>
+          </label>
+          <label class="fav-field">
+            <span>Subcategory</span>
+            <input type="text" id="edit-tag-subgroup" list="edit-tag-subgroup-options" placeholder="существующая или новая" autocomplete="off" />
+            <datalist id="edit-tag-subgroup-options"></datalist>
+          </label>
+        </div>
+        <p class="card-hint hidden" id="edit-tag-core-category-hint">Core-тег можно перенести только в другую подгруппу той же категории — для переноса между категориями сначала сохраните (тег станет runtime), затем повторите Edit и смените категорию.</p>
+        <label class="fav-field">
+          <span>Label</span>
+          <input type="text" id="edit-tag-label" required />
+        </label>
+        <label class="fav-field">
+          <span>Aliases (comma separated)</span>
+          <input type="text" id="edit-tag-aliases" placeholder="alias one, alias two" />
+        </label>
+        <label class="fav-field">
+          <span>Description</span>
+          <input type="text" id="edit-tag-description" />
+        </label>
+        <label class="fav-field">
+          <span>Default weight</span>
+          <input type="number" id="edit-tag-default-weight" value="1.0" min="0" max="10" step="0.1" />
+        </label>
+        <div class="import-report-title">Model-specific tags</div>
+        <label class="fav-field">
+          <span>Illustrious</span>
+          <input type="text" id="edit-tag-illustrious" />
+        </label>
+        <label class="fav-field">
+          <span>Anima</span>
+          <input type="text" id="edit-tag-anima" />
+        </label>
+        <label class="fav-field">
+          <span>Z-Image Turbo</span>
+          <input type="text" id="edit-tag-zimage" />
+        </label>
+        <div class="fav-form-actions">
+          <button type="button" class="btn btn-ghost" id="edit-tag-cancel">Отмена</button>
+          <button type="submit" class="btn btn-primary" id="edit-tag-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <input type="file" id="session-file-input" accept="application/json,.json" hidden />
+
+  <!-- Session Save Modal -->
+  <div class="fav-modal hidden" id="session-save-modal" role="dialog" aria-modal="true" aria-labelledby="session-save-modal-title">
+    <div class="fav-modal-backdrop" id="session-save-modal-backdrop"></div>
+    <div class="fav-modal-panel card">
+      <div class="card-title row-between">
+        <span id="session-save-modal-title">Сохранить сессию</span>
+        <button type="button" class="btn-ghost fav-modal-close" id="session-save-modal-close" aria-label="Закрыть">✕</button>
+      </div>
+      <form id="session-save-form">
+        <label class="fav-field">
+          <span>Название</span>
+          <input type="text" id="session-save-name" required placeholder="Мой образ..." autocomplete="off" />
+        </label>
+        <div class="fav-actions">
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+          <button type="button" class="btn btn-ghost" id="session-save-cancel">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Session Load Modal -->
+  <div class="fav-modal hidden" id="session-load-modal" role="dialog" aria-modal="true" aria-labelledby="session-load-modal-title">
+    <div class="fav-modal-backdrop" id="session-load-modal-backdrop"></div>
+    <div class="fav-modal-panel card">
+      <div class="card-title row-between">
+        <span id="session-load-modal-title">Сохранённые сессии</span>
+        <button type="button" class="btn-ghost fav-modal-close" id="session-load-modal-close" aria-label="Закрыть">✕</button>
+      </div>
+      <div id="session-load-list" class="session-load-list">Загрузка…</div>
+    </div>
+  </div>
   <script src="/static/js/character-tree-data.js"></script>
   <script src="/static/js/face-tree-data.js"></script>
   <script src="/static/js/camera-tree-data.js"></script>
   <script src="/static/js/camera-presets-data.js"></script>
+  <script src="/static/js/clothing-state-presets-data.js"></script>
   <script src="/static/js/lighting-tree-data.js"></script>
   <script src="/static/js/lighting-presets-data.js"></script>
   <script src="/static/js/environment-tree-data.js"></script>

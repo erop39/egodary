@@ -151,13 +151,29 @@ class OutfitState(BaseModel):
     dress: str = ""
     top: str = ""
     bottom: str = ""
-    underwear_layer: str = ""
     legwear: str = ""
     jacket: str = ""
     footwear: str = ""
     gloves: str = ""
     cape: str = ""
-    conditions: dict[str, str] = Field(default_factory=dict)
+    conditions: dict[str, dict[str, str]] = Field(default_factory=dict)
+
+    @field_validator("conditions", mode="before")
+    @classmethod
+    def coerce_conditions(cls, value: object) -> dict[str, dict[str, str]]:
+        if not isinstance(value, dict):
+            return {}
+        out: dict[str, dict[str, str]] = {}
+        for slot, raw in value.items():
+            if isinstance(raw, str):
+                out[str(slot)] = {}
+            elif isinstance(raw, dict):
+                out[str(slot)] = {
+                    str(dim): str(tag_id)
+                    for dim, tag_id in raw.items()
+                    if tag_id
+                }
+        return out
 
 
 class AppearanceState(BaseModel):
@@ -165,6 +181,7 @@ class AppearanceState(BaseModel):
     hair_color: str = ""
     makeup: list[str] = Field(default_factory=list)
     accessories: list[str] = Field(default_factory=list)
+    tattoos: list[str] = Field(default_factory=list)
 
 
 class FaceState(BaseModel):
@@ -322,6 +339,7 @@ class PromptBuckets(BaseModel):
     makeup: list[str] = Field(default_factory=list)
     appearance: list[str] = Field(default_factory=list)
     outfit: list[str] = Field(default_factory=list)
+    tattoos: list[str] = Field(default_factory=list)
     pose: list[str] = Field(default_factory=list)
     situation: list[str] = Field(default_factory=list)
     scene: list[str] = Field(default_factory=list)

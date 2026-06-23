@@ -51,6 +51,7 @@ MULTI_CATEGORIES = frozenset(
     {
         "appearance.makeup",
         "appearance.accessories",
+        "appearance.tattoos",
         "environment.modifiers",
         "style.quality",
         "style.aesthetic",
@@ -140,7 +141,7 @@ def _resolve_field_path(category_id: str) -> str | None:
     if category_id in MULTI_CATEGORIES:
         section, fld = category_id.split(".", 1)
         return f"{section}.{fld}"
-    if category_id == "outfit.clothing_condition":
+    if category_id in {"outfit.clothing_condition", "outfit.clothing_state"}:
         return None
     parts = category_id.split(".", 1)
     if len(parts) != 2:

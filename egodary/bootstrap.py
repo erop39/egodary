@@ -77,6 +77,7 @@ def _clone_plugin_manager_template(
             source=loaded.source,
             path=loaded.path,
             category_ids=list(loaded.category_ids),
+            ui_extension_instance=loaded.ui_extension_instance,
         )
         for loaded in template.loaded
     ]

@@ -1,0 +1,4 @@
+git apply --check features_history_sessions_batch_forge_backend.patch
+git apply features_history_sessions_batch_forge_backend.patch
+git apply --check features_frontend.patch
+git apply features_frontend.patch

@@ -109,7 +109,7 @@ def build_tree_nodes(groups: list[dict]) -> list[dict]:
             prop_children = []
             for child in group["children"]:
                 field = child["field"]
-                subgroup = next(iter(CHARACTER_CATALOG[field]))
+                subgroup = child.get("subgroup") or next(iter(CHARACTER_CATALOG[field]))
                 prop_children.append(
                     _leaf(field, child["label"], subgroup, multi=child.get("multi", False))
                 )

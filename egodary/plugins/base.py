@@ -9,15 +9,18 @@
 - `model_adapter` — фаза 4–5 (Illustrious/Anima/Z-Image Turbo);
 - `pipeline_stage` — фаза 6–7 (свои конфликты/скоринг/рандомайзер);
 - `integration` — фаза 11 (Forge/ComfyUI);
-- `ui_extension` — фаза 10.
+- `ui_extension` — фаза 10 (реализовано: регистрация FastAPI-роутеров и статики).
 """
 
 from __future__ import annotations
 
 from enum import Enum
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from egodary.core.models import TagCategory
+
+if TYPE_CHECKING:
+    from fastapi import FastAPI
 
 
 class PluginKind(str, Enum):
@@ -59,3 +62,29 @@ class IntegrationPlugin(Protocol):
     id: str
 
     def send(self, prompt: str, params: dict) -> dict: ...
+
+
+@runtime_checkable
+class UiExtensionPlugin(Protocol):
+    """Плагин с FastAPI-роутером и (опционально) статикой.
+
+    Загрузчик вызывает ``register(app)`` один раз при старте сервера.
+    Плагин монтирует свои роуты через ``app.include_router(router)``.
+    Статику можно смонтировать через ``app.mount()``.
+
+    Пример минимального плагина::
+
+        from fastapi import APIRouter
+        router = APIRouter(prefix="/api/my-plugin")
+
+        @router.get("/hello")
+        def hello():
+            return {"ok": True}
+
+        def register(app):
+            app.include_router(router)
+    """
+
+    id: str
+
+    def register(self, app: "FastAPI") -> None: ...

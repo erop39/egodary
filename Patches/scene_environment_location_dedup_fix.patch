@@ -1,0 +1,116 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2e3f44c..05912f4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,6 +11,26 @@
+ 
+ ## [Unreleased]
+ 
++### Fixed
++- **В промпт попадала локация, которую пользователь не выбирал.** Сборка "scene"-бакета в
++  `core/pipeline.py` добавляла значения `scene.location` (старая плоская категория, без какого-
++  либо UI-контрола в текущем приложении — заменена деревом Environment → Location) И
++  `environment.location` (актуальное дерево Indoor / Outdoor & Semi-Outdoor / Fantasy & Stylized)
++  **одновременно**, если оба поля state были непустыми — вместо того чтобы трактовать их как
++  альтернативы, как это уже корректно делают `core/conflicts.py` и `core/rule_matching.py`
++  (`env.location or state.scene.location`). Если в сессии оставалось старое значение
++  `scene.location` (например `luxury_apartment` — оно могло попасть туда давно, ещё через
++  отсутствующий ныне UI или из старого сохранённого `.json`), в промпт всегда добавлялся текст
++  ЭТОЙ локации в довесок к тому, что реально выбрано в дереве Indoor/Outdoor/Fantasy — даже
++  если визуально в UI был подсвечен только один, совсем другой чип.
++  Подтверждено 1:1 по скриншоту пользователя: `anima`-тег айтема `luxury_apartment` из
++  `scene_location_pack/location.yaml` — `"luxury apartment with floor-to-ceiling windows and city
++  view"` — дословно совпадал с "лишним" куском промпта.
++  Фикс: `_collect_scene_bucket` теперь использует `env.location or scene.location` — берёт ровно
++  ОДНО значение (приоритет у актуального `environment.location`), `scene.location` остаётся
++  рабочим fallback'ом только для старых сессий, где `environment.location` вообще не задан.
++  Тест: `test_scene_location_and_environment_location_are_alternatives_not_both`.
++
+ ### Added
+ - **Перенос тега прямо из окна "Edit tag".** Раньше перенести тег в другую category/subcategory
+   можно было только отдельной формой "Move tag" внизу панели Tag Studio — теперь поля Category и
+diff --git a/egodary/core/pipeline.py b/egodary/core/pipeline.py
+index e14516f..54e19bf 100644
+--- a/egodary/core/pipeline.py
++++ b/egodary/core/pipeline.py
+@@ -275,6 +275,7 @@ class PromptEngine:
+     def _collect_scene_bucket(self, state: PromptState) -> list[str]:
+         tags: list[str] = []
+         scene = state.scene
++        env = state.environment
+         mapping = [
+             (scene.time, "scene.time"),
+             (scene.weather, "scene.weather"),
+@@ -285,13 +286,21 @@ class PromptEngine:
+                 resolved = self._resolve_selection(value, category, state.model_id)
+                 if resolved:
+                     tags.extend(self._split_tags(resolved))
+-        if scene.location:
+-            loc = self._resolve_selection(scene.location, "scene.location", state.model_id)
+-            if loc:
+-                tags.extend(self._split_tags(loc))
+-        env = state.environment
+-        if env.location:
+-            resolved = self._resolve_selection(env.location, "environment.location", state.model_id)
++        # environment.location (the current Indoor / Outdoor & Semi-Outdoor /
++        # Fantasy & Stylized tree) and the older scene.location are two
++        # representations of the same "where is this scene" choice, not two
++        # independent things to both include — conflicts.py and
++        # rule_matching.py already treat them as alternatives (env.location
++        # preferred, scene.location as a fallback). Adding both here used to
++        # silently double up the location whenever a session carried a
++        # leftover scene.location value (it has had no UI control since
++        # environment.location replaced it) alongside an environment.location
++        # pick, e.g. "luxury apartment ..., high-tech genetics laboratory ..."
++        # both appearing even though only the lab was selected in the UI.
++        location_value = env.location or scene.location
++        location_category = "environment.location" if env.location else "scene.location"
++        if location_value:
++            resolved = self._resolve_selection(location_value, location_category, state.model_id)
+             if resolved:
+                 tags.extend(self._split_tags(resolved))
+         for modifier_id in env.modifiers:
+diff --git a/tests/test_core.py b/tests/test_core.py
+index b1a50bc..64cbc9a 100644
+--- a/tests/test_core.py
++++ b/tests/test_core.py
+@@ -184,6 +184,39 @@ def test_phase6_location_conflict_clears_weather_for_space():
+     assert "winter" not in result.positive.lower()
+ 
+ 
++def test_scene_location_and_environment_location_are_alternatives_not_both():
++    """Regression test: scene.location is a legacy field with no UI control
++    left in the app (superseded by environment.location's Indoor / Outdoor &
++    Semi-Outdoor / Fantasy & Stylized tree) — a leftover value from an old
++    session must not get concatenated onto whatever the user actually picks
++    in the current environment.location tree."""
++    from egodary.core.models import EnvironmentState
++
++    engine = create_engine()
++
++    # Both set: environment.location (the current UI) must win outright,
++    # the legacy scene.location value must not appear at all.
++    state_both = PromptState(
++        model_id="anima",
++        scene=SceneState(location="luxury_apartment"),
++        environment=EnvironmentState(location="penthouse"),
++    )
++    result_both = engine.assemble(state_both)
++    text_both = result_both.positive.lower()
++    assert "penthouse" in text_both
++    assert "luxury apartment with floor-to-ceiling windows" not in text_both
++
++    # Only the legacy field set: it must still work as a fallback (old
++    # sessions that never touched environment.location shouldn't lose their
++    # location entirely).
++    state_legacy_only = PromptState(
++        model_id="anima",
++        scene=SceneState(location="luxury_apartment"),
++    )
++    result_legacy_only = engine.assemble(state_legacy_only)
++    assert "luxury apartment with floor-to-ceiling windows" in result_legacy_only.positive.lower()
++
++
+ def test_fetish_exclusive_gag_conflict():
+     from egodary.core.conflicts import apply_state_conflicts
+     from egodary.core.models import FetishState, PromptState

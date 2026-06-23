@@ -10,6 +10,7 @@ format:
     - character
     - pose
     - outfit
+    - tattoos
     - scene
     - lighting
     - atmosphere

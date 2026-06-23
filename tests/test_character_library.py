@@ -90,6 +90,28 @@ def test_character_library_crud(client):
     assert missing.status_code == 404
 
 
+def test_character_library_rename(client):
+    created = client.post(
+        "/api/character-library",
+        json={"name": "Rename Me", "payload": SAMPLE_PAYLOAD},
+    )
+    assert created.status_code == 200
+    preset_id = created.json()["id"]
+
+    renamed = client.patch(
+        f"/api/character-library/{preset_id}",
+        json={"name": "Renamed Hero"},
+    )
+    assert renamed.status_code == 200
+    assert renamed.json()["name"] == "Renamed Hero"
+
+    missing = client.patch(
+        "/api/character-library/999999",
+        json={"name": "Ghost"},
+    )
+    assert missing.status_code == 404
+
+
 def test_character_library_rejects_empty_name(client):
     res = client.post(
         "/api/character-library",

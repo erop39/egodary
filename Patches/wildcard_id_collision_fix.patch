@@ -1,0 +1,221 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3d45738..af74227 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,6 +11,31 @@
+ 
+ ## [Unreleased]
+ 
++### Fixed
++- **Тег из одного wildcard-файла «исчезал», если строка с тем же текстом встречалась в другом
++  файле.** `item_id` каждой строки генерируется детерминированно из текста (slugify) и до сих пор
++  деduplicate-ился только *внутри* одного файла (`make_item_id` / `used_ids` — см.
++  `egodary/core/wildcards.py`). Когда два РАЗНЫХ загруженных файла содержали строку с одинаковым
++  текстом (вполне реальный кейс для похожих по теме списков — причёски, позы и т.п.), оба тега
++  попадали в `RuntimeRegistry` с одинаковым id, и `add_item(..., on_conflict="skip")` молча
++  отбрасывал тег из второго (по порядку обработки) файла — без какой-либо ошибки или
++  предупреждения в UI. Поскольку порядок чтения файлов из SQLite не гарантирован (`SELECT`
++  без `ORDER BY`), какой именно файл «терял» тег могло меняться от запуска к запуску — отсюда
++  ощущение, что «при загрузке нового файла происходит перезапись и старый исчезает».
++  Воспроизвёл и подтвердил руками (curl): два файла с единственной строкой `Long bangs` каждый —
++  до фикса в каталоге `appearance.hair` оставался только один экземпляр тега вместо двух.
++  Теперь id тега в реестре всегда содержит префикс `wc{wildcard_id}_...` — коллизия между
++  РАЗНЫМИ файлами невозможна в принципе, тег пропадает только когда удалён сам файл (или его
++  собственная строка выключена чекбоксом) во вкладке Wildcards, как и требовалось.
++  - `egodary/persistence/schema.py::load_wildcards_into_registry` — namespaced id при merge в
++    реестр; собственный `item_id` в таблице `wildcard_items` (используется для чекбокса
++    включения отдельной строки) не менялся.
++  - `GET /api/wildcards/by-category/{category_id}` — отдаёт тот же namespaced id, которым
++    реально оперирует реестр, чтобы выбор тега из дерева/секции Wildcards совпадал с тем, что
++    действительно попадёт в промпт.
++  - Новый регрессионный тест: `test_load_wildcards_into_registry_two_files_same_text_dont_collide`.
++    Обновлены 3 существующих теста, жёстко зависевших от старого (без namespace) формата id.
++
+ ### Added
+ - **Отдельная ветка дерева для новых wildcard-подгрупп.** Раньше wildcard с произвольным
+   `target_subgroup` (например `appearance.hair` / `imported`) был виден только как
+@@ -99,6 +124,9 @@
+   добавляется на верхнем уровне (Hair), внутри вложенной на 2 уровня группы (Accessories →
+   Tattoos & Body Art), в группе с несколькими categoryId (Bottom = outfit.bottom +
+   outfit.underwear_layer), и не добавляется при пустом индексе wildcards.
++- `pytest tests/` — 252 passed (251 + новый регрессионный тест на коллизию id между файлами).
++  Проверено вручную (curl): два файла с совпадающей строкой `Long bangs` — до фикса жил только
++  один экземпляр тега в `appearance.hair`, после фикса оба, с разными `wc{id}_long_bangs`.
+ 
+ ## [0.1.35] — 2026-06-20
+ 
+diff --git a/egodary/persistence/schema.py b/egodary/persistence/schema.py
+index 5056dec..7b1039f 100644
+--- a/egodary/persistence/schema.py
++++ b/egodary/persistence/schema.py
+@@ -997,7 +997,19 @@ def delete_wildcard(wildcard_id: int) -> bool:
+ 
+ def load_wildcards_into_registry(registry: RuntimeRegistry) -> int:
+     """Load all enabled wildcards (and their enabled line items) into the
+-    runtime overlay registry as TagItems under their target category."""
++    runtime overlay registry as TagItems under their target category.
++
++    Item ids are namespaced with the owning wildcard's row id
++    (``wc{wildcard_id}_{item_id}``) so that two different uploaded files
++    can never collide on id — e.g. two files both containing a line that
++    slugifies to "long_bangs" used to mean the second one was silently
++    dropped by the registry's add_item(on_conflict="skip"), making it look
++    like tags (or even a whole file's worth of overlapping tags) had
++    "disappeared" until the colliding file was deleted. The wildcard's own
++    item_id in the wildcard_items table (used for the per-line enable
++    checkbox) is unaffected — only the id used inside the live tag
++    registry is namespaced.
++    """
+     from egodary.core.wildcards import build_tag_item
+ 
+     init_db()
+@@ -1013,7 +1025,8 @@ def load_wildcards_into_registry(registry: RuntimeRegistry) -> int:
+             (wrow["id"],),
+         ).fetchall()
+         for irow in item_rows:
+-            tag_item = build_tag_item(irow["label"], irow["item_id"], subgroup=wrow["target_subgroup"])
++            registry_item_id = f"wc{wrow['id']}_{irow['item_id']}"
++            tag_item = build_tag_item(irow["label"], registry_item_id, subgroup=wrow["target_subgroup"])
+             registry.add_item(
+                 wrow["target_category"],
+                 tag_item,
+diff --git a/egodary/api/main.py b/egodary/api/main.py
+index 3897c29..c5275e1 100644
+--- a/egodary/api/main.py
++++ b/egodary/api/main.py
+@@ -975,7 +975,13 @@ def wildcards_by_category(category_id: str):
+     render the inline 'Wildcards' section inside every subgroup panel of that
+     category, independent of whether target_subgroup matches a built-in UI
+     subgroup id. Disabled wildcards/items are omitted entirely, so the section
+-    naturally disappears in the UI when a wildcard is turned off."""
++    naturally disappears in the UI when a wildcard is turned off.
++
++    item_id values are namespaced as wc{wildcard_id}_{item_id}, matching
++    load_wildcards_into_registry() — these ids are what the frontend sets as
++    the actual field value when a wildcard chip is selected, so they must
++    exactly match what the live tag registry/catalog knows the item as.
++    """
+     groups = []
+     for row in list_wildcards():
+         if row["target_category"] != category_id or not row["enabled"]:
+@@ -987,7 +993,10 @@ def wildcards_by_category(category_id: str):
+             "id": row["id"],
+             "label": row.get("label") or row["filename"],
+             "target_subgroup": row["target_subgroup"],
+-            "items": [{"item_id": item["item_id"], "label": item["label"]} for item in items],
++            "items": [
++                {"item_id": f"wc{row['id']}_{item['item_id']}", "label": item["label"]}
++                for item in items
++            ],
+         })
+     return {"category_id": category_id, "wildcards": groups}
+ 
+diff --git a/tests/test_wildcards.py b/tests/test_wildcards.py
+index 3995c84..7179bcb 100644
+--- a/tests/test_wildcards.py
++++ b/tests/test_wildcards.py
+@@ -207,12 +207,12 @@ class TestWildcardPersistence:
+             set_wildcard_item_enabled,
+         )
+ 
+-        create_wildcard(
++        wid = create_wildcard(
+             filename="hair.txt", label="Hair", target_category="appearance.hair",
+             target_subgroup="trendy", raw_text="A\nB",
+             items=[("a", "A"), ("b", "B")],
+         )
+-        set_wildcard_item_enabled(1, "b", False)
++        set_wildcard_item_enabled(wid, "b", False)
+ 
+         registry = RuntimeRegistry(TagRegistry())
+         loaded = load_wildcards_into_registry(registry)
+@@ -221,8 +221,40 @@ class TestWildcardPersistence:
+         category = registry.get_category("appearance.hair")
+         assert category is not None
+         ids = [i.id for i in category.items]
+-        assert "a" in ids
+-        assert "b" not in ids
++        # Registry ids are namespaced by wildcard id so that identical phrase
++        # text in two different uploaded files can never collide and get
++        # silently skipped — see load_wildcards_into_registry() docstring.
++        assert f"wc{wid}_a" in ids
++        assert f"wc{wid}_b" not in ids
++
++    def test_load_wildcards_into_registry_two_files_same_text_dont_collide(self):
++        """Regression test: two different uploaded wildcard files containing
++        an identical line (same slugified item_id) must NOT cause one file's
++        tag to silently disappear via the registry's on_conflict='skip'."""
++        from egodary.core.registry import TagRegistry
++        from egodary.core.runtime_registry import RuntimeRegistry
++        from egodary.persistence.schema import create_wildcard, load_wildcards_into_registry
++
++        wid_a = create_wildcard(
++            filename="fileA.txt", label="fileA.txt", target_category="appearance.hair",
++            target_subgroup="imported", raw_text="Long bangs",
++            items=[("long_bangs", "Long bangs")],
++        )
++        wid_b = create_wildcard(
++            filename="fileB.txt", label="fileB.txt", target_category="appearance.hair",
++            target_subgroup="imported", raw_text="Long bangs",
++            items=[("long_bangs", "Long bangs")],
++        )
++        assert wid_a != wid_b
++
++        registry = RuntimeRegistry(TagRegistry())
++        loaded = load_wildcards_into_registry(registry)
++        assert loaded == 2  # both lines loaded, none skipped
++
++        category = registry.get_category("appearance.hair")
++        ids = [i.id for i in category.items]
++        assert f"wc{wid_a}_long_bangs" in ids
++        assert f"wc{wid_b}_long_bangs" in ids
+ 
+     def test_load_wildcards_into_registry_skips_disabled_wildcard(self):
+         from egodary.core.registry import TagRegistry
+@@ -320,28 +352,29 @@ class TestWildcardApi:
+         assert r.status_code == 404
+ 
+     def test_uploaded_tags_appear_in_category(self, client):
+-        client.post("/api/wildcards", json={
++        upload = client.post("/api/wildcards", json={
+             "filename": "hair.txt",
+             "target_category": "appearance.hair",
+             "target_subgroup": "trendy_2026",
+             "raw_text": "Long layered hair with curtain bangs",
+-        })
++        }).json()
+         r = client.get("/api/categories/appearance.hair")
+         items = r.json()["items"]
+         wc_items = [i for i in items if i.get("meta", {}).get("source") == "wildcard"]
+         assert len(wc_items) == 1
+-        assert wc_items[0]["id"] == "long_layered_hair_with_curtain_bangs"
++        assert wc_items[0]["id"] == f"wc{upload['id']}_long_layered_hair_with_curtain_bangs"
+ 
+     def test_uploaded_tag_used_in_generate(self, client):
+-        client.post("/api/wildcards", json={
++        upload = client.post("/api/wildcards", json={
+             "filename": "hair.txt",
+             "target_category": "appearance.hair",
+             "target_subgroup": "trendy_2026",
+             "raw_text": "Long layered hair with curtain bangs",
+-        })
++        }).json()
++        item_id = f"wc{upload['id']}_long_layered_hair_with_curtain_bangs"
+         r = client.post("/api/generate", json={
+             "model_id": "illustrious",
+-            "appearance": {"hair": "long_layered_hair_with_curtain_bangs"},
++            "appearance": {"hair": item_id},
+         })
+         assert r.status_code == 200
+         assert "long layered hair with curtain bangs" in r.json()["positive"].lower()
+@@ -379,8 +412,8 @@ class TestWildcardApi:
+ 
+         cat = client.get("/api/categories/appearance.hair").json()
+         wc_ids = [i["id"] for i in cat["items"] if i.get("meta", {}).get("source") == "wildcard"]
+-        assert "blunt_cut_bob" not in wc_ids
+-        assert "long_wavy_hair" in wc_ids
++        assert f"wc{upload['id']}_blunt_cut_bob" not in wc_ids
++        assert f"wc{upload['id']}_long_wavy_hair" in wc_ids
+ 
+     def test_toggle_item_not_found(self, client):
+         upload = client.post("/api/wildcards", json={

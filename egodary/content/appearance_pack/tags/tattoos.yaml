@@ -1,0 +1,507 @@
+id: appearance.tattoos
+title: Tattoos & Body Art
+items:
+- id: realistic_tattoo
+  label: Realistic tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: realistic tattoo
+    anima: realistic tattoo, detailed tattoo
+    zimage_turbo: with realistic tattoo
+- id: traditional_tattoo
+  label: Traditional tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: traditional tattoo
+    anima: traditional tattoo, detailed tattoo
+    zimage_turbo: with traditional tattoo
+- id: japanese_tattoo
+  label: Japanese tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: japanese tattoo
+    anima: japanese tattoo, detailed tattoo
+    zimage_turbo: with japanese tattoo
+- id: tribal_tattoo
+  label: Tribal tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: tribal tattoo
+    anima: tribal tattoo, detailed tattoo
+    zimage_turbo: with tribal tattoo
+- id: minimalist_tattoo
+  label: Minimalist tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: minimalist tattoo
+    anima: minimalist tattoo, detailed tattoo
+    zimage_turbo: with minimalist tattoo
+- id: watercolor_tattoo
+  label: Watercolor tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: watercolor tattoo
+    anima: watercolor tattoo, detailed tattoo
+    zimage_turbo: with watercolor tattoo
+- id: geometric_tattoo
+  label: Geometric tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: geometric tattoo
+    anima: geometric tattoo, detailed tattoo
+    zimage_turbo: with geometric tattoo
+- id: blackwork_tattoo
+  label: Blackwork tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: blackwork tattoo
+    anima: blackwork tattoo, detailed tattoo
+    zimage_turbo: with blackwork tattoo
+- id: neo_traditional_tattoo
+  label: Neo traditional tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: neo traditional tattoo
+    anima: neo traditional tattoo, detailed tattoo
+    zimage_turbo: with neo traditional tattoo
+- id: dotwork_tattoo
+  label: Dotwork tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: dotwork tattoo
+    anima: dotwork tattoo, detailed tattoo
+    zimage_turbo: with dotwork tattoo
+- id: illustrative_tattoo
+  label: Illustrative tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: illustrative tattoo
+    anima: illustrative tattoo, detailed tattoo
+    zimage_turbo: with illustrative tattoo
+- id: cyberpunk_tattoo
+  label: Cyberpunk tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: cyberpunk tattoo
+    anima: cyberpunk tattoo, detailed tattoo
+    zimage_turbo: with cyberpunk tattoo
+- id: trash_polka_tattoo
+  label: Trash polka tattoo
+  meta:
+    subgroup: styles
+    group: Tattoo Styles
+  tags:
+    illustrious: trash polka tattoo
+    anima: trash polka tattoo, detailed tattoo
+    zimage_turbo: with trash polka tattoo
+- id: arm_tattoo
+  label: Arm tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: arm tattoo
+    anima: arm tattoo, detailed tattoo
+    zimage_turbo: with arm tattoo
+- id: sleeve_tattoo
+  label: Sleeve tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: sleeve tattoo
+    anima: sleeve tattoo, detailed tattoo
+    zimage_turbo: with sleeve tattoo
+- id: back_tattoo
+  label: Back tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: back tattoo
+    anima: back tattoo, detailed tattoo
+    zimage_turbo: with back tattoo
+- id: chest_tattoo
+  label: Chest tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: chest tattoo
+    anima: chest tattoo, detailed tattoo
+    zimage_turbo: with chest tattoo
+- id: rib_tattoo
+  label: Rib tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: rib tattoo
+    anima: rib tattoo, detailed tattoo
+    zimage_turbo: with rib tattoo
+- id: underboob_tattoo
+  label: Underboob tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: underboob tattoo
+    anima: underboob tattoo, detailed tattoo
+    zimage_turbo: with underboob tattoo
+- id: thigh_tattoo
+  label: Thigh tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: thigh tattoo
+    anima: thigh tattoo, detailed tattoo
+    zimage_turbo: with thigh tattoo
+- id: hip_tattoo
+  label: Hip tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: hip tattoo
+    anima: hip tattoo, detailed tattoo
+    zimage_turbo: with hip tattoo
+- id: shoulder_tattoo
+  label: Shoulder tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: shoulder tattoo
+    anima: shoulder tattoo, detailed tattoo
+    zimage_turbo: with shoulder tattoo
+- id: neck_tattoo
+  label: Neck tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: neck tattoo
+    anima: neck tattoo, detailed tattoo
+    zimage_turbo: with neck tattoo
+- id: hand_tattoo
+  label: Hand tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: hand tattoo
+    anima: hand tattoo, detailed tattoo
+    zimage_turbo: with hand tattoo
+- id: foot_tattoo
+  label: Foot tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: foot tattoo
+    anima: foot tattoo, detailed tattoo
+    zimage_turbo: with foot tattoo
+- id: lower_back_tattoo
+  label: Lower back tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: lower back tattoo
+    anima: lower back tattoo, detailed tattoo
+    zimage_turbo: with lower back tattoo
+- id: collarbone_tattoo
+  label: Collarbone tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: collarbone tattoo
+    anima: collarbone tattoo, detailed tattoo
+    zimage_turbo: with collarbone tattoo
+- id: spine_tattoo
+  label: Spine tattoo
+  meta:
+    subgroup: placements
+    group: Tattoo Placements
+  tags:
+    illustrious: spine tattoo
+    anima: spine tattoo, detailed tattoo
+    zimage_turbo: with spine tattoo
+- id: rose_tattoo
+  label: Rose tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: rose tattoo
+    anima: rose tattoo, detailed tattoo
+    zimage_turbo: with rose tattoo
+- id: dragon_tattoo
+  label: Dragon tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: dragon tattoo
+    anima: dragon tattoo, detailed tattoo
+    zimage_turbo: with dragon tattoo
+- id: skull_tattoo
+  label: Skull tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: skull tattoo
+    anima: skull tattoo, detailed tattoo
+    zimage_turbo: with skull tattoo
+- id: flower_tattoo
+  label: Flower tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: flower tattoo
+    anima: flower tattoo, detailed tattoo
+    zimage_turbo: with flower tattoo
+- id: butterfly_tattoo
+  label: Butterfly tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: butterfly tattoo
+    anima: butterfly tattoo, detailed tattoo
+    zimage_turbo: with butterfly tattoo
+- id: snake_tattoo
+  label: Snake tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: snake tattoo
+    anima: snake tattoo, detailed tattoo
+    zimage_turbo: with snake tattoo
+- id: wolf_tattoo
+  label: Wolf tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: wolf tattoo
+    anima: wolf tattoo, detailed tattoo
+    zimage_turbo: with wolf tattoo
+- id: lion_tattoo
+  label: Lion tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: lion tattoo
+    anima: lion tattoo, detailed tattoo
+    zimage_turbo: with lion tattoo
+- id: text_tattoo
+  label: Text tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: text tattoo
+    anima: text tattoo, detailed tattoo
+    zimage_turbo: with text tattoo
+- id: mandala_tattoo
+  label: Mandala tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: mandala tattoo
+    anima: mandala tattoo, detailed tattoo
+    zimage_turbo: with mandala tattoo
+- id: anchor_tattoo
+  label: Anchor tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: anchor tattoo
+    anima: anchor tattoo, detailed tattoo
+    zimage_turbo: with anchor tattoo
+- id: heart_tattoo
+  label: Heart tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: heart tattoo
+    anima: heart tattoo, detailed tattoo
+    zimage_turbo: with heart tattoo
+- id: moon_tattoo
+  label: Moon tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: moon tattoo
+    anima: moon tattoo, detailed tattoo
+    zimage_turbo: with moon tattoo
+- id: star_tattoo
+  label: Star tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: star tattoo
+    anima: star tattoo, detailed tattoo
+    zimage_turbo: with star tattoo
+- id: geometric_animal_tattoo
+  label: Geometric animal tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: geometric animal tattoo
+    anima: geometric animal tattoo, detailed tattoo
+    zimage_turbo: with geometric animal tattoo
+- id: religious_tattoo
+  label: Religious tattoo
+  meta:
+    subgroup: themes
+    group: Tattoo Themes
+  tags:
+    illustrious: religious tattoo
+    anima: religious tattoo, detailed tattoo
+    zimage_turbo: with religious tattoo
+- id: koi_fish_tattoo
+  label: Koi fish tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: koi fish tattoo
+    anima: koi fish tattoo, detailed tattoo
+    zimage_turbo: with koi fish tattoo
+- id: phoenix_tattoo
+  label: Phoenix tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: phoenix tattoo
+    anima: phoenix tattoo, detailed tattoo
+    zimage_turbo: with phoenix tattoo
+- id: lotus_flower_tattoo
+  label: Lotus flower tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: lotus flower tattoo
+    anima: lotus flower tattoo, detailed tattoo
+    zimage_turbo: with lotus flower tattoo
+- id: dagger_through_heart_tattoo
+  label: Dagger through heart tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: dagger through heart tattoo
+    anima: dagger through heart tattoo, detailed tattoo
+    zimage_turbo: with dagger through heart tattoo
+- id: eye_tattoo
+  label: Eye tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: eye tattoo
+    anima: eye tattoo, detailed tattoo
+    zimage_turbo: with eye tattoo
+- id: clock_tattoo
+  label: Clock tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: clock tattoo
+    anima: clock tattoo, detailed tattoo
+    zimage_turbo: with clock tattoo
+- id: compass_tattoo
+  label: Compass tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: compass tattoo
+    anima: compass tattoo, detailed tattoo
+    zimage_turbo: with compass tattoo
+- id: feather_tattoo
+  label: Feather tattoo
+  meta:
+    subgroup: specific
+    group: Specific Tattoos
+  tags:
+    illustrious: feather tattoo
+    anima: feather tattoo, detailed tattoo
+    zimage_turbo: with feather tattoo
+- id: temporary_tattoo
+  label: Temporary tattoo
+  meta:
+    subgroup: temporary
+    group: Temporary Tattoos
+  tags:
+    illustrious: temporary tattoo
+    anima: temporary tattoo, detailed tattoo
+    zimage_turbo: with temporary tattoo
+- id: henna_tattoo
+  label: Henna tattoo
+  meta:
+    subgroup: temporary
+    group: Temporary Tattoos
+  tags:
+    illustrious: henna tattoo
+    anima: henna tattoo, detailed tattoo
+    zimage_turbo: with henna tattoo
+- id: fake_tattoo
+  label: Fake tattoo
+  meta:
+    subgroup: temporary
+    group: Temporary Tattoos
+  tags:
+    illustrious: fake tattoo
+    anima: fake tattoo, detailed tattoo
+    zimage_turbo: with fake tattoo
+- id: sticker_tattoo
+  label: Sticker tattoo
+  meta:
+    subgroup: temporary
+    group: Temporary Tattoos
+  tags:
+    illustrious: sticker tattoo
+    anima: sticker tattoo, detailed tattoo
+    zimage_turbo: with sticker tattoo

@@ -11,6 +11,351 @@
 
 ## [Unreleased]
 
+### Fixed
+- **`update_and_run.bat` закрывалось с "[ERROR] Server failed to start." после обычной остановки
+  сервера Ctrl+C.** Сервер на Windows часто возвращает ненулевой код выхода именно при штатной
+  остановке через Ctrl+C — скрипт принимал это за реальный сбой запуска, показывал [ERROR] и уходил
+  в `:fail` (`pause` → закрытие окна по нажатию клавиши). Теперь после остановки сервера (по любой
+  причине — Ctrl+C или реальный сбой) пишется нейтральное "Server stopped." без алармистского
+  [ERROR]; если сервер правда не запустился, причина и так видна в выводе uvicorn выше. Тот же фикс
+  внесён в `restart.bat` (там был идентичный паттерн).
+- **В подсказке "To skip tests: ... (or --fast ...)" (добавленной в прошлом патче) ломался парсинг
+  cmd.exe.** Строка лежит внутри уже открытого блока `if errorlevel 1 ( ... )` — непроэкранированные
+  `(`/`)` внутри активного блока cmd.exe воспринимает как часть блочной структуры, а не как текст:
+  вторая половина подсказки уходила в отдельную "не опознанную команду". Скобки в этой строке
+  экранированы (`^(`/`^)`).
+  Оба бага найдены не статическим чтением, а реальным прогоном скрипта: поставил `wine` +
+  `gcc-mingw-w64` в песочнице, собрал нативный exe-заглушку для `python`, прогнал
+  `update_and_run.bat`/`restart.bat` под `wine cmd` с разными кодами возврата заглушки (успех/pip
+  упал/один build-скрипт упал/тесты упали/serve "упал") — так подтверждены и сами баги, и оба фикса
+  для всех шести сценариев.
+- **Ветка дерева для wildcard-подгруппы подписывалась именем файла, а не тем, что введено в
+  Subgroup.** Например: Category = `appearance.hair`, Subgroup = "Sexy outfit", файл
+  `random_filename_v3.txt` — лист в дереве показывал `🧩 random_filename_v3.txt` вместо
+  `🧩 Sexy Outfit`. `injectWildcardLeaves()` брал `label` загруженного файла (есть только при
+  нескольких файлах в одной подгруппе он ещё и произвольно "побеждает" — какой файл попался первым
+  при переборе). Теперь подпись листа строится из самого названия подгруппы (humanize:
+  `sexy_outfit` → `Sexy Outfit`, уже нормально набранное "Sexy outfit" остаётся как есть) — это и
+  есть то, что пользователь явно ввёл как имя группы. Имя файла по-прежнему видно в списке вкладки
+  Wildcards и в инлайн-секции "🧩 Wildcards" под *другими* подгруппами, где различать файлы
+  действительно нужно.
+
+- **В промпт попадала локация, которую пользователь не выбирал.** Сборка "scene"-бакета в
+  `core/pipeline.py` добавляла значения `scene.location` (старая плоская категория, без какого-
+  либо UI-контрола в текущем приложении — заменена деревом Environment → Location) И
+  `environment.location` (актуальное дерево Indoor / Outdoor & Semi-Outdoor / Fantasy & Stylized)
+  **одновременно**, если оба поля state были непустыми — вместо того чтобы трактовать их как
+  альтернативы, как это уже корректно делают `core/conflicts.py` и `core/rule_matching.py`
+  (`env.location or state.scene.location`). Если в сессии оставалось старое значение
+  `scene.location` (например `luxury_apartment` — оно могло попасть туда давно, ещё через
+  отсутствующий ныне UI или из старого сохранённого `.json`), в промпт всегда добавлялся текст
+  ЭТОЙ локации в довесок к тому, что реально выбрано в дереве Indoor/Outdoor/Fantasy — даже
+  если визуально в UI был подсвечен только один, совсем другой чип.
+  Подтверждено 1:1 по скриншоту пользователя: `anima`-тег айтема `luxury_apartment` из
+  `scene_location_pack/location.yaml` — `"luxury apartment with floor-to-ceiling windows and city
+  view"` — дословно совпадал с "лишним" куском промпта.
+  Фикс: `_collect_scene_bucket` теперь использует `env.location or scene.location` — берёт ровно
+  ОДНО значение (приоритет у актуального `environment.location`), `scene.location` остаётся
+  рабочим fallback'ом только для старых сессий, где `environment.location` вообще не задан.
+  Тест: `test_scene_location_and_environment_location_are_alternatives_not_both`.
+
+### Added
+- **Перенос тега прямо из окна "Edit tag".** Раньше перенести тег в другую category/subcategory
+  можно было только отдельной формой "Move tag" внизу панели Tag Studio — теперь поля Category и
+  Subcategory есть и в самой модалке Edit, рядом с остальными полями: меняешь их и жмёшь Save,
+  тег переезжает вместе с обновлением label/aliases/тегов моделей за одно действие.
+  - Subcategory-поле — свободный текстовый ввод с datalist (как Move tag/Wildcards/Add tag).
+  - Смена category работает только для runtime-тегов — то же ограничение, что и у отдельной кнопки
+    Move tag (core-тег нельзя "телепортировать" между категориями; сначала любое сохранение в Edit
+    форкает его в runtime-копию, дальше его уже можно переносить полноценно). Для core-тега поле
+    Category в модалке заблокировано (с подсказкой), доступна только смена подгруппы внутри той
+    же категории — это уже работало раньше неявно через `PUT .../items/{id}` (форк + subcategory),
+    просто не было видно в UI.
+  - Технически: смена подгруппы внутри той же категории идёт одним `PUT` (эндпоинт уже это умел —
+    `subcategory_id` + `allow_new_subcategory`). Смена самой категории — `PUT` (без subcategory)
+    сразу следом `POST .../move` с `to_category_id` и `to_subcategory_id` за один клик Save,
+    отдельного шага не требуется.
+  - Проверено: Node-харнесс с подменой `api()` — 3 сценария (смена только подгруппы у runtime-тега,
+    смена категории у runtime-тега, смена подгруппы у core-тега) дают ожидаемую последовательность
+    запросов и тел. Сквозной curl-тест: тег создан в `outfit.dress/micro_mini`, после
+    PUT+move лежит в `outfit.top/brand_new_via_edit_modal`.
+
+### Fixed
+- **Модалка «+ Add tag» — тот же баг, что и в Move tag/Wildcards, последний оставшийся случай.**
+  После фикса Move tag сделал полный аудит: прогрепал все `<select>` в `index.html`, все места в
+  `app.js`, пишущие `subcategory_id`/`subgroup`, и все вызовы `POST .../items`. Нашёл ровно ОДИН
+  оставшийся случай — поле Subcategory в модалке "+ Add tag" (`add-tag-subgroup`): закрытый
+  `<select>`, заполнялся только уже существующими подгруппами, плюс сам fetch не отправлял
+  `allow_new_subcategory: true`, так что даже при ручном вводе бэкенд ответил бы 400. Подтвердил
+  curl'ом: тот же payload без флага — 400 "Invalid subcategory…", с флагом — 200.
+  Поле сконвертировано в свободный текстовый ввод с datalist-подсказками (как Move tag и
+  Wildcards); `createTagFromModal()` теперь всегда шлёт `allow_new_subcategory: true`; префилл
+  подгруппы при открытии модалки по кнопке "+" внутри панели подгруппы больше не требует, чтобы
+  значение уже было «известным».
+  Остальные `<select>` в Tag Studio (Lister-фильтр, пикеры category) — это либо фильтры поиска
+  (где закрытый список корректен: фильтровать по несуществующей подгруппе бессмысленно), либо
+  выбор category (фиксированный набор, не подгруппа) — их трогать было не нужно.
+
+- **Move tag в Tag Studio не работал при переносе в некоторые подгруппы.** Та же
+  закрытая-`<select>`-проблема, что и в форме Wildcards / модалке "+ Add tag": поле "Move to
+  subcategory" заполнялось только подгруппами, в которых **уже есть хотя бы один тег**
+  (`GET /api/categories/{id}` → `subcategories` строится из фактических тегов категории). Если
+  целевая подгруппа была пустой (включая абсолютно новую, ещё не существующую) — её просто не
+  было среди опций `<select>`, перенести тег туда было физически нечем выбрать. Бэкенд
+  (`POST /.../items/{id}/move`) при этом уже полностью поддерживал перенос в любую новую
+  подкатегорию без ограничений — проверил руками через curl до правки. Поле сделано свободным
+  текстовым вводом с datalist-подсказками существующих подгрупп (как и в Wildcards) — можно
+  выбрать из списка или вписать новое имя. Добавлен регрессионный тест
+  (`test_api_move_runtime_tag_item_into_brand_new_subcategory`) — для этого эндпоинта раньше не
+  было тестового покрытия вообще.
+
+### Added
+- **Condition «Unzipped to waist»** в группе Partial Removal & Exposure (`outfit.clothing_state`,
+  `partial_removal`), рядом с Open / Unbuttoned и Slid off shoulders.
+
+### Fixed
+- **Цветовые condition-теги для одежды («мы добавляли, их нет»).** Данные были полностью на
+  месте: 26 тегов с `dimension: color` / `group: Color` в `outfit/tags/clothing_state.yaml`,
+  бэкенд их честно отдавал (`GET /api/categories/outfit.clothing_state`), и сборка промпта
+  (`core/clothing_state_bind.py::CLOTHING_STATE_DIMENSION_ORDER`) уже знала про `color`. Не
+  хватало только UI: список измерений для аккордеона условий одежды (`CLOTHING_STATE_DIMENSIONS`
+  в `app.js`) — отдельный, захардкоженный массив — никогда не обновлялся после добавления цвета,
+  поэтому секция "Color" просто не рендерилась, хотя теги были полностью рабочими (их можно было
+  выставить только в обход UI, например через JSON-импорт сессии). Добавлена недостающая запись
+  `{ id: "color", label: "Color" }` в порядке, соответствующем YAML (между Stains & Fluids и
+  Additional states).
+- **Тег из одного wildcard-файла «исчезал», если строка с тем же текстом встречалась в другом
+  файле.** `item_id` каждой строки генерируется детерминированно из текста (slugify) и до сих пор
+  деduplicate-ился только *внутри* одного файла (`make_item_id` / `used_ids` — см.
+  `egodary/core/wildcards.py`). Когда два РАЗНЫХ загруженных файла содержали строку с одинаковым
+  текстом (вполне реальный кейс для похожих по теме списков — причёски, позы и т.п.), оба тега
+  попадали в `RuntimeRegistry` с одинаковым id, и `add_item(..., on_conflict="skip")` молча
+  отбрасывал тег из второго (по порядку обработки) файла — без какой-либо ошибки или
+  предупреждения в UI. Поскольку порядок чтения файлов из SQLite не гарантирован (`SELECT`
+  без `ORDER BY`), какой именно файл «терял» тег могло меняться от запуска к запуску — отсюда
+  ощущение, что «при загрузке нового файла происходит перезапись и старый исчезает».
+  Воспроизвёл и подтвердил руками (curl): два файла с единственной строкой `Long bangs` каждый —
+  до фикса в каталоге `appearance.hair` оставался только один экземпляр тега вместо двух.
+  Теперь id тега в реестре всегда содержит префикс `wc{wildcard_id}_...` — коллизия между
+  РАЗНЫМИ файлами невозможна в принципе, тег пропадает только когда удалён сам файл (или его
+  собственная строка выключена чекбоксом) во вкладке Wildcards, как и требовалось.
+  - `egodary/persistence/schema.py::load_wildcards_into_registry` — namespaced id при merge в
+    реестр; собственный `item_id` в таблице `wildcard_items` (используется для чекбокса
+    включения отдельной строки) не менялся.
+  - `GET /api/wildcards/by-category/{category_id}` — отдаёт тот же namespaced id, которым
+    реально оперирует реестр, чтобы выбор тега из дерева/секции Wildcards совпадал с тем, что
+    действительно попадёт в промпт.
+  - Новый регрессионный тест: `test_load_wildcards_into_registry_two_files_same_text_dont_collide`.
+    Обновлены 3 существующих теста, жёстко зависевших от старого (без namespace) формата id.
+
+### Added
+- **Отдельная ветка дерева для новых wildcard-подгрупп.** Раньше wildcard с произвольным
+  `target_subgroup` (например `appearance.hair` / `imported`) был виден только как
+  дополнительный блок «🧩 Wildcards», приклеенный снизу к *каждой* существующей подгруппе
+  категории (Long Styles, Updos & Buns и т.д.) — без своего отдельного узла в дереве слева.
+  Теперь `injectWildcardLeaves()` (по той же схеме, что уже использует `injectPresetsIntoTree`
+  для пресетов) добавляет для такой подгруппы собственный лист дерева — `🧩 hair test.txt` —
+  рядом с остальными ветками Hair, со своими чипами, выбираемыми точно так же, как у обычных
+  подгрупп. `field`/`multi`/`conditionField` нового листа копируются с соседнего листа той же
+  categoryId, поэтому он читает/пишет то же поле state, что и его «настоящие» соседи. Работает
+  для произвольной глубины вложенности (например `Accessories → Tattoos & Body Art`) и для
+  групп, смешивающих несколько categoryId под одним заголовком (например `Hair` = `appearance.hair`
+  + `appearance.hair_color`, `Bottom` = `outfit.bottom` + `outfit.underwear_layer`).
+  Индекс (`GET /api/wildcards`, без построчных items — достаточно для построения дерева)
+  грузится один раз при старте приложения, до первого рендера дерева, и пересчитывается после
+  любого upload/toggle/delete во вкладке Wildcards.
+  Блок «🧩 Wildcards» внутри обычных подгрупп больше не дублирует подгруппу, которая теперь
+  доступна как отдельный лист (фильтруется по `target_subgroup !== текущая subgroup`).
+
+### Fixed
+- **Wildcards-секция внутри подгрупп.** Каждая панель подгруппы (Outfit, Character/Hair,
+  Makeup, Accessories, Pose, Camera, Lighting, Environment, Fetish и т.д.) теперь показывает
+  блок «🧩 Wildcards» со всеми тегами, загруженными через вкладку Wildcards для родительской
+  категории этой подгруппы — независимо от того, совпадает ли `target_subgroup`, заданный при
+  загрузке, со встроенным id подгруппы в дереве. Раньше теги, загруженные с произвольным/новым
+  именем подгруппы (например `test`), не появлялись вообще нигде в интерфейсе — они уже лежали
+  в `RuntimeRegistry` и участвовали в генерации, но физически не на чем было их увидеть, т.к.
+  фильтрация чипов по подгруппе (`filterItemsBySubgroup`) требует точного совпадения id.
+  Секция читает `GET /api/wildcards/by-category/{category_id}` (новый эндпоинт) и автоматически
+  пропадает, если у категории нет включённых wildcard-файлов — либо если конкретный файл/строка
+  выключены чекбоксом во вкладке Wildcards (что и было главным требованием: «при выключении —
+  раздел не отображается»).
+  - Бэкенд: `GET /api/wildcards/by-category/{category_id}` — отдаёт только enabled wildcards
+    с их enabled строками, сгруппированными по исходному файлу.
+  - Фронтенд: `appendWildcardsSection()` дергается из `loadCategoryChips()` /
+    `loadCategoryMultiChips()` после рендера обычных чипов, с простым кэшем по categoryId
+    (инвалидируется при upload/toggle/delete wildcard) и защитой от гонки при быстром
+    переключении подгрупп (`dataset.wcToken`).
+- **Plugins-карточка во вкладке Advanced.** Бэкенд (`GET /api/plugins`,
+  `POST /api/plugins/{id}/enable|disable`) существовал, но не имел ни одного потребителя во
+  фронтенде — раздел управления плагинами из UI отсутствовал полностью (ни одного упоминания
+  `plugin` в `app.js`/`index.html`). Добавлена карточка со списком drop-in плагинов
+  (`plugins_user/`), чекбоксом enable/disable на каждый и подсказкой про необходимость
+  перезапуска сервера после переключения.
+
+### Fixed
+- **`ui_extension.register()` падал на каждом старте сервера.** Плагин `advanced_prompting`
+  вызывает `app.add_middleware(...)` в своём `register()`, а `register_ui_extensions(app)`
+  вызывался изнутри `lifespan`-хендлера — но Starlette фиксирует middleware-стек на самом первом
+  ASGI-вызове приложения, включая сам `lifespan`-scope, то есть `add_middleware()` гарантированно
+  бросает `RuntimeError: Cannot add middleware after an application has started` ещё до того, как
+  выполнится код плагина. Ошибка перехватывалась в `PluginManager.register_ui_extensions()` и
+  молча логировалась — поэтому `advanced_prompting` фактически никогда не регистрировал свою
+  UI-инъекцию ни на одном запуске. Регистрация перенесена на уровень модуля — сразу после
+  создания `FastAPI(...)`, до первого ASGI-вызова.
+- Удалена осиротевшая дублирующая папка `plugins_user/advanced_prompting.disabled` (байт-в-байт
+  совпадала с активной `advanced_prompting/`, не считая `__pycache__`) — из-за неё
+  `GET /api/plugins` отдавал один и тот же плагин дважды: включённым и выключенным одновременно.
+- Поле Subgroup на вкладке Wildcards: `<datalist id="wildcards-subgroup-options">` существовал
+  в разметке, но никогда не заполнялся — отсюда и опечатки/случайные новые подгруппы при загрузке
+  (см. пункт выше). Теперь при выборе категории подсказки подтягиваются из
+  `subcategories` соответствующего `GET /api/categories/{id}`.
+- **`GET /` падал на каждый запрос после того, как заработала регистрация `ui_extension`
+  (предыдущий пункт).** `InjectScriptMiddleware` плагина `advanced_prompting`
+  (`plugins_user/advanced_prompting/advanced_prompting/plugin.py`) дописывает `<script>` в тело
+  `index.html`, но собирала заголовки нового `Response` через `dict(response.headers)` —
+  включая уже устаревший `content-length` от оригинального (более короткого) тела. Starlette не
+  пересчитывает `content-length`, если он уже присутствует в переданных headers, поэтому uvicorn
+  обнаруживал расхождение между реальным телом и заявленной длиной и ронял запрос:
+  `RuntimeError: Response content longer than Content-Length`. Эта ветка кода была годами мертва
+  из-за предыдущего бага (middleware вообще не регистрировался) — поэтому и не проявлялась раньше.
+  Теперь `content-length`/`content-encoding` выкидываются из скопированных headers перед
+  созданием нового `Response`, чтобы Starlette посчитал их заново.
+
+### Debug
+- Проверено: `pytest tests/` — 251 passed, без регрессий от переноса регистрации плагинов.
+- Проверено вручную (curl, поднятый локально `uvicorn`): чистый старт без ошибок в логе,
+  `/api/plugins` отдаёт один корректный объект, enable/disable round-trip переименовывает папку
+  туда-обратно, `/api/wildcards/by-category/appearance.hair` отдаёт ранее «потерянные» 15 тегов
+  из `hair test.txt` (target_subgroup=`test`).
+- Проверено вручную: `GET /` после фикса возвращает `200 OK`, `content-length` в заголовке точно
+  совпадает с фактическим размером тела ответа, инжектированный `<script>` присутствует перед
+  `</body>`, в логе сервера — чистый `200 OK` без traceback.
+- `injectWildcardLeaves()` прогнан изолированным Node-харнессом (без браузера) против реальных
+  `HAIR_TREE`/`OUTFIT_TREE`/`ACCESSORIES_TREE`/полного `getCharacterTree()`: лист корректно
+  добавляется на верхнем уровне (Hair), внутри вложенной на 2 уровня группы (Accessories →
+  Tattoos & Body Art), в группе с несколькими categoryId (Bottom = outfit.bottom +
+  outfit.underwear_layer), и не добавляется при пустом индексе wildcards.
+- `pytest tests/` — 252 passed (251 + новый регрессионный тест на коллизию id между файлами).
+  Проверено вручную (curl): два файла с совпадающей строкой `Long bangs` — до фикса жил только
+  один экземпляр тега в `appearance.hair`, после фикса оба, с разными `wc{id}_long_bangs`.
+- `pytest tests/` — 252 passed. Проверено вручную (curl `/api/generate`): condition
+  `partial_removal: unzipped_to_waist` + `color: red` на `black_harness_top` →
+  `"unzipped to waist red black harness top"` в positive prompt.
+- `pytest tests/` — 253 passed. Проверено вручную (curl): `POST /.../move` с
+  `to_subcategory_id` на несуществующую подгруппу `brand_new_subgroup_xyz` — 200 OK, тег
+  корректно переехал.
+- `pytest tests/` — 253 passed (без новых тестов: backend-валидация `allow_new_subcategory` уже
+  была покрыта тестом `test_api_add_runtime_tag_item_supports_new_subcategory_when_enabled`).
+  Проверено вручную (curl), тот же payload, что теперь шлёт модалка: без `allow_new_subcategory`
+  → 400 "Invalid subcategory…", с флагом → 200, тег создан с нужной подгруппой.
+
+## [0.1.35] — 2026-06-20
+
+### Added
+- **Wildcards** — новый раздел в левом меню для загрузки собственных текстовых списков тегов.
+  Пользователь загружает `.txt` файл (одна фраза на строку, маркеры `*`/`-`/`•` опциональны),
+  выбирает существующую категорию генератора и подгруппу (существующую или новую) — каждая
+  строка становится отдельным тегом, alias/id и формат тега для всех трёх моделей
+  (Illustrious/Anima/Z-Image Turbo) генерируются автоматически из текста строки.
+  Чекбоксы управляют включением в реальном времени: можно отключить весь файл целиком или
+  отдельную строку, без удаления данных.
+  - Бэкенд: `egodary/core/wildcards.py` (парсинг строк, slugify, генерация TagItem),
+    новые таблицы `wildcards` / `wildcard_items` в SQLite, теги загружаются в существующий
+    `RuntimeRegistry` overlay-механизм (`source="wildcard"`) — генератор видит их как
+    обычные теги выбранной категории/подгруппы без какой-либо отдельной логики в pipeline.
+  - API: `GET/POST /api/wildcards`, `GET /api/wildcards/{id}`, `POST /api/wildcards/preview`,
+    `POST /api/wildcards/{id}/toggle`, `POST /api/wildcards/{id}/items/{item_id}/toggle`,
+    `DELETE /api/wildcards/{id}`.
+  - UI: новая вкладка «Wildcards» — форма загрузки (выбор category/subgroup, textarea или
+    файл .txt, live-preview парсинга), список загруженных файлов со счётчиком строк,
+    разворачиваемый построчный список с собственным чекбоксом на каждую строку.
+
+## [0.1.34] — 2026-06-19
+
+### Fixed
+- Счётчики выбора в дереве категорий/подгрупп (Pose, Outfit и др.): отображаются при активном выборе; исправлена вложенная кнопка «+», скрывавшая счётчик.
+
+## [0.1.33] — 2026-06-19
+
+### Added
+- Кнопка **+** у категорий и подгрупп в дереве тегов (Outfit, Character, Style и др.): открывает Add tag с уже выбранной category/subcategory.
+
+## [0.1.32] — 2026-06-19
+
+### Fixed
+- UI: синтаксическая ошибка в `app.js` (обломок кода после правок Tag Studio) — весь интерфейс не инициализировался.
+
+## [0.1.31] — 2026-06-19
+
+### Fixed
+- Tag Studio Search: результаты кликабельны — выбор тега из поиска включает Edit/Move/Delete (раньше нужен был только листер).
+
+### Changed
+- Tag Studio: tooltips (`title`) на кнопках Search, дедупликации, миграции, листера и действий с тегом; Enter в поле Search запускает поиск.
+
+## [0.1.30] — 2026-06-19
+
+### Changed
+- Notes / Todo: компактные строки, узкое поле due date, «Без срока» справа от календаря; кнопка ✓ (выполнено) переносит задачу под активные; удаление с подтверждением.
+
+## [0.1.29] — 2026-06-19
+
+### Fixed
+- Tag Studio **Edit tag**: поля снова редактируемые; сохранение core-тега создаёт runtime-копию с тем же id (fork на сервере), без режима «только просмотр».
+
+## [0.1.28] — 2026-06-19
+
+### Changed
+- Advanced Todo: выбор **Due date** через календарь (кнопка 📅 + `type="date"`), чекбокс **Без срока** в форме добавления и у каждой задачи в списке.
+
+## [0.1.27] — 2026-06-19
+
+### Fixed
+- Tag Studio: **Edit tag** открывает модалку для core-тегов (режим просмотра) и для runtime-тегов (редактирование); раньше кнопка была disabled без обратной связи.
+
+### Changed
+- Tag Studio: кнопки **+ Add tag**, **Edit**, **Move**, **Delete** — единый стиль `btn-secondary btn-sm`.
+
+## [0.1.26] — 2026-06-19
+
+### Added
+- Accessories: секция **Tattoos & Body Art** — 5 подгрупп (Styles, Placements, Themes, Specific, Temporary), 56 тегов в `appearance.tattoos`.
+- Prompt bucket `tattoos` после `outfit` (Illustrious / Anima / Z-Image) — порядок: стиль → placement → тема.
+
+## [0.1.25] — 2026-06-19
+
+### Changed
+- Outfit: clothing states привязываются к тегу выбранного предмета в слоте (`pulled down bodycon micro dress`, `pulled down wet bodycon micro dress`), а не как отдельные generic-теги (`clothing pulled down`).
+- Каталог `outfit.clothing_state`: короткие modifier-фразы без слова «clothing».
+
+## [0.1.24] — 2026-06-19
+
+### Fixed
+- UI: исправлен краш при загрузке — `init()` вызывал удалённую `ensureClothingConditions()` вместо `ensureClothingStateCatalog()`; из-за этого не рендерились панели Style, Character и остальные вкладки.
+
+## [0.1.23] — 2026-06-19
+
+### Changed
+- Character v0.1.23: объединены skin-подгруппы в одну секцию **Ethnicity & Skin Tone** (Skin Texture, Skin Details, Body Details); убраны дубли `matte skin` и `beauty marks / moles`.
+- Session migration v9: remap удалённых `body_details` id при загрузке сессии.
+
+## [0.1.22] — 2026-06-19
+
+### Added
+- Outfit v0.1.22: универсальные **Clothing states** (`outfit.clothing_state`) — 8 комбинируемых групп на слот, Quick states presets, аккордеон UI.
+- Tag Studio: модалка **Edit tag** (Model-specific tags), улучшенный поиск по alias, **Reactivate** с путём category/subcategory.
+- Advanced: **Notes / Todo** с priority, due date, drag-and-drop и сохранением в SQLite (`GET/PUT /api/advanced/todo`).
+- Character library: **переименование** пресета (`PATCH /api/character-library/{id}`).
+- Accessories: подгруппы gaming, sport, angelic, demonic, crowns & tiaras, medical, religious.
+
+### Changed
+- Face: удалена группа Skin (tone/texture/details); texture & details перенесены в Character → Ethnicity & Skin Tone.
+- Session migration v8: перенос `face.skin` → character + новый формат `outfit.conditions`.
+
+### Removed
+- Deprecated `outfit.clothing_condition` (per-garment monolithic wear phrases).
+
 ## [0.1.21] — 2026-06-18
 
 ### Fixed

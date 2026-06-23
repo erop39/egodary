@@ -29,7 +29,8 @@ CHARACTER_SUBGROUP_LABELS: dict[str, dict[str, str]] = {
     "skin_tone": {"tone": "Skin Tone"},
     "body_details": {
         "skin_texture": "Skin Texture",
-        "additional_details": "Additional Details",
+        "skin_details": "Skin Details",
+        "body_details": "Body Details",
     },
 }
 
@@ -175,26 +176,41 @@ CHARACTER_CATALOG: dict[str, dict[str, list[str]]] = {
     },
     "body_details": {
         "skin_texture": [
-            "Smooth skin",
+            "Smooth flawless skin",
             "Soft skin",
             "Silky skin",
             "Toned skin",
-            "Oily / Shiny skin",
-            "Dewy skin",
-            "Matte skin",
-            "Light sweat",
+            "Dewy / glowing skin",
             "Glowing skin",
+            "Oily shiny skin",
+            "Matte skin",
+            "Wet skin (water/oil)",
+            "Light sweat",
+            "Slightly sweaty skin",
+            "Glass skin effect",
+            "Soft natural skin with pores",
         ],
-        "additional_details": [
-            "Light freckles on body",
+        "skin_details": [
+            "Light freckles across nose and cheeks",
+            "Heavy freckles",
             "Beauty marks / moles",
+            "Subtle blush on cheeks",
+            "Heavy blush (aroused)",
+            "Redness around mouth and cheeks",
+            "Visible veins (subtle)",
+            "Light scars",
+            "Skin with goosebumps",
+            "Wet skin with water droplets",
+            "Sensitive skin",
+            "Easily flushed skin",
+        ],
+        "body_details": [
+            "Light freckles on body",
             "Subtle stretch marks",
             "Light cellulite",
             "Subtle muscle definition",
             "Soft stomach",
             "Toned stomach",
-            "Sensitive skin",
-            "Easily flushed skin",
         ],
     },
 }
@@ -219,9 +235,26 @@ CHARACTER_TREE_GROUPS: list[dict] = [
         "children": [
             {"field": "ethnicity", "label": "Ethnicity"},
             {"field": "skin_tone", "label": "Skin Tone"},
+            {
+                "field": "body_details",
+                "label": "Skin Texture",
+                "multi": True,
+                "subgroup": "skin_texture",
+            },
+            {
+                "field": "body_details",
+                "label": "Skin Details",
+                "multi": True,
+                "subgroup": "skin_details",
+            },
+            {
+                "field": "body_details",
+                "label": "Body Details",
+                "multi": True,
+                "subgroup": "body_details",
+            },
         ],
     },
-    {"field": "body_details", "label": "Body Details", "multi": True},
 ]
 
 # Tags that may appear in more than one field — pipeline dedupes by normalized tag text.
@@ -229,5 +262,7 @@ CHARACTER_DEDUPE_TAG_HINTS: frozenset[str] = frozenset(
     {
         "thick thighs",
         "shortstack",
+        "matte skin",
+        "beauty marks / moles",
     }
 )

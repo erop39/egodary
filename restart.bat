@@ -55,12 +55,13 @@ if "!NO_RELOAD!"=="1" (
 ) else (
     %PYTHON_CMD% -m egodary.cli.main serve
 )
-if errorlevel 1 (
-    echo.
-    echo [ERROR] Server failed to start.
-    goto :fail
-)
 
+REM See update_and_run.bat for why we don't treat a non-zero exit here as
+REM [ERROR] + :fail - stopping with Ctrl+C normally exits non-zero too, and
+REM that's not a real failure.
+echo.
+echo Server stopped.
+pause
 goto :eof
 
 :fail

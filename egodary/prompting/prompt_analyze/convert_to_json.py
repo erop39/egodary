@@ -92,13 +92,6 @@ def _subject_from_state(
             expression_parts.extend(engine._split_tags(resolved))
 
     clothing_parts = list(buckets.outfit) if not is_secondary else []
-    clothing_state_parts: list[str] = []
-    if not is_secondary:
-        for field_name, condition_id in (state.outfit.conditions or {}).items():
-            if condition_id:
-                resolved = _resolve(engine, "outfit.clothing_condition", condition_id, model_id)
-                if resolved:
-                    clothing_state_parts.extend(engine._split_tags(resolved))
 
     body_detail_parts: list[str] = []
     if not is_secondary:
@@ -121,8 +114,6 @@ def _subject_from_state(
         "clothing": join_tags(dedupe_tags(clothing_parts)),
         "attributes": {"count_tags": count_tags},
     }
-    if clothing_state_parts:
-        subject["clothing_state"] = join_tags(dedupe_tags(clothing_state_parts))
     if body_detail_parts:
         subject["body_details"] = join_tags(dedupe_tags(body_detail_parts))
     return subject

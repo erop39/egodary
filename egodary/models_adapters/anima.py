@@ -145,6 +145,7 @@ class AnimaAdapter:
             "quality",
             "character",
             "outfit",
+            "tattoos",
             "pose",
             "camera",
             "scene",
@@ -172,6 +173,7 @@ class AnimaAdapter:
         face = self._clean_tags(bucket_map.get("face", []))
         hair = self._clean_tags(bucket_map.get("appearance", []))
         outfit = self._clean_tags(bucket_map.get("outfit", []))
+        tattoos = self._clean_tags(bucket_map.get("tattoos", []))
         pose = self._clean_tags(
             list(bucket_map.get("pose", [])) + list(bucket_map.get("situation", []))
         )
@@ -197,6 +199,7 @@ class AnimaAdapter:
             self._join(face),
             self._join(hair, "detailed hair"),
             self._join(outfit, "cohesive outfit design"),
+            self._join(tattoos),
             self._join(pose, "natural pose"),
             self._join(camera, "upper body, portrait framing"),
             self._join(scene, "stylized environment"),

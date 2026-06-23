@@ -1,0 +1,149 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 88395fd..265f216 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,6 +11,20 @@
+ 
+ ## [Unreleased]
+ 
++### Fixed
++- **Move tag в Tag Studio не работал при переносе в некоторые подгруппы.** Та же
++  закрытая-`<select>`-проблема, что и в форме Wildcards / модалке "+ Add tag": поле "Move to
++  subcategory" заполнялось только подгруппами, в которых **уже есть хотя бы один тег**
++  (`GET /api/categories/{id}` → `subcategories` строится из фактических тегов категории). Если
++  целевая подгруппа была пустой (включая абсолютно новую, ещё не существующую) — её просто не
++  было среди опций `<select>`, перенести тег туда было физически нечем выбрать. Бэкенд
++  (`POST /.../items/{id}/move`) при этом уже полностью поддерживал перенос в любую новую
++  подкатегорию без ограничений — проверил руками через curl до правки. Поле сделано свободным
++  текстовым вводом с datalist-подсказками существующих подгрупп (как и в Wildcards) — можно
++  выбрать из списка или вписать новое имя. Добавлен регрессионный тест
++  (`test_api_move_runtime_tag_item_into_brand_new_subcategory`) — для этого эндпоинта раньше не
++  было тестового покрытия вообще.
++
+ ### Added
+ - **Condition «Unzipped to waist»** в группе Partial Removal & Exposure (`outfit.clothing_state`,
+   `partial_removal`), рядом с Open / Unbuttoned и Slid off shoulders.
+@@ -144,6 +158,9 @@
+ - `pytest tests/` — 252 passed. Проверено вручную (curl `/api/generate`): condition
+   `partial_removal: unzipped_to_waist` + `color: red` на `black_harness_top` →
+   `"unzipped to waist red black harness top"` в positive prompt.
++- `pytest tests/` — 253 passed. Проверено вручную (curl): `POST /.../move` с
++  `to_subcategory_id` на несуществующую подгруппу `brand_new_subgroup_xyz` — 200 OK, тег
++  корректно переехал.
+ 
+ ## [0.1.35] — 2026-06-20
+ 
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index 9d65238..ef5b917 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -4602,15 +4602,39 @@ function renderTagStudioSelectionState() {
+   }
+ }
+ 
++async function loadTagStudioMoveSubcategoryOptions(categoryId) {
++  const input = document.getElementById("tagstudio-move-subcategory");
++  const datalist = document.getElementById("tagstudio-move-subcategory-options");
++  if (!input) return [];
++  if (!categoryId) {
++    if (datalist) datalist.innerHTML = "";
++    input.dataset.hasSubcategories = "0";
++    return [];
++  }
++  try {
++    const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
++    const values = (data.subcategories || []).filter((s) => s && s !== "none");
++    if (datalist) datalist.innerHTML = values.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
++    input.dataset.hasSubcategories = values.length ? "1" : "0";
++    return values;
++  } catch {
++    if (datalist) datalist.innerHTML = "";
++    input.dataset.hasSubcategories = "0";
++    return [];
++  }
++}
++
+ async function syncTagStudioMoveSubcategory(categoryId, selected = "") {
+   const moveSubcategory = document.getElementById("tagstudio-move-subcategory");
+   if (!moveSubcategory) return;
+-  const values = await loadTagStudioSubcategorySelect(categoryId, moveSubcategory, {
+-    anyLabel: "none",
+-    noneLabel: "none",
+-    includeAny: false,
+-  });
+-  if (selected && values.includes(selected)) moveSubcategory.value = selected;
++  // Free-text field with a datalist of existing subgroups as suggestions —
++  // unlike the Lister filter select, this one must also accept a brand-new
++  // subgroup name that has no tags in it yet (the backend's move endpoint
++  // already supports this; the closed <select> it used to be just never
++  // offered that as an option, so "move to subcategory" silently couldn't
++  // target any subgroup that didn't already contain at least one tag).
++  await loadTagStudioMoveSubcategoryOptions(categoryId);
++  moveSubcategory.value = selected || "";
+ }
+ 
+ async function selectTagStudioListerRow(row) {
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+index be45419..abab139 100644
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -401,7 +401,8 @@
+                     <select id="tagstudio-move-category"></select>
+                   </label>
+                   <label>Move to subcategory
+-                    <select id="tagstudio-move-subcategory"></select>
++                    <input type="text" id="tagstudio-move-subcategory" list="tagstudio-move-subcategory-options" placeholder="существующая или новая" autocomplete="off" />
++                    <datalist id="tagstudio-move-subcategory-options"></datalist>
+                   </label>
+                 </div>
+                 <p class="card-hint tagstudio-delete-hint">Delete = soft deactivate (is_active=false). Снимите Active only, чтобы восстановить тег.</p>
+diff --git a/tests/test_api_meta.py b/tests/test_api_meta.py
+index f907c74..470380d 100644
+--- a/tests/test_api_meta.py
++++ b/tests/test_api_meta.py
+@@ -333,6 +333,45 @@ def test_api_tag_studio_reactivate_runtime_item():
+     assert reactivated.json()["item"]["meta"]["is_active"] is True
+ 
+ 
++def test_api_move_runtime_tag_item_into_brand_new_subcategory():
++    """Move tag's destination subcategory must accept a subgroup name that has
++    no tags in it yet. The Tag Studio "Move to subcategory" field used to be a
++    closed <select> populated only from subcategories that already contain at
++    least one item, so moving into an empty/new subgroup was silently
++    impossible from the UI — even though this endpoint always supported it."""
++    from egodary.app import reset_engine_cache
++
++    reset_engine_cache()
++    client = TestClient(app)
++    created = client.post(
++        "/api/categories/prompting.imported/items",
++        json={
++            "label": "move target marker",
++            "subcategory_id": "imported",
++            "allow_new_subcategory": True,
++            "persist": False,
++        },
++    )
++    assert created.status_code == 200, created.text
++    item_id = created.json()["item"]["id"]
++
++    moved = client.post(
++        f"/api/categories/prompting.imported/items/{item_id}/move",
++        json={
++            "to_category_id": "prompting.imported",
++            "to_subcategory_id": "brand_new_empty_subgroup",
++            "persist": False,
++        },
++    )
++    assert moved.status_code == 200, moved.text
++
++    cat = client.get("/api/categories/prompting.imported").json()
++    moved_item = next((i for i in cat["items"] if i["id"] == item_id), None)
++    assert moved_item is not None
++    assert moved_item["meta"]["subcategory_id"] == "brand_new_empty_subgroup"
++    assert moved_item["meta"]["subgroup"] == "brand_new_empty_subgroup"
++
++
+ def test_api_advanced_todo_roundtrip(client):
+     empty = client.get("/api/advanced/todo")
+     assert empty.status_code == 200

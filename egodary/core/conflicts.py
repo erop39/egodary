@@ -11,6 +11,18 @@ from egodary.core.models import PromptState
 
 OUTFIT_NONE_ID = "none"
 
+# Все ключи conditions, которые относится к outfit.bottom: базовый "bottom"
+# (используется подгруппой long_pants) плюс по одному ключу на каждую
+# остальную bottom-подгруппу (underwear/skirts/transparent_plastic_skirts/shorts).
+# Должно совпадать с BOTTOM_SUBGROUP_CONDITION_FIELDS в app.js.
+BOTTOM_SUBGROUP_CONDITION_KEYS = (
+    "bottom",
+    "underwear",
+    "skirts",
+    "transparent_plastic_skirts",
+    "shorts",
+)
+
 
 def _outfit_item_active(value: str | None) -> bool:
     return bool(value) and value != OUTFIT_NONE_ID
@@ -340,6 +352,7 @@ def apply_appearance_conflicts(appearance, warnings: list[str]) -> None:
     voluminous_hats = set(rules.get("voluminous_hats") or ())
     max_accessories = int(rules.get("max_accessories") or 4)
     max_makeup = int(rules.get("max_makeup") or 6)
+    max_tattoos = int(rules.get("max_tattoos") or 6)
 
     if appearance.hair in complex_hair and appearance.accessories:
         blocked = [a for a in appearance.accessories if a in voluminous_hats]
@@ -354,6 +367,10 @@ def apply_appearance_conflicts(appearance, warnings: list[str]) -> None:
     if len(appearance.makeup) > max_makeup:
         appearance.makeup = appearance.makeup[:max_makeup]
         warnings.append(f"Makeup trimmed to {max_makeup} items.")
+
+    if len(appearance.tattoos) > max_tattoos:
+        appearance.tattoos = appearance.tattoos[:max_tattoos]
+        warnings.append(f"Tattoos trimmed to {max_tattoos} items.")
 
 
 def apply_outfit_conflicts(outfit, warnings: list[str]) -> None:
@@ -375,7 +392,7 @@ def apply_outfit_conflicts(outfit, warnings: list[str]) -> None:
             if cleared:
                 warnings.append("Bottom cleared: layerable dress replaces separate bottom.")
         else:
-            cleared = _clear_fields(outfit, ("top", "bottom", "underwear_layer", "legwear"))
+            cleared = _clear_fields(outfit, ("top", "bottom", "legwear"))
             if cleared:
                 warnings.append("Top/Bottom/Legwear cleared because Dress covers the full silhouette.")
 
@@ -386,26 +403,10 @@ def apply_outfit_conflicts(outfit, warnings: list[str]) -> None:
     layerable = set(rules.get("layerable_bottom_subgroups") or ("skirts", "shorts"))
 
     if bottom_subgroup == "long_pants":
-        if _outfit_item_active(outfit.underwear_layer):
-            outfit.underwear_layer = ""
-            warnings.append("Underwear layer removed: long pants cover the legs.")
         if _outfit_item_active(outfit.legwear):
             outfit.legwear = ""
             warnings.append("Legwear removed: not compatible with long pants.")
 
-    if bottom_subgroup == "underwear":
-        if _outfit_item_active(outfit.underwear_layer):
-            outfit.underwear_layer = ""
-            warnings.append("Underwear layer cleared: bottom is already underwear-only.")
-
-    if (
-        bottom_subgroup not in layerable
-        and bottom_subgroup != OUTFIT_NONE_ID
-        and _outfit_item_active(outfit.underwear_layer)
-        and not dress_is_layerable
-    ):
-        outfit.underwear_layer = ""
-        warnings.append("Underwear layer only allowed with skirts or shorts.")
 
     if outfit.dress in voluminous_dresses and _outfit_item_active(outfit.jacket) and outfit.jacket in bulky_jackets:
         outfit.jacket = ""
@@ -420,25 +421,32 @@ def apply_outfit_conflicts(outfit, warnings: list[str]) -> None:
 
 def _sync_outfit_conditions(outfit, bottom_map: dict[str, str]) -> None:
     """Drop clothing conditions when the base garment is missing or incompatible."""
-    conditions = outfit.conditions or {}
+    conditions = dict(outfit.conditions or {})
+    empty_slot: dict[str, str] = {}
+
+    def clear_slot(slot: str) -> None:
+        conditions[slot] = dict(empty_slot)
+
     if not _outfit_item_active(outfit.dress) and conditions.get("dress"):
-        conditions["dress"] = ""
+        clear_slot("dress")
     if not _outfit_item_active(outfit.top) and conditions.get("top"):
-        conditions["top"] = ""
+        clear_slot("top")
     if not _outfit_item_active(outfit.jacket) and conditions.get("jacket"):
-        conditions["jacket"] = ""
+        clear_slot("jacket")
     if not _outfit_item_active(outfit.legwear) and conditions.get("legwear"):
-        conditions["legwear"] = ""
-    if not _outfit_item_active(outfit.underwear_layer) and conditions.get("underwear_layer"):
-        bottom_subgroup = bottom_map.get(outfit.bottom)
-        if bottom_subgroup != "underwear":
-            conditions["underwear_layer"] = ""
+        clear_slot("legwear")
     if outfit.bottom == OUTFIT_NONE_ID:
         bottom_subgroup = OUTFIT_NONE_ID
     else:
         bottom_subgroup = bottom_map.get(outfit.bottom)
-    if bottom_subgroup != "long_pants" and conditions.get("bottom"):
-        conditions["bottom"] = ""
+    # Каждая bottom-подгруппа хранит conditions под своим ключом
+    # ("bottom" для long_pants, иначе имя subgroup: underwear/skirts/
+    # transparent_plastic_skirts/shorts/...). Сбрасываем все ключи,
+    # которые не соответствуют текущей активной подгруппе.
+    active_bottom_key = "bottom" if bottom_subgroup == "long_pants" else bottom_subgroup
+    for key in BOTTOM_SUBGROUP_CONDITION_KEYS:
+        if key != active_bottom_key and conditions.get(key):
+            clear_slot(key)
     outfit.conditions = conditions
 
 

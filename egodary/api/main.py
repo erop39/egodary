@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+import copy
 import os
 import re
 from pathlib import Path
@@ -11,7 +12,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from egodary.app import (
     get_engine,
@@ -30,6 +31,7 @@ from egodary.integrations.ollama import check_ollama_health, fetch_ollama_models
 from egodary.persistence.schema import (
     delete_character_preset,
     delete_favorite,
+    get_advanced_todo,
     get_character_preset,
     get_favorite,
     list_character_presets,
@@ -42,15 +44,34 @@ from egodary.persistence.schema import (
     rollback_runtime_subcategory_to_subgroup,
     list_unknown_tags,
     record_unknown_tags,
+    save_advanced_todo,
     save_character_preset,
     save_user_preset,
     save_favorite,
     save_generation_history,
     save_runtime_tag_item,
     set_runtime_tag_item_status,
+    update_character_preset,
     update_unknown_tag_by_token,
     update_runtime_tag_item,
     update_favorite,
+    create_wildcard,
+    list_wildcards,
+    get_wildcard,
+    list_wildcard_items,
+    set_wildcard_enabled,
+    set_wildcard_item_enabled,
+    delete_wildcard,
+    list_generation_history,
+    delete_generation_history_entry,
+    clear_generation_history,
+    save_session,
+    list_sessions,
+    get_session,
+    update_session_name,
+    delete_session,
+    load_forge_settings,
+    save_forge_settings,
 )
 
 STATIC_DIR = Path(__file__).resolve().parents[1] / "web" / "static"
@@ -70,7 +91,19 @@ async def app_lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="eGOdary API", version="0.1.21", lifespan=app_lifespan)
+app = FastAPI(title="eGOdary API", version="0.1.35", lifespan=app_lifespan)
+
+# NOTE: ui_extension plugins (e.g. advanced_prompting) may call app.add_middleware()
+# in their register(). Starlette freezes the middleware stack on the very first
+# ASGI call it receives — including the "lifespan" scope itself — so registering
+# from inside app_lifespan() always raised "Cannot add middleware after an
+# application has started" and was silently swallowed by the loader's try/except.
+# Registration must happen here, synchronously, before the app is ever invoked.
+if not os.getenv("PYTEST_CURRENT_TEST"):
+    from egodary.bootstrap import build_app as _build_app_for_ui_extensions
+
+    _, _plugin_manager_for_ui_extensions = _build_app_for_ui_extensions()
+    _plugin_manager_for_ui_extensions.register_ui_extensions(app)
 
 
 @app.get("/api/health")
@@ -253,6 +286,10 @@ class CharacterLibrarySaveRequest(BaseModel):
     payload: CharacterLibraryPayload
 
 
+class CharacterLibraryRenameRequest(BaseModel):
+    name: str
+
+
 @app.post("/api/character-library")
 def add_character_preset(body: CharacterLibrarySaveRequest):
     try:
@@ -280,6 +317,36 @@ def remove_character_preset(preset_id: int):
     if not delete_character_preset(preset_id):
         raise HTTPException(status_code=404, detail="Character preset not found")
     return {"ok": True}
+
+
+@app.patch("/api/character-library/{preset_id}")
+def rename_character_preset(preset_id: int, body: CharacterLibraryRenameRequest):
+    try:
+        if not update_character_preset(preset_id, body.name):
+            raise HTTPException(status_code=404, detail="Character preset not found")
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    item = get_character_preset(preset_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Character preset not found")
+    return item
+
+
+class AdvancedTodoPayload(BaseModel):
+    items: list[dict[str, Any]] = []
+
+
+@app.get("/api/advanced/todo")
+def get_advanced_todo_endpoint():
+    return get_advanced_todo()
+
+
+@app.put("/api/advanced/todo")
+def put_advanced_todo_endpoint(payload: AdvancedTodoPayload):
+    try:
+        return save_advanced_todo(payload.model_dump())
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 class UserPresetSaveRequest(BaseModel):
@@ -891,6 +958,466 @@ def categories():
     }
 
 
+# ---------------------------------------------------------------------------
+# Wildcards
+# ---------------------------------------------------------------------------
+
+
+class WildcardUploadRequest(BaseModel):
+    filename: str
+    label: str | None = None
+    target_category: str
+    target_subgroup: str
+    raw_text: str
+
+
+@app.get("/api/wildcards")
+def wildcards_list():
+    rows = list_wildcards()
+    for row in rows:
+        row["enabled"] = bool(row["enabled"])
+    return {"wildcards": rows}
+
+
+@app.get("/api/wildcards/by-category/{category_id}")
+def wildcards_by_category(category_id: str):
+    """Enabled wildcards (+ their enabled lines) bound to a category — used to
+    render the inline 'Wildcards' section inside every subgroup panel of that
+    category, independent of whether target_subgroup matches a built-in UI
+    subgroup id. Disabled wildcards/items are omitted entirely, so the section
+    naturally disappears in the UI when a wildcard is turned off.
+
+    item_id values are namespaced as wc{wildcard_id}_{item_id}, matching
+    load_wildcards_into_registry() — these ids are what the frontend sets as
+    the actual field value when a wildcard chip is selected, so they must
+    exactly match what the live tag registry/catalog knows the item as.
+    """
+    groups = []
+    for row in list_wildcards():
+        if row["target_category"] != category_id or not row["enabled"]:
+            continue
+        items = [item for item in list_wildcard_items(row["id"]) if item["enabled"]]
+        if not items:
+            continue
+        groups.append({
+            "id": row["id"],
+            "label": row.get("label") or row["filename"],
+            "target_subgroup": row["target_subgroup"],
+            "items": [
+                {"item_id": f"wc{row['id']}_{item['item_id']}", "label": item["label"]}
+                for item in items
+            ],
+        })
+    return {"category_id": category_id, "wildcards": groups}
+
+
+@app.get("/api/wildcards/{wildcard_id}")
+def wildcards_detail(wildcard_id: int):
+    wildcard = get_wildcard(wildcard_id)
+    if wildcard is None:
+        raise HTTPException(status_code=404, detail="Wildcard not found")
+    wildcard["enabled"] = bool(wildcard["enabled"])
+    items = list_wildcard_items(wildcard_id)
+    for item in items:
+        item["enabled"] = bool(item["enabled"])
+    return {"wildcard": wildcard, "items": items}
+
+
+@app.post("/api/wildcards/preview")
+def wildcards_preview(body: dict):
+    """Parse raw text without saving — used by the upload UI to show a
+    live preview of how many lines / which ids will be generated."""
+    from egodary.core.wildcards import parse_wildcard_file
+
+    raw_text = body.get("raw_text", "")
+    subgroup = body.get("target_subgroup") or None
+    parsed = parse_wildcard_file(raw_text, subgroup=subgroup)
+    return {
+        "count": len(parsed),
+        "items": [{"item_id": item.id, "label": label} for label, item in parsed],
+    }
+
+
+@app.post("/api/wildcards")
+def wildcards_upload(body: WildcardUploadRequest):
+    from egodary.core.wildcards import parse_wildcard_file
+
+    target_category = body.target_category.strip()
+    target_subgroup = body.target_subgroup.strip()
+    if not target_category:
+        raise HTTPException(status_code=400, detail="target_category is required")
+    if not target_subgroup:
+        raise HTTPException(status_code=400, detail="target_subgroup is required")
+
+    engine = get_engine()
+    if engine.registry.get_category(target_category) is None:
+        raise HTTPException(status_code=404, detail=f"Category not found: {target_category}")
+
+    parsed = parse_wildcard_file(body.raw_text, subgroup=target_subgroup)
+    if not parsed:
+        raise HTTPException(status_code=400, detail="No non-empty lines found in raw_text")
+
+    label = body.label or body.filename
+    wildcard_id = create_wildcard(
+        filename=body.filename,
+        label=label,
+        target_category=target_category,
+        target_subgroup=target_subgroup,
+        raw_text=body.raw_text,
+        items=[(item.id, line_label) for line_label, item in parsed],
+    )
+    reset_engine_cache()
+    return {
+        "id": wildcard_id,
+        "filename": body.filename,
+        "label": label,
+        "target_category": target_category,
+        "target_subgroup": target_subgroup,
+        "item_count": len(parsed),
+    }
+
+
+@app.post("/api/wildcards/{wildcard_id}/toggle")
+def wildcards_toggle(wildcard_id: int, body: dict):
+    enabled = bool(body.get("enabled", True))
+    if not set_wildcard_enabled(wildcard_id, enabled):
+        raise HTTPException(status_code=404, detail="Wildcard not found")
+    reset_engine_cache()
+    return {"ok": True, "id": wildcard_id, "enabled": enabled}
+
+
+@app.post("/api/wildcards/{wildcard_id}/items/{item_id}/toggle")
+def wildcards_item_toggle(wildcard_id: int, item_id: str, body: dict):
+    enabled = bool(body.get("enabled", True))
+    if not set_wildcard_item_enabled(wildcard_id, item_id, enabled):
+        raise HTTPException(status_code=404, detail="Wildcard item not found")
+    reset_engine_cache()
+    return {"ok": True, "wildcard_id": wildcard_id, "item_id": item_id, "enabled": enabled}
+
+
+@app.delete("/api/wildcards/{wildcard_id}")
+def wildcards_delete(wildcard_id: int):
+    if not delete_wildcard(wildcard_id):
+        raise HTTPException(status_code=404, detail="Wildcard not found")
+    reset_engine_cache()
+    return {"ok": True, "id": wildcard_id}
+
+
+# ---------------------------------------------------------------------------
+# Generation history
+# ---------------------------------------------------------------------------
+
+
+@app.get("/api/history")
+def history_list(limit: int = 50, model_id: str | None = None):
+    """Return recent generation history entries, newest first.
+
+    Each entry includes the positive/negative prompts and the full
+    PromptState payload so the UI can offer a one-click «Load» that
+    restores the exact state that produced that prompt.
+    """
+    if limit < 1 or limit > 200:
+        raise HTTPException(status_code=422, detail="limit must be 1–200")
+    rows = list_generation_history(limit=limit, model_id=model_id or None)
+    return {"history": rows, "count": len(rows)}
+
+
+@app.delete("/api/history/{entry_id}")
+def history_delete(entry_id: int):
+    if not delete_generation_history_entry(entry_id):
+        raise HTTPException(status_code=404, detail="History entry not found")
+    return {"ok": True, "id": entry_id}
+
+
+@app.delete("/api/history")
+def history_clear(model_id: str | None = None):
+    deleted = clear_generation_history(model_id=model_id or None)
+    return {"ok": True, "deleted": deleted}
+
+
+# ---------------------------------------------------------------------------
+# Sessions
+# ---------------------------------------------------------------------------
+
+
+class SessionSaveRequest(BaseModel):
+    name: str
+    state: dict
+
+
+class SessionRenameRequest(BaseModel):
+    name: str
+
+
+@app.get("/api/sessions")
+def sessions_list():
+    return {"sessions": list_sessions()}
+
+
+@app.post("/api/sessions")
+def sessions_save(payload: SessionSaveRequest):
+    name = payload.name.strip()
+    if not name:
+        raise HTTPException(status_code=422, detail="Session name cannot be empty")
+    session_id = save_session(name, payload.state)
+    return {"ok": True, "id": session_id, "name": name}
+
+
+@app.get("/api/sessions/{session_id}")
+def sessions_get(session_id: int):
+    session = get_session(session_id)
+    if session is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return {"session": session}
+
+
+@app.patch("/api/sessions/{session_id}")
+def sessions_rename(session_id: int, payload: SessionRenameRequest):
+    name = payload.name.strip()
+    if not name:
+        raise HTTPException(status_code=422, detail="Session name cannot be empty")
+    if not update_session_name(session_id, name):
+        raise HTTPException(status_code=404, detail="Session not found")
+    return {"ok": True, "id": session_id, "name": name}
+
+
+@app.delete("/api/sessions/{session_id}")
+def sessions_delete(session_id: int):
+    if not delete_session(session_id):
+        raise HTTPException(status_code=404, detail="Session not found")
+    return {"ok": True, "id": session_id}
+
+
+# ---------------------------------------------------------------------------
+# Batch generate
+# ---------------------------------------------------------------------------
+
+
+class BatchGenerateRequest(BaseModel):
+    state: PromptState
+    count: int = 4
+    # Axes to randomize on each variation. Empty list = randomize everything
+    # that smart_randomize() touches (time, weather, season, camera angle).
+    # Pass explicit axis names to limit randomization to those fields only.
+    randomize_axes: list[str] = Field(default_factory=list)
+
+
+_RANDOMIZABLE_AXES = {
+    "time": ("scene", "time"),
+    "weather": ("scene", "weather"),
+    "season": ("scene", "season"),
+    "camera_angle": ("camera", "angle"),
+    "camera_framing": ("camera", "framing"),
+    "lighting_type": ("lighting", "light_type"),
+    "lighting_direction": ("lighting", "direction"),
+    # Top-level PromptState scalar fields — handled separately in _randomize_axes
+    "pose": ("_top", "pose"),
+    "expression": ("_top", "expression"),
+}
+
+_AXIS_CHOICES: dict[str, list[str]] = {
+    "time": ["morning", "afternoon", "sunset", "night"],
+    "weather": ["clear_sky", "cloudy", "fog", "rain", "snow"],
+    "season": ["spring", "summer", "autumn", "winter"],
+    "camera_angle": ["eye_level", "low_angle", "high_angle", "dutch_angle", "bird_eye"],
+    "camera_framing": ["portrait", "full_body", "upper_body", "close_up", "extreme_close_up"],
+    "lighting_type": ["natural", "studio", "rim", "neon", "candle"],
+    "lighting_direction": ["front", "side", "back", "top_down"],
+    "pose": [
+        "confident_standing_hand_on_hip_chest_forward",
+        "standing_arching_back_hands_in_hair",
+        "kneeling_on_floor_sitting_on_heels_looking_up",
+        "sitting_on_edge_legs_spread_wide",
+        "lying_on_back_legs_spread_wide_knees_bent",
+        "on_all_fours_back_arched_looking_back",
+        "leaning_against_wall_one_leg_up",
+        "bending_over_to_pick_something_up",
+        "stretching_with_back_arch",
+        "lying_on_stomach_ass_up_slightly_prone_bone_hint",
+        "standing_with_one_leg_bent_hip_pop_strong",
+        "sitting_with_knees_together_leaning_forward_cleavage",
+    ],
+    "expression": [
+        "seductive_bedroom_eyes__slight_smile",
+        "heavy_lidded_eyes_parted_lips",
+        "biting_lower_lip_looking_up",
+        "slight_smirk_half_lidded_eyes",
+        "coy_smile_with_head_tilt",
+        "playful_tongue_between_teeth",
+        "looking_down_shyly_but_aroused",
+        "dominant_smirk",
+        "confident_seductive_gaze",
+        "shy_but_aroused",
+        "teasing_pout",
+        "moaning_face_eyes_closed_mouth_open",
+    ],
+}
+
+
+def _randomize_axes(state: PromptState, axes: list[str]) -> PromptState:
+    import copy
+    import random
+
+    s = copy.deepcopy(state)
+    active = axes if axes else list(_RANDOMIZABLE_AXES.keys())
+    for axis in active:
+        path = _RANDOMIZABLE_AXES.get(axis)
+        if path is None:
+            continue
+        parent_name, field_name = path
+        choices = _AXIS_CHOICES.get(axis, [])
+        if not choices:
+            continue
+        if parent_name == "_top":
+            # Direct field on PromptState (e.g. pose, expression)
+            setattr(s, field_name, random.choice(choices))
+        else:
+            parent = getattr(s, parent_name, None)
+            if parent is None:
+                continue
+            setattr(parent, field_name, random.choice(choices))
+    return s
+
+
+@app.post("/api/generate/batch")
+def generate_batch(payload: BatchGenerateRequest):
+    """Generate ``count`` variations of a prompt by randomizing the requested
+    axes on each copy of the base state.
+
+    Returns a list of generation results in the same shape as
+    ``POST /api/generate``, plus the randomized axes values so the UI can
+    show what varied between each result.
+    """
+    from egodary.core.conflicts import preview_state_conflicts
+    from egodary.core.quality_score import compute_quality_score
+
+    count = max(1, min(payload.count, 8))
+    results = []
+    for _ in range(count):
+        state = _randomize_axes(payload.state, payload.randomize_axes)
+        if state.god_mode_bundle:
+            state = apply_god_mode_bundle(state, state.god_mode_bundle)
+        result = get_engine().assemble(state)
+        save_generation_history(
+            payload={"state": state.model_dump(), "buckets": result.buckets.model_dump()},
+            positive=result.positive,
+            negative=result.negative,
+            model_id=result.model_id,
+        )
+        results.append({
+            "positive": result.positive,
+            "negative": result.negative,
+            "model_id": result.model_id,
+            "warnings": preview_state_conflicts(state),
+            "quality_score": compute_quality_score(state).model_dump(),
+            "varied_state": {
+                ax: _get_axis_value(state, ax)
+                for ax in (payload.randomize_axes or list(_RANDOMIZABLE_AXES.keys()))
+            },
+        })
+    return {"results": results, "count": len(results)}
+
+
+def _get_axis_value(state: PromptState, axis: str) -> str:
+    path = _RANDOMIZABLE_AXES.get(axis)
+    if not path:
+        return ""
+    parent_name, field_name = path
+    parent = getattr(state, parent_name, None)
+    return getattr(parent, field_name, "") if parent else ""
+
+
+# ---------------------------------------------------------------------------
+# Forge integration
+# ---------------------------------------------------------------------------
+
+
+class ForgeSendRequest(BaseModel):
+    positive: str
+    negative: str = ""
+    override: dict | None = None
+
+
+@app.get("/api/forge/settings")
+def forge_settings_get():
+    return load_forge_settings()
+
+
+@app.put("/api/forge/settings")
+def forge_settings_put(payload: dict):
+    current = load_forge_settings()
+    current.update(payload)
+    save_forge_settings(current)
+    return current
+
+
+@app.post("/api/forge/health")
+def forge_health():
+    from egodary.integrations.forge import check_forge_health
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        return {"ok": False, "reachable": False, "error": "Forge integration is disabled"}
+    return check_forge_health(settings)
+
+
+@app.get("/api/forge/models")
+def forge_models():
+    from egodary.integrations.forge import fetch_forge_models
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        return {"models": []}
+    return {"models": fetch_forge_models(settings)}
+
+
+@app.get("/api/forge/samplers")
+def forge_samplers():
+    from egodary.integrations.forge import fetch_forge_samplers
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        return {"samplers": []}
+    return {"samplers": fetch_forge_samplers(settings)}
+
+
+@app.get("/api/forge/upscalers")
+def forge_upscalers():
+    from egodary.integrations.forge import fetch_forge_upscalers
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        return {"upscalers": []}
+    return {"upscalers": fetch_forge_upscalers(settings)}
+
+
+@app.get("/api/forge/schedulers")
+def forge_schedulers():
+    from egodary.integrations.forge import fetch_forge_schedulers
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        return {"schedulers": []}
+    return {"schedulers": fetch_forge_schedulers(settings)}
+
+
+
+def forge_send(payload: ForgeSendRequest):
+    from egodary.integrations.forge import send_to_forge
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        raise HTTPException(status_code=400, detail="Forge integration is disabled. Enable it in Advanced → Forge settings.")
+    result = send_to_forge(
+        positive=payload.positive,
+        negative=payload.negative,
+        settings=settings,
+        override=payload.override,
+    )
+    if not result["ok"]:
+        raise HTTPException(status_code=502, detail=f"Forge error: {result['error']}")
+    return {
+        "ok": True,
+        "images": result["images"],
+        "parameters": result["parameters"],
+        "info": result["info"],
+    }
+
+
 def _slugify_item_id(raw: str) -> str:
     value = raw.strip().lower()
     value = re.sub(r"[^a-z0-9]+", "_", value)
@@ -910,6 +1437,41 @@ def _get_subgroups(items: list[TagItem]) -> set[str]:
 def _item_subcategory(item: TagItem) -> str:
     meta = item.meta or {}
     return str(meta.get("subcategory_id") or meta.get("subgroup") or "").strip()
+
+
+def _tag_studio_item_matches_query(
+    item: TagItem,
+    q: str,
+    search_fields: set[str] | None = None,
+) -> bool:
+    q_norm = q.strip().lower()
+    if not q_norm:
+        return True
+    fields = search_fields or {"label", "alias", "description"}
+    meta = item.meta or {}
+    label = item.label.lower()
+    description = str(meta.get("description") or "").lower()
+    aliases = [str(alias).lower().strip() for alias in (meta.get("aliases") or []) if str(alias).strip()]
+    tokens = [token for token in re.split(r"[\s,;]+", q_norm) if token]
+
+    if "alias" in fields:
+        for alias in aliases:
+            if q_norm == alias or q_norm in alias:
+                return True
+            if tokens and all(token in alias for token in tokens):
+                return True
+
+    haystack_parts: list[str] = []
+    if "label" in fields:
+        haystack_parts.append(label)
+    if "description" in fields:
+        haystack_parts.append(description)
+    if "alias" in fields:
+        haystack_parts.extend(aliases)
+    haystack = " ".join(haystack_parts)
+    if not tokens:
+        return q_norm in haystack
+    return all(token in haystack for token in tokens)
 
 
 def _get_subcategories(items: list[TagItem]) -> set[str]:
@@ -1088,6 +1650,7 @@ def tag_studio_items(
     subcategory_id: str | None = None,
     active_only: bool = True,
     limit: int = 500,
+    search_fields: str | None = None,
 ):
     registry = get_runtime_registry()
     rows: list[dict[str, Any]] = []
@@ -1095,7 +1658,12 @@ def tag_studio_items(
     if hasattr(registry, "list_overlay_items"):
         for cid, item, _ in registry.list_overlay_items():
             overlay_by_category.setdefault(cid, set()).add(item.id)
-    q_norm = (q or "").strip().lower()
+    field_set: set[str] | None = None
+    if search_fields:
+        field_set = {part.strip().lower() for part in search_fields.split(",") if part.strip()}
+        field_set &= {"label", "alias", "description"}
+        if not field_set:
+            field_set = None
     for cid in registry.category_ids():
         if category_id and cid != category_id:
             continue
@@ -1109,16 +1677,8 @@ def tag_studio_items(
                 continue
             if active_only and meta.get("is_active") is False:
                 continue
-            if q_norm:
-                haystack = " ".join(
-                    [
-                        item.label.lower(),
-                        str(meta.get("description") or "").lower(),
-                        " ".join(str(alias).lower() for alias in (meta.get("aliases") or [])),
-                    ]
-                )
-                if q_norm not in haystack:
-                    continue
+            if q and not _tag_studio_item_matches_query(item, q, field_set):
+                continue
             rows.append(
                 {
                     "category_id": cid,
@@ -1132,14 +1692,31 @@ def tag_studio_items(
     return {"items": rows, "count": len(rows)}
 
 
-@app.put("/api/categories/{category_id}/items/{item_id}")
-def category_update_item(category_id: str, item_id: str, payload: UpdateTagItemRequest):
-    registry = get_runtime_registry()
+def _fork_core_item_to_overlay(registry, category_id: str, item_id: str, source: str) -> TagItem:
     item, is_overlay = registry.find_item(category_id, item_id)
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
-    if not is_overlay:
-        raise HTTPException(status_code=400, detail="Only runtime overlay items are editable")
+    if is_overlay:
+        return item
+    forked = copy.deepcopy(item)
+    add_source = source if source in {"import", "user", "manual"} else "user"
+    registry.add_item(
+        category_id,
+        forked,
+        source=add_source,
+        on_conflict="overwrite",
+    )
+    item, is_overlay = registry.find_item(category_id, item_id)
+    if item is None or not is_overlay:
+        raise HTTPException(status_code=500, detail="Unable to fork core item for editing")
+    return item
+
+
+@app.put("/api/categories/{category_id}/items/{item_id}")
+def category_update_item(category_id: str, item_id: str, payload: UpdateTagItemRequest):
+    registry = get_runtime_registry()
+    source = payload.source if payload.source in {"import", "user", "manual"} else "user"
+    item = _fork_core_item_to_overlay(registry, category_id, item_id, source)
 
     if payload.label is not None:
         label = payload.label.strip()
@@ -1181,7 +1758,6 @@ def category_update_item(category_id: str, item_id: str, payload: UpdateTagItemR
     if not registry.update_overlay_item(category_id, item):
         raise HTTPException(status_code=500, detail="Unable to update overlay item")
 
-    source = payload.source if payload.source in {"import", "user", "manual"} else "user"
     if payload.persist:
         updated = update_runtime_tag_item(category_id, item.id, item, source=source)
         if not updated:
@@ -1379,6 +1955,105 @@ def server_restart():
         "ok": True,
         "message": "Server is restarting. Reload the page if it does not recover automatically.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Plugins management
+# ---------------------------------------------------------------------------
+
+_DROPIN_DIR = Path(__file__).resolve().parents[2] / "plugins_user"
+_DISABLED_SUFFIX = ".disabled"
+
+
+def _get_dropin_dir() -> Path:
+    try:
+        from egodary.config import get_settings
+        d = get_settings().plugins_user_dir if hasattr(get_settings(), "plugins_user_dir") else None
+        if d:
+            return Path(d)
+    except Exception:
+        pass
+    return _DROPIN_DIR
+
+
+@app.get("/api/plugins")
+def plugins_list():
+    """Список drop-in плагинов из plugins_user/ с флагом enabled."""
+    from egodary.bootstrap import build_app
+    dropin_dir = _get_dropin_dir()
+
+    # Загруженные плагины из bootstrap
+    _, pm = build_app()
+    loaded_ids = {p.manifest.plugin.id: p for p in pm.loaded}
+
+    plugins = []
+
+    if dropin_dir.is_dir():
+        for entry in sorted(dropin_dir.iterdir()):
+            # Активная папка или .disabled папка
+            is_disabled = entry.name.endswith(_DISABLED_SUFFIX)
+            real_name = entry.name[: -len(_DISABLED_SUFFIX)] if is_disabled else entry.name
+
+            # Ищем manifest.toml
+            manifest_path = entry / "manifest.toml"
+            if not manifest_path.exists():
+                continue
+
+            try:
+                from egodary.plugins.manifest import parse_manifest
+                manifest = parse_manifest(manifest_path)
+                info = manifest.plugin
+                loaded = loaded_ids.get(info.id)
+                plugins.append({
+                    "id": info.id,
+                    "name": info.name,
+                    "version": info.version,
+                    "kind": info.kind.value,
+                    "enabled": not is_disabled,
+                    "folder": entry.name,
+                    "has_ui": loaded is not None and loaded.ui_extension_instance is not None,
+                })
+            except Exception as exc:
+                plugins.append({
+                    "id": real_name,
+                    "name": real_name,
+                    "version": "?",
+                    "kind": "unknown",
+                    "enabled": not is_disabled,
+                    "folder": entry.name,
+                    "has_ui": False,
+                    "error": str(exc),
+                })
+
+    return {"plugins": plugins, "dropin_dir": str(dropin_dir)}
+
+
+@app.post("/api/plugins/{plugin_id}/enable")
+def plugin_enable(plugin_id: str):
+    """Включить плагин: переименовать папку .disabled → оригинальное имя."""
+    dropin_dir = _get_dropin_dir()
+    disabled_path = dropin_dir / f"{plugin_id}{_DISABLED_SUFFIX}"
+    if not disabled_path.exists():
+        raise HTTPException(status_code=404, detail=f"Disabled plugin folder not found: {plugin_id}")
+    target = dropin_dir / plugin_id
+    if target.exists():
+        raise HTTPException(status_code=409, detail=f"Folder already exists: {plugin_id}")
+    disabled_path.rename(target)
+    return {"ok": True, "id": plugin_id, "enabled": True, "restart_required": True}
+
+
+@app.post("/api/plugins/{plugin_id}/disable")
+def plugin_disable(plugin_id: str):
+    """Отключить плагин: переименовать папку → .disabled."""
+    dropin_dir = _get_dropin_dir()
+    active_path = dropin_dir / plugin_id
+    if not active_path.exists():
+        raise HTTPException(status_code=404, detail=f"Plugin folder not found: {plugin_id}")
+    target = dropin_dir / f"{plugin_id}{_DISABLED_SUFFIX}"
+    if target.exists():
+        raise HTTPException(status_code=409, detail=f"Disabled folder already exists: {plugin_id}.disabled")
+    active_path.rename(target)
+    return {"ok": True, "id": plugin_id, "enabled": False, "restart_required": True}
 
 
 @app.get("/favicon.ico", include_in_schema=False)

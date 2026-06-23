@@ -1,0 +1,58 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 431f735..2367ba4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -54,6 +54,17 @@
+   в разметке, но никогда не заполнялся — отсюда и опечатки/случайные новые подгруппы при загрузке
+   (см. пункт выше). Теперь при выборе категории подсказки подтягиваются из
+   `subcategories` соответствующего `GET /api/categories/{id}`.
++- **`GET /` падал на каждый запрос после того, как заработала регистрация `ui_extension`
++  (предыдущий пункт).** `InjectScriptMiddleware` плагина `advanced_prompting`
++  (`plugins_user/advanced_prompting/advanced_prompting/plugin.py`) дописывает `<script>` в тело
++  `index.html`, но собирала заголовки нового `Response` через `dict(response.headers)` —
++  включая уже устаревший `content-length` от оригинального (более короткого) тела. Starlette не
++  пересчитывает `content-length`, если он уже присутствует в переданных headers, поэтому uvicorn
++  обнаруживал расхождение между реальным телом и заявленной длиной и ронял запрос:
++  `RuntimeError: Response content longer than Content-Length`. Эта ветка кода была годами мертва
++  из-за предыдущего бага (middleware вообще не регистрировался) — поэтому и не проявлялась раньше.
++  Теперь `content-length`/`content-encoding` выкидываются из скопированных headers перед
++  созданием нового `Response`, чтобы Starlette посчитал их заново.
+ 
+ ### Debug
+ - Проверено: `pytest tests/` — 251 passed, без регрессий от переноса регистрации плагинов.
+@@ -61,6 +72,9 @@
+   `/api/plugins` отдаёт один корректный объект, enable/disable round-trip переименовывает папку
+   туда-обратно, `/api/wildcards/by-category/appearance.hair` отдаёт ранее «потерянные» 15 тегов
+   из `hair test.txt` (target_subgroup=`test`).
++- Проверено вручную: `GET /` после фикса возвращает `200 OK`, `content-length` в заголовке точно
++  совпадает с фактическим размером тела ответа, инжектированный `<script>` присутствует перед
++  `</body>`, в логе сервера — чистый `200 OK` без traceback.
+ 
+ ## [0.1.35] — 2026-06-20
+ 
+diff --git a/plugins_user/advanced_prompting/advanced_prompting/plugin.py b/plugins_user/advanced_prompting/advanced_prompting/plugin.py
+index e904348..0191d6c 100644
+--- a/plugins_user/advanced_prompting/advanced_prompting/plugin.py
++++ b/plugins_user/advanced_prompting/advanced_prompting/plugin.py
+@@ -175,10 +175,20 @@ class _AdvancedPromptingPlugin:
+                         body += chunk
+                     inject = b'<script src="/static/plugins/advanced_prompting/advanced_prompting.js" defer></script>'
+                     body = body.replace(b"</body>", inject + b"\n</body>")
++                    headers = dict(response.headers)
++                    # The injected <script> tag changes the body length, so the
++                    # Content-Length copied from the original response is now
++                    # stale (too small). Drop it (and content-encoding, in case
++                    # the original body was compressed) so Starlette recomputes
++                    # a correct Content-Length from the new body below —
++                    # otherwise uvicorn raises "Response content longer than
++                    # Content-Length" and the request fails outright.
++                    headers.pop("content-length", None)
++                    headers.pop("content-encoding", None)
+                     return Response(
+                         content=body,
+                         status_code=response.status_code,
+-                        headers=dict(response.headers),
++                        headers=headers,
+                         media_type=response.media_type,
+                     )
+                 return response

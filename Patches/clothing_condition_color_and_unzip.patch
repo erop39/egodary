@@ -1,0 +1,68 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index af74227..88395fd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,7 +11,21 @@
+ 
+ ## [Unreleased]
+ 
++### Added
++- **Condition «Unzipped to waist»** в группе Partial Removal & Exposure (`outfit.clothing_state`,
++  `partial_removal`), рядом с Open / Unbuttoned и Slid off shoulders.
++
+ ### Fixed
++- **Цветовые condition-теги для одежды («мы добавляли, их нет»).** Данные были полностью на
++  месте: 26 тегов с `dimension: color` / `group: Color` в `outfit/tags/clothing_state.yaml`,
++  бэкенд их честно отдавал (`GET /api/categories/outfit.clothing_state`), и сборка промпта
++  (`core/clothing_state_bind.py::CLOTHING_STATE_DIMENSION_ORDER`) уже знала про `color`. Не
++  хватало только UI: список измерений для аккордеона условий одежды (`CLOTHING_STATE_DIMENSIONS`
++  в `app.js`) — отдельный, захардкоженный массив — никогда не обновлялся после добавления цвета,
++  поэтому секция "Color" просто не рендерилась, хотя теги были полностью рабочими (их можно было
++  выставить только в обход UI, например через JSON-импорт сессии). Добавлена недостающая запись
++  `{ id: "color", label: "Color" }` в порядке, соответствующем YAML (между Stains & Fluids и
++  Additional states).
+ - **Тег из одного wildcard-файла «исчезал», если строка с тем же текстом встречалась в другом
+   файле.** `item_id` каждой строки генерируется детерминированно из текста (slugify) и до сих пор
+   деduplicate-ился только *внутри* одного файла (`make_item_id` / `used_ids` — см.
+@@ -127,6 +141,9 @@
+ - `pytest tests/` — 252 passed (251 + новый регрессионный тест на коллизию id между файлами).
+   Проверено вручную (curl): два файла с совпадающей строкой `Long bangs` — до фикса жил только
+   один экземпляр тега в `appearance.hair`, после фикса оба, с разными `wc{id}_long_bangs`.
++- `pytest tests/` — 252 passed. Проверено вручную (curl `/api/generate`): condition
++  `partial_removal: unzipped_to_waist` + `color: red` на `black_harness_top` →
++  `"unzipped to waist red black harness top"` в positive prompt.
+ 
+ ## [0.1.35] — 2026-06-20
+ 
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index bf101a3..9d65238 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -48,6 +48,7 @@ const CLOTHING_STATE_DIMENSIONS = [
+   { id: "disorder", label: "Disorder & Messiness" },
+   { id: "partial_removal", label: "Partial Removal & Exposure" },
+   { id: "stains", label: "Stains & Fluids" },
++  { id: "color", label: "Color" },
+   { id: "extra", label: "Additional states" },
+ ];
+ 
+diff --git a/egodary/content/outfit_pack/tags/clothing_state.yaml b/egodary/content/outfit_pack/tags/clothing_state.yaml
+index a220ac4..bcd7d9b 100644
+--- a/egodary/content/outfit_pack/tags/clothing_state.yaml
++++ b/egodary/content/outfit_pack/tags/clothing_state.yaml
+@@ -235,6 +235,15 @@ items:
+     illustrious: slid off shoulders
+     anima: slid off shoulders, clothing detail
+     zimage_turbo: wearing slid off shoulders
++- id: unzipped_to_waist
++  label: Unzipped to waist
++  meta:
++    dimension: partial_removal
++    group: Partial Removal & Exposure
++  tags:
++    illustrious: unzipped to waist
++    anima: unzipped to waist, clothing detail
++    zimage_turbo: wearing unzipped to waist
+ - id: cum_stained
+   label: Cum-stained
+   meta:

@@ -1,0 +1,913 @@
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+index df31b27..8532633 100644
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -527,6 +527,47 @@
+             </div>
+             <div class="import-report-stats" id="llm-status-badge">—</div>
+           </div>
++
++          <!-- Forge / A1111 settings -->
++          <div class="card" id="forge-settings-card">
++            <div class="card-title row-between">
++              <span>Forge / A1111</span>
++              <button class="btn-ghost" type="button" id="btn-forge-test">Test connection</button>
++            </div>
++            <p class="card-hint">Отправка промпта напрямую в запущенный Forge или A1111. URL: обычно http://127.0.0.1:7860</p>
++            <label class="check-row"><input type="checkbox" id="forge-enabled" /> Enable Forge integration</label>
++            <div class="field-grid">
++              <label class="span-2">Base URL
++                <input id="forge-base-url" type="text" placeholder="http://127.0.0.1:7860" />
++              </label>
++              <label class="span-2">Default checkpoint (optional)
++                <input id="forge-checkpoint" type="text" placeholder="оставьте пустым — будет использован текущий" />
++              </label>
++              <label>Steps
++                <input id="forge-steps" type="number" min="1" max="150" step="1" />
++              </label>
++              <label>CFG Scale
++                <input id="forge-cfg" type="number" min="1" max="30" step="0.5" />
++              </label>
++              <label>Width
++                <input id="forge-width" type="number" min="64" max="2048" step="64" />
++              </label>
++              <label>Height
++                <input id="forge-height" type="number" min="64" max="2048" step="64" />
++              </label>
++              <label class="span-2">Sampler
++                <input id="forge-sampler" type="text" placeholder="DPM++ 2M" list="forge-samplers-list" />
++                <datalist id="forge-samplers-list"></datalist>
++              </label>
++              <label class="span-2">Scheduler
++                <input id="forge-scheduler" type="text" placeholder="Karras" />
++              </label>
++            </div>
++            <div class="import-actions">
++              <button type="button" class="btn btn-secondary" id="btn-forge-save">Save</button>
++            </div>
++            <div class="import-report-stats" id="forge-status-badge">—</div>
++          </div>
+         </section>
+ 
+         <!-- Advanced -->
+@@ -586,6 +627,25 @@
+               </p>
+               <div id="plugins-list" class="plugins-list">—</div>
+             </div>
++
++            <!-- Generation History -->
++            <div class="card span-2" id="history-card">
++              <div class="card-title row-between">
++                <span>Generation History</span>
++                <div class="row-between" style="gap:6px">
++                  <select id="history-model-filter" class="select-sm">
++                    <option value="">All models</option>
++                    <option value="illustrious">Illustrious</option>
++                    <option value="anima">Anima</option>
++                    <option value="zimage_turbo">Z-Image Turbo</option>
++                  </select>
++                  <button class="btn-ghost" type="button" id="btn-history-refresh">Refresh</button>
++                  <button class="btn-ghost danger" type="button" id="btn-history-clear" title="Clear history">🗑</button>
++                </div>
++              </div>
++              <p class="card-hint">Последние генерации. «Load» восстанавливает полный state.</p>
++              <div id="history-list" class="history-list">—</div>
++            </div>
+             <div class="card span-2">
+               <div class="card-title row-between">
+                 <span>Debug</span>
+@@ -650,8 +710,11 @@
+             <button class="btn btn-success" id="btn-random">Random</button>
+           </div>
+           <div class="result-actions">
+-            <button class="btn btn-secondary btn-icon" id="btn-session-save" title="Сохранить JSON" aria-label="Сохранить JSON">💾</button>
++            <button class="btn btn-secondary btn-icon" id="btn-session-save-server" title="Сохранить сессию на сервере (Ctrl+S)" aria-label="Сохранить сессию">🔖</button>
++            <button class="btn btn-secondary btn-icon" id="btn-session-load-server" title="Загрузить сохранённую сессию" aria-label="Загрузить сессию">📋</button>
++            <button class="btn btn-secondary btn-icon" id="btn-session-save" title="Скачать JSON" aria-label="Скачать JSON">💾</button>
+             <button class="btn btn-secondary btn-icon" id="btn-session-load" title="Загрузить JSON" aria-label="Загрузить JSON">📂</button>
++            <button class="btn btn-secondary btn-icon" id="btn-undo-state" title="Отменить последнее изменение тега (Ctrl+Z)" aria-label="Undo" disabled>↩</button>
+             <button class="btn btn-secondary btn-icon" id="btn-session-reset" title="Сброс сессии" aria-label="Сброс сессии">↺</button>
+           </div>
+         </div>
+@@ -686,6 +749,45 @@
+         <label class="check-row"><input type="checkbox" id="opt-group-mode" /> Group mode (2girls)</label>
+       </div>
+ 
++      <!-- Batch variations -->
++      <div class="card result-card" id="batch-card">
++        <div class="card-title row-between">
++          <span>Variations</span>
++          <span class="card-hint-inline" id="batch-axes-hint">all axes</span>
++        </div>
++        <div class="batch-controls">
++          <label class="batch-count-label">
++            Count: <strong id="batch-count-display">4</strong>
++            <input type="range" id="batch-count" min="1" max="8" value="4" step="1" />
++          </label>
++          <div class="batch-axes-grid">
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="time" /> Time</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="weather" /> Weather</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="season" /> Season</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="camera_angle" /> Camera angle</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="camera_framing" /> Framing</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="lighting_type" /> Lighting type</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="lighting_direction" /> Light dir</label>
++          </div>
++          <button class="btn btn-secondary" id="btn-batch-generate">Generate ×<span id="btn-batch-n">4</span></button>
++        </div>
++        <div class="batch-results hidden" id="batch-results"></div>
++      </div>
++
++      <!-- Forge send -->
++      <div class="card result-card hidden" id="forge-send-card">
++        <div class="card-title row-between">
++          <span>Send to Forge</span>
++          <span class="forge-status-dot" id="forge-status-dot" title="Forge status"></span>
++        </div>
++        <p class="card-hint" id="forge-send-hint">Forge не настроен — включите в Advanced → Forge.</p>
++        <button class="btn btn-secondary" id="btn-forge-send" disabled>Send to Forge ▶</button>
++        <div class="forge-result hidden" id="forge-result">
++          <img id="forge-result-img" src="" alt="Generated image" class="forge-img" />
++          <div class="forge-result-meta" id="forge-result-meta"></div>
++        </div>
++      </div>
++
+       <div class="card result-card" id="quality-score-panel">
+         <div class="card-title row-between">
+           <span>Quality Score</span>
+@@ -894,6 +996,39 @@
+   </div>
+ 
+   <input type="file" id="session-file-input" accept="application/json,.json" hidden />
++
++  <!-- Session Save Modal -->
++  <div class="fav-modal hidden" id="session-save-modal" role="dialog" aria-modal="true" aria-labelledby="session-save-modal-title">
++    <div class="fav-modal-backdrop" id="session-save-modal-backdrop"></div>
++    <div class="fav-modal-panel card">
++      <div class="card-title row-between">
++        <span id="session-save-modal-title">Сохранить сессию</span>
++        <button type="button" class="btn-ghost fav-modal-close" id="session-save-modal-close" aria-label="Закрыть">✕</button>
++      </div>
++      <form id="session-save-form">
++        <label class="fav-field">
++          <span>Название</span>
++          <input type="text" id="session-save-name" required placeholder="Мой образ..." autocomplete="off" />
++        </label>
++        <div class="fav-actions">
++          <button type="submit" class="btn btn-primary">Сохранить</button>
++          <button type="button" class="btn btn-ghost" id="session-save-cancel">Отмена</button>
++        </div>
++      </form>
++    </div>
++  </div>
++
++  <!-- Session Load Modal -->
++  <div class="fav-modal hidden" id="session-load-modal" role="dialog" aria-modal="true" aria-labelledby="session-load-modal-title">
++    <div class="fav-modal-backdrop" id="session-load-modal-backdrop"></div>
++    <div class="fav-modal-panel card">
++      <div class="card-title row-between">
++        <span id="session-load-modal-title">Сохранённые сессии</span>
++        <button type="button" class="btn-ghost fav-modal-close" id="session-load-modal-close" aria-label="Закрыть">✕</button>
++      </div>
++      <div id="session-load-list" class="session-load-list">Загрузка…</div>
++    </div>
++  </div>
+   <script src="/static/js/character-tree-data.js"></script>
+   <script src="/static/js/face-tree-data.js"></script>
+   <script src="/static/js/camera-tree-data.js"></script>
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index 23e2d6c..ba52bd1 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -452,6 +452,13 @@ let qualityPreviewRequest = 0;
+ let promptPreviewTimer = null;
+ let promptPreviewRequest = 0;
+ 
++// Undo stack — serialized buildPayload() snapshots, before each state-mutating click
++const UNDO_STACK_MAX = 30;
++const undoStack = [];
++
++// Forge settings cache
++let forgeSettingsCache = null;
++
+ const FACE_VIBE_FIELDS = ["facial_expression", "age_maturity", "beauty_archetype", "facial_details"];
+ const CHARACTER_FACE_FIELDS = [
+   "mouth_lips", "eyes", "eye_color", "skin", "face_shape", "eyebrows", "nose", "jaw_chin",
+@@ -1125,6 +1132,8 @@ async function refreshPromptPreview() {
+ }
+ 
+ function notifyStateChange() {
++  // Push undo snapshot before state is externally committed
++  _undoPush();
+   updateNavCounters();
+   updateSelectionCounts();
+   refreshAllTreeCounts();
+@@ -4028,7 +4037,10 @@ function switchTab(tab) {
+   }
+   if (tab === "favorites") loadFavorites();
+   if (tab === "llm") loadLlmPanel();
+-  if (tab === "advanced") loadAdvancedMeta();
++  if (tab === "advanced") {
++    loadAdvancedMeta();
++    loadHistoryPanel().catch(() => {});
++  }
+ }
+ 
+ 
+@@ -7193,6 +7205,58 @@ function bindEvents() {
+   });
+   document.getElementById("btn-session-reset")?.addEventListener("click", resetSession);
+   document.getElementById("session-file-input").onchange = handleSessionFileInput;
++
++  // Server sessions
++  document.getElementById("btn-session-save-server")?.addEventListener("click", openSessionSaveModal);
++  document.getElementById("btn-session-load-server")?.addEventListener("click", openSessionLoadModal);
++  document.getElementById("session-save-modal-close")?.addEventListener("click", closeSessionSaveModal);
++  document.getElementById("session-save-modal-backdrop")?.addEventListener("click", closeSessionSaveModal);
++  document.getElementById("session-save-cancel")?.addEventListener("click", closeSessionSaveModal);
++  document.getElementById("session-save-form")?.addEventListener("submit", (e) => {
++    submitSessionSave(e).catch((err) => toast("Ошибка: " + err.message));
++  });
++  document.getElementById("session-load-modal-close")?.addEventListener("click", closeSessionLoadModal);
++  document.getElementById("session-load-modal-backdrop")?.addEventListener("click", closeSessionLoadModal);
++
++  // Undo
++  document.getElementById("btn-undo-state")?.addEventListener("click", undoLastStateChange);
++
++  // History panel
++  document.getElementById("btn-history-refresh")?.addEventListener("click", () => {
++    loadHistoryPanel().catch((e) => toast("Ошибка: " + e.message));
++  });
++  document.getElementById("history-model-filter")?.addEventListener("change", () => {
++    loadHistoryPanel().catch((e) => toast("Ошибка: " + e.message));
++  });
++  document.getElementById("btn-history-clear")?.addEventListener("click", async () => {
++    const modelFilter = document.getElementById("history-model-filter")?.value || "";
++    const msg = modelFilter ? `Очистить историю для модели ${modelFilter}?` : "Очистить всю историю генераций?";
++    if (!confirm(msg)) return;
++    try {
++      const url = modelFilter ? `/history?model_id=${encodeURIComponent(modelFilter)}` : "/history";
++      await api(url, { method: "DELETE" });
++      loadHistoryPanel();
++      toast("История очищена");
++    } catch (e) { toast("Ошибка: " + e.message); }
++  });
++
++  // Batch
++  initBatchControls();
++
++  // Forge
++  loadForgeSettings();
++  document.getElementById("btn-forge-save")?.addEventListener("click", () => {
++    saveForgeSettings().catch((e) => toast("Ошибка: " + e.message));
++  });
++  document.getElementById("btn-forge-test")?.addEventListener("click", () => {
++    testForgeConnection().catch((e) => toast("Ошибка: " + e.message));
++  });
++  document.getElementById("btn-forge-send")?.addEventListener("click", () => {
++    sendToForge().catch((e) => toast("Forge error: " + e.message));
++  });
++
++  // Hotkeys
++  initHotkeys();
+   document.getElementById("btn-restart-server")?.addEventListener("click", restartServer);
+   document.getElementById("btn-llm-refresh-models")?.addEventListener("click", async () => {
+     try {
+@@ -7290,4 +7354,421 @@ async function init() {
+     .catch(() => {});
+ }
+ 
++// =============================================================
++// UNDO
++// =============================================================
++
++function _undoPush() {
++  try {
++    const snapshot = JSON.stringify(buildPayload());
++    // Don't push if identical to last entry
++    if (undoStack.length && undoStack[undoStack.length - 1] === snapshot) return;
++    undoStack.push(snapshot);
++    if (undoStack.length > UNDO_STACK_MAX) undoStack.shift();
++    document.getElementById("btn-undo-state")?.removeAttribute("disabled");
++  } catch (_) {}
++}
++
++function undoLastStateChange() {
++  if (undoStack.length < 2) {
++    toast("Нечего отменять");
++    return;
++  }
++  // Pop current, restore previous
++  undoStack.pop();
++  const prev = undoStack[undoStack.length - 1];
++  try {
++    applyPayloadToState(JSON.parse(prev));
++    refreshAllPanels();
++    syncFormControlsFromState();
++    notifyStateChange();
++    toast("Отменено");
++  } catch (e) {
++    toast("Ошибка undo: " + e.message);
++  }
++  if (undoStack.length <= 1) {
++    document.getElementById("btn-undo-state")?.setAttribute("disabled", "");
++  }
++}
++
++// =============================================================
++// SERVER SESSIONS
++// =============================================================
++
++function openSessionSaveModal() {
++  const el = document.getElementById("session-save-modal");
++  const input = document.getElementById("session-save-name");
++  if (el) el.classList.remove("hidden");
++  if (input) { input.value = ""; setTimeout(() => input.focus(), 50); }
++}
++
++function closeSessionSaveModal() {
++  document.getElementById("session-save-modal")?.classList.add("hidden");
++}
++
++async function submitSessionSave(event) {
++  event?.preventDefault();
++  const name = document.getElementById("session-save-name")?.value.trim();
++  if (!name) return toast("Введите название");
++  syncStateFromFormControls();
++  try {
++    await api("/sessions", {
++      method: "POST",
++      body: JSON.stringify({ name, state: serializeSession() }),
++    });
++    closeSessionSaveModal();
++    toast(`Сессия «${name}» сохранена`);
++  } catch (e) {
++    toast("Ошибка сохранения: " + e.message);
++  }
++}
++
++async function openSessionLoadModal() {
++  const el = document.getElementById("session-load-modal");
++  const listEl = document.getElementById("session-load-list");
++  if (!el || !listEl) return;
++  el.classList.remove("hidden");
++  listEl.innerHTML = "Загрузка…";
++  try {
++    const data = await api("/sessions");
++    const sessions = data.sessions || [];
++    if (!sessions.length) {
++      listEl.innerHTML = '<span style="color:var(--text-muted);font-size:13px">Нет сохранённых сессий.</span>';
++      return;
++    }
++    listEl.innerHTML = sessions.map((s) => `
++      <div class="session-load-item" data-session-id="${s.id}">
++        <span class="session-load-name" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</span>
++        <span class="session-load-date">${(s.created_at || "").slice(0, 10)}</span>
++        <div class="session-load-actions">
++          <button class="btn btn-secondary btn-sm session-load-btn" data-id="${s.id}">Load</button>
++          <button class="btn-ghost danger session-delete-btn" data-id="${s.id}" title="Удалить">✕</button>
++        </div>
++      </div>
++    `).join("");
++    listEl.querySelectorAll(".session-load-btn").forEach((btn) => {
++      btn.addEventListener("click", () => loadServerSession(Number(btn.dataset.id)));
++    });
++    listEl.querySelectorAll(".session-delete-btn").forEach((btn) => {
++      btn.addEventListener("click", () => deleteServerSession(Number(btn.dataset.id), btn));
++    });
++  } catch (e) {
++    listEl.innerHTML = `<span style="color:#eb3b5a;font-size:12px">Ошибка: ${escapeHtml(e.message)}</span>`;
++  }
++}
++
++function closeSessionLoadModal() {
++  document.getElementById("session-load-modal")?.classList.add("hidden");
++}
++
++async function loadServerSession(id) {
++  try {
++    const data = await api(`/sessions/${id}`);
++    const sessionData = data.session?.state;
++    if (!sessionData) return toast("Сессия пуста");
++    applySession(sessionData);
++    closeSessionLoadModal();
++    toast(`Сессия загружена`);
++  } catch (e) {
++    toast("Ошибка загрузки: " + e.message);
++  }
++}
++
++async function deleteServerSession(id, btn) {
++  if (!confirm("Удалить сессию?")) return;
++  try {
++    await api(`/sessions/${id}`, { method: "DELETE" });
++    btn.closest(".session-load-item")?.remove();
++    const listEl = document.getElementById("session-load-list");
++    if (listEl && !listEl.querySelector(".session-load-item")) {
++      listEl.innerHTML = '<span style="color:var(--text-muted);font-size:13px">Нет сохранённых сессий.</span>';
++    }
++  } catch (e) {
++    toast("Ошибка удаления: " + e.message);
++  }
++}
++
++// =============================================================
++// GENERATION HISTORY
++// =============================================================
++
++async function loadHistoryPanel() {
++  const listEl = document.getElementById("history-list");
++  if (!listEl) return;
++  listEl.innerHTML = "Загрузка…";
++  try {
++    const modelFilter = document.getElementById("history-model-filter")?.value || "";
++    const url = modelFilter ? `/history?limit=50&model_id=${encodeURIComponent(modelFilter)}` : "/history?limit=50";
++    const data = await api(url);
++    const entries = data.history || [];
++    if (!entries.length) {
++      listEl.innerHTML = '<span style="color:var(--text-muted);font-size:13px">История пуста.</span>';
++      return;
++    }
++    listEl.innerHTML = entries.map((e) => `
++      <div class="history-item">
++        <div class="history-item-header">
++          <span>${escapeHtml(MODEL_LABELS[e.model_id] || e.model_id)} · ${(e.created_at || "").replace("T", " ").slice(0, 16)}</span>
++          <div class="history-item-actions">
++            <button class="btn btn-secondary btn-sm history-load-btn" data-id="${e.id}">Load</button>
++            <button class="btn-ghost danger history-del-btn" data-id="${e.id}" title="Удалить">✕</button>
++          </div>
++        </div>
++        <div class="history-item-prompt">${escapeHtml(e.positive || "")}</div>
++      </div>
++    `).join("");
++    listEl.querySelectorAll(".history-load-btn").forEach((btn) => {
++      const id = Number(btn.dataset.id);
++      btn.addEventListener("click", () => {
++        const entry = entries.find((e) => e.id === id);
++        if (!entry?.payload?.state) return toast("Нет данных state");
++        applySession(entry.payload.state, { skipOutputs: true });
++        toast("State загружен из истории");
++      });
++    });
++    listEl.querySelectorAll(".history-del-btn").forEach((btn) => {
++      btn.addEventListener("click", async () => {
++        try {
++          await api(`/history/${btn.dataset.id}`, { method: "DELETE" });
++          btn.closest(".history-item")?.remove();
++        } catch (e) { toast("Ошибка: " + e.message); }
++      });
++    });
++  } catch (e) {
++    listEl.innerHTML = `<span style="color:#eb3b5a;font-size:12px">Ошибка: ${escapeHtml(e.message)}</span>`;
++  }
++}
++
++// =============================================================
++// BATCH VARIATIONS
++// =============================================================
++
++function initBatchControls() {
++  const slider = document.getElementById("batch-count");
++  const display = document.getElementById("batch-count-display");
++  const btnN = document.getElementById("btn-batch-n");
++  if (slider) {
++    slider.addEventListener("input", () => {
++      const v = slider.value;
++      if (display) display.textContent = v;
++      if (btnN) btnN.textContent = v;
++    });
++  }
++
++  document.getElementById("btn-batch-generate")?.addEventListener("click", async () => {
++    const count = Number(document.getElementById("batch-count")?.value || 4);
++    const axes = [...document.querySelectorAll(".batch-axis:checked")].map((cb) => cb.value);
++    const resultsEl = document.getElementById("batch-results");
++    if (resultsEl) { resultsEl.innerHTML = "Генерация…"; resultsEl.classList.remove("hidden"); }
++
++    try {
++      syncStateFromFormControls();
++      const data = await api("/generate/batch", {
++        method: "POST",
++        body: JSON.stringify({ state: buildPayload(), count, randomize_axes: axes }),
++      });
++      const results = data.results || [];
++      if (!resultsEl) return;
++      if (!results.length) { resultsEl.innerHTML = "Нет результатов"; return; }
++
++      resultsEl.innerHTML = results.map((r, i) => {
++        const variedStr = Object.entries(r.varied_state || {})
++          .filter(([, v]) => v)
++          .map(([k, v]) => `${k}: ${v}`)
++          .join(" · ");
++        return `
++          <div class="batch-result-item">
++            <div class="batch-result-header">
++              <span>#${i + 1} · ${escapeHtml(MODEL_LABELS[r.model_id] || r.model_id)}</span>
++              <span>${r.quality_score?.score ?? "—"}/100</span>
++            </div>
++            ${variedStr ? `<div class="batch-result-header" style="font-style:italic">${escapeHtml(variedStr)}</div>` : ""}
++            <div class="batch-result-prompt">${escapeHtml(r.positive || "")}</div>
++            <div class="batch-result-actions">
++              <button class="btn btn-secondary btn-sm batch-copy-btn" data-idx="${i}">Copy</button>
++              <button class="btn btn-secondary btn-sm batch-forge-btn" data-idx="${i}">→ Forge</button>
++            </div>
++          </div>
++        `;
++      }).join("");
++
++      resultsEl.querySelectorAll(".batch-copy-btn").forEach((btn) => {
++        const r = results[Number(btn.dataset.idx)];
++        btn.addEventListener("click", () => {
++          navigator.clipboard.writeText(r.positive || "");
++          toast("Скопировано");
++        });
++      });
++      resultsEl.querySelectorAll(".batch-forge-btn").forEach((btn) => {
++        const r = results[Number(btn.dataset.idx)];
++        btn.addEventListener("click", () => sendToForge(r.positive, r.negative || ""));
++      });
++    } catch (e) {
++      if (resultsEl) resultsEl.innerHTML = `<span style="color:#eb3b5a">Ошибка: ${escapeHtml(e.message)}</span>`;
++    }
++  });
++}
++
++// =============================================================
++// FORGE INTEGRATION
++// =============================================================
++
++async function loadForgeSettings() {
++  try {
++    forgeSettingsCache = await api("/forge/settings");
++    populateForgeSettingsForm(forgeSettingsCache);
++    updateForgeSendCard(forgeSettingsCache);
++    if (forgeSettingsCache.enabled) loadForgeSamplers();
++  } catch (_) {}
++}
++
++function populateForgeSettingsForm(s) {
++  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ""; };
++  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
++  setChk("forge-enabled", s.enabled);
++  set("forge-base-url", s.base_url);
++  set("forge-checkpoint", s.default_checkpoint);
++  set("forge-steps", s.default_steps);
++  set("forge-cfg", s.default_cfg);
++  set("forge-width", s.default_width);
++  set("forge-height", s.default_height);
++  set("forge-sampler", s.default_sampler);
++  set("forge-scheduler", s.default_scheduler);
++}
++
++async function loadForgeSamplers() {
++  try {
++    const data = await api("/forge/samplers");
++    const dl = document.getElementById("forge-samplers-list");
++    if (dl && data.samplers?.length) {
++      dl.innerHTML = data.samplers.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
++    }
++  } catch (_) {}
++}
++
++async function saveForgeSettings() {
++  const get = (id) => document.getElementById(id)?.value ?? "";
++  const getChk = (id) => document.getElementById(id)?.checked ?? false;
++  const settings = {
++    enabled: getChk("forge-enabled"),
++    base_url: get("forge-base-url") || "http://127.0.0.1:7860",
++    default_checkpoint: get("forge-checkpoint"),
++    default_steps: Number(get("forge-steps")) || 20,
++    default_cfg: Number(get("forge-cfg")) || 7.0,
++    default_width: Number(get("forge-width")) || 832,
++    default_height: Number(get("forge-height")) || 1216,
++    default_sampler: get("forge-sampler") || "DPM++ 2M",
++    default_scheduler: get("forge-scheduler") || "Karras",
++  };
++  try {
++    forgeSettingsCache = await api("/forge/settings", {
++      method: "PUT",
++      body: JSON.stringify(settings),
++    });
++    updateForgeSendCard(forgeSettingsCache);
++    if (forgeSettingsCache.enabled) loadForgeSamplers();
++    toast("Forge settings saved");
++  } catch (e) {
++    toast("Ошибка: " + e.message);
++  }
++}
++
++async function testForgeConnection() {
++  const badge = document.getElementById("forge-status-badge");
++  if (badge) badge.textContent = "Checking…";
++  try {
++    const data = await api("/forge/health", { method: "POST" });
++    const dot = document.getElementById("forge-status-dot");
++    if (data.ok) {
++      if (badge) badge.textContent = `✓ OK · ${data.sd_model_checkpoint || "no checkpoint"}`;
++      if (dot) { dot.className = "forge-status-dot ok"; dot.title = "Connected"; }
++    } else {
++      if (badge) badge.textContent = `✗ ${data.error || "unreachable"}`;
++      if (dot) { dot.className = "forge-status-dot err"; dot.title = data.error || "Error"; }
++    }
++  } catch (e) {
++    if (badge) badge.textContent = `✗ ${e.message}`;
++  }
++}
++
++function updateForgeSendCard(settings) {
++  const card = document.getElementById("forge-send-card");
++  const hint = document.getElementById("forge-send-hint");
++  const btn = document.getElementById("btn-forge-send");
++  if (!card) return;
++  if (settings?.enabled) {
++    card.classList.remove("hidden");
++    if (hint) hint.textContent = `${settings.base_url} · steps ${settings.default_steps} · CFG ${settings.default_cfg}`;
++    if (btn) btn.removeAttribute("disabled");
++  } else {
++    card.classList.remove("hidden");
++    if (hint) hint.textContent = "Forge не настроен — включите в Advanced → LLM Settings → Forge.";
++    if (btn) btn.setAttribute("disabled", "");
++  }
++}
++
++async function sendToForge(positiveOverride, negativeOverride) {
++  const positive = positiveOverride ?? document.getElementById("output-positive")?.value ?? "";
++  const negative = negativeOverride ?? document.getElementById("output-negative")?.value ?? "";
++  if (!positive) return toast("Нет промпта для отправки");
++
++  const resultEl = document.getElementById("forge-result");
++  const imgEl = document.getElementById("forge-result-img");
++  const metaEl = document.getElementById("forge-result-meta");
++  const btn = document.getElementById("btn-forge-send");
++
++  if (resultEl) resultEl.classList.add("hidden");
++  if (btn) { btn.disabled = true; btn.textContent = "Generating…"; }
++
++  try {
++    const data = await api("/forge/send", {
++      method: "POST",
++      body: JSON.stringify({ positive, negative }),
++    });
++    if (data.images?.[0]) {
++      if (imgEl) { imgEl.src = `data:image/png;base64,${data.images[0]}`; }
++      const info = data.info || {};
++      if (metaEl) metaEl.textContent = `seed: ${info.seed ?? "?"} · steps: ${data.parameters?.steps ?? "?"} · CFG: ${data.parameters?.cfg_scale ?? "?"}`;
++      if (resultEl) resultEl.classList.remove("hidden");
++      toast("Изображение получено от Forge");
++    }
++  } catch (e) {
++    toast("Forge error: " + e.message);
++  } finally {
++    if (btn) { btn.disabled = false; btn.textContent = "Send to Forge ▶"; }
++  }
++}
++
++// =============================================================
++// HOTKEYS  (Ctrl+Enter, Ctrl+Z, Ctrl+S)
++// =============================================================
++
++function initHotkeys() {
++  document.addEventListener("keydown", (event) => {
++    const tag = (event.target?.tagName || "").toLowerCase();
++    const inInput = tag === "input" || tag === "textarea" || tag === "select";
++
++    // Ctrl+Enter → Generate (works everywhere)
++    if (event.ctrlKey && event.key === "Enter") {
++      event.preventDefault();
++      document.getElementById("btn-generate")?.click();
++      return;
++    }
++
++    // Ctrl+S → Save session to server
++    if (event.ctrlKey && event.key === "s") {
++      event.preventDefault();
++      openSessionSaveModal();
++      return;
++    }
++
++    // Ctrl+Z → Undo (not in text inputs — let browser handle those)
++    if (event.ctrlKey && event.key === "z" && !inInput) {
++      event.preventDefault();
++      undoLastStateChange();
++      return;
++    }
++  });
++}
++
+ init();
+diff --git a/egodary/web/static/css/app.css b/egodary/web/static/css/app.css
+index 82da71d..00b2f27 100644
+--- a/egodary/web/static/css/app.css
++++ b/egodary/web/static/css/app.css
+@@ -2635,3 +2635,211 @@ select:disabled {
+   font-family: monospace;
+   flex-shrink: 0;
+ }
++
++/* =========================================================
++   Batch Variations
++   ========================================================= */
++
++.batch-controls {
++  display: flex;
++  flex-direction: column;
++  gap: 8px;
++}
++
++.batch-count-label {
++  display: flex;
++  align-items: center;
++  gap: 8px;
++  font-size: 13px;
++  color: var(--text-secondary);
++}
++
++.batch-count-label input[type="range"] {
++  flex: 1;
++  accent-color: var(--accent);
++}
++
++.batch-axes-grid {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 2px 12px;
++}
++
++.batch-results {
++  display: flex;
++  flex-direction: column;
++  gap: 8px;
++  margin-top: 10px;
++}
++
++.batch-result-item {
++  background: var(--bg-secondary);
++  border: 1px solid var(--border);
++  border-radius: 6px;
++  padding: 8px 10px;
++  display: flex;
++  flex-direction: column;
++  gap: 5px;
++}
++
++.batch-result-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  font-size: 11px;
++  color: var(--text-muted);
++}
++
++.batch-result-prompt {
++  font-size: 12px;
++  color: var(--text-primary);
++  line-height: 1.4;
++  word-break: break-word;
++  max-height: 72px;
++  overflow: hidden;
++  display: -webkit-box;
++  -webkit-line-clamp: 4;
++  -webkit-box-orient: vertical;
++}
++
++.batch-result-actions {
++  display: flex;
++  gap: 6px;
++  flex-wrap: wrap;
++}
++
++/* =========================================================
++   Forge send card
++   ========================================================= */
++
++.forge-status-dot {
++  width: 8px;
++  height: 8px;
++  border-radius: 50%;
++  background: var(--text-muted);
++  flex-shrink: 0;
++}
++
++.forge-status-dot.ok { background: #26de81; }
++.forge-status-dot.err { background: #eb3b5a; }
++
++.forge-img {
++  width: 100%;
++  border-radius: 6px;
++  margin-top: 8px;
++  display: block;
++}
++
++.forge-result-meta {
++  font-size: 11px;
++  color: var(--text-muted);
++  margin-top: 4px;
++}
++
++/* =========================================================
++   Generation History
++   ========================================================= */
++
++.history-list {
++  display: flex;
++  flex-direction: column;
++  gap: 6px;
++  max-height: 480px;
++  overflow-y: auto;
++}
++
++.history-item {
++  background: var(--bg-secondary);
++  border: 1px solid var(--border);
++  border-radius: 6px;
++  padding: 8px 10px;
++  display: flex;
++  flex-direction: column;
++  gap: 4px;
++}
++
++.history-item-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  font-size: 11px;
++  color: var(--text-muted);
++}
++
++.history-item-prompt {
++  font-size: 12px;
++  color: var(--text-primary);
++  line-height: 1.4;
++  overflow: hidden;
++  display: -webkit-box;
++  -webkit-line-clamp: 2;
++  -webkit-box-orient: vertical;
++}
++
++.history-item-actions {
++  display: flex;
++  gap: 5px;
++}
++
++/* =========================================================
++   Session load list
++   ========================================================= */
++
++.session-load-list {
++  display: flex;
++  flex-direction: column;
++  gap: 6px;
++  max-height: 360px;
++  overflow-y: auto;
++}
++
++.session-load-item {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  padding: 7px 10px;
++  background: var(--bg-secondary);
++  border: 1px solid var(--border);
++  border-radius: 6px;
++  gap: 8px;
++}
++
++.session-load-name {
++  flex: 1;
++  font-size: 13px;
++  color: var(--text-primary);
++  min-width: 0;
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.session-load-date {
++  font-size: 11px;
++  color: var(--text-muted);
++  flex-shrink: 0;
++}
++
++.session-load-actions {
++  display: flex;
++  gap: 4px;
++  flex-shrink: 0;
++}
++
++.select-sm {
++  font-size: 11px;
++  padding: 2px 4px;
++  background: var(--bg-secondary);
++  border: 1px solid var(--border);
++  border-radius: 4px;
++  color: var(--text-secondary);
++}
++
++.danger {
++  color: var(--error, #eb3b5a);
++}
++
++.card-hint-inline {
++  font-size: 11px;
++  color: var(--text-muted);
++}

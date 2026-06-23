@@ -1,0 +1,83 @@
+diff --git a/egodary/api/main.py b/egodary/api/main.py
+index fc43da5..f9d662b 100644
+--- a/egodary/api/main.py
++++ b/egodary/api/main.py
+@@ -1210,6 +1210,9 @@ _RANDOMIZABLE_AXES = {
+     "camera_framing": ("camera", "framing"),
+     "lighting_type": ("lighting", "light_type"),
+     "lighting_direction": ("lighting", "direction"),
++    # Top-level PromptState scalar fields — handled separately in _randomize_axes
++    "pose": ("_top", "pose"),
++    "expression": ("_top", "expression"),
+ }
+ 
+ _AXIS_CHOICES: dict[str, list[str]] = {
+@@ -1220,6 +1223,34 @@ _AXIS_CHOICES: dict[str, list[str]] = {
+     "camera_framing": ["portrait", "full_body", "upper_body", "close_up", "extreme_close_up"],
+     "lighting_type": ["natural", "studio", "rim", "neon", "candle"],
+     "lighting_direction": ["front", "side", "back", "top_down"],
++    "pose": [
++        "confident_standing_hand_on_hip_chest_forward",
++        "standing_arching_back_hands_in_hair",
++        "kneeling_on_floor_sitting_on_heels_looking_up",
++        "sitting_on_edge_legs_spread_wide",
++        "lying_on_back_legs_spread_wide_knees_bent",
++        "on_all_fours_back_arched_looking_back",
++        "leaning_against_wall_one_leg_up",
++        "bending_over_to_pick_something_up",
++        "stretching_with_back_arch",
++        "lying_on_stomach_ass_up_slightly_prone_bone_hint",
++        "standing_with_one_leg_bent_hip_pop_strong",
++        "sitting_with_knees_together_leaning_forward_cleavage",
++    ],
++    "expression": [
++        "seductive_bedroom_eyes__slight_smile",
++        "heavy_lidded_eyes_parted_lips",
++        "biting_lower_lip_looking_up",
++        "slight_smirk_half_lidded_eyes",
++        "coy_smile_with_head_tilt",
++        "playful_tongue_between_teeth",
++        "looking_down_shyly_but_aroused",
++        "dominant_smirk",
++        "confident_seductive_gaze",
++        "shy_but_aroused",
++        "teasing_pout",
++        "moaning_face_eyes_closed_mouth_open",
++    ],
+ }
+ 
+ 
+@@ -1234,11 +1265,16 @@ def _randomize_axes(state: PromptState, axes: list[str]) -> PromptState:
+         if path is None:
+             continue
+         parent_name, field_name = path
+-        parent = getattr(s, parent_name, None)
+-        if parent is None:
+-            continue
+         choices = _AXIS_CHOICES.get(axis, [])
+-        if choices:
++        if not choices:
++            continue
++        if parent_name == "_top":
++            # Direct field on PromptState (e.g. pose, expression)
++            setattr(s, field_name, random.choice(choices))
++        else:
++            parent = getattr(s, parent_name, None)
++            if parent is None:
++                continue
+             setattr(parent, field_name, random.choice(choices))
+     return s
+ 
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+index 8532633..2171b3c 100644
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -768,6 +768,8 @@
+             <label class="check-row"><input type="checkbox" class="batch-axis" value="camera_framing" /> Framing</label>
+             <label class="check-row"><input type="checkbox" class="batch-axis" value="lighting_type" /> Lighting type</label>
+             <label class="check-row"><input type="checkbox" class="batch-axis" value="lighting_direction" /> Light dir</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="pose" /> Pose</label>
++            <label class="check-row"><input type="checkbox" class="batch-axis" value="expression" /> Expression</label>
+           </div>
+           <button class="btn btn-secondary" id="btn-batch-generate">Generate ×<span id="btn-batch-n">4</span></button>
+         </div>

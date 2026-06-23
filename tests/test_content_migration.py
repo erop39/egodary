@@ -18,7 +18,6 @@ def test_outfit_pack_has_extended_categories():
         "outfit.dress": 50,
         "outfit.top": 40,
         "outfit.bottom": 80,
-        "outfit.underwear_layer": 20,
         "outfit.legwear": 20,
         "outfit.jacket": 30,
         "outfit.footwear": 32,
@@ -68,14 +67,12 @@ def test_outfit_dress_clears_bottom_and_top():
             dress="black_latex_long_dress",
             top="black_harness_top",
             bottom="micro_mini_skirt",
-            underwear_layer="strappy_harness_panties",
             legwear="sheer_pantyhose",
         )
     )
     resolved, warnings = apply_state_conflicts(state)
     assert resolved.outfit.top == ""
     assert resolved.outfit.bottom == ""
-    assert resolved.outfit.underwear_layer == ""
     assert resolved.outfit.legwear == ""
     assert resolved.outfit.dress == "black_latex_long_dress"
     assert any("Dress" in w for w in warnings)
@@ -90,7 +87,6 @@ def test_outfit_nsfw_dress_layering_allowed():
             dress="sheer_micro_dress",
             top="black_harness_top",
             bottom="micro_mini_skirt",
-            underwear_layer="strappy_harness_panties",
             legwear="sheer_thigh_high_stockings",
         )
     )
@@ -98,7 +94,6 @@ def test_outfit_nsfw_dress_layering_allowed():
     assert resolved.outfit.dress == "sheer_micro_dress"
     assert resolved.outfit.top == "black_harness_top"
     assert resolved.outfit.bottom == ""
-    assert resolved.outfit.underwear_layer == "strappy_harness_panties"
     assert resolved.outfit.legwear == "sheer_thigh_high_stockings"
 
 
@@ -111,48 +106,91 @@ def test_outfit_legwear_blocked_with_long_pants():
     assert resolved.outfit.legwear == ""
 
 
-def test_outfit_nsfw_skirt_layering_allowed():
+def test_outfit_nsfw_underwear_with_legwear_allowed():
+    """Underwear (в bottom) + legwear должны сосуществовать без конфликтов."""
     from egodary.core.conflicts import apply_state_conflicts
     from egodary.core.models import OutfitState, PromptState
 
     state = PromptState(
         outfit=OutfitState(
-            bottom="micro_mini_skirt",
-            underwear_layer="strappy_harness_panties",
+            bottom="extreme_micro_thong",
             legwear="sheer_thigh_high_stockings",
         )
     )
-    resolved, _ = apply_state_conflicts(state)
-    assert resolved.outfit.bottom == "micro_mini_skirt"
-    assert resolved.outfit.underwear_layer == "strappy_harness_panties"
+    resolved, warnings = apply_state_conflicts(state)
+    assert resolved.outfit.bottom == "extreme_micro_thong"
     assert resolved.outfit.legwear == "sheer_thigh_high_stockings"
 
 
-def test_outfit_underwear_layer_blocked_with_long_pants():
+def test_outfit_underwear_conditions_use_separate_key_from_bottom():
+    """Underwear conditions хранятся под ключом "underwear", не "bottom",
+    чтобы не конфликтовать с pants/skirt conditions в том же слоте."""
+    from egodary.app import get_engine
+    from egodary.core.models import OutfitState, PromptState
+
+    engine = get_engine()
+    state = PromptState(
+        outfit=OutfitState(
+            bottom="extreme_micro_thong",
+            conditions={"underwear": {"moisture": "wet_soaked"}},
+        )
+    )
+    result = engine.assemble(state)
+    outfit_tags = " ".join(result.buckets.outfit)
+    assert "extreme micro thong" in outfit_tags
+    assert "wet" in outfit_tags.lower()
+
+
+def test_outfit_underwear_conditions_cleared_when_subgroup_changes():
+    """Underwear conditions сбрасываются при переключении bottom subgroup
+    на long_pants/skirts/shorts (synced by backend)."""
     from egodary.core.conflicts import apply_state_conflicts
     from egodary.core.models import OutfitState, PromptState
 
     state = PromptState(
-        outfit=OutfitState(bottom="skinny_jeans", underwear_layer="classic_thong")
+        outfit=OutfitState(
+            bottom="skinny_jeans",  # long_pants subgroup
+            conditions={"underwear": {"moisture": "wet_soaked"}},
+        )
     )
     resolved, _ = apply_state_conflicts(state)
-    assert resolved.outfit.underwear_layer == ""
+    assert resolved.outfit.conditions.get("underwear", {}) == {}
 
 
-def test_outfit_none_bottom_allows_layering():
+def test_outfit_bottom_pants_conditions_independent_of_underwear():
+    """Pants (long_pants subgroup) conditions хранятся под ключом "bottom",
+    независимо от underwear conditions."""
+    from egodary.app import get_engine
+    from egodary.core.models import OutfitState, PromptState
+
+    engine = get_engine()
+    state = PromptState(
+        outfit=OutfitState(
+            bottom="skinny_jeans",
+            conditions={"bottom": {"damage": "torn_ripped"}},
+        )
+    )
+    result = engine.assemble(state)
+    outfit_tags = " ".join(result.buckets.outfit)
+    assert "skinny jeans" in outfit_tags
+    assert "torn" in outfit_tags.lower()
+
+
+
+
+def test_outfit_none_bottom_allows_legwear():
+    """bottom=none не блокирует legwear."""
     from egodary.core.conflicts import apply_state_conflicts
     from egodary.core.models import OutfitState, PromptState
 
     state = PromptState(
         outfit=OutfitState(
             bottom="none",
-            underwear_layer="classic_thong",
             legwear="sheer_thigh_high_stockings",
         )
     )
     resolved, _ = apply_state_conflicts(state)
     assert resolved.outfit.bottom == "none"
-    assert resolved.outfit.underwear_layer == "classic_thong"
     assert resolved.outfit.legwear == "sheer_thigh_high_stockings"
 
 
@@ -176,6 +214,7 @@ def test_appearance_pack_has_catalog_categories():
         "appearance.hair_color": 24,
         "appearance.makeup": 22,
         "appearance.accessories": 32,
+        "appearance.tattoos": 56,
     }
     for cat_id, min_items in checks.items():
         category = registry.get_category(cat_id)
@@ -257,7 +296,6 @@ def test_face_pack_has_all_categories():
         "face.mouth_lips": 30,
         "face.eyes": 31,
         "face.eye_color": 25,
-        "face.skin": 26,
         "face.face_shape": 24,
         "face.eyebrows": 23,
         "face.nose": 21,
@@ -284,7 +322,7 @@ def test_face_tags_in_prompt():
     assert "ahegao" in result.positive.lower()
 
 
-def test_clothing_condition_added_to_outfit_bucket():
+def test_clothing_state_added_to_outfit_bucket():
     from egodary.app import create_engine
     from egodary.core.models import OutfitState, PromptState
 
@@ -292,11 +330,130 @@ def test_clothing_condition_added_to_outfit_bucket():
     state = PromptState(
         outfit=OutfitState(
             legwear="classic_fishnet_tights",
-            conditions={"legwear": "wet_ripped_fishnet_stockings"},
+            conditions={
+                "legwear": {
+                    "moisture": "wet_soaked",
+                    "damage": "torn_ripped",
+                    "transparency": "see_through",
+                }
+            },
         )
     )
     result = engine.assemble(state)
-    assert "wet ripped fishnet stockings" in result.positive.lower()
+    positive = result.positive.lower()
+    assert "torn ripped see-through wet soaked classic fishnet tights" in positive
+    assert "wet soaked clothing" not in positive
+    assert "clothing pulled down" not in positive
+
+
+def test_clothing_color_condition_applied_closest_to_garment():
+    """Color modifier sits right before the garment noun, after other states."""
+    from egodary.app import create_engine
+    from egodary.core.models import OutfitState, PromptState
+
+    engine = create_engine()
+    state = PromptState(
+        outfit=OutfitState(
+            bottom="extreme_micro_thong",
+            conditions={"underwear": {"moisture": "wet_soaked", "color": "emerald_green"}},
+        )
+    )
+    result = engine.assemble(state)
+    outfit_tags = " ".join(result.buckets.outfit).lower()
+    assert "wet soaked emerald green extreme micro thong" in outfit_tags
+
+
+def test_clothing_color_condition_alone():
+    from egodary.app import create_engine
+    from egodary.core.models import OutfitState, PromptState
+
+    engine = create_engine()
+    state = PromptState(
+        outfit=OutfitState(
+            top="black_harness_top",
+            conditions={"top": {"color": "hot_pink"}},
+        )
+    )
+    result = engine.assemble(state)
+    outfit_tags = " ".join(result.buckets.outfit).lower()
+    assert "hot pink black harness top" in outfit_tags
+
+
+def test_bottom_subgroups_have_independent_conditions():
+    """skirts/shorts/transparent_plastic_skirts/underwear each use their own
+    condition key, separate from "bottom" (long_pants) and from each other."""
+    from egodary.app import create_engine
+    from egodary.core.models import OutfitState, PromptState
+
+    engine = create_engine()
+
+    cases = [
+        ("micro_hotpants", "shorts", "rust"),
+        ("micro_mini_skirt", "skirts", "lavender"),
+        ("extreme_micro_thong", "underwear", "emerald_green"),
+        ("skinny_jeans", "bottom", "navy_blue"),
+    ]
+    for bottom_value, condition_key, color_id in cases:
+        state = PromptState(
+            outfit=OutfitState(
+                bottom=bottom_value,
+                conditions={condition_key: {"color": color_id}},
+            )
+        )
+        result = engine.assemble(state)
+        outfit_tags = " ".join(result.buckets.outfit).lower()
+        assert color_id.replace("_", " ") in outfit_tags, (
+            f"{condition_key} condition not applied for {bottom_value}"
+        )
+
+
+def test_bottom_subgroup_conditions_cleared_on_subgroup_switch():
+    """Switching the active bottom subgroup clears condition keys for the
+    other subgroups (no leaking between shorts/skirts/underwear/pants)."""
+    from egodary.core.conflicts import apply_state_conflicts
+    from egodary.core.models import OutfitState, PromptState
+
+    state = PromptState(
+        outfit=OutfitState(
+            bottom="micro_mini_skirt",  # skirts subgroup
+            conditions={
+                "shorts": {"color": "rust"},
+                "underwear": {"color": "ivory"},
+                "bottom": {"damage": "torn_ripped"},
+                "skirts": {"color": "lavender"},
+            },
+        )
+    )
+    resolved, _ = apply_state_conflicts(state)
+    assert resolved.outfit.conditions.get("shorts", {}) == {}
+    assert resolved.outfit.conditions.get("underwear", {}) == {}
+    assert resolved.outfit.conditions.get("bottom", {}) == {}
+    assert resolved.outfit.conditions.get("skirts", {}) == {"color": "lavender"}
+
+
+def test_clothing_color_catalog_has_all_requested_colors():
+    """All colors from the spec are present in the outfit.clothing_state catalog."""
+    from egodary.app import get_engine
+
+    engine = get_engine()
+    category = engine.registry.get_category("outfit.clothing_state")
+    assert category is not None
+    color_labels = {
+        item.label for item in category.items if item.meta.get("dimension") == "color"
+    }
+    expected = {
+        # Classic
+        "Black", "White", "Beige", "Grey", "Navy Blue", "Brown",
+        "Red", "Pink", "Camel", "Burgundy",
+        # Trending 2025-2026
+        "Olive Green", "Sage Green", "Dusty Rose", "Blush Pink",
+        "Chocolate Brown", "Lavender", "Terracotta", "Butter Yellow",
+        "Powder Blue", "Emerald Green", "Rust", "Mocha",
+        # Additional
+        "Charcoal Grey", "Ivory", "Hot Pink", "Wine Red",
+    }
+    assert expected.issubset(color_labels)
+    assert len(color_labels) == len(expected)
 
 
 def test_conflicts_preview_endpoint_reports_outfit_conflict():
@@ -307,12 +464,12 @@ def test_conflicts_preview_endpoint_reports_outfit_conflict():
     state = PromptState(
         outfit=OutfitState(
             bottom="skinny_jeans",
-            underwear_layer="classic_thong",
+            legwear="sheer_pantyhose",
         )
     )
     result = preview_conflicts(state)
     assert result["warnings"]
-    assert any("underwear" in w.lower() for w in result["warnings"])
+    assert any("legwear" in w.lower() for w in result["warnings"])
 
 
 def test_space_station_blocks_weather():

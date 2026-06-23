@@ -1,0 +1,165 @@
+diff --git a/egodary/integrations/forge.py b/egodary/integrations/forge.py
+--- a/egodary/integrations/forge.py
++++ b/egodary/integrations/forge.py
+@@ -91,9 +91,32 @@ def fetch_forge_samplers(settings: dict) -> list[str]:
+         return []
+ 
+ 
+-# ---------------------------------------------------------------------------
+-# txt2img
+-# ---------------------------------------------------------------------------
++def fetch_forge_upscalers(settings: dict) -> list[str]:
++    """Return list of upscaler names from Forge."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/upscalers", timeout=timeout) or []
++        if isinstance(data, list):
++            return [u.get("name", "") for u in data if u and u.get("name")]
++        return []
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
++        return []
++
++
++def fetch_forge_schedulers(settings: dict) -> list[str]:
++    """Return list of scheduler names from Forge (Forge-specific endpoint)."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/schedulers", timeout=timeout) or []
++        if isinstance(data, list):
++            return [s.get("label") or s.get("name", "") for s in data if s]
++        return []
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
++        # Older A1111 builds don't have this endpoint — return common defaults
++        return ["Karras", "Exponential", "Polyexponential", "SGM Uniform", "Simple", "DDIM"]
++
+ 
+ 
+ def send_to_forge(
+diff --git a/egodary/api/main.py b/egodary/api/main.py
+--- a/egodary/api/main.py
++++ b/egodary/api/main.py
+@@ -1378,6 +1378,23 @@ def forge_samplers():
+     return {"samplers": fetch_forge_samplers(settings)}
+ 
+ 
++@app.get("/api/forge/upscalers")
++def forge_upscalers():
++    from egodary.integrations.forge import fetch_forge_upscalers
++    settings = load_forge_settings()
++    if not settings.get("enabled"):
++        return {"upscalers": []}
++    return {"upscalers": fetch_forge_upscalers(settings)}
++
++
++@app.get("/api/forge/schedulers")
++def forge_schedulers():
++    from egodary.integrations.forge import fetch_forge_schedulers
++    settings = load_forge_settings()
++    if not settings.get("enabled"):
++        return {"schedulers": []}
++    return {"schedulers": fetch_forge_schedulers(settings)}
++
+ @app.post("/api/forge/send")
+ def forge_send(payload: ForgeSendRequest):
+     from egodary.integrations.forge import send_to_forge
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -541,7 +541,8 @@
+                 <input id="forge-base-url" type="text" placeholder="http://127.0.0.1:7860" />
+               </label>
+               <label class="span-2">Default checkpoint (optional)
+-                <input id="forge-checkpoint" type="text" placeholder="оставьте пустым — будет использован текущий" />
++                <input id="forge-checkpoint" type="text" placeholder="оставьте пустым — будет использован текущий" list="forge-models-list" />
++                <datalist id="forge-models-list"></datalist>
+               </label>
+               <label>Steps
+                 <input id="forge-steps" type="number" min="1" max="150" step="1" />
+@@ -560,7 +561,8 @@
+                 <datalist id="forge-samplers-list"></datalist>
+               </label>
+               <label class="span-2">Scheduler
+-                <input id="forge-scheduler" type="text" placeholder="Karras" />
++                <input id="forge-scheduler" type="text" placeholder="Karras" list="forge-schedulers-list" />
++                <datalist id="forge-schedulers-list"></datalist>
+               </label>
+             </div>
+             <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Hires Fix</div>
+@@ -569,7 +571,8 @@
+               <label>Scale <input id="forge-hires-scale" type="number" min="1.1" max="4" step="0.1" /></label>
+               <label>Hires steps <input id="forge-hires-steps" type="number" min="1" max="60" step="1" /></label>
+               <label>Denoising <input id="forge-hires-denoising" type="number" min="0.05" max="1" step="0.05" /></label>
+-              <label>Upscaler <input id="forge-hires-upscaler" type="text" placeholder="4x-UltraSharp" /></label>
++              <label>Upscaler <input id="forge-hires-upscaler" type="text" placeholder="4x-UltraSharp" list="forge-upscalers-list" /></label>
++              <datalist id="forge-upscalers-list"></datalist>
+             </div>
+             <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Output</div>
+             <label class="check-row"><input type="checkbox" id="forge-save-images" /> Save images to Forge output folder</label>
+@@ -809,6 +812,7 @@
+             <div class="forge-quick-hires-params" id="fq-hires-params">
+               <label>Scale <input type="number" id="fq-hires-scale" min="1.1" max="4" step="0.1" /></label>
+               <label>Denoise <input type="number" id="fq-hires-denoising" min="0.05" max="1" step="0.05" /></label>
++              <label class="span-2">Upscaler <input type="text" id="fq-hires-upscaler" list="forge-upscalers-list" placeholder="4x-UltraSharp" /></label>
+             </div>
+           </div>
+           <label class="check-row"><input type="checkbox" id="fq-save-images" /> Save to Forge outputs</label>
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -7643,6 +7643,7 @@ function populateForgeQuickSettings(s) {
+   setChk("fq-hires-enabled", s.hires_enabled);
+   set("fq-hires-scale", s.hires_scale);
+   set("fq-hires-denoising", s.hires_denoising);
++  set("fq-hires-upscaler", s.hires_upscaler);
+   setChk("fq-save-images", s.save_images);
+   document.getElementById("fq-hires-params")?.classList.toggle("visible", !!s.hires_enabled);
+ }
+@@ -7661,6 +7662,7 @@ async function applyForgeQuickSettings() {
+     hires_enabled: getChk("fq-hires-enabled"),
+     hires_scale: Number(get("fq-hires-scale")) || current.hires_scale,
+     hires_denoising: Number(get("fq-hires-denoising")) || current.hires_denoising,
++    hires_upscaler: get("fq-hires-upscaler") || current.hires_upscaler,
+     save_images: getChk("fq-save-images"),
+   };
+   try {
+@@ -7691,12 +7693,33 @@ function populateForgeSettingsForm(s) {
+ }
+ 
+ async function loadForgeSamplers() {
++  await loadForgeOptions();
++}
++
++async function loadForgeOptions() {
+   try {
+-    const data = await api("/forge/samplers");
+-    const dl = document.getElementById("forge-samplers-list");
+-    if (dl && data.samplers?.length) {
+-      dl.innerHTML = data.samplers.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
+-    }
++    const [samplersData, modelsData, upscalersData, schedulersData] = await Promise.allSettled([
++      api("/forge/samplers"),
++      api("/forge/models"),
++      api("/forge/upscalers"),
++      api("/forge/schedulers"),
++    ]);
++
++    const fill = (id, items) => {
++      const dl = document.getElementById(id);
++      if (dl && items?.length) {
++        dl.innerHTML = items.filter(Boolean).map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
++      }
++    };
++
++    if (samplersData.status === "fulfilled")
++      fill("forge-samplers-list", samplersData.value?.samplers);
++    if (modelsData.status === "fulfilled")
++      fill("forge-models-list", modelsData.value?.models);
++    if (upscalersData.status === "fulfilled")
++      fill("forge-upscalers-list", upscalersData.value?.upscalers);
++    if (schedulersData.status === "fulfilled")
++      fill("forge-schedulers-list", schedulersData.value?.schedulers);
+   } catch (_) {}
+ }
+ 

@@ -180,40 +180,6 @@ FACE_CATALOG: dict[str, dict[str, list[str]]] = {
             "Neon Green",
         ],
     },
-    "skin": {
-        "skin_tone": [
-            "Fair porcelain skin",
-            "Light beige",
-            "Warm tan",
-            "Golden olive",
-            "Deep brown",
-            "Ebony",
-            "Pale with pink undertones",
-            "Sun-kissed skin",
-        ],
-        "skin_texture_finish": [
-            "Smooth flawless skin",
-            "Dewy / glowing skin",
-            "Oily shiny skin",
-            "Matte skin",
-            "Wet skin (water/oil)",
-            "Slightly sweaty skin",
-            "Glass skin effect",
-            "Soft natural skin with pores",
-        ],
-        "skin_details": [
-            "Light freckles across nose and cheeks",
-            "Heavy freckles",
-            "Beauty marks / moles",
-            "Subtle blush on cheeks",
-            "Heavy blush (aroused)",
-            "Redness around mouth and cheeks",
-            "Visible veins (subtle)",
-            "Light scars",
-            "Skin with goosebumps",
-            "Wet skin with water droplets",
-        ],
-    },
     "face_shape": {
         "basic_shapes": [
             "Oval face",
@@ -450,11 +416,6 @@ FACE_SUBGROUP_LABELS: dict[str, dict[str, str]] = {
     "eye_color": {
         "natural": "Eye Color",
         "fantasy_glowing": "Fantasy / Sci-Fi Eye Colors",
-    },
-    "skin": {
-        "skin_tone": "Skin Tone",
-        "skin_texture_finish": "Texture & Finish",
-        "skin_details": "Skin Details",
     },
     "face_shape": {
         "basic_shapes": "Basic Shapes",

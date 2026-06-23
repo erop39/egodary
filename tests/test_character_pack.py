@@ -11,7 +11,7 @@ def test_character_pack_has_catalog_categories():
         "character.breast_size": 5,
         "character.breast_shape": 8,
         "character.legs": 12,
-        "character.body_details": 18,
+        "character.body_details": 31,
         "character.ethnicity": 12,
         "character.skin_tone": 8,
     }

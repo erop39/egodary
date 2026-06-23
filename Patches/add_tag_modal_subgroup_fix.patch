@@ -1,0 +1,108 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 265f216..9970bf9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -12,6 +12,21 @@
+ ## [Unreleased]
+ 
+ ### Fixed
++- **Модалка «+ Add tag» — тот же баг, что и в Move tag/Wildcards, последний оставшийся случай.**
++  После фикса Move tag сделал полный аудит: прогрепал все `<select>` в `index.html`, все места в
++  `app.js`, пишущие `subcategory_id`/`subgroup`, и все вызовы `POST .../items`. Нашёл ровно ОДИН
++  оставшийся случай — поле Subcategory в модалке "+ Add tag" (`add-tag-subgroup`): закрытый
++  `<select>`, заполнялся только уже существующими подгруппами, плюс сам fetch не отправлял
++  `allow_new_subcategory: true`, так что даже при ручном вводе бэкенд ответил бы 400. Подтвердил
++  curl'ом: тот же payload без флага — 400 "Invalid subcategory…", с флагом — 200.
++  Поле сконвертировано в свободный текстовый ввод с datalist-подсказками (как Move tag и
++  Wildcards); `createTagFromModal()` теперь всегда шлёт `allow_new_subcategory: true`; префилл
++  подгруппы при открытии модалки по кнопке "+" внутри панели подгруппы больше не требует, чтобы
++  значение уже было «известным».
++  Остальные `<select>` в Tag Studio (Lister-фильтр, пикеры category) — это либо фильтры поиска
++  (где закрытый список корректен: фильтровать по несуществующей подгруппе бессмысленно), либо
++  выбор category (фиксированный набор, не подгруппа) — их трогать было не нужно.
++
+ - **Move tag в Tag Studio не работал при переносе в некоторые подгруппы.** Та же
+   закрытая-`<select>`-проблема, что и в форме Wildcards / модалке "+ Add tag": поле "Move to
+   subcategory" заполнялось только подгруппами, в которых **уже есть хотя бы один тег**
+@@ -161,6 +176,10 @@
+ - `pytest tests/` — 253 passed. Проверено вручную (curl): `POST /.../move` с
+   `to_subcategory_id` на несуществующую подгруппу `brand_new_subgroup_xyz` — 200 OK, тег
+   корректно переехал.
++- `pytest tests/` — 253 passed (без новых тестов: backend-валидация `allow_new_subcategory` уже
++  была покрыта тестом `test_api_add_runtime_tag_item_supports_new_subcategory_when_enabled`).
++  Проверено вручную (curl), тот же payload, что теперь шлёт модалка: без `allow_new_subcategory`
++  → 400 "Invalid subcategory…", с флагом → 200, тег создан с нужной подгруппой.
+ 
+ ## [0.1.35] — 2026-06-20
+ 
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index ef5b917..64b459c 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -6005,28 +6005,13 @@ async function loadAddTagCategories() {
+ }
+ 
+ async function fillAddTagSubgroups(categoryId) {
+-  const subgroupSelect = document.getElementById("add-tag-subgroup");
+-  if (!subgroupSelect) return [];
++  const subgroupInput = document.getElementById("add-tag-subgroup");
++  const datalist = document.getElementById("add-tag-subgroup-options");
++  if (!subgroupInput) return [];
+   const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
+   const subgroups = collectKnownSubgroups(categoryId, data);
+-  subgroupSelect.innerHTML = "";
+-  if (!subgroups.length) {
+-    const option = document.createElement("option");
+-    option.value = "";
+-    option.textContent = "none";
+-    subgroupSelect.appendChild(option);
+-    subgroupSelect.disabled = true;
+-    subgroupSelect.dataset.hasSubgroups = "0";
+-    return subgroups;
+-  }
+-  for (const subgroup of subgroups) {
+-    const option = document.createElement("option");
+-    option.value = subgroup;
+-    option.textContent = subgroup;
+-    subgroupSelect.appendChild(option);
+-  }
+-  subgroupSelect.disabled = false;
+-  subgroupSelect.dataset.hasSubgroups = "1";
++  if (datalist) datalist.innerHTML = subgroups.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
++  subgroupInput.dataset.hasSubgroups = subgroups.length ? "1" : "0";
+   return subgroups;
+ }
+ 
+@@ -6073,8 +6058,8 @@ async function openAddTagModalWithContext(prefillCategoryId = null, prefillSubgr
+     }
+     if (!prefillSubgroup && activeLeaf?.subgroup) prefillSubgroup = activeLeaf.subgroup;
+   }
+-  const subgroups = await fillAddTagSubgroups(categorySelect.value);
+-  if (prefillSubgroup && subgroups.includes(prefillSubgroup)) subgroupSelect.value = prefillSubgroup;
++  await fillAddTagSubgroups(categorySelect.value);
++  subgroupSelect.value = prefillSubgroup || "";
+   titleEl.textContent = getCategoryTitleById(categorySelect.value);
+   document.getElementById("add-tag-persist").checked = true;
+   labelInput.value = "";
+@@ -6116,6 +6101,7 @@ async function createTagFromModal(event) {
+         item_id: itemId || null,
+         subgroup,
+         subcategory_id: subgroup,
++        allow_new_subcategory: true,
+         aliases,
+         description,
+         default_weight: defaultWeight,
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+index abab139..bf68461 100644
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -799,7 +799,8 @@
+         </label>
+         <label class="fav-field">
+           <span>Subcategory</span>
+-          <select id="add-tag-subgroup"></select>
++          <input type="text" id="add-tag-subgroup" list="add-tag-subgroup-options" placeholder="существующая или новая" autocomplete="off" />
++          <datalist id="add-tag-subgroup-options"></datalist>
+         </label>
+         <label class="fav-field">
+           <span>Aliases (comma separated)</span>

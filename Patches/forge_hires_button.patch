@@ -1,0 +1,134 @@
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -805,6 +805,10 @@
+         <div class="forge-result hidden" id="forge-result">
+           <img id="forge-result-img" src="" alt="Generated image" class="forge-img" />
+           <div class="forge-result-meta" id="forge-result-meta"></div>
++          <div class="forge-result-actions">
++            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-hires">↑ Send to Hires</button>
++            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-save-img" title="Скачать изображение">⬇ Save</button>
++          </div>
+         </div>
+       </div>
+ 
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -7254,6 +7254,9 @@ function bindEvents() {
+   document.getElementById("btn-forge-send")?.addEventListener("click", () => {
+     sendToForge().catch((e) => toast("Forge error: " + e.message));
+   });
++  document.getElementById("btn-forge-hires")?.addEventListener("click", () => {
++    sendToForgeHires().catch((e) => toast("Forge error: " + e.message));
++  });
+ 
+   // Hotkeys
+   initHotkeys();
+@@ -7719,7 +7722,10 @@ function updateForgeSendCard(settings) {
+   }
+ }
+ 
+-async function sendToForge(positiveOverride, negativeOverride) {
++// Last successful Forge result — used by "Send to Hires" button
++let _lastForgeResult = null;
++
++async function sendToForge(positiveOverride, negativeOverride, extraOverride) {
+   const positive = positiveOverride ?? document.getElementById("output-positive")?.value ?? "";
+   const negative = negativeOverride ?? document.getElementById("output-negative")?.value ?? "";
+   if (!positive) return toast("Нет промпта для отправки");
+@@ -7728,21 +7734,55 @@ async function sendToForge(positiveOverride, negativeOverride) {
+   const imgEl = document.getElementById("forge-result-img");
+   const metaEl = document.getElementById("forge-result-meta");
+   const btn = document.getElementById("btn-forge-send");
++  const hiresBtn = document.getElementById("btn-forge-hires");
++  const saveBtn = document.getElementById("btn-forge-save-img");
+ 
+   if (resultEl) resultEl.classList.add("hidden");
++  if (hiresBtn) hiresBtn.classList.add("hidden");
++  if (saveBtn) saveBtn.classList.add("hidden");
+   if (btn) { btn.disabled = true; btn.textContent = "Generating…"; }
+ 
+   try {
++    const body = { positive, negative };
++    if (extraOverride) body.override = extraOverride;
+     const data = await api("/forge/send", {
+       method: "POST",
+-      body: JSON.stringify({ positive, negative }),
++      body: JSON.stringify(body),
+     });
+     if (data.images?.[0]) {
+-      if (imgEl) { imgEl.src = `data:image/png;base64,${data.images[0]}`; }
++      const dataUrl = `data:image/png;base64,${data.images[0]}`;
++      if (imgEl) imgEl.src = dataUrl;
+       const info = data.info || {};
+-      if (metaEl) metaEl.textContent = `seed: ${info.seed ?? "?"} · steps: ${data.parameters?.steps ?? "?"} · CFG: ${data.parameters?.cfg_scale ?? "?"}`;
++      const isHires = data.parameters?.enable_hr;
++      if (metaEl) {
++        metaEl.textContent = [
++          `seed: ${info.seed ?? "?"}`,
++          `steps: ${data.parameters?.steps ?? "?"}`,
++          `CFG: ${data.parameters?.cfg_scale ?? "?"}`,
++          isHires ? `hires ×${data.parameters?.hr_scale ?? "?"}` : null,
++        ].filter(Boolean).join(" · ");
++      }
+       if (resultEl) resultEl.classList.remove("hidden");
+-      toast("Изображение получено от Forge");
++
++      // Store for hires re-send
++      _lastForgeResult = { positive, negative, seed: info.seed };
++
++      // Show action buttons
++      if (hiresBtn) {
++        hiresBtn.classList.remove("hidden");
++        hiresBtn.textContent = isHires ? "↑ Hires (again)" : "↑ Send to Hires";
++      }
++      if (saveBtn) {
++        saveBtn.classList.remove("hidden");
++        saveBtn.onclick = () => {
++          const a = document.createElement("a");
++          a.href = dataUrl;
++          a.download = `forge_${info.seed ?? Date.now()}.png`;
++          a.click();
++        };
++      }
++
++      toast(isHires ? "Hi-res готов" : "Изображение получено от Forge");
+     }
+   } catch (e) {
+     toast("Forge error: " + e.message);
+@@ -7751,6 +7791,21 @@ async function sendToForge(positiveOverride, negativeOverride) {
+   }
+ }
+ 
++async function sendToForgeHires() {
++  if (!_lastForgeResult) return toast("Сначала сгенерируйте изображение");
++  const { positive, negative, seed } = _lastForgeResult;
++  const btn = document.getElementById("btn-forge-hires");
++  if (btn) { btn.disabled = true; btn.textContent = "Upscaling…"; }
++  try {
++    await sendToForge(positive, negative, {
++      enable_hr: true,
++      seed: seed ?? -1,
++    });
++  } finally {
++    if (btn) { btn.disabled = false; }
++  }
++}
++
+ // =============================================================
+ // HOTKEYS  (Ctrl+Enter, Ctrl+Z, Ctrl+S)
+ // =============================================================
+diff --git a/egodary/web/static/css/app.css b/egodary/web/static/css/app.css
+--- a/egodary/web/static/css/app.css
++++ b/egodary/web/static/css/app.css
+@@ -2843,3 +2843,9 @@ select:disabled {
+   font-size: 11px;
+   color: var(--text-muted);
+ }
++
++.forge-result-actions {
++  display: flex;
++  gap: 6px;
++  margin-top: 6px;
++}

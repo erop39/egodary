@@ -86,3 +86,23 @@ def test_virtual_category_from_overlay_only():
     assert cat is not None
     assert cat.id == "prompting.imported"
     assert len(cat.items) == 1
+
+
+def test_get_category_overlay_replaces_core_with_same_id():
+    reg = _registry()
+    cat_before = reg.get_category("outfit.dress")
+    assert cat_before and cat_before.items
+    core = cat_before.items[0]
+    count_before = len(cat_before.items)
+    overlay = TagItem(
+        id=core.id,
+        label=core.label,
+        tags=dict(core.tags),
+        meta={**(core.meta or {}), "description": "overlay replaces core"},
+    )
+    reg.add_item("outfit.dress", overlay, source="user", on_conflict="overwrite")
+    cat_after = reg.get_category("outfit.dress")
+    assert len(cat_after.items) == count_before
+    assert sum(1 for item in cat_after.items if item.id == core.id) == 1
+    replaced = next(item for item in cat_after.items if item.id == core.id)
+    assert replaced.meta.get("description") == "overlay replaces core"

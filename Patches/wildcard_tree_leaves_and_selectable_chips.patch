@@ -1,0 +1,292 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2367ba4..3d45738 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -12,6 +12,25 @@
+ ## [Unreleased]
+ 
+ ### Added
++- **Отдельная ветка дерева для новых wildcard-подгрупп.** Раньше wildcard с произвольным
++  `target_subgroup` (например `appearance.hair` / `imported`) был виден только как
++  дополнительный блок «🧩 Wildcards», приклеенный снизу к *каждой* существующей подгруппе
++  категории (Long Styles, Updos & Buns и т.д.) — без своего отдельного узла в дереве слева.
++  Теперь `injectWildcardLeaves()` (по той же схеме, что уже использует `injectPresetsIntoTree`
++  для пресетов) добавляет для такой подгруппы собственный лист дерева — `🧩 hair test.txt` —
++  рядом с остальными ветками Hair, со своими чипами, выбираемыми точно так же, как у обычных
++  подгрупп. `field`/`multi`/`conditionField` нового листа копируются с соседнего листа той же
++  categoryId, поэтому он читает/пишет то же поле state, что и его «настоящие» соседи. Работает
++  для произвольной глубины вложенности (например `Accessories → Tattoos & Body Art`) и для
++  групп, смешивающих несколько categoryId под одним заголовком (например `Hair` = `appearance.hair`
++  + `appearance.hair_color`, `Bottom` = `outfit.bottom` + `outfit.underwear_layer`).
++  Индекс (`GET /api/wildcards`, без построчных items — достаточно для построения дерева)
++  грузится один раз при старте приложения, до первого рендера дерева, и пересчитывается после
++  любого upload/toggle/delete во вкладке Wildcards.
++  Блок «🧩 Wildcards» внутри обычных подгрупп больше не дублирует подгруппу, которая теперь
++  доступна как отдельный лист (фильтруется по `target_subgroup !== текущая subgroup`).
++
++### Fixed
+ - **Wildcards-секция внутри подгрупп.** Каждая панель подгруппы (Outfit, Character/Hair,
+   Makeup, Accessories, Pose, Camera, Lighting, Environment, Fetish и т.д.) теперь показывает
+   блок «🧩 Wildcards» со всеми тегами, загруженными через вкладку Wildcards для родительской
+@@ -75,6 +94,11 @@
+ - Проверено вручную: `GET /` после фикса возвращает `200 OK`, `content-length` в заголовке точно
+   совпадает с фактическим размером тела ответа, инжектированный `<script>` присутствует перед
+   `</body>`, в логе сервера — чистый `200 OK` без traceback.
++- `injectWildcardLeaves()` прогнан изолированным Node-харнессом (без браузера) против реальных
++  `HAIR_TREE`/`OUTFIT_TREE`/`ACCESSORIES_TREE`/полного `getCharacterTree()`: лист корректно
++  добавляется на верхнем уровне (Hair), внутри вложенной на 2 уровня группы (Accessories →
++  Tattoos & Body Art), в группе с несколькими categoryId (Bottom = outfit.bottom +
++  outfit.underwear_layer), и не добавляется при пустом индексе wildcards.
+ 
+ ## [0.1.35] — 2026-06-20
+ 
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index ae53d65..bf101a3 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -1937,8 +1937,91 @@ function wrapSetValForSubgroup(getVal, setVal, scopeIds, offValue = "") {
+ // when the source wildcard (or all of its lines) is disabled.
+ const wildcardsByCategoryCache = new Map();
+ 
+-function invalidateWildcardsByCategoryCache() {
++async function invalidateWildcardsByCategoryCache() {
+   wildcardsByCategoryCache.clear();
++  await loadWildcardsIndex();
++  refreshAllPanels();
++}
++
++// Synchronous index used while building category trees (getCharacterTree(),
++// getOutfitTree(), ...) — these are plain sync functions called throughout
++// the app, so wildcard data has to already be in memory by the time they
++// run rather than fetched on demand. Built once at startup (see init()) and
++// refreshed whenever wildcards are uploaded/toggled/deleted.
++let wildcardsIndexByCategory = {};
++
++async function loadWildcardsIndex() {
++  try {
++    const data = await api("/wildcards");
++    const idx = {};
++    for (const w of data.wildcards || []) {
++      if (!w.enabled || !w.item_count) continue;
++      if (!idx[w.target_category]) idx[w.target_category] = [];
++      idx[w.target_category].push({
++        subgroup: w.target_subgroup,
++        label: w.label || w.filename,
++        count: w.item_count,
++      });
++    }
++    wildcardsIndexByCategory = idx;
++  } catch (e) {
++    wildcardsIndexByCategory = {};
++  }
++}
++
++// Appends a dedicated tree leaf for every wildcard target_subgroup that isn't
++// already one of a category's built-in subgroups — e.g. uploading a wildcard
++// to appearance.hair / "imported" gets its own "🧩 ..." leaf next to Long
++// Styles / Updos & Buns / etc., instead of only being reachable as extra
++// chips bolted onto every existing subgroup. Field/multi/conditionField are
++// copied from a sibling leaf of the same categoryId so the new leaf reads
++// and writes the same state slot as its neighbors.
++function injectWildcardLeaves(nodes) {
++  if (!Array.isArray(nodes) || !nodes.length) return nodes;
++  return nodes.map((node) => {
++    if (!Array.isArray(node.children) || !node.children.length) return node;
++
++    // Recurse first so nested sub-groups (e.g. Accessories > Tattoos & Body
++    // Art) get their own orphan wildcard leaves too.
++    const children = injectWildcardLeaves(node.children);
++
++    // Bucket this group's own direct leaves (not nested sub-groups) by
++    // categoryId — a group can mix more than one category, e.g. Hair +
++    // Hair Color both live under the single "Hair" header.
++    const byCategory = new Map();
++    for (const child of children) {
++      if (Array.isArray(child.children) && child.children.length) continue;
++      if (!child.categoryId) continue;
++      if (!byCategory.has(child.categoryId)) {
++        byCategory.set(child.categoryId, { template: child, knownSubgroups: new Set() });
++      }
++      if (child.subgroup) byCategory.get(child.categoryId).knownSubgroups.add(child.subgroup);
++    }
++
++    const extraLeaves = [];
++    for (const [categoryId, { template, knownSubgroups }] of byCategory) {
++      const wcGroups = wildcardsIndexByCategory[categoryId];
++      if (!wcGroups || !wcGroups.length) continue;
++      const seen = new Set();
++      for (const wc of wcGroups) {
++        if (!wc.subgroup || knownSubgroups.has(wc.subgroup) || seen.has(wc.subgroup)) continue;
++        seen.add(wc.subgroup);
++        extraLeaves.push({
++          id: `wc_${categoryId}_${wc.subgroup}`,
++          label: `🧩 ${wc.label}`,
++          categoryId,
++          subgroup: wc.subgroup,
++          field: template.field,
++          multi: template.multi,
++          conditionField: template.conditionField,
++          isWildcardLeaf: true,
++        });
++      }
++    }
++
++    if (!extraLeaves.length && children === node.children) return node;
++    return { ...node, children: [...children, ...extraLeaves] };
++  });
+ }
+ 
+ async function fetchWildcardsForCategory(categoryId) {
+@@ -1958,29 +2041,80 @@ async function fetchWildcardsForCategory(categoryId) {
+   }
+ }
+ 
+-function wildcardsSectionGroupHtml(group) {
+-  const chips = group.items
+-    .map((it) => `<span class="chip wildcard-chip" title="${escapeHtml(it.label)}">${escapeHtml(it.label)}</span>`)
+-    .join("");
+-  return `
+-    <div class="wildcards-group">
+-      <div class="wildcards-group-title">${escapeHtml(group.label)} <span class="wildcards-group-count">${group.items.length}</span></div>
+-      <div class="wildcards-group-chips">${chips}</div>
+-    </div>`;
++function wildcardChipIsSelected(getVal, isMulti, id) {
++  const v = getVal();
++  if (isMulti) return asStringArray(v).includes(id);
++  return Array.isArray(v) ? v.includes(id) : v === id;
+ }
+ 
+-async function appendWildcardsSection(container, categoryId) {
+-  if (!container || !categoryId) return;
++async function appendWildcardsSection(container, categoryId, getVal, setVal, isMulti = false, currentSubgroup = null) {
++  if (!container || !categoryId || typeof getVal !== "function" || typeof setVal !== "function") return;
+   const token = `${categoryId}#${Math.random()}`;
+   container.dataset.wcToken = token;
+-  const groups = await fetchWildcardsForCategory(categoryId);
++  let groups = await fetchWildcardsForCategory(categoryId);
+   // The user may have switched to a different leaf while this was in flight —
+   // bail out so we don't append a stale section onto the wrong panel.
+   if (container.dataset.wcToken !== token) return;
++  // A wildcard whose target_subgroup matches the leaf we're already on gets
++  // its own dedicated tree leaf (see injectWildcardLeaves) and is already
++  // showing as regular, first-class chips above — don't repeat it here.
++  groups = groups.filter((g) => g.target_subgroup !== currentSubgroup);
+   if (!groups.length) return;
++
+   const section = document.createElement("div");
+   section.className = "wildcards-section";
+-  section.innerHTML = `<div class="wildcards-section-title">🧩 Wildcards</div>${groups.map(wildcardsSectionGroupHtml).join("")}`;
++
++  const title = document.createElement("div");
++  title.className = "wildcards-section-title";
++  title.textContent = "🧩 Wildcards";
++  section.appendChild(title);
++
++  const refreshActive = () => {
++    section.querySelectorAll(".wildcard-chip").forEach((el) => {
++      el.classList.toggle("active", wildcardChipIsSelected(getVal, isMulti, el.dataset.id));
++    });
++  };
++
++  const toggle = (id) => {
++    if (isMulti) {
++      const set = new Set(asStringArray(getVal()));
++      if (set.has(id)) set.delete(id);
++      else set.add(id);
++      setVal([...set]);
++    } else {
++      // Mirrors renderChips' single-select chips: clicking always selects
++      // this tag (use the field's own "Off" control above to clear it).
++      setVal(id);
++    }
++    notifyStateChange();
++    refreshActive();
++  };
++
++  for (const group of groups) {
++    const groupEl = document.createElement("div");
++    groupEl.className = "wildcards-group";
++
++    const groupTitle = document.createElement("div");
++    groupTitle.className = "wildcards-group-title";
++    groupTitle.innerHTML = `${escapeHtml(group.label)} <span class="wildcards-group-count">${group.items.length}</span>`;
++    groupEl.appendChild(groupTitle);
++
++    const chipsRow = document.createElement("div");
++    chipsRow.className = "wildcards-group-chips";
++    for (const it of group.items) {
++      const chip = document.createElement("button");
++      chip.type = "button";
++      chip.className = chipItemClass({ id: it.item_id }, wildcardChipIsSelected(getVal, isMulti, it.item_id)) + " wildcard-chip";
++      chip.textContent = it.label;
++      chip.title = it.label;
++      chip.dataset.id = it.item_id;
++      chip.onclick = () => toggle(it.item_id);
++      chipsRow.appendChild(chip);
++    }
++    groupEl.appendChild(chipsRow);
++    section.appendChild(groupEl);
++  }
++
+   container.appendChild(section);
+ }
+ 
+@@ -2010,7 +2144,7 @@ async function loadCategoryChips(container, categoryId, getVal, setVal, opts = {
+       selectionScope: scopeKey,
+       categoryId,
+     });
+-    if (subgroup) await appendWildcardsSection(container, categoryId);
++    if (subgroup) await appendWildcardsSection(container, categoryId, getVal, setVal, false, subgroup);
+   } catch (e) {
+     container.innerHTML = `<span style="color:#eb3b5a;font-size:12px">${categoryId}: not loaded</span>`;
+   }
+@@ -2120,7 +2254,7 @@ async function loadCategoryMultiChips(container, categoryId, getVal, setVal, opt
+       selectionScope: scopeKey,
+       categoryId,
+     });
+-    if (subgroup) await appendWildcardsSection(container, categoryId);
++    if (subgroup) await appendWildcardsSection(container, categoryId, getVal, setVal, true, subgroup);
+   } catch (e) {
+     container.innerHTML = `<span style="color:#eb3b5a;font-size:12px">${categoryId}: not loaded</span>`;
+   }
+@@ -3113,7 +3247,7 @@ function injectPresetsIntoTree(baseTree, scopeKey, getBuiltinPresets) {
+     presetScope: scopeKey,
+     presetPanel: "custom",
+   });
+-  return [{ id: `${scopeKey}_presets`, label: "Presets", children }, ...(baseTree || [])];
++  return [{ id: `${scopeKey}_presets`, label: "Presets", children }, ...injectWildcardLeaves(baseTree || [])];
+ }
+ 
+ function collectCategoryIdsFromTree(nodes, ids = new Set()) {
+@@ -7023,7 +7157,7 @@ async function init() {
+   initStaticChips();
+   bindEvents();
+   const llmSettingsPromise = loadLlmSettingsCard().catch(() => {});
+-  await ensureClothingStateCatalog();
++  await Promise.all([ensureClothingStateCatalog(), loadWildcardsIndex()]);
+   void llmSettingsPromise;
+   refreshAllPanels();
+   syncFormControlsFromState();
+diff --git a/egodary/web/static/css/app.css b/egodary/web/static/css/app.css
+index db3096f..82da71d 100644
+--- a/egodary/web/static/css/app.css
++++ b/egodary/web/static/css/app.css
+@@ -2495,7 +2495,6 @@ select:disabled {
+ }
+ 
+ .chip.wildcard-chip {
+-  cursor: default;
+   border-style: dashed;
+   background: transparent;
+ }
+@@ -2505,6 +2504,10 @@ select:disabled {
+   color: var(--text);
+ }
+ 
++.chip.wildcard-chip.active {
++  border-style: solid;
++}
++
+ /* Wildcards */
+ .wildcards-list {
+   display: grid;

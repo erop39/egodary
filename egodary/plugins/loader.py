@@ -6,17 +6,22 @@
 
 from __future__ import annotations
 
+import importlib
 import importlib.metadata as importlib_metadata
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import yaml
 
 from egodary._version import APP_VERSION
 from egodary.core.models import ConflictGroup, TagCategory, TagItem
 from egodary.core.registry import RegistryConflictError, TagRegistry
-from egodary.plugins.base import PluginKind
+from egodary.plugins.base import PluginKind, UiExtensionPlugin
 from egodary.plugins.manifest import PluginManifest, parse_manifest
+
+if TYPE_CHECKING:
+    from fastapi import FastAPI
 
 ENTRY_POINT_GROUP = "egodary.plugins"
 
@@ -31,6 +36,7 @@ class LoadedPlugin:
     source: str  # "builtin" | "dropin" | "installed"
     path: Path | None = None
     category_ids: list[str] = field(default_factory=list)
+    ui_extension_instance: Any | None = None  # UiExtensionPlugin if kind==ui_extension
 
 
 def _version_satisfies(current: str, requirement: str) -> bool:
@@ -205,10 +211,68 @@ class PluginManager:
 
             if info.kind == PluginKind.CONTENT_PACK:
                 self._load_content_pack(manifest, plugin_dir, registry, loaded)
+            elif info.kind == PluginKind.UI_EXTENSION:
+                self._load_ui_extension(manifest, plugin_dir, loaded)
             else:
                 self._skipped.append({"id": info.id, "kind": info.kind.value, "reason": "пока не реализовано"})
 
             self.loaded.append(loaded)
+
+    def _load_ui_extension(
+        self,
+        manifest: PluginManifest,
+        plugin_dir: Path,
+        loaded: LoadedPlugin,
+    ) -> None:
+        info = manifest.plugin
+        code = manifest.code
+        if not code.module or not code.entry:
+            raise PluginLoadError(
+                f"ui_extension '{info.id}' должен указывать code.module и code.entry"
+            )
+        # Добавляем директорию плагина в sys.path чтобы можно было делать
+        # простые плагины без установки через pip.
+        import sys
+        plugin_dir_str = str(plugin_dir.resolve())
+        if plugin_dir_str not in sys.path:
+            sys.path.insert(0, plugin_dir_str)
+        try:
+            mod = importlib.import_module(code.module)
+        except ImportError as exc:
+            raise PluginLoadError(
+                f"ui_extension '{info.id}': не удалось импортировать '{code.module}': {exc}"
+            ) from exc
+        instance = getattr(mod, code.entry, None)
+        if instance is None:
+            raise PluginLoadError(
+                f"ui_extension '{info.id}': атрибут '{code.entry}' не найден в '{code.module}'"
+            )
+        if not isinstance(instance, UiExtensionPlugin):
+            raise PluginLoadError(
+                f"ui_extension '{info.id}': '{code.entry}' не реализует протокол UiExtensionPlugin"
+            )
+        loaded.ui_extension_instance = instance
+
+    def register_ui_extensions(self, app: "FastAPI") -> list[str]:
+        """Вызывается один раз при старте FastAPI-приложения.
+
+        Возвращает список id зарегистрированных плагинов.
+        """
+        registered: list[str] = []
+        for loaded in self.loaded:
+            if loaded.ui_extension_instance is not None:
+                try:
+                    loaded.ui_extension_instance.register(app)
+                    registered.append(loaded.manifest.plugin.id)
+                except Exception as exc:  # noqa: BLE001
+                    # Не роняем сервер из-за плагина — логируем и пропускаем.
+                    import logging
+                    logging.getLogger(__name__).error(
+                        "ui_extension '%s' register() failed: %s",
+                        loaded.manifest.plugin.id,
+                        exc,
+                    )
+        return registered
 
     def _load_content_pack(
         self,

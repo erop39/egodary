@@ -77,7 +77,9 @@ class ZImageTurboAdapter:
             list(data.get("pose", [])) + list(data.get("situation", [])),
             "stands naturally",
         )
-        outfit_items = self._prose_tags(list(data.get("outfit", [])))
+        outfit_items = self._prose_tags(
+            list(data.get("outfit", [])) + list(data.get("tattoos", []))
+        )
         outfit = f"wears {', '.join(outfit_items)}" if outfit_items else "wears a cohesive outfit"
         scene = self._prose_phrase(list(data.get("scene", [])), "in a detailed environment")
         lighting = self._prose_phrase(list(data.get("lighting", [])), "with cinematic lighting")

@@ -1,0 +1,89 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 72fa864..7a4baf4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -12,6 +12,23 @@
+ ## [Unreleased]
+ 
+ ### Fixed
++- **`update_and_run.bat` закрывалось с "[ERROR] Server failed to start." после обычной остановки
++  сервера Ctrl+C.** Сервер на Windows часто возвращает ненулевой код выхода именно при штатной
++  остановке через Ctrl+C — скрипт принимал это за реальный сбой запуска, показывал [ERROR] и уходил
++  в `:fail` (`pause` → закрытие окна по нажатию клавиши). Теперь после остановки сервера (по любой
++  причине — Ctrl+C или реальный сбой) пишется нейтральное "Server stopped." без алармистского
++  [ERROR]; если сервер правда не запустился, причина и так видна в выводе uvicorn выше. Тот же фикс
++  внесён в `restart.bat` (там был идентичный паттерн).
++- **В подсказке "To skip tests: ... (or --fast ...)" (добавленной в прошлом патче) ломался парсинг
++  cmd.exe.** Строка лежит внутри уже открытого блока `if errorlevel 1 ( ... )` — непроэкранированные
++  `(`/`)` внутри активного блока cmd.exe воспринимает как часть блочной структуры, а не как текст:
++  вторая половина подсказки уходила в отдельную "не опознанную команду". Скобки в этой строке
++  экранированы (`^(`/`^)`).
++  Оба бага найдены не статическим чтением, а реальным прогоном скрипта: поставил `wine` +
++  `gcc-mingw-w64` в песочнице, собрал нативный exe-заглушку для `python`, прогнал
++  `update_and_run.bat`/`restart.bat` под `wine cmd` с разными кодами возврата заглушки (успех/pip
++  упал/один build-скрипт упал/тесты упали/serve "упал") — так подтверждены и сами баги, и оба фикса
++  для всех шести сценариев.
+ - **Ветка дерева для wildcard-подгруппы подписывалась именем файла, а не тем, что введено в
+   Subgroup.** Например: Category = `appearance.hair`, Subgroup = "Sexy outfit", файл
+   `random_filename_v3.txt` — лист в дереве показывал `🧩 random_filename_v3.txt` вместо
+diff --git a/update_and_run.bat b/update_and_run.bat
+index 053bc3f..53bdd91 100644
+--- a/update_and_run.bat
++++ b/update_and_run.bat
+@@ -118,7 +118,7 @@ if "!SKIP_TEST!"=="0" (
+     if errorlevel 1 (
+         echo.
+         echo [ERROR] Tests failed. Server was not started.
+-        echo To skip tests: update_and_run.bat --no-test (or --fast to skip pip+rebuild+test)
++        echo To skip tests: update_and_run.bat --no-test ^(or --fast to skip pip+rebuild+test^)
+         goto :fail
+     )
+ ) else (
+@@ -133,12 +133,19 @@ echo Stop server: Ctrl+C
+ echo.
+ 
+ %PYTHON_CMD% -m egodary.cli.main serve
+-if errorlevel 1 (
+-    echo.
+-    echo [ERROR] Server failed to start.
+-    goto :fail
+-)
+ 
++REM Note: we deliberately do NOT treat a non-zero exit here as a script
++REM failure (no [ERROR], no :fail). Stopping the dev server with Ctrl+C is
++REM the normal way to end this script, and on Windows that often makes the
++REM server process return a non-zero exit code even though nothing actually
++REM went wrong - treating it as [ERROR] + pause was confusing ("I press a
++REM key and everything just closes"). If the server genuinely failed to
++REM start (e.g. port already in use), uvicorn's own error output above is
++REM what to look at; the line below just keeps the window open long enough
++REM to read it.
++echo.
++echo Server stopped.
++pause
+ goto :eof
+ 
+ :build_script
+diff --git a/restart.bat b/restart.bat
+index 2525e4b..7cc8811 100644
+--- a/restart.bat
++++ b/restart.bat
+@@ -55,12 +55,13 @@ if "!NO_RELOAD!"=="1" (
+ ) else (
+     %PYTHON_CMD% -m egodary.cli.main serve
+ )
+-if errorlevel 1 (
+-    echo.
+-    echo [ERROR] Server failed to start.
+-    goto :fail
+-)
+ 
++REM See update_and_run.bat for why we don't treat a non-zero exit here as
++REM [ERROR] + :fail - stopping with Ctrl+C normally exits non-zero too, and
++REM that's not a real failure.
++echo.
++echo Server stopped.
++pause
+ goto :eof
+ 
+ :fail

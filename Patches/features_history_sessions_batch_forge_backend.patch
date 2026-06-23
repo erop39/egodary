@@ -1,0 +1,999 @@
+diff --git a/egodary/persistence/db.py b/egodary/persistence/db.py
+index 078f4ee..e1c83e5 100644
+--- a/egodary/persistence/db.py
++++ b/egodary/persistence/db.py
+@@ -118,6 +118,14 @@ def init_db(path: Path | None = None) -> None:
+             UNIQUE(wildcard_id, item_id)
+         );
+         CREATE INDEX IF NOT EXISTS idx_wildcard_items_wildcard ON wildcard_items(wildcard_id);
++        CREATE TABLE IF NOT EXISTS sessions (
++            id INTEGER PRIMARY KEY AUTOINCREMENT,
++            name TEXT NOT NULL,
++            state_json TEXT NOT NULL,
++            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
++            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
++        );
++        CREATE INDEX IF NOT EXISTS idx_generation_history_model ON generation_history(model_id);
+         """
+     )
+     _ensure_column(cur, "favorites", "result_url", "TEXT")
+diff --git a/egodary/persistence/schema.py b/egodary/persistence/schema.py
+index 7b1039f..6c2b100 100644
+--- a/egodary/persistence/schema.py
++++ b/egodary/persistence/schema.py
+@@ -1036,3 +1036,178 @@ def load_wildcards_into_registry(registry: RuntimeRegistry) -> int:
+             loaded += 1
+     conn.close()
+     return loaded
++
++
++# ---------------------------------------------------------------------------
++# Generation history
++# ---------------------------------------------------------------------------
++
++
++def list_generation_history(
++    limit: int = 50,
++    model_id: str | None = None,
++) -> list[dict]:
++    conn = get_connection()
++    cur = conn.cursor()
++    if model_id:
++        rows = cur.execute(
++            """
++            SELECT id, positive, negative, model_id, payload_json, created_at
++            FROM generation_history
++            WHERE model_id = ?
++            ORDER BY id DESC LIMIT ?
++            """,
++            (model_id, limit),
++        ).fetchall()
++    else:
++        rows = cur.execute(
++            """
++            SELECT id, positive, negative, model_id, payload_json, created_at
++            FROM generation_history
++            ORDER BY id DESC LIMIT ?
++            """,
++            (limit,),
++        ).fetchall()
++    conn.close()
++    result = []
++    for row in rows:
++        item = dict(row)
++        raw = item.pop("payload_json", None)
++        if raw:
++            try:
++                item["payload"] = json.loads(raw)
++            except json.JSONDecodeError:
++                item["payload"] = None
++        else:
++            item["payload"] = None
++        result.append(item)
++    return result
++
++
++def delete_generation_history_entry(entry_id: int) -> bool:
++    conn = get_connection()
++    cur = conn.cursor()
++    cur.execute("DELETE FROM generation_history WHERE id = ?", (entry_id,))
++    conn.commit()
++    changed = cur.rowcount > 0
++    conn.close()
++    return changed
++
++
++def clear_generation_history(model_id: str | None = None) -> int:
++    conn = get_connection()
++    cur = conn.cursor()
++    if model_id:
++        cur.execute("DELETE FROM generation_history WHERE model_id = ?", (model_id,))
++    else:
++        cur.execute("DELETE FROM generation_history")
++    conn.commit()
++    deleted = cur.rowcount
++    conn.close()
++    return deleted
++
++
++# ---------------------------------------------------------------------------
++# Sessions
++# ---------------------------------------------------------------------------
++
++
++def save_session(name: str, state: dict) -> int:
++    conn = get_connection()
++    cur = conn.cursor()
++    cur.execute(
++        """
++        INSERT INTO sessions(name, state_json)
++        VALUES (?, ?)
++        """,
++        (name.strip(), json.dumps(state, ensure_ascii=False)),
++    )
++    conn.commit()
++    row_id = int(cur.lastrowid)
++    conn.close()
++    return row_id
++
++
++def list_sessions() -> list[dict]:
++    conn = get_connection()
++    cur = conn.cursor()
++    rows = cur.execute(
++        "SELECT id, name, created_at, updated_at FROM sessions ORDER BY id DESC"
++    ).fetchall()
++    conn.close()
++    return [dict(r) for r in rows]
++
++
++def get_session(session_id: int) -> dict | None:
++    conn = get_connection()
++    cur = conn.cursor()
++    row = cur.execute(
++        "SELECT id, name, state_json, created_at, updated_at FROM sessions WHERE id = ?",
++        (session_id,),
++    ).fetchone()
++    conn.close()
++    if not row:
++        return None
++    item = dict(row)
++    raw = item.pop("state_json", None)
++    try:
++        item["state"] = json.loads(raw) if raw else {}
++    except json.JSONDecodeError:
++        item["state"] = {}
++    return item
++
++
++def update_session_name(session_id: int, name: str) -> bool:
++    conn = get_connection()
++    cur = conn.cursor()
++    cur.execute(
++        "UPDATE sessions SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
++        (name.strip(), session_id),
++    )
++    conn.commit()
++    changed = cur.rowcount > 0
++    conn.close()
++    return changed
++
++
++def delete_session(session_id: int) -> bool:
++    conn = get_connection()
++    cur = conn.cursor()
++    cur.execute("DELETE FROM sessions WHERE id = ?", (session_id,))
++    conn.commit()
++    changed = cur.rowcount > 0
++    conn.close()
++    return changed
++
++
++# ---------------------------------------------------------------------------
++# Forge settings
++# ---------------------------------------------------------------------------
++
++
++FORGE_SETTINGS_KEY = "forge"
++
++
++def load_forge_settings() -> dict:
++    raw = get_app_setting(FORGE_SETTINGS_KEY)
++    defaults: dict = {
++        "enabled": False,
++        "base_url": "http://127.0.0.1:7860",
++        "timeout": 10.0,
++        "default_steps": 20,
++        "default_cfg": 7.0,
++        "default_sampler": "DPM++ 2M",
++        "default_scheduler": "Karras",
++        "default_width": 832,
++        "default_height": 1216,
++        "default_checkpoint": "",
++    }
++    if not raw:
++        return defaults
++    defaults.update(raw)
++    return defaults
++
++
++def save_forge_settings(settings: dict) -> None:
++    save_app_setting(FORGE_SETTINGS_KEY, settings)
++
+diff --git a/egodary/api/main.py b/egodary/api/main.py
+index c5275e1..fc43da5 100644
+--- a/egodary/api/main.py
++++ b/egodary/api/main.py
+@@ -12,7 +12,7 @@ from typing import Any
+ from fastapi import FastAPI, HTTPException
+ from fastapi.responses import FileResponse
+ from fastapi.staticfiles import StaticFiles
+-from pydantic import BaseModel
++from pydantic import BaseModel, Field
+ 
+ from egodary.app import (
+     get_engine,
+@@ -62,6 +62,16 @@ from egodary.persistence.schema import (
+     set_wildcard_enabled,
+     set_wildcard_item_enabled,
+     delete_wildcard,
++    list_generation_history,
++    delete_generation_history_entry,
++    clear_generation_history,
++    save_session,
++    list_sessions,
++    get_session,
++    update_session_name,
++    delete_session,
++    load_forge_settings,
++    save_forge_settings,
+ )
+ 
+ STATIC_DIR = Path(__file__).resolve().parents[1] / "web" / "static"
+@@ -1093,6 +1103,267 @@ def wildcards_delete(wildcard_id: int):
+     return {"ok": True, "id": wildcard_id}
+ 
+ 
++# ---------------------------------------------------------------------------
++# Generation history
++# ---------------------------------------------------------------------------
++
++
++@app.get("/api/history")
++def history_list(limit: int = 50, model_id: str | None = None):
++    """Return recent generation history entries, newest first.
++
++    Each entry includes the positive/negative prompts and the full
++    PromptState payload so the UI can offer a one-click «Load» that
++    restores the exact state that produced that prompt.
++    """
++    if limit < 1 or limit > 200:
++        raise HTTPException(status_code=422, detail="limit must be 1–200")
++    rows = list_generation_history(limit=limit, model_id=model_id or None)
++    return {"history": rows, "count": len(rows)}
++
++
++@app.delete("/api/history/{entry_id}")
++def history_delete(entry_id: int):
++    if not delete_generation_history_entry(entry_id):
++        raise HTTPException(status_code=404, detail="History entry not found")
++    return {"ok": True, "id": entry_id}
++
++
++@app.delete("/api/history")
++def history_clear(model_id: str | None = None):
++    deleted = clear_generation_history(model_id=model_id or None)
++    return {"ok": True, "deleted": deleted}
++
++
++# ---------------------------------------------------------------------------
++# Sessions
++# ---------------------------------------------------------------------------
++
++
++class SessionSaveRequest(BaseModel):
++    name: str
++    state: dict
++
++
++class SessionRenameRequest(BaseModel):
++    name: str
++
++
++@app.get("/api/sessions")
++def sessions_list():
++    return {"sessions": list_sessions()}
++
++
++@app.post("/api/sessions")
++def sessions_save(payload: SessionSaveRequest):
++    name = payload.name.strip()
++    if not name:
++        raise HTTPException(status_code=422, detail="Session name cannot be empty")
++    session_id = save_session(name, payload.state)
++    return {"ok": True, "id": session_id, "name": name}
++
++
++@app.get("/api/sessions/{session_id}")
++def sessions_get(session_id: int):
++    session = get_session(session_id)
++    if session is None:
++        raise HTTPException(status_code=404, detail="Session not found")
++    return {"session": session}
++
++
++@app.patch("/api/sessions/{session_id}")
++def sessions_rename(session_id: int, payload: SessionRenameRequest):
++    name = payload.name.strip()
++    if not name:
++        raise HTTPException(status_code=422, detail="Session name cannot be empty")
++    if not update_session_name(session_id, name):
++        raise HTTPException(status_code=404, detail="Session not found")
++    return {"ok": True, "id": session_id, "name": name}
++
++
++@app.delete("/api/sessions/{session_id}")
++def sessions_delete(session_id: int):
++    if not delete_session(session_id):
++        raise HTTPException(status_code=404, detail="Session not found")
++    return {"ok": True, "id": session_id}
++
++
++# ---------------------------------------------------------------------------
++# Batch generate
++# ---------------------------------------------------------------------------
++
++
++class BatchGenerateRequest(BaseModel):
++    state: PromptState
++    count: int = 4
++    # Axes to randomize on each variation. Empty list = randomize everything
++    # that smart_randomize() touches (time, weather, season, camera angle).
++    # Pass explicit axis names to limit randomization to those fields only.
++    randomize_axes: list[str] = Field(default_factory=list)
++
++
++_RANDOMIZABLE_AXES = {
++    "time": ("scene", "time"),
++    "weather": ("scene", "weather"),
++    "season": ("scene", "season"),
++    "camera_angle": ("camera", "angle"),
++    "camera_framing": ("camera", "framing"),
++    "lighting_type": ("lighting", "light_type"),
++    "lighting_direction": ("lighting", "direction"),
++}
++
++_AXIS_CHOICES: dict[str, list[str]] = {
++    "time": ["morning", "afternoon", "sunset", "night"],
++    "weather": ["clear_sky", "cloudy", "fog", "rain", "snow"],
++    "season": ["spring", "summer", "autumn", "winter"],
++    "camera_angle": ["eye_level", "low_angle", "high_angle", "dutch_angle", "bird_eye"],
++    "camera_framing": ["portrait", "full_body", "upper_body", "close_up", "extreme_close_up"],
++    "lighting_type": ["natural", "studio", "rim", "neon", "candle"],
++    "lighting_direction": ["front", "side", "back", "top_down"],
++}
++
++
++def _randomize_axes(state: PromptState, axes: list[str]) -> PromptState:
++    import copy
++    import random
++
++    s = copy.deepcopy(state)
++    active = axes if axes else list(_RANDOMIZABLE_AXES.keys())
++    for axis in active:
++        path = _RANDOMIZABLE_AXES.get(axis)
++        if path is None:
++            continue
++        parent_name, field_name = path
++        parent = getattr(s, parent_name, None)
++        if parent is None:
++            continue
++        choices = _AXIS_CHOICES.get(axis, [])
++        if choices:
++            setattr(parent, field_name, random.choice(choices))
++    return s
++
++
++@app.post("/api/generate/batch")
++def generate_batch(payload: BatchGenerateRequest):
++    """Generate ``count`` variations of a prompt by randomizing the requested
++    axes on each copy of the base state.
++
++    Returns a list of generation results in the same shape as
++    ``POST /api/generate``, plus the randomized axes values so the UI can
++    show what varied between each result.
++    """
++    from egodary.core.conflicts import preview_state_conflicts
++    from egodary.core.quality_score import compute_quality_score
++
++    count = max(1, min(payload.count, 8))
++    results = []
++    for _ in range(count):
++        state = _randomize_axes(payload.state, payload.randomize_axes)
++        if state.god_mode_bundle:
++            state = apply_god_mode_bundle(state, state.god_mode_bundle)
++        result = get_engine().assemble(state)
++        save_generation_history(
++            payload={"state": state.model_dump(), "buckets": result.buckets.model_dump()},
++            positive=result.positive,
++            negative=result.negative,
++            model_id=result.model_id,
++        )
++        results.append({
++            "positive": result.positive,
++            "negative": result.negative,
++            "model_id": result.model_id,
++            "warnings": preview_state_conflicts(state),
++            "quality_score": compute_quality_score(state).model_dump(),
++            "varied_state": {
++                ax: _get_axis_value(state, ax)
++                for ax in (payload.randomize_axes or list(_RANDOMIZABLE_AXES.keys()))
++            },
++        })
++    return {"results": results, "count": len(results)}
++
++
++def _get_axis_value(state: PromptState, axis: str) -> str:
++    path = _RANDOMIZABLE_AXES.get(axis)
++    if not path:
++        return ""
++    parent_name, field_name = path
++    parent = getattr(state, parent_name, None)
++    return getattr(parent, field_name, "") if parent else ""
++
++
++# ---------------------------------------------------------------------------
++# Forge integration
++# ---------------------------------------------------------------------------
++
++
++class ForgeSendRequest(BaseModel):
++    positive: str
++    negative: str = ""
++    override: dict | None = None
++
++
++@app.get("/api/forge/settings")
++def forge_settings_get():
++    return load_forge_settings()
++
++
++@app.put("/api/forge/settings")
++def forge_settings_put(payload: dict):
++    current = load_forge_settings()
++    current.update(payload)
++    save_forge_settings(current)
++    return current
++
++
++@app.post("/api/forge/health")
++def forge_health():
++    from egodary.integrations.forge import check_forge_health
++    settings = load_forge_settings()
++    if not settings.get("enabled"):
++        return {"ok": False, "reachable": False, "error": "Forge integration is disabled"}
++    return check_forge_health(settings)
++
++
++@app.get("/api/forge/models")
++def forge_models():
++    from egodary.integrations.forge import fetch_forge_models
++    settings = load_forge_settings()
++    if not settings.get("enabled"):
++        return {"models": []}
++    return {"models": fetch_forge_models(settings)}
++
++
++@app.get("/api/forge/samplers")
++def forge_samplers():
++    from egodary.integrations.forge import fetch_forge_samplers
++    settings = load_forge_settings()
++    if not settings.get("enabled"):
++        return {"samplers": []}
++    return {"samplers": fetch_forge_samplers(settings)}
++
++
++@app.post("/api/forge/send")
++def forge_send(payload: ForgeSendRequest):
++    from egodary.integrations.forge import send_to_forge
++    settings = load_forge_settings()
++    if not settings.get("enabled"):
++        raise HTTPException(status_code=400, detail="Forge integration is disabled. Enable it in Advanced → Forge settings.")
++    result = send_to_forge(
++        positive=payload.positive,
++        negative=payload.negative,
++        settings=settings,
++        override=payload.override,
++    )
++    if not result["ok"]:
++        raise HTTPException(status_code=502, detail=f"Forge error: {result['error']}")
++    return {
++        "ok": True,
++        "images": result["images"],
++        "parameters": result["parameters"],
++        "info": result["info"],
++    }
++
++
+ def _slugify_item_id(raw: str) -> str:
+     value = raw.strip().lower()
+     value = re.sub(r"[^a-z0-9]+", "_", value)
+diff --git a/egodary/egodary/egodary/integrations/forge.py b/egodary/integrations/forge.py
+new file mode 100644
+index 0000000..2b6570d
+--- /dev/null
++++ b/egodary/integrations/forge.py
+@@ -0,0 +1,178 @@
++"""Forge / A1111 API integration — send a generated prompt directly to a
++locally running Forge (or vanilla A1111) instance via its REST API.
++
++Only the txt2img endpoint is used; no image storage on our side.
++The caller receives the raw base64-encoded images from Forge together with
++the generation parameters that were actually sent.
++"""
++
++from __future__ import annotations
++
++import json
++import logging
++import urllib.error
++import urllib.parse
++import urllib.request
++from typing import Any
++
++logger = logging.getLogger(__name__)
++
++
++# ---------------------------------------------------------------------------
++# Low-level HTTP helper (mirrors the pattern from ollama.py)
++# ---------------------------------------------------------------------------
++
++
++def _request_json(
++    url: str,
++    *,
++    method: str = "GET",
++    payload: dict | None = None,
++    timeout: float = 10.0,
++) -> dict | None:
++    data = None if payload is None else json.dumps(payload).encode("utf-8")
++    headers = {"Content-Type": "application/json"} if payload is not None else {}
++    req = urllib.request.Request(url, data=data, headers=headers, method=method)
++    with urllib.request.urlopen(req, timeout=timeout) as resp:
++        return json.loads(resp.read().decode("utf-8"))
++
++
++# ---------------------------------------------------------------------------
++# Health probe
++# ---------------------------------------------------------------------------
++
++
++def check_forge_health(settings: dict) -> dict:
++    """Return a status dict: {ok, reachable, error, sd_model_checkpoint, version}."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/options", timeout=timeout) or {}
++        return {
++            "ok": True,
++            "reachable": True,
++            "error": None,
++            "sd_model_checkpoint": data.get("sd_model_checkpoint", ""),
++            "sd_backend": data.get("sd_backend", ""),
++        }
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
++        return {
++            "ok": False,
++            "reachable": False,
++            "error": str(exc),
++            "sd_model_checkpoint": "",
++            "sd_backend": "",
++        }
++
++
++def fetch_forge_models(settings: dict) -> list[str]:
++    """Return list of available checkpoint names from Forge."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/sd-models", timeout=timeout) or []
++        if isinstance(data, list):
++            return [m.get("title") or m.get("model_name", "") for m in data if m]
++        return []
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
++        return []
++
++
++def fetch_forge_samplers(settings: dict) -> list[str]:
++    """Return list of sampler names from Forge."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/samplers", timeout=timeout) or []
++        if isinstance(data, list):
++            return [s.get("name", "") for s in data if s]
++        return []
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
++        return []
++
++
++# ---------------------------------------------------------------------------
++# txt2img
++# ---------------------------------------------------------------------------
++
++
++def send_to_forge(
++    *,
++    positive: str,
++    negative: str,
++    settings: dict,
++    override: dict | None = None,
++) -> dict[str, Any]:
++    """Send a prompt to Forge txt2img and return the response.
++
++    ``override`` can contain any A1111 API parameters that should take
++    precedence over the defaults stored in ``settings`` (e.g. steps, cfg,
++    width, height, sampler_name, override_settings.sd_model_checkpoint).
++
++    Returns a dict with keys:
++        ok          – bool
++        images      – list[str]  base64 JPEG strings (empty on failure)
++        parameters  – dict       the payload that was actually sent
++        info        – dict       the raw ``info`` JSON from Forge (seed, etc.)
++        error       – str | None
++    """
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    # Use a longer timeout for generation (can take 10–120 s depending on
++    # hardware/steps) but fall back to 120 s if not configured.
++    gen_timeout = float(settings.get("gen_timeout", 120.0))
++
++    payload: dict[str, Any] = {
++        "prompt": positive,
++        "negative_prompt": negative or "",
++        "steps": int(settings.get("default_steps", 20)),
++        "cfg_scale": float(settings.get("default_cfg", 7.0)),
++        "sampler_name": settings.get("default_sampler", "DPM++ 2M"),
++        "scheduler": settings.get("default_scheduler", "Karras"),
++        "width": int(settings.get("default_width", 832)),
++        "height": int(settings.get("default_height", 1216)),
++        "send_images": True,
++        "save_images": False,
++    }
++
++    checkpoint = settings.get("default_checkpoint", "")
++    if checkpoint:
++        payload["override_settings"] = {"sd_model_checkpoint": checkpoint}
++        payload["override_settings_restore_afterwards"] = True
++
++    # Apply any per-request overrides last so they win over settings defaults.
++    if override:
++        for k, v in override.items():
++            if k == "override_settings" and isinstance(v, dict):
++                payload.setdefault("override_settings", {}).update(v)
++            else:
++                payload[k] = v
++
++    try:
++        resp = _request_json(
++            f"{base_url}/sdapi/v1/txt2img",
++            method="POST",
++            payload=payload,
++            timeout=gen_timeout,
++        ) or {}
++        images = resp.get("images") or []
++        info_raw = resp.get("info") or "{}"
++        try:
++            info = json.loads(info_raw) if isinstance(info_raw, str) else info_raw
++        except json.JSONDecodeError:
++            info = {}
++        return {
++            "ok": True,
++            "images": images,
++            "parameters": payload,
++            "info": info,
++            "error": None,
++        }
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
++        logger.warning("Forge txt2img request failed: %s", exc)
++        return {
++            "ok": False,
++            "images": [],
++            "parameters": payload,
++            "info": {},
++            "error": str(exc),
++        }
+diff --git a/egodary/egodary/tests/test_history_sessions_batch_forge.py b/tests/test_history_sessions_batch_forge.py
+new file mode 100644
+index 0000000..3e62050
+--- /dev/null
++++ b/tests/test_history_sessions_batch_forge.py
+@@ -0,0 +1,309 @@
++"""Tests for generation history, sessions, batch generate, and Forge integration."""
++
++from __future__ import annotations
++
++import json
++from unittest.mock import patch
++
++import pytest
++from fastapi.testclient import TestClient
++
++from egodary.api.main import app
++from egodary.persistence import db
++
++
++@pytest.fixture
++def temp_db(monkeypatch, tmp_path):
++    db_path = tmp_path / "test.db"
++    db.init_db(db_path)
++    monkeypatch.setattr(db, "DB_PATH", db_path)
++    return db_path
++
++
++@pytest.fixture
++def client(temp_db):
++    return TestClient(app)
++
++
++SAMPLE_STATE = {
++    "model_id": "illustrious",
++    "character": {},
++    "outfit": {},
++    "appearance": {},
++    "face": {},
++    "scene": {"time": "", "weather": "", "season": "", "location": ""},
++    "environment": {"location": "", "situation": "", "modifiers": []},
++    "pose": "",
++    "camera": {},
++    "lighting": {},
++    "style": {"enabled": True, "art_style": "anime_style", "quality": [], "aesthetic": [],
++               "technique": [], "quality_boosters_enabled": True, "quality_boosters_level": "high"},
++}
++
++
++# ---------------------------------------------------------------------------
++# Generation history
++# ---------------------------------------------------------------------------
++
++
++def test_history_empty(client):
++    resp = client.get("/api/history")
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["history"] == []
++    assert data["count"] == 0
++
++
++def test_history_populated_after_generate(client):
++    client.post("/api/generate", json=SAMPLE_STATE)
++    resp = client.get("/api/history")
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["count"] == 1
++    entry = data["history"][0]
++    assert "positive" in entry
++    assert "model_id" in entry
++    assert entry["model_id"] == "illustrious"
++    assert "payload" in entry  # full state is included
++
++
++def test_history_limit(client):
++    for _ in range(5):
++        client.post("/api/generate", json=SAMPLE_STATE)
++    resp = client.get("/api/history?limit=3")
++    assert resp.status_code == 200
++    assert resp.json()["count"] == 3
++
++
++def test_history_model_filter(client):
++    client.post("/api/generate", json={**SAMPLE_STATE, "model_id": "anima"})
++    client.post("/api/generate", json={**SAMPLE_STATE, "model_id": "illustrious"})
++    resp = client.get("/api/history?model_id=anima")
++    assert resp.status_code == 200
++    data = resp.json()
++    assert all(e["model_id"] == "anima" for e in data["history"])
++
++
++def test_history_delete_entry(client):
++    client.post("/api/generate", json=SAMPLE_STATE)
++    entries = client.get("/api/history").json()["history"]
++    entry_id = entries[0]["id"]
++    resp = client.delete(f"/api/history/{entry_id}")
++    assert resp.status_code == 200
++    assert resp.json()["ok"] is True
++    assert client.get("/api/history").json()["count"] == 0
++
++
++def test_history_delete_nonexistent(client):
++    assert client.delete("/api/history/9999").status_code == 404
++
++
++def test_history_clear_all(client):
++    for _ in range(3):
++        client.post("/api/generate", json=SAMPLE_STATE)
++    resp = client.delete("/api/history")
++    assert resp.status_code == 200
++    assert resp.json()["deleted"] == 3
++    assert client.get("/api/history").json()["count"] == 0
++
++
++def test_history_clear_by_model(client):
++    client.post("/api/generate", json={**SAMPLE_STATE, "model_id": "anima"})
++    client.post("/api/generate", json={**SAMPLE_STATE, "model_id": "illustrious"})
++    resp = client.delete("/api/history?model_id=anima")
++    assert resp.status_code == 200
++    remaining = client.get("/api/history").json()["history"]
++    assert all(e["model_id"] == "illustrious" for e in remaining)
++
++
++def test_history_limit_validation(client):
++    assert client.get("/api/history?limit=0").status_code == 422
++    assert client.get("/api/history?limit=201").status_code == 422
++
++
++# ---------------------------------------------------------------------------
++# Sessions
++# ---------------------------------------------------------------------------
++
++
++def test_sessions_empty(client):
++    resp = client.get("/api/sessions")
++    assert resp.status_code == 200
++    assert resp.json()["sessions"] == []
++
++
++def test_sessions_save_and_list(client):
++    resp = client.post("/api/sessions", json={"name": "My session", "state": SAMPLE_STATE})
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["ok"] is True
++    session_id = data["id"]
++
++    listing = client.get("/api/sessions").json()["sessions"]
++    assert len(listing) == 1
++    assert listing[0]["name"] == "My session"
++    assert listing[0]["id"] == session_id
++
++
++def test_sessions_get_full_state(client):
++    client.post("/api/sessions", json={"name": "Full", "state": SAMPLE_STATE})
++    session_id = client.get("/api/sessions").json()["sessions"][0]["id"]
++
++    resp = client.get(f"/api/sessions/{session_id}")
++    assert resp.status_code == 200
++    session = resp.json()["session"]
++    assert session["state"]["model_id"] == "illustrious"
++
++
++def test_sessions_get_nonexistent(client):
++    assert client.get("/api/sessions/9999").status_code == 404
++
++
++def test_sessions_rename(client):
++    client.post("/api/sessions", json={"name": "Old name", "state": SAMPLE_STATE})
++    session_id = client.get("/api/sessions").json()["sessions"][0]["id"]
++
++    resp = client.patch(f"/api/sessions/{session_id}", json={"name": "New name"})
++    assert resp.status_code == 200
++    assert resp.json()["name"] == "New name"
++
++    updated = client.get(f"/api/sessions/{session_id}").json()["session"]
++    assert updated["name"] == "New name"
++
++
++def test_sessions_rename_nonexistent(client):
++    assert client.patch("/api/sessions/9999", json={"name": "X"}).status_code == 404
++
++
++def test_sessions_delete(client):
++    client.post("/api/sessions", json={"name": "To delete", "state": SAMPLE_STATE})
++    session_id = client.get("/api/sessions").json()["sessions"][0]["id"]
++
++    resp = client.delete(f"/api/sessions/{session_id}")
++    assert resp.status_code == 200
++    assert resp.json()["ok"] is True
++    assert client.get("/api/sessions").json()["sessions"] == []
++
++
++def test_sessions_delete_nonexistent(client):
++    assert client.delete("/api/sessions/9999").status_code == 404
++
++
++def test_sessions_empty_name_rejected(client):
++    resp = client.post("/api/sessions", json={"name": "  ", "state": SAMPLE_STATE})
++    assert resp.status_code == 422
++
++
++# ---------------------------------------------------------------------------
++# Batch generate
++# ---------------------------------------------------------------------------
++
++
++def test_batch_returns_correct_count(client):
++    resp = client.post("/api/generate/batch", json={"state": SAMPLE_STATE, "count": 3})
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["count"] == 3
++    assert len(data["results"]) == 3
++
++
++def test_batch_result_shape(client):
++    resp = client.post("/api/generate/batch", json={"state": SAMPLE_STATE, "count": 1})
++    result = resp.json()["results"][0]
++    assert "positive" in result
++    assert "negative" in result
++    assert "model_id" in result
++    assert "quality_score" in result
++    assert "varied_state" in result
++
++
++def test_batch_count_clamped_to_8(client):
++    resp = client.post("/api/generate/batch", json={"state": SAMPLE_STATE, "count": 99})
++    assert resp.status_code == 200
++    assert resp.json()["count"] == 8
++
++
++def test_batch_count_minimum_1(client):
++    resp = client.post("/api/generate/batch", json={"state": SAMPLE_STATE, "count": 0})
++    assert resp.status_code == 200
++    assert resp.json()["count"] == 1
++
++
++def test_batch_saves_to_history(client):
++    client.post("/api/generate/batch", json={"state": SAMPLE_STATE, "count": 3})
++    history = client.get("/api/history").json()
++    assert history["count"] == 3
++
++
++def test_batch_explicit_axes(client):
++    resp = client.post("/api/generate/batch", json={
++        "state": SAMPLE_STATE,
++        "count": 2,
++        "randomize_axes": ["time", "season"],
++    })
++    assert resp.status_code == 200
++    for result in resp.json()["results"]:
++        assert "time" in result["varied_state"]
++        assert "season" in result["varied_state"]
++
++
++# ---------------------------------------------------------------------------
++# Forge settings
++# ---------------------------------------------------------------------------
++
++
++def test_forge_settings_defaults(client):
++    resp = client.get("/api/forge/settings")
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["enabled"] is False
++    assert "base_url" in data
++    assert "default_steps" in data
++
++
++def test_forge_settings_update(client):
++    resp = client.put("/api/forge/settings", json={"enabled": True, "default_steps": 30})
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["enabled"] is True
++    assert data["default_steps"] == 30
++    # persisted
++    assert client.get("/api/forge/settings").json()["default_steps"] == 30
++
++
++def test_forge_health_disabled(client):
++    resp = client.post("/api/forge/health")
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["ok"] is False
++    assert "disabled" in data["error"].lower()
++
++
++def test_forge_send_disabled(client):
++    resp = client.post("/api/forge/send", json={"positive": "1girl", "negative": ""})
++    assert resp.status_code == 400
++    assert "disabled" in resp.json()["detail"].lower()
++
++
++def test_forge_send_enabled_but_unreachable(client):
++    client.put("/api/forge/settings", json={"enabled": True, "base_url": "http://127.0.0.1:19999"})
++    resp = client.post("/api/forge/send", json={"positive": "1girl", "negative": ""})
++    assert resp.status_code == 502
++
++
++def test_forge_send_mocked_success(client):
++    client.put("/api/forge/settings", json={"enabled": True})
++    mock_result = {
++        "ok": True,
++        "images": ["base64data"],
++        "parameters": {"prompt": "1girl"},
++        "info": {"seed": 42},
++        "error": None,
++    }
++    with patch("egodary.integrations.forge.send_to_forge", return_value=mock_result):
++        resp = client.post("/api/forge/send", json={"positive": "1girl", "negative": ""})
++    assert resp.status_code == 200
++    data = resp.json()
++    assert data["ok"] is True
++    assert data["images"] == ["base64data"]
++    assert data["info"]["seed"] == 42

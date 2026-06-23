@@ -1,0 +1,552 @@
+id: outfit.clothing_state
+title: Clothing State
+items:
+- id: wet_soaked
+  label: Wet / Soaked
+  meta:
+    dimension: moisture
+    group: Moisture & Wetness
+  tags:
+    illustrious: wet soaked
+    anima: wet soaked, clothing detail
+    zimage_turbo: wearing wet soaked
+- id: damp
+  label: Damp
+  meta:
+    dimension: moisture
+    group: Moisture & Wetness
+  tags:
+    illustrious: damp
+    anima: damp, clothing detail
+    zimage_turbo: wearing damp
+- id: sweat_soaked
+  label: Sweat-soaked
+  meta:
+    dimension: moisture
+    group: Moisture & Wetness
+  tags:
+    illustrious: sweat-soaked
+    anima: sweat-soaked, clothing detail
+    zimage_turbo: wearing sweat-soaked
+- id: water_droplets
+  label: Water droplets
+  meta:
+    dimension: moisture
+    group: Moisture & Wetness
+  tags:
+    illustrious: water droplets on
+    anima: water droplets on, clothing detail
+    zimage_turbo: wearing water droplets on
+- id: torn_ripped
+  label: Torn / Ripped
+  meta:
+    dimension: damage
+    group: Damage & Wear
+  tags:
+    illustrious: torn ripped
+    anima: torn ripped, clothing detail
+    zimage_turbo: wearing torn ripped
+- id: slightly_torn
+  label: Slightly torn
+  meta:
+    dimension: damage
+    group: Damage & Wear
+  tags:
+    illustrious: slightly torn
+    anima: slightly torn, clothing detail
+    zimage_turbo: wearing slightly torn
+- id: heavily_damaged
+  label: Heavily damaged
+  meta:
+    dimension: damage
+    group: Damage & Wear
+  tags:
+    illustrious: heavily damaged
+    anima: heavily damaged, clothing detail
+    zimage_turbo: wearing heavily damaged
+- id: frayed
+  label: Frayed
+  meta:
+    dimension: damage
+    group: Damage & Wear
+  tags:
+    illustrious: frayed
+    anima: frayed, clothing detail
+    zimage_turbo: wearing frayed
+- id: holes
+  label: Holes
+  meta:
+    dimension: damage
+    group: Damage & Wear
+  tags:
+    illustrious: with holes
+    anima: with holes, clothing detail
+    zimage_turbo: wearing with holes
+- id: see_through
+  label: See-through
+  meta:
+    dimension: transparency
+    group: Transparency & Sheerness
+  tags:
+    illustrious: see-through
+    anima: see-through, clothing detail
+    zimage_turbo: wearing see-through
+- id: wet_see_through
+  label: Wet see-through
+  meta:
+    dimension: transparency
+    group: Transparency & Sheerness
+  tags:
+    illustrious: wet see-through
+    anima: wet see-through, clothing detail
+    zimage_turbo: wearing wet see-through
+- id: sheer_translucent
+  label: Sheer / Translucent
+  meta:
+    dimension: transparency
+    group: Transparency & Sheerness
+  tags:
+    illustrious: sheer translucent
+    anima: sheer translucent, clothing detail
+    zimage_turbo: wearing sheer translucent
+- id: partially_transparent
+  label: Partially transparent
+  meta:
+    dimension: transparency
+    group: Transparency & Sheerness
+  tags:
+    illustrious: partially transparent
+    anima: partially transparent, clothing detail
+    zimage_turbo: wearing partially transparent
+- id: tight_skin_tight
+  label: Tight / Skin-tight
+  meta:
+    dimension: fit
+    group: Fit & Tension
+  tags:
+    illustrious: tight skin-tight
+    anima: tight skin-tight, clothing detail
+    zimage_turbo: wearing tight skin-tight
+- id: stretched_strained
+  label: Stretched / Strained
+  meta:
+    dimension: fit
+    group: Fit & Tension
+  tags:
+    illustrious: stretched strained
+    anima: stretched strained, clothing detail
+    zimage_turbo: wearing stretched strained
+- id: clinging
+  label: Clinging
+  meta:
+    dimension: fit
+    group: Fit & Tension
+  tags:
+    illustrious: clinging
+    anima: clinging, clothing detail
+    zimage_turbo: wearing clinging
+- id: baggy_loose
+  label: Baggy / Loose
+  meta:
+    dimension: fit
+    group: Fit & Tension
+  tags:
+    illustrious: baggy loose
+    anima: baggy loose, clothing detail
+    zimage_turbo: wearing baggy loose
+- id: disheveled_messy
+  label: Disheveled / Messy
+  meta:
+    dimension: disorder
+    group: Disorder & Messiness
+  tags:
+    illustrious: disheveled messy
+    anima: disheveled messy, clothing detail
+    zimage_turbo: wearing disheveled messy
+- id: rumpled_wrinkled
+  label: Rumpled / Wrinkled
+  meta:
+    dimension: disorder
+    group: Disorder & Messiness
+  tags:
+    illustrious: rumpled wrinkled
+    anima: rumpled wrinkled, clothing detail
+    zimage_turbo: wearing rumpled wrinkled
+- id: half_undone
+  label: Half-undone
+  meta:
+    dimension: disorder
+    group: Disorder & Messiness
+  tags:
+    illustrious: half-undone
+    anima: half-undone, clothing detail
+    zimage_turbo: wearing half-undone
+- id: slipping_off
+  label: Slipping off
+  meta:
+    dimension: disorder
+    group: Disorder & Messiness
+  tags:
+    illustrious: slipping off
+    anima: slipping off, clothing detail
+    zimage_turbo: wearing slipping off
+- id: partially_removed
+  label: Partially removed
+  meta:
+    dimension: partial_removal
+    group: Partial Removal & Exposure
+  tags:
+    illustrious: partially removed
+    anima: partially removed, clothing detail
+    zimage_turbo: wearing partially removed
+- id: pulled_down
+  label: Pulled down
+  meta:
+    dimension: partial_removal
+    group: Partial Removal & Exposure
+  tags:
+    illustrious: pulled down
+    anima: pulled down, clothing detail
+    zimage_turbo: wearing pulled down
+- id: pulled_up
+  label: Pulled up
+  meta:
+    dimension: partial_removal
+    group: Partial Removal & Exposure
+  tags:
+    illustrious: pulled up
+    anima: pulled up, clothing detail
+    zimage_turbo: wearing pulled up
+- id: open_unbuttoned
+  label: Open / Unbuttoned
+  meta:
+    dimension: partial_removal
+    group: Partial Removal & Exposure
+  tags:
+    illustrious: open unbuttoned
+    anima: open unbuttoned, clothing detail
+    zimage_turbo: wearing open unbuttoned
+- id: slid_off_shoulders
+  label: Slid off shoulders
+  meta:
+    dimension: partial_removal
+    group: Partial Removal & Exposure
+  tags:
+    illustrious: slid off shoulders
+    anima: slid off shoulders, clothing detail
+    zimage_turbo: wearing slid off shoulders
+- id: cum_stained
+  label: Cum-stained
+  meta:
+    dimension: stains
+    group: Stains & Fluids
+  tags:
+    illustrious: cum-stained
+    anima: cum-stained, clothing detail
+    zimage_turbo: wearing cum-stained
+- id: sweat_stained
+  label: Sweat-stained
+  meta:
+    dimension: stains
+    group: Stains & Fluids
+  tags:
+    illustrious: sweat-stained
+    anima: sweat-stained, clothing detail
+    zimage_turbo: wearing sweat-stained
+- id: wet_with_fluids
+  label: Wet with fluids
+  meta:
+    dimension: stains
+    group: Stains & Fluids
+  tags:
+    illustrious: wet with fluids
+    anima: wet with fluids, clothing detail
+    zimage_turbo: wearing wet with fluids
+- id: stained
+  label: Stained
+  meta:
+    dimension: stains
+    group: Stains & Fluids
+  tags:
+    illustrious: stained
+    anima: stained, clothing detail
+    zimage_turbo: wearing stained
+- id: soiled
+  label: Soiled
+  meta:
+    dimension: stains
+    group: Stains & Fluids
+  tags:
+    illustrious: soiled
+    anima: soiled, clothing detail
+    zimage_turbo: wearing soiled
+- id: black
+  label: Black
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: black
+    anima: black, clothing detail
+    zimage_turbo: wearing black
+- id: white
+  label: White
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: white
+    anima: white, clothing detail
+    zimage_turbo: wearing white
+- id: beige
+  label: Beige
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: beige
+    anima: beige, clothing detail
+    zimage_turbo: wearing beige
+- id: grey
+  label: Grey
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: grey
+    anima: grey, clothing detail
+    zimage_turbo: wearing grey
+- id: navy_blue
+  label: Navy Blue
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: navy blue
+    anima: navy blue, clothing detail
+    zimage_turbo: wearing navy blue
+- id: brown
+  label: Brown
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: brown
+    anima: brown, clothing detail
+    zimage_turbo: wearing brown
+- id: red
+  label: Red
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: red
+    anima: red, clothing detail
+    zimage_turbo: wearing red
+- id: pink
+  label: Pink
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: pink
+    anima: pink, clothing detail
+    zimage_turbo: wearing pink
+- id: camel
+  label: Camel
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: camel
+    anima: camel, clothing detail
+    zimage_turbo: wearing camel
+- id: burgundy
+  label: Burgundy
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: burgundy
+    anima: burgundy, clothing detail
+    zimage_turbo: wearing burgundy
+- id: olive_green
+  label: Olive Green
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: olive green
+    anima: olive green, clothing detail
+    zimage_turbo: wearing olive green
+- id: sage_green
+  label: Sage Green
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: sage green
+    anima: sage green, clothing detail
+    zimage_turbo: wearing sage green
+- id: dusty_rose
+  label: Dusty Rose
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: dusty rose
+    anima: dusty rose, clothing detail
+    zimage_turbo: wearing dusty rose
+- id: blush_pink
+  label: Blush Pink
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: blush pink
+    anima: blush pink, clothing detail
+    zimage_turbo: wearing blush pink
+- id: chocolate_brown
+  label: Chocolate Brown
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: chocolate brown
+    anima: chocolate brown, clothing detail
+    zimage_turbo: wearing chocolate brown
+- id: lavender
+  label: Lavender
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: lavender
+    anima: lavender, clothing detail
+    zimage_turbo: wearing lavender
+- id: terracotta
+  label: Terracotta
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: terracotta
+    anima: terracotta, clothing detail
+    zimage_turbo: wearing terracotta
+- id: butter_yellow
+  label: Butter Yellow
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: butter yellow
+    anima: butter yellow, clothing detail
+    zimage_turbo: wearing butter yellow
+- id: powder_blue
+  label: Powder Blue
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: powder blue
+    anima: powder blue, clothing detail
+    zimage_turbo: wearing powder blue
+- id: emerald_green
+  label: Emerald Green
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: emerald green
+    anima: emerald green, clothing detail
+    zimage_turbo: wearing emerald green
+- id: rust
+  label: Rust
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: rust
+    anima: rust, clothing detail
+    zimage_turbo: wearing rust
+- id: mocha
+  label: Mocha
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: mocha
+    anima: mocha, clothing detail
+    zimage_turbo: wearing mocha
+- id: charcoal_grey
+  label: Charcoal Grey
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: charcoal grey
+    anima: charcoal grey, clothing detail
+    zimage_turbo: wearing charcoal grey
+- id: ivory
+  label: Ivory
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: ivory
+    anima: ivory, clothing detail
+    zimage_turbo: wearing ivory
+- id: hot_pink
+  label: Hot Pink
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: hot pink
+    anima: hot pink, clothing detail
+    zimage_turbo: wearing hot pink
+- id: wine_red
+  label: Wine Red
+  meta:
+    dimension: color
+    group: Color
+  tags:
+    illustrious: wine red
+    anima: wine red, clothing detail
+    zimage_turbo: wearing wine red
+- id: glowing_neon
+  label: Glowing / Neon
+  meta:
+    dimension: extra
+    group: Additional states
+  tags:
+    illustrious: glowing neon
+    anima: glowing neon, clothing detail
+    zimage_turbo: wearing glowing neon
+- id: oil_shiny
+  label: Oil / Shiny
+  meta:
+    dimension: extra
+    group: Additional states
+  tags:
+    illustrious: oil shiny
+    anima: oil shiny, clothing detail
+    zimage_turbo: wearing oil shiny
+- id: glued_stuck
+  label: Glued / Stuck
+  meta:
+    dimension: extra
+    group: Additional states
+  tags:
+    illustrious: glued stuck
+    anima: glued stuck, clothing detail
+    zimage_turbo: wearing glued stuck
+- id: floating_flowing
+  label: Floating / Flowing
+  meta:
+    dimension: extra
+    group: Additional states
+  tags:
+    illustrious: flowing
+    anima: flowing, clothing detail
+    zimage_turbo: wearing flowing

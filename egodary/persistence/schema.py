@@ -348,6 +348,91 @@ def delete_character_preset(preset_id: int) -> bool:
     return changed
 
 
+def update_character_preset(preset_id: int, name: str) -> bool:
+    cleaned = name.strip()
+    if not cleaned:
+        raise ValueError("Character preset name is required")
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE character_presets SET name = ? WHERE id = ?",
+        (cleaned, preset_id),
+    )
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+ADVANCED_TODO_KEY = "advanced_todo"
+VALID_TODO_PRIORITIES = frozenset({"low", "medium", "high"})
+
+
+def get_advanced_todo() -> dict:
+    raw = get_app_setting(ADVANCED_TODO_KEY)
+    if not raw or not isinstance(raw.get("items"), list):
+        return {"items": []}
+    items = []
+    for row in raw["items"]:
+        if not isinstance(row, dict):
+            continue
+        text = str(row.get("text") or "").strip()
+        if not text:
+            continue
+        priority = str(row.get("priority") or "medium").lower()
+        if priority not in VALID_TODO_PRIORITIES:
+            priority = "medium"
+        due_date = row.get("due_date")
+        if due_date is not None:
+            due_date = str(due_date).strip() or None
+        items.append(
+            {
+                "id": str(row.get("id") or ""),
+                "text": text,
+                "done": bool(row.get("done")),
+                "priority": priority,
+                "due_date": due_date,
+                "sort_order": int(row.get("sort_order") or 0),
+                "created_at": str(row.get("created_at") or ""),
+            }
+        )
+    items.sort(key=lambda row: (row.get("sort_order", 0), row.get("created_at", "")))
+    return {"items": items}
+
+
+def save_advanced_todo(payload: dict) -> dict:
+    items_in = payload.get("items") if isinstance(payload, dict) else []
+    if not isinstance(items_in, list):
+        raise ValueError("items must be a list")
+    cleaned: list[dict] = []
+    for index, row in enumerate(items_in):
+        if not isinstance(row, dict):
+            continue
+        text = str(row.get("text") or "").strip()
+        if not text:
+            continue
+        priority = str(row.get("priority") or "medium").lower()
+        if priority not in VALID_TODO_PRIORITIES:
+            priority = "medium"
+        due_date = row.get("due_date")
+        if due_date is not None:
+            due_date = str(due_date).strip() or None
+        cleaned.append(
+            {
+                "id": str(row.get("id") or f"todo_{index}"),
+                "text": text,
+                "done": bool(row.get("done")),
+                "priority": priority,
+                "due_date": due_date,
+                "sort_order": int(row.get("sort_order") if row.get("sort_order") is not None else index),
+                "created_at": str(row.get("created_at") or ""),
+            }
+        )
+    result = {"items": cleaned}
+    save_app_setting(ADVANCED_TODO_KEY, result)
+    return result
+
+
 def _user_preset_field_count(payload: dict) -> int:
     return sum(1 for val in (payload or {}).values() if val)
 
@@ -625,7 +710,7 @@ def load_runtime_tag_items_into_registry(
             item = TagItem.model_validate(json.loads(row["item_json"]))
         except (json.JSONDecodeError, ValueError):
             continue
-        source: OverlaySource = row["source"] if row["source"] in ("import", "user", "manual") else "import"
+        source: OverlaySource = row["source"] if row["source"] in ("import", "user", "manual", "wildcard") else "import"
         registry.add_item(
             row["category_id"],
             item,
@@ -793,4 +878,342 @@ def load_llm_settings() -> LlmSettings:
 
 def save_llm_settings(settings: LlmSettings) -> None:
     save_app_setting("llm", settings.model_dump(mode="json"))
+
+
+# ---------------------------------------------------------------------------
+# Wildcards
+# ---------------------------------------------------------------------------
+
+
+def create_wildcard(
+    *,
+    filename: str,
+    label: str,
+    target_category: str,
+    target_subgroup: str,
+    raw_text: str,
+    items: list[tuple[str, str]],  # (item_id, label) pairs in file order
+) -> int:
+    """Insert a new wildcard file with its parsed line items.
+
+    Returns the new wildcard id.
+    """
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO wildcards(filename, label, target_category, target_subgroup, enabled, raw_text, item_count)
+        VALUES (?, ?, ?, ?, 1, ?, ?)
+        """,
+        (filename, label, target_category, target_subgroup, raw_text, len(items)),
+    )
+    wildcard_id = cur.lastrowid
+    cur.executemany(
+        "INSERT INTO wildcard_items(wildcard_id, item_id, label, enabled) VALUES (?, ?, ?, 1)",
+        [(wildcard_id, item_id, item_label) for item_id, item_label in items],
+    )
+    conn.commit()
+    conn.close()
+    return wildcard_id
+
+
+def list_wildcards() -> list[dict]:
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    rows = cur.execute(
+        """
+        SELECT id, filename, label, target_category, target_subgroup, enabled,
+               item_count, created_at, updated_at
+        FROM wildcards
+        ORDER BY created_at DESC
+        """
+    ).fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+
+def get_wildcard(wildcard_id: int) -> dict | None:
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    row = cur.execute("SELECT * FROM wildcards WHERE id = ?", (wildcard_id,)).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def list_wildcard_items(wildcard_id: int) -> list[dict]:
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    rows = cur.execute(
+        "SELECT id, item_id, label, enabled FROM wildcard_items WHERE wildcard_id = ? ORDER BY id",
+        (wildcard_id,),
+    ).fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+
+def set_wildcard_enabled(wildcard_id: int, enabled: bool) -> bool:
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE wildcards SET enabled = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        (1 if enabled else 0, wildcard_id),
+    )
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+def set_wildcard_item_enabled(wildcard_id: int, item_id: str, enabled: bool) -> bool:
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE wildcard_items SET enabled = ? WHERE wildcard_id = ? AND item_id = ?",
+        (1 if enabled else 0, wildcard_id, item_id),
+    )
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+def delete_wildcard(wildcard_id: int) -> bool:
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM wildcard_items WHERE wildcard_id = ?", (wildcard_id,))
+    cur.execute("DELETE FROM wildcards WHERE id = ?", (wildcard_id,))
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+def load_wildcards_into_registry(registry: RuntimeRegistry) -> int:
+    """Load all enabled wildcards (and their enabled line items) into the
+    runtime overlay registry as TagItems under their target category.
+
+    Item ids are namespaced with the owning wildcard's row id
+    (``wc{wildcard_id}_{item_id}``) so that two different uploaded files
+    can never collide on id — e.g. two files both containing a line that
+    slugifies to "long_bangs" used to mean the second one was silently
+    dropped by the registry's add_item(on_conflict="skip"), making it look
+    like tags (or even a whole file's worth of overlapping tags) had
+    "disappeared" until the colliding file was deleted. The wildcard's own
+    item_id in the wildcard_items table (used for the per-line enable
+    checkbox) is unaffected — only the id used inside the live tag
+    registry is namespaced.
+    """
+    from egodary.core.wildcards import build_tag_item
+
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    wildcard_rows = cur.execute(
+        "SELECT id, target_category, target_subgroup FROM wildcards WHERE enabled = 1"
+    ).fetchall()
+    loaded = 0
+    for wrow in wildcard_rows:
+        item_rows = cur.execute(
+            "SELECT item_id, label FROM wildcard_items WHERE wildcard_id = ? AND enabled = 1",
+            (wrow["id"],),
+        ).fetchall()
+        for irow in item_rows:
+            registry_item_id = f"wc{wrow['id']}_{irow['item_id']}"
+            tag_item = build_tag_item(irow["label"], registry_item_id, subgroup=wrow["target_subgroup"])
+            registry.add_item(
+                wrow["target_category"],
+                tag_item,
+                source="wildcard",
+                on_conflict="skip",
+            )
+            loaded += 1
+    conn.close()
+    return loaded
+
+
+# ---------------------------------------------------------------------------
+# Generation history
+# ---------------------------------------------------------------------------
+
+
+def list_generation_history(
+    limit: int = 50,
+    model_id: str | None = None,
+) -> list[dict]:
+    conn = get_connection()
+    cur = conn.cursor()
+    if model_id:
+        rows = cur.execute(
+            """
+            SELECT id, positive, negative, model_id, payload_json, created_at
+            FROM generation_history
+            WHERE model_id = ?
+            ORDER BY id DESC LIMIT ?
+            """,
+            (model_id, limit),
+        ).fetchall()
+    else:
+        rows = cur.execute(
+            """
+            SELECT id, positive, negative, model_id, payload_json, created_at
+            FROM generation_history
+            ORDER BY id DESC LIMIT ?
+            """,
+            (limit,),
+        ).fetchall()
+    conn.close()
+    result = []
+    for row in rows:
+        item = dict(row)
+        raw = item.pop("payload_json", None)
+        if raw:
+            try:
+                item["payload"] = json.loads(raw)
+            except json.JSONDecodeError:
+                item["payload"] = None
+        else:
+            item["payload"] = None
+        result.append(item)
+    return result
+
+
+def delete_generation_history_entry(entry_id: int) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM generation_history WHERE id = ?", (entry_id,))
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+def clear_generation_history(model_id: str | None = None) -> int:
+    conn = get_connection()
+    cur = conn.cursor()
+    if model_id:
+        cur.execute("DELETE FROM generation_history WHERE model_id = ?", (model_id,))
+    else:
+        cur.execute("DELETE FROM generation_history")
+    conn.commit()
+    deleted = cur.rowcount
+    conn.close()
+    return deleted
+
+
+# ---------------------------------------------------------------------------
+# Sessions
+# ---------------------------------------------------------------------------
+
+
+def save_session(name: str, state: dict) -> int:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO sessions(name, state_json)
+        VALUES (?, ?)
+        """,
+        (name.strip(), json.dumps(state, ensure_ascii=False)),
+    )
+    conn.commit()
+    row_id = int(cur.lastrowid)
+    conn.close()
+    return row_id
+
+
+def list_sessions() -> list[dict]:
+    conn = get_connection()
+    cur = conn.cursor()
+    rows = cur.execute(
+        "SELECT id, name, created_at, updated_at FROM sessions ORDER BY id DESC"
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_session(session_id: int) -> dict | None:
+    conn = get_connection()
+    cur = conn.cursor()
+    row = cur.execute(
+        "SELECT id, name, state_json, created_at, updated_at FROM sessions WHERE id = ?",
+        (session_id,),
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    item = dict(row)
+    raw = item.pop("state_json", None)
+    try:
+        item["state"] = json.loads(raw) if raw else {}
+    except json.JSONDecodeError:
+        item["state"] = {}
+    return item
+
+
+def update_session_name(session_id: int, name: str) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE sessions SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        (name.strip(), session_id),
+    )
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+def delete_session(session_id: int) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM sessions WHERE id = ?", (session_id,))
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+# ---------------------------------------------------------------------------
+# Forge settings
+# ---------------------------------------------------------------------------
+
+
+FORGE_SETTINGS_KEY = "forge"
+
+
+def load_forge_settings() -> dict:
+    raw = get_app_setting(FORGE_SETTINGS_KEY)
+    defaults: dict = {
+        "enabled": False,
+        "base_url": "http://127.0.0.1:7860",
+        "timeout": 10.0,
+        "default_steps": 20,
+        "default_cfg": 7.0,
+        "default_sampler": "DPM++ 2M",
+        "default_scheduler": "Karras",
+        "default_width": 832,
+        "default_height": 1216,
+        "default_checkpoint": "",
+        "hires_enabled": False,
+        "hires_scale": 1.5,
+        "hires_upscaler": "4x-UltraSharp",
+        "hires_steps": 15,
+        "hires_denoising": 0.45,
+        "save_images": False,
+    }
+    if not raw:
+        return defaults
+    defaults.update(raw)
+    return defaults
+
+
+def save_forge_settings(settings: dict) -> None:
+    save_app_setting(FORGE_SETTINGS_KEY, settings)
 

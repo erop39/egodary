@@ -124,33 +124,6 @@ window.FACE_TREE = [
     ]
   },
   {
-    "id": "face_skin",
-    "label": "Skin",
-    "children": [
-      {
-        "id": "face_skin_skin_tone",
-        "label": "Skin Tone",
-        "field": "skin",
-        "categoryId": "face.skin",
-        "subgroup": "skin_tone"
-      },
-      {
-        "id": "face_skin_skin_texture_finish",
-        "label": "Texture & Finish",
-        "field": "skin",
-        "categoryId": "face.skin",
-        "subgroup": "skin_texture_finish"
-      },
-      {
-        "id": "face_skin_skin_details",
-        "label": "Skin Details",
-        "field": "skin",
-        "categoryId": "face.skin",
-        "subgroup": "skin_details"
-      }
-    ]
-  },
-  {
     "id": "face_face_shape",
     "label": "Face Shape",
     "children": [

@@ -1,0 +1,265 @@
+diff --git a/egodary/persistence/schema.py b/egodary/persistence/schema.py
+--- a/egodary/persistence/schema.py
++++ b/egodary/persistence/schema.py
+@@ -1201,6 +1201,14 @@ def load_forge_settings() -> dict:
+         "default_width": 832,
+         "default_height": 1216,
+         "default_checkpoint": "",
++        # Hires fix
++        "hires_enabled": False,
++        "hires_scale": 1.5,
++        "hires_upscaler": "4x-UltraSharp",
++        "hires_steps": 15,
++        "hires_denoising": 0.45,
++        # Output
++        "save_images": False,
+     }
+     if not raw:
+         return defaults
+diff --git a/egodary/integrations/forge.py b/egodary/integrations/forge.py
+--- a/egodary/integrations/forge.py
++++ b/egodary/integrations/forge.py
+@@ -0,0 +1,186 @@
++"""Forge / A1111 API integration — send a generated prompt directly to a
++locally running Forge (or vanilla A1111) instance via its REST API.
++
++Only the txt2img endpoint is used; no image storage on our side.
++The caller receives the raw base64-encoded images from Forge together with
++the generation parameters that were actually sent.
++"""
++
++from __future__ import annotations
++
++import json
++import logging
++import urllib.error
++import urllib.parse
++import urllib.request
++from typing import Any
++
++logger = logging.getLogger(__name__)
++
++
++# ---------------------------------------------------------------------------
++# Low-level HTTP helper (mirrors the pattern from ollama.py)
++# ---------------------------------------------------------------------------
++
++
++def _request_json(
++    url: str,
++    *,
++    method: str = "GET",
++    payload: dict | None = None,
++    timeout: float = 10.0,
++) -> dict | None:
++    data = None if payload is None else json.dumps(payload).encode("utf-8")
++    headers = {"Content-Type": "application/json"} if payload is not None else {}
++    req = urllib.request.Request(url, data=data, headers=headers, method=method)
++    with urllib.request.urlopen(req, timeout=timeout) as resp:
++        return json.loads(resp.read().decode("utf-8"))
++
++
++# ---------------------------------------------------------------------------
++# Health probe
++# ---------------------------------------------------------------------------
++
++
++def check_forge_health(settings: dict) -> dict:
++    """Return a status dict: {ok, reachable, error, sd_model_checkpoint, version}."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/options", timeout=timeout) or {}
++        return {
++            "ok": True,
++            "reachable": True,
++            "error": None,
++            "sd_model_checkpoint": data.get("sd_model_checkpoint", ""),
++            "sd_backend": data.get("sd_backend", ""),
++        }
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
++        return {
++            "ok": False,
++            "reachable": False,
++            "error": str(exc),
++            "sd_model_checkpoint": "",
++            "sd_backend": "",
++        }
++
++
++def fetch_forge_models(settings: dict) -> list[str]:
++    """Return list of available checkpoint names from Forge."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/sd-models", timeout=timeout) or []
++        if isinstance(data, list):
++            return [m.get("title") or m.get("model_name", "") for m in data if m]
++        return []
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
++        return []
++
++
++def fetch_forge_samplers(settings: dict) -> list[str]:
++    """Return list of sampler names from Forge."""
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    timeout = float(settings.get("timeout", 10.0))
++    try:
++        data = _request_json(f"{base_url}/sdapi/v1/samplers", timeout=timeout) or []
++        if isinstance(data, list):
++            return [s.get("name", "") for s in data if s]
++        return []
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
++        return []
++
++
++# ---------------------------------------------------------------------------
++# txt2img
++# ---------------------------------------------------------------------------
++
++
++def send_to_forge(
++    *,
++    positive: str,
++    negative: str,
++    settings: dict,
++    override: dict | None = None,
++) -> dict[str, Any]:
++    """Send a prompt to Forge txt2img and return the response.
++
++    ``override`` can contain any A1111 API parameters that should take
++    precedence over the defaults stored in ``settings`` (e.g. steps, cfg,
++    width, height, sampler_name, override_settings.sd_model_checkpoint).
++
++    Returns a dict with keys:
++        ok          – bool
++        images      – list[str]  base64 JPEG strings (empty on failure)
++        parameters  – dict       the payload that was actually sent
++        info        – dict       the raw ``info`` JSON from Forge (seed, etc.)
++        error       – str | None
++    """
++    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
++    # Use a longer timeout for generation (can take 10–120 s depending on
++    # hardware/steps) but fall back to 120 s if not configured.
++    gen_timeout = float(settings.get("gen_timeout", 120.0))
++
++    payload: dict[str, Any] = {
++        "prompt": positive,
++        "negative_prompt": negative or "",
++        "steps": int(settings.get("default_steps", 20)),
++        "cfg_scale": float(settings.get("default_cfg", 7.0)),
++        "sampler_name": settings.get("default_sampler", "DPM++ 2M"),
++        "scheduler": settings.get("default_scheduler", "Karras"),
++        "width": int(settings.get("default_width", 832)),
++        "height": int(settings.get("default_height", 1216)),
++        "send_images": True,
++        "save_images": bool(settings.get("save_images", False)),
++    }
++
++    # Hires fix
++    if settings.get("hires_enabled"):
++        payload["enable_hr"] = True
++        payload["hr_scale"] = float(settings.get("hires_scale", 1.5))
++        payload["hr_upscaler"] = settings.get("hires_upscaler", "4x-UltraSharp")
++        payload["hr_second_pass_steps"] = int(settings.get("hires_steps", 15))
++        payload["denoising_strength"] = float(settings.get("hires_denoising", 0.45))
++
++    checkpoint = settings.get("default_checkpoint", "")
++    if checkpoint:
++        payload["override_settings"] = {"sd_model_checkpoint": checkpoint}
++        payload["override_settings_restore_afterwards"] = True
++
++    # Apply any per-request overrides last so they win over settings defaults.
++    if override:
++        for k, v in override.items():
++            if k == "override_settings" and isinstance(v, dict):
++                payload.setdefault("override_settings", {}).update(v)
++            else:
++                payload[k] = v
++
++    try:
++        resp = _request_json(
++            f"{base_url}/sdapi/v1/txt2img",
++            method="POST",
++            payload=payload,
++            timeout=gen_timeout,
++        ) or {}
++        images = resp.get("images") or []
++        info_raw = resp.get("info") or "{}"
++        try:
++            info = json.loads(info_raw) if isinstance(info_raw, str) else info_raw
++        except json.JSONDecodeError:
++            info = {}
++        return {
++            "ok": True,
++            "images": images,
++            "parameters": payload,
++            "info": info,
++            "error": None,
++        }
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
++        logger.warning("Forge txt2img request failed: %s", exc)
++        return {
++            "ok": False,
++            "images": [],
++            "parameters": payload,
++            "info": {},
++            "error": str(exc),
++        }
+diff --git a/egodary/web/static/index.html b/egodary/web/static/index.html
+--- a/egodary/web/static/index.html
++++ b/egodary/web/static/index.html
+@@ -563,6 +563,24 @@
+                 <input id="forge-scheduler" type="text" placeholder="Karras" />
+               </label>
+             </div>
++            <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Hires Fix</div>
++            <label class="check-row"><input type="checkbox" id="forge-hires-enabled" /> Enable Hires fix</label>
++            <div class="field-grid">
++              <label>Scale
++                <input id="forge-hires-scale" type="number" min="1.1" max="4" step="0.1" />
++              </label>
++              <label>Hires steps
++                <input id="forge-hires-steps" type="number" min="1" max="60" step="1" />
++              </label>
++              <label>Denoising
++                <input id="forge-hires-denoising" type="number" min="0.05" max="1" step="0.05" />
++              </label>
++              <label>Upscaler
++                <input id="forge-hires-upscaler" type="text" placeholder="4x-UltraSharp" />
++              </label>
++            </div>
++            <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Output</div>
++            <label class="check-row"><input type="checkbox" id="forge-save-images" /> Save images to Forge output folder</label>
+             <div class="import-actions">
+               <button type="button" class="btn btn-secondary" id="btn-forge-save">Save</button>
+             </div>
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -7634,6 +7634,12 @@ function populateForgeSettingsForm(s) {
+   set("forge-height", s.default_height);
+   set("forge-sampler", s.default_sampler);
+   set("forge-scheduler", s.default_scheduler);
++  setChk("forge-hires-enabled", s.hires_enabled);
++  set("forge-hires-scale", s.hires_scale);
++  set("forge-hires-steps", s.hires_steps);
++  set("forge-hires-denoising", s.hires_denoising);
++  set("forge-hires-upscaler", s.hires_upscaler);
++  setChk("forge-save-images", s.save_images);
+ }
+ 
+ async function loadForgeSamplers() {
+@@ -7659,6 +7665,12 @@ async function saveForgeSettings() {
+     default_height: Number(get("forge-height")) || 1216,
+     default_sampler: get("forge-sampler") || "DPM++ 2M",
+     default_scheduler: get("forge-scheduler") || "Karras",
++    hires_enabled: getChk("forge-hires-enabled"),
++    hires_scale: Number(get("forge-hires-scale")) || 1.5,
++    hires_steps: Number(get("forge-hires-steps")) || 15,
++    hires_denoising: Number(get("forge-hires-denoising")) || 0.45,
++    hires_upscaler: get("forge-hires-upscaler") || "4x-UltraSharp",
++    save_images: getChk("forge-save-images"),
+   };
+   try {
+     forgeSettingsCache = await api("/forge/settings", {

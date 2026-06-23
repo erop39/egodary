@@ -2,7 +2,132 @@
 
 const API = "/api";
 const SESSION_STORAGE_KEY = "egodary.session.v1";
-const SESSION_FILE_VERSION = 6;
+const SESSION_FILE_VERSION = 9;
+
+const BODY_DETAILS_ID_MIGRATION = {
+  smooth_skin: "smooth_flawless_skin",
+  dewy_skin: "dewy__glowing_skin",
+  oily__shiny_skin: "oily_shiny_skin",
+  skin_texture_finish_matte_skin: "matte_skin",
+  additional_details_beauty_marks__moles: "beauty_marks__moles",
+};
+
+function migrateBodyDetailsIds(data) {
+  const details = data.character?.body_details;
+  if (!Array.isArray(details) || !details.length) return;
+  const migrated = [];
+  for (const rawId of details) {
+    const id = String(rawId || "").trim();
+    if (!id) continue;
+    const mapped = BODY_DETAILS_ID_MIGRATION[id] || id;
+    if (!migrated.includes(mapped)) migrated.push(mapped);
+  }
+  data.character.body_details = migrated;
+}
+
+function migrateSkinSubgroups(data) {
+  migrateBodyDetailsIds(data);
+}
+
+const FACE_SKIN_TONE_MIGRATION = {
+  fair_porcelain_skin: "fair__porcelain",
+  light_beige: "light_beige",
+  warm_tan: "warm_tan",
+  golden_olive: "golden__olive",
+  deep_brown: "deep_tan",
+  ebony: "dark__ebony",
+  pale_with_pink_undertones: "pale_with_pink_undertones",
+  sun_kissed_skin: "tan",
+};
+
+const CLOTHING_STATE_DIMENSIONS = [
+  { id: "moisture", label: "Moisture & Wetness" },
+  { id: "damage", label: "Damage & Wear" },
+  { id: "transparency", label: "Transparency & Sheerness" },
+  { id: "fit", label: "Fit & Tension" },
+  { id: "disorder", label: "Disorder & Messiness" },
+  { id: "partial_removal", label: "Partial Removal & Exposure" },
+  { id: "stains", label: "Stains & Fluids" },
+  { id: "color", label: "Color" },
+  { id: "extra", label: "Additional states" },
+];
+
+function createDefaultOutfitConditions() {
+  return {
+    dress: {},
+    top: {},
+    bottom: {},
+    underwear_layer: {},
+    legwear: {},
+    jacket: {},
+    footwear: {},
+    gloves: {},
+    cape: {},
+  };
+}
+
+function sanitizeSlotConditions(raw) {
+  if (!raw || typeof raw === "string") return {};
+  if (typeof raw !== "object" || Array.isArray(raw)) return {};
+  const out = {};
+  for (const [dim, tagId] of Object.entries(raw)) {
+    if (tagId) out[dim] = String(tagId);
+  }
+  return out;
+}
+
+function sanitizeOutfitConditions(raw, template = createDefaultOutfitConditions()) {
+  const out = { ...template };
+  for (const key of Object.keys(template)) {
+    out[key] = sanitizeSlotConditions(raw?.[key]);
+  }
+  return out;
+}
+
+function countSlotConditions(slotConditions) {
+  if (!slotConditions) return 0;
+  if (typeof slotConditions === "string") return slotConditions ? 1 : 0;
+  return Object.values(slotConditions).filter(Boolean).length;
+}
+
+function migrateSkinFromFace(data) {
+  const faceSkin = data.face?.skin;
+  if (!faceSkin) return;
+  if (!data.character) data.character = {};
+  if (FACE_SKIN_TONE_MIGRATION[faceSkin]) {
+    data.character.skin_tone = FACE_SKIN_TONE_MIGRATION[faceSkin];
+  } else if (faceSkin) {
+    if (!Array.isArray(data.character.body_details)) data.character.body_details = [];
+    if (!data.character.body_details.includes(faceSkin)) {
+      data.character.body_details.push(faceSkin);
+    }
+  }
+  data.face.skin = "";
+}
+
+function migrateOutfitConditionsShape(data) {
+  const outfit = data.outfit;
+  if (!outfit) return;
+  outfit.conditions = sanitizeOutfitConditions(outfit.conditions);
+}
+
+function migrateSessionData(data) {
+  let version = Number(data.version) || 0;
+  if (version < 7) {
+    migrateSkinFromFace(data);
+    version = 7;
+  }
+  if (version < 8) {
+    migrateOutfitConditionsShape(data);
+    version = 8;
+  }
+  if (version < 9) {
+    migrateSkinSubgroups(data);
+    version = 9;
+  }
+  data.version = version;
+  return data;
+}
 
 const MODEL_LABELS = {
   illustrious: "Illustrious",
@@ -62,12 +187,12 @@ function createDefaultState() {
       gloves: "",
       cape: "",
       conditions: {
-        dress: "",
-        top: "",
-        bottom: "",
-        underwear_layer: "",
-        legwear: "",
-        jacket: "",
+        dress: {},
+        top: {},
+        bottom: {},
+        underwear_layer: {},
+        legwear: {},
+        jacket: {},
       },
     },
     appearance: {
@@ -75,6 +200,7 @@ function createDefaultState() {
       hair_color: "",
       makeup: [],
       accessories: [],
+      tattoos: [],
     },
     face: {
       facial_expression: "",
@@ -117,6 +243,7 @@ const TAB_META = {
   fetish: { title: "Fetish", desc: "Элементы фетиша · multi-select до 6 на группу" },
   prompting: { title: "Prompting", desc: "Analyze · Import · NSFW Styler — работа с текстом промпта" },
   tagstudio: { title: "Tag Studio", desc: "Категории и подкатегории тегов, дедупликация, миграция и rollback runtime overlay" },
+  wildcards: { title: "Wildcards", desc: "Свои текстовые списки тегов — привязка к категории/подгруппе, чекбоксы вкл/выкл" },
   favorites: { title: "Favorites", desc: "Сохраненные промпты: просмотр, редактирование, экспорт, превью ссылок" },
   llm: { title: "LLM Settings", desc: "Ollama: модель, температура, таймаут · для classify и NSFW refine" },
   advanced: { title: "Advanced", desc: "Rules, Debug, Changelog · Import prompt → state" },
@@ -190,30 +317,30 @@ const OUTFIT_TREE = [
     id: "footwear",
     label: "Footwear",
     children: [
-      { id: "footwear_thigh", label: "Thigh High & OTK", field: "footwear", categoryId: "outfit.footwear", subgroup: "thigh_high" },
-      { id: "footwear_platform", label: "Platform & High Heels", field: "footwear", categoryId: "outfit.footwear", subgroup: "platform_heels" },
-      { id: "footwear_fetish", label: "Fetish & Alt Boots", field: "footwear", categoryId: "outfit.footwear", subgroup: "fetish_boots" },
-      { id: "footwear_casual", label: "Casual / Sporty NSFW", field: "footwear", categoryId: "outfit.footwear", subgroup: "casual_nsfw" },
+      { id: "footwear_thigh", label: "Thigh High & OTK", field: "footwear", categoryId: "outfit.footwear", subgroup: "thigh_high", conditionField: "footwear" },
+      { id: "footwear_platform", label: "Platform & High Heels", field: "footwear", categoryId: "outfit.footwear", subgroup: "platform_heels", conditionField: "footwear" },
+      { id: "footwear_fetish", label: "Fetish & Alt Boots", field: "footwear", categoryId: "outfit.footwear", subgroup: "fetish_boots", conditionField: "footwear" },
+      { id: "footwear_casual", label: "Casual / Sporty NSFW", field: "footwear", categoryId: "outfit.footwear", subgroup: "casual_nsfw", conditionField: "footwear" },
     ],
   },
   {
     id: "gloves",
     label: "Gloves",
     children: [
-      { id: "gloves_long", label: "Long / Opera", field: "gloves", categoryId: "outfit.gloves", subgroup: "long_opera" },
-      { id: "gloves_short", label: "Short & Fashion", field: "gloves", categoryId: "outfit.gloves", subgroup: "short_fashion" },
-      { id: "gloves_harness", label: "Harness / Bondage", field: "gloves", categoryId: "outfit.gloves", subgroup: "harness_bondage" },
-      { id: "gloves_fingerless", label: "Fingerless & Alt", field: "gloves", categoryId: "outfit.gloves", subgroup: "fingerless_alt" },
+      { id: "gloves_long", label: "Long / Opera", field: "gloves", categoryId: "outfit.gloves", subgroup: "long_opera", conditionField: "gloves" },
+      { id: "gloves_short", label: "Short & Fashion", field: "gloves", categoryId: "outfit.gloves", subgroup: "short_fashion", conditionField: "gloves" },
+      { id: "gloves_harness", label: "Harness / Bondage", field: "gloves", categoryId: "outfit.gloves", subgroup: "harness_bondage", conditionField: "gloves" },
+      { id: "gloves_fingerless", label: "Fingerless & Alt", field: "gloves", categoryId: "outfit.gloves", subgroup: "fingerless_alt", conditionField: "gloves" },
     ],
   },
   {
     id: "cape",
     label: "Cape",
     children: [
-      { id: "cape_long", label: "Long Dramatic", field: "cape", categoryId: "outfit.cape", subgroup: "long_dramatic" },
-      { id: "cape_short", label: "Short / Cropped", field: "cape", categoryId: "outfit.cape", subgroup: "short_cropped" },
-      { id: "cape_hooded", label: "Hooded & Fetish", field: "cape", categoryId: "outfit.cape", subgroup: "hooded_fetish" },
-      { id: "cape_sheer", label: "Sheer / Revealing", field: "cape", categoryId: "outfit.cape", subgroup: "sheer_revealing" },
+      { id: "cape_long", label: "Long Dramatic", field: "cape", categoryId: "outfit.cape", subgroup: "long_dramatic", conditionField: "cape" },
+      { id: "cape_short", label: "Short / Cropped", field: "cape", categoryId: "outfit.cape", subgroup: "short_cropped", conditionField: "cape" },
+      { id: "cape_hooded", label: "Hooded & Fetish", field: "cape", categoryId: "outfit.cape", subgroup: "hooded_fetish", conditionField: "cape" },
+      { id: "cape_sheer", label: "Sheer / Revealing", field: "cape", categoryId: "outfit.cape", subgroup: "sheer_revealing", conditionField: "cape" },
     ],
   },
 ];
@@ -255,6 +382,24 @@ const ACCESSORIES_TREE = [
       { id: "acc_chokers", label: "Chokers & Neck", field: "accessories", categoryId: "appearance.accessories", subgroup: "chokers_neck", multi: true },
       { id: "acc_bags", label: "Bags & Extra", field: "accessories", categoryId: "appearance.accessories", subgroup: "bags_extra", multi: true },
       { id: "acc_backpacks", label: "Backpacks", field: "accessories", categoryId: "appearance.accessories", subgroup: "backpacks", multi: true },
+      { id: "acc_gaming", label: "Gaming", field: "accessories", categoryId: "appearance.accessories", subgroup: "gaming", multi: true },
+      { id: "acc_sport", label: "Sport", field: "accessories", categoryId: "appearance.accessories", subgroup: "sport", multi: true },
+      { id: "acc_angelic", label: "Angelic", field: "accessories", categoryId: "appearance.accessories", subgroup: "angelic", multi: true },
+      { id: "acc_demonic", label: "Demonic", field: "accessories", categoryId: "appearance.accessories", subgroup: "demonic", multi: true },
+      { id: "acc_crowns", label: "Crowns & Tiaras", field: "accessories", categoryId: "appearance.accessories", subgroup: "crowns_tiaras", multi: true },
+      { id: "acc_medical", label: "Medical / Hospital", field: "accessories", categoryId: "appearance.accessories", subgroup: "medical", multi: true },
+      { id: "acc_religious", label: "Religious / Church", field: "accessories", categoryId: "appearance.accessories", subgroup: "religious", multi: true },
+      {
+        id: "acc_tattoos_group",
+        label: "Tattoos & Body Art",
+        children: [
+          { id: "acc_tattoo_styles", label: "Tattoo Styles", field: "tattoos", categoryId: "appearance.tattoos", subgroup: "styles", multi: true },
+          { id: "acc_tattoo_placements", label: "Tattoo Placements", field: "tattoos", categoryId: "appearance.tattoos", subgroup: "placements", multi: true },
+          { id: "acc_tattoo_themes", label: "Tattoo Themes", field: "tattoos", categoryId: "appearance.tattoos", subgroup: "themes", multi: true },
+          { id: "acc_tattoo_specific", label: "Specific Tattoos", field: "tattoos", categoryId: "appearance.tattoos", subgroup: "specific", multi: true },
+          { id: "acc_tattoo_temporary", label: "Temporary Tattoos", field: "tattoos", categoryId: "appearance.tattoos", subgroup: "temporary", multi: true },
+        ],
+      },
     ],
   },
 ];
@@ -307,6 +452,13 @@ let qualityPreviewRequest = 0;
 let promptPreviewTimer = null;
 let promptPreviewRequest = 0;
 
+// Undo stack — serialized buildPayload() snapshots, before each state-mutating click
+const UNDO_STACK_MAX = 30;
+const undoStack = [];
+
+// Forge settings cache
+let forgeSettingsCache = null;
+
 const FACE_VIBE_FIELDS = ["facial_expression", "age_maturity", "beauty_archetype", "facial_details"];
 const CHARACTER_FACE_FIELDS = [
   "mouth_lips", "eyes", "eye_color", "skin", "face_shape", "eyebrows", "nose", "jaw_chin",
@@ -314,7 +466,6 @@ const CHARACTER_FACE_FIELDS = [
 const CHARACTER_FACE_GROUP_IDS = new Set([
   "face_mouth_lips",
   "face_eyes",
-  "face_skin",
   "face_face_shape",
   "face_eyebrows",
   "face_nose",
@@ -361,11 +512,14 @@ const TAB_COUNTS = {
   outfit: () => {
     const garmentFields = ["dress", "top", "bottom", "underwear_layer", "legwear", "jacket", "footwear", "gloves", "cape"];
     let count = garmentFields.filter((key) => state.outfit[key]).length;
-    count += Object.values(state.outfit.conditions || {}).filter(Boolean).length;
+    count += Object.values(state.outfit.conditions || {}).reduce(
+      (sum, slot) => sum + countSlotConditions(slot),
+      0,
+    );
     return count;
   },
   makeup: () => state.appearance.makeup.length,
-  accessories: () => state.appearance.accessories.length,
+  accessories: () => state.appearance.accessories.length + (state.appearance.tattoos?.length || 0),
   pose: () => (state.pose ? 1 : 0),
   camera: () => Object.values(state.camera).filter((v) => v).length,
   lighting: () => Object.values(state.lighting).filter((v) => v).length,
@@ -409,8 +563,11 @@ function getTreePanels() {
 }
 
 const selectionCountEls = new Map();
-let clothingConditionsByField = null;
-let clothingConditionsLoadingPromise = null;
+let clothingStateCatalog = null;
+let clothingStateLoadingPromise = null;
+let clothingStateOpenSections = new Set();
+let advancedTodoItems = [];
+let advancedTodoSaveTimer = null;
 
 const CONDITION_FIELD_LABELS = {
   dress: "Dress wear condition",
@@ -419,6 +576,9 @@ const CONDITION_FIELD_LABELS = {
   underwear_layer: "Lingerie condition",
   legwear: "Stockings / fishnets condition",
   jacket: "Outerwear condition",
+  footwear: "Footwear condition",
+  gloves: "Gloves condition",
+  cape: "Cape condition",
 };
 
 function getGarmentForConditionField(field) {
@@ -438,85 +598,163 @@ function garmentMatchesLeaf(node, garmentId) {
   return map[garmentId] === node.subgroup;
 }
 
-async function ensureClothingConditions() {
-  if (clothingConditionsByField) return clothingConditionsByField;
-  if (clothingConditionsLoadingPromise) {
-    return clothingConditionsLoadingPromise;
-  }
-  clothingConditionsLoadingPromise = (async () => {
+async function ensureClothingStateCatalog() {
+  if (clothingStateCatalog) return clothingStateCatalog;
+  if (clothingStateLoadingPromise) return clothingStateLoadingPromise;
+  clothingStateLoadingPromise = (async () => {
     try {
-      const data = await api("/categories/outfit.clothing_condition");
-      clothingConditionsByField = {};
-      for (const item of data.items) {
-        const field = item.meta?.field;
-        const group = item.meta?.group || "Other";
-        if (!field) continue;
-        if (!clothingConditionsByField[field]) clothingConditionsByField[field] = {};
-        if (!clothingConditionsByField[field][group]) clothingConditionsByField[field][group] = [];
-        clothingConditionsByField[field][group].push(item);
+      const data = await api("/categories/outfit.clothing_state");
+      const byDimension = {};
+      for (const item of data.items || []) {
+        const dimension = item.meta?.dimension;
+        if (!dimension) continue;
+        if (!byDimension[dimension]) byDimension[dimension] = [];
+        byDimension[dimension].push(item);
       }
+      clothingStateCatalog = byDimension;
     } catch (_) {
-      clothingConditionsByField = {};
+      clothingStateCatalog = {};
     }
-    return clothingConditionsByField;
+    return clothingStateCatalog;
   })();
-  await clothingConditionsLoadingPromise;
-  clothingConditionsLoadingPromise = null;
-  return clothingConditionsByField;
+  await clothingStateLoadingPromise;
+  clothingStateLoadingPromise = null;
+  return clothingStateCatalog;
 }
 
-async function renderConditionDropdown(leaf) {
-  const panel = document.getElementById("outfit-condition-panel");
-  const select = document.getElementById("outfit-condition-select");
-  if (!panel || !select) return;
+function getSlotConditions(conditionField) {
+  if (!conditionField) return {};
+  const raw = state.outfit.conditions?.[conditionField];
+  return sanitizeSlotConditions(raw);
+}
 
-  const conditionField = leaf.conditionField;
+function setSlotConditionDimension(conditionField, dimension, tagId) {
+  if (!conditionField) return;
+  if (!state.outfit.conditions) state.outfit.conditions = createDefaultOutfitConditions();
+  const slot = { ...getSlotConditions(conditionField) };
+  if (tagId) slot[dimension] = tagId;
+  else delete slot[dimension];
+  state.outfit.conditions[conditionField] = slot;
+  notifyStateChange();
+}
+
+function applyClothingStatePreset(conditionField, presetConditions = {}) {
+  if (!conditionField) return;
+  if (!state.outfit.conditions) state.outfit.conditions = createDefaultOutfitConditions();
+  const slot = { ...getSlotConditions(conditionField), ...presetConditions };
+  state.outfit.conditions[conditionField] = slot;
+  notifyStateChange();
+}
+
+function clothingStatePresetMatches(conditionField, preset) {
+  const slot = getSlotConditions(conditionField);
+  return Object.entries(preset.conditions || {}).every(([dim, tagId]) => slot[dim] === tagId);
+}
+
+function renderClothingStateQuick(conditionField, garmentId) {
+  const root = document.getElementById("clothing-state-quick");
+  if (!root) return;
+  const presets = window.CLOTHING_STATE_PRESETS || [];
+  if (!garmentId || !presets.length) {
+    root.innerHTML = "";
+    return;
+  }
+  root.innerHTML = `
+    <div class="clothing-state-quick-label">Quick states</div>
+    <div class="clothing-state-quick-chips">
+      ${presets.map((preset) => {
+        const active = clothingStatePresetMatches(conditionField, preset) ? " active" : "";
+        return `<button type="button" class="chip clothing-state-preset${active}" data-preset-id="${escapeHtml(preset.id)}" title="${escapeHtml(preset.hint || "")}">${escapeHtml(preset.label)}</button>`;
+      }).join("")}
+    </div>
+  `;
+  root.querySelectorAll(".clothing-state-preset").forEach((btn) => {
+    btn.onclick = () => {
+      const preset = presets.find((row) => row.id === btn.dataset.presetId);
+      if (!preset) return;
+      applyClothingStatePreset(conditionField, preset.conditions || {});
+      renderClothingStatePanel({ conditionField });
+    };
+  });
+}
+
+function renderClothingStateAccordion(conditionField, catalog, garmentId) {
+  const root = document.getElementById("clothing-state-accordion");
+  if (!root) return;
+  if (!garmentId) {
+    root.innerHTML = '<div class="tagstudio-output-empty">Select garment first</div>';
+    return;
+  }
+  root.innerHTML = CLOTHING_STATE_DIMENSIONS.map((dimension) => {
+    const items = catalog[dimension.id] || [];
+    const slot = getSlotConditions(conditionField);
+    const selected = slot[dimension.id] || "";
+    const selectedCount = selected ? 1 : 0;
+    const isOpen = clothingStateOpenSections.has(dimension.id);
+    return `
+      <section class="accordion-section${isOpen ? " is-open" : ""}" data-dimension="${escapeHtml(dimension.id)}">
+        <button type="button" class="accordion-header">
+          <span>${escapeHtml(dimension.label)}</span>
+          ${selectedCount ? `<span class="accordion-badge">${selectedCount}</span>` : ""}
+        </button>
+        <div class="accordion-body">
+          <div class="chip-panel clothing-state-chips">
+            <button type="button" class="chip${selected ? "" : " active"}" data-dimension="${escapeHtml(dimension.id)}" data-tag-id="">— None —</button>
+            ${items.map((item) => `<button type="button" class="chip${selected === item.id ? " active" : ""}" data-dimension="${escapeHtml(dimension.id)}" data-tag-id="${escapeHtml(item.id)}">${escapeHtml(item.label)}</button>`).join("")}
+          </div>
+        </div>
+      </section>
+    `;
+  }).join("");
+
+  root.querySelectorAll(".accordion-header").forEach((btn) => {
+    btn.onclick = () => {
+      const section = btn.closest(".accordion-section");
+      const dimension = section?.dataset.dimension;
+      if (!dimension) return;
+      if (clothingStateOpenSections.has(dimension)) clothingStateOpenSections.delete(dimension);
+      else {
+        if (clothingStateOpenSections.size >= 2) {
+          const first = clothingStateOpenSections.values().next().value;
+          clothingStateOpenSections.delete(first);
+        }
+        clothingStateOpenSections.add(dimension);
+      }
+      renderClothingStateAccordion(conditionField, catalog, garmentId);
+    };
+  });
+
+  root.querySelectorAll(".clothing-state-chips .chip").forEach((chip) => {
+    chip.onclick = () => {
+      const dimension = chip.dataset.dimension;
+      const tagId = chip.dataset.tagId || "";
+      setSlotConditionDimension(conditionField, dimension, tagId);
+      renderClothingStatePanel({ conditionField });
+    };
+  });
+}
+
+async function renderClothingStatePanel(leaf) {
+  const panel = document.getElementById("outfit-condition-panel");
+  if (!panel) return;
+  const conditionField = leaf?.conditionField;
   if (!conditionField) {
     panel.classList.add("hidden");
     return;
   }
-
+  const catalog = await ensureClothingStateCatalog();
   const garmentId = getGarmentForConditionField(conditionField);
-  const groups = (await ensureClothingConditions())[conditionField];
-  if (!groups) {
-    panel.classList.add("hidden");
-    return;
-  }
-
   panel.classList.remove("hidden");
-  document.querySelector(".condition-label").textContent = CONDITION_FIELD_LABELS[conditionField] || "Wear condition";
-
-  const current = state.outfit.conditions?.[conditionField] || "";
-  select.innerHTML = "";
-  const none = document.createElement("option");
-  none.value = "";
-  none.textContent = garmentId ? "— No condition —" : "Select garment first";
-  select.appendChild(none);
-
-  for (const [groupLabel, items] of Object.entries(groups)) {
-    const optgroup = document.createElement("optgroup");
-    optgroup.label = groupLabel;
-    for (const item of items) {
-      const option = document.createElement("option");
-      option.value = item.id;
-      option.textContent = item.label;
-      optgroup.appendChild(option);
-    }
-    select.appendChild(optgroup);
-  }
-
-  select.value = current;
-  select.disabled = !garmentId;
-  select.onchange = () => {
-    if (!state.outfit.conditions) state.outfit.conditions = {};
-    state.outfit.conditions[conditionField] = select.value;
-    notifyStateChange();
-  };
+  const title = document.querySelector(".clothing-state-title");
+  if (title) title.textContent = CONDITION_FIELD_LABELS[conditionField] || "Clothing states";
+  renderClothingStateQuick(conditionField, garmentId);
+  renderClothingStateAccordion(conditionField, catalog, garmentId);
+  panel.classList.toggle("is-disabled", !garmentId);
 }
 
 function clearConditionForField(field) {
   if (!field || !state.outfit.conditions) return;
-  state.outfit.conditions[field] = "";
+  state.outfit.conditions[field] = {};
 }
 
 function registerCategoryItems(categoryId, items) {
@@ -577,6 +815,7 @@ function getStateValueForTreeNode(node) {
   if (!node?.field) return "";
   if (node.field === "makeup") return state.appearance.makeup;
   if (node.field === "accessories") return state.appearance.accessories;
+  if (node.field === "tattoos") return state.appearance.tattoos || [];
   if (node.field === "elements" && node.categoryId === "fetish.elements") return state.fetish.elements;
   if (node.categoryId?.startsWith("pose.")) return state.pose || "";
   if (node.field === "hair") return state.appearance.hair || "";
@@ -611,6 +850,32 @@ function valueMatchesNodeSubgroup(node, value) {
   return map[value] === node.subgroup;
 }
 
+function isActiveTreeLeaf(node) {
+  if (!node?.id) return false;
+  return node.id === activeCharacterLeafId
+    || node.id === activeFaceLeafId
+    || node.id === activeOutfitLeafId
+    || node.id === activeMakeupLeafId
+    || node.id === activeAccessoriesLeafId
+    || node.id === activePoseLeafId
+    || node.id === activeCameraLeafId
+    || node.id === activeLightingLeafId
+    || node.id === activeEnvironmentLeafId
+    || node.id === activeStyleLeafId
+    || node.id === activeFetishLeafId;
+}
+
+function countScalarForTreeNode(node, value) {
+  if (!value) return 0;
+  if (!node.subgroup) return 1;
+  const map = itemSubgroupMaps[node.categoryId] || {};
+  const mapped = map[value];
+  if (mapped === node.subgroup) return 1;
+  if (mapped && mapped !== node.subgroup) return 0;
+  if (isActiveTreeLeaf(node)) return 1;
+  return 0;
+}
+
 function getTreeLeafSelectionState(node) {
   const scopeKey = nodeSelectionScopeKey(node);
   if (node.presetPanel && node.presetScope) {
@@ -627,14 +892,14 @@ function getTreeLeafSelectionState(node) {
   let count = 0;
   if (Array.isArray(value)) {
     count = countItemsInSubgroup(node.categoryId, node.subgroup, value);
-  } else if (valueMatchesNodeSubgroup(node, value)) {
-    count = 1;
+  } else {
+    count = countScalarForTreeNode(node, value);
   }
   if (node.conditionField) {
     const garmentId = getGarmentForConditionField(node.conditionField);
-    const conditionId = state.outfit.conditions?.[node.conditionField];
-    if (garmentId && conditionId && garmentMatchesLeaf(node, garmentId)) {
-      count += 1;
+    const slotConditions = state.outfit.conditions?.[node.conditionField];
+    if (garmentId && countSlotConditions(slotConditions) && garmentMatchesLeaf(node, garmentId)) {
+      count += countSlotConditions(slotConditions);
     }
   }
   const mode = getFieldSelectionMode(scopeKey, count);
@@ -726,7 +991,7 @@ function updateTreeCountsInContainer(nodes, container) {
         const groupEl = container.querySelector(`[data-group-id="${node.id}"]`);
         const countEl = groupEl?.querySelector(".tree-count");
         const count = sumTreeNodeSelectionCount(node);
-        if (countEl) countEl.textContent = count > 0 ? String(count) : "";
+        if (countEl) applyCountDisplay(countEl, { count, mode: count > 0 ? "item" : "none" });
         walk(node.children);
         continue;
       }
@@ -867,6 +1132,8 @@ async function refreshPromptPreview() {
 }
 
 function notifyStateChange() {
+  // Push undo snapshot before state is externally committed
+  _undoPush();
   updateNavCounters();
   updateSelectionCounts();
   refreshAllTreeCounts();
@@ -1021,6 +1288,7 @@ function applyPayloadToState(data) {
     hair_color: normalized.appearance.hair_color,
     makeup: [...normalized.appearance.makeup],
     accessories: [...normalized.appearance.accessories],
+    tattoos: [...(normalized.appearance.tattoos || [])],
   };
   state.face = { ...normalized.face };
   state.camera = { ...normalized.camera };
@@ -1062,9 +1330,12 @@ function loadPersistedSession() {
     const raw = localStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) return false;
     const data = JSON.parse(raw);
-    if (!data.version || data.version < SESSION_FILE_VERSION) {
+    if (!data.version || data.version < 6) {
       localStorage.removeItem(SESSION_STORAGE_KEY);
       return false;
+    }
+    if (data.version < SESSION_FILE_VERSION) {
+      migrateSessionData(data);
     }
     applyPayloadToState(data);
     if (data.ui) applyUiState(data.ui);
@@ -1157,6 +1428,7 @@ async function preloadSubgroupMaps() {
     "appearance.hair_color",
     "appearance.makeup",
     "appearance.accessories",
+    "appearance.tattoos",
     "pose.solo",
     "pose.couple",
     "camera.angle",
@@ -1198,7 +1470,6 @@ async function preloadSubgroupMaps() {
     "face.mouth_lips",
     "face.eyes",
     "face.eye_color",
-    "face.skin",
     "face.face_shape",
     "face.eyebrows",
     "face.nose",
@@ -1385,16 +1656,14 @@ function sanitizePromptPayload(data) {
     character: sanitizeCharacter(data.character),
     outfit: {
       ...sanitizeStringRecord(data.outfit, defaults.outfit),
-      conditions: {
-        ...defaults.outfit.conditions,
-        ...sanitizeStringRecord(data.outfit?.conditions, defaults.outfit.conditions),
-      },
+      conditions: sanitizeOutfitConditions(data.outfit?.conditions, defaults.outfit.conditions),
     },
     appearance: {
       hair: asString(data.appearance?.hair),
       hair_color: asString(data.appearance?.hair_color),
       makeup: asStringArray(data.appearance?.makeup),
       accessories: asStringArray(data.appearance?.accessories),
+      tattoos: asStringArray(data.appearance?.tattoos),
     },
     face: sanitizeStringRecord(data.face, defaults.face),
     scene: sanitizeStringRecord(data.scene, defaults.scene),
@@ -1668,6 +1937,218 @@ function wrapSetValForSubgroup(getVal, setVal, scopeIds, offValue = "") {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Wildcards section — shown inline inside every subgroup panel, listing the
+// custom tags a user uploaded for the panel's parent category (via the
+// Wildcards tab). Shown regardless of whether the wildcard's target_subgroup
+// matches this particular leaf's subgroup id, since users often type a free
+// subgroup name that doesn't correspond to any built-in UI subgroup — without
+// this section those tags would never be visible anywhere. Hidden entirely
+// when the source wildcard (or all of its lines) is disabled.
+const wildcardsByCategoryCache = new Map();
+
+async function invalidateWildcardsByCategoryCache() {
+  wildcardsByCategoryCache.clear();
+  await loadWildcardsIndex();
+  refreshAllPanels();
+}
+
+// Synchronous index used while building category trees (getCharacterTree(),
+// getOutfitTree(), ...) — these are plain sync functions called throughout
+// the app, so wildcard data has to already be in memory by the time they
+// run rather than fetched on demand. Built once at startup (see init()) and
+// refreshed whenever wildcards are uploaded/toggled/deleted.
+let wildcardsIndexByCategory = {};
+
+async function loadWildcardsIndex() {
+  try {
+    const data = await api("/wildcards");
+    const idx = {};
+    for (const w of data.wildcards || []) {
+      if (!w.enabled || !w.item_count) continue;
+      if (!idx[w.target_category]) idx[w.target_category] = [];
+      idx[w.target_category].push({
+        subgroup: w.target_subgroup,
+        label: w.label || w.filename,
+        count: w.item_count,
+      });
+    }
+    wildcardsIndexByCategory = idx;
+  } catch (e) {
+    wildcardsIndexByCategory = {};
+  }
+}
+
+// Appends a dedicated tree leaf for every wildcard target_subgroup that isn't
+// already one of a category's built-in subgroups — e.g. uploading a wildcard
+// to appearance.hair / "imported" gets its own "🧩 ..." leaf next to Long
+// Styles / Updos & Buns / etc., instead of only being reachable as extra
+// chips bolted onto every existing subgroup. Field/multi/conditionField are
+// copied from a sibling leaf of the same categoryId so the new leaf reads
+// and writes the same state slot as its neighbors.
+// Turns a subgroup id into a readable label for the dynamic tree leaf:
+// "sexy_outfit" -> "Sexy Outfit". Text the user already typed with normal
+// spacing/casing (e.g. "Sexy outfit") passes through essentially unchanged
+// (only stray underscores get converted, since a typed subgroup name could
+// still contain one).
+function humanizeWildcardSubgroupLabel(subgroup) {
+  return String(subgroup || "")
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function injectWildcardLeaves(nodes) {
+  if (!Array.isArray(nodes) || !nodes.length) return nodes;
+  return nodes.map((node) => {
+    if (!Array.isArray(node.children) || !node.children.length) return node;
+
+    // Recurse first so nested sub-groups (e.g. Accessories > Tattoos & Body
+    // Art) get their own orphan wildcard leaves too.
+    const children = injectWildcardLeaves(node.children);
+
+    // Bucket this group's own direct leaves (not nested sub-groups) by
+    // categoryId — a group can mix more than one category, e.g. Hair +
+    // Hair Color both live under the single "Hair" header.
+    const byCategory = new Map();
+    for (const child of children) {
+      if (Array.isArray(child.children) && child.children.length) continue;
+      if (!child.categoryId) continue;
+      if (!byCategory.has(child.categoryId)) {
+        byCategory.set(child.categoryId, { template: child, knownSubgroups: new Set() });
+      }
+      if (child.subgroup) byCategory.get(child.categoryId).knownSubgroups.add(child.subgroup);
+    }
+
+    const extraLeaves = [];
+    for (const [categoryId, { template, knownSubgroups }] of byCategory) {
+      const wcGroups = wildcardsIndexByCategory[categoryId];
+      if (!wcGroups || !wcGroups.length) continue;
+      const seen = new Set();
+      for (const wc of wcGroups) {
+        if (!wc.subgroup || knownSubgroups.has(wc.subgroup) || seen.has(wc.subgroup)) continue;
+        seen.add(wc.subgroup);
+        extraLeaves.push({
+          id: `wc_${categoryId}_${wc.subgroup}`,
+          // Label the leaf by the subgroup name the user typed (e.g. "Sexy
+          // outfit"), not by the source file's label/filename — the
+          // subgroup is the thing distinguishing this leaf from others, and
+          // it's also ambiguous which file "wins" the label when several
+          // files share one subgroup. The file name is still shown per-file
+          // in the Wildcards tab list and in the inline "🧩 Wildcards"
+          // section underneath OTHER (non-matching) subgroups, where
+          // telling files apart actually matters.
+          label: `🧩 ${humanizeWildcardSubgroupLabel(wc.subgroup)}`,
+          categoryId,
+          subgroup: wc.subgroup,
+          field: template.field,
+          multi: template.multi,
+          conditionField: template.conditionField,
+          isWildcardLeaf: true,
+        });
+      }
+    }
+
+    if (!extraLeaves.length && children === node.children) return node;
+    return { ...node, children: [...children, ...extraLeaves] };
+  });
+}
+
+async function fetchWildcardsForCategory(categoryId) {
+  if (!categoryId) return [];
+  if (!wildcardsByCategoryCache.has(categoryId)) {
+    wildcardsByCategoryCache.set(
+      categoryId,
+      api(`/wildcards/by-category/${encodeURIComponent(categoryId)}`)
+        .then((data) => data.wildcards || [])
+        .catch(() => []),
+    );
+  }
+  try {
+    return await wildcardsByCategoryCache.get(categoryId);
+  } catch (e) {
+    return [];
+  }
+}
+
+function wildcardChipIsSelected(getVal, isMulti, id) {
+  const v = getVal();
+  if (isMulti) return asStringArray(v).includes(id);
+  return Array.isArray(v) ? v.includes(id) : v === id;
+}
+
+async function appendWildcardsSection(container, categoryId, getVal, setVal, isMulti = false, currentSubgroup = null) {
+  if (!container || !categoryId || typeof getVal !== "function" || typeof setVal !== "function") return;
+  const token = `${categoryId}#${Math.random()}`;
+  container.dataset.wcToken = token;
+  let groups = await fetchWildcardsForCategory(categoryId);
+  // The user may have switched to a different leaf while this was in flight —
+  // bail out so we don't append a stale section onto the wrong panel.
+  if (container.dataset.wcToken !== token) return;
+  // A wildcard whose target_subgroup matches the leaf we're already on gets
+  // its own dedicated tree leaf (see injectWildcardLeaves) and is already
+  // showing as regular, first-class chips above — don't repeat it here.
+  groups = groups.filter((g) => g.target_subgroup !== currentSubgroup);
+  if (!groups.length) return;
+
+  const section = document.createElement("div");
+  section.className = "wildcards-section";
+
+  const title = document.createElement("div");
+  title.className = "wildcards-section-title";
+  title.textContent = "🧩 Wildcards";
+  section.appendChild(title);
+
+  const refreshActive = () => {
+    section.querySelectorAll(".wildcard-chip").forEach((el) => {
+      el.classList.toggle("active", wildcardChipIsSelected(getVal, isMulti, el.dataset.id));
+    });
+  };
+
+  const toggle = (id) => {
+    if (isMulti) {
+      const set = new Set(asStringArray(getVal()));
+      if (set.has(id)) set.delete(id);
+      else set.add(id);
+      setVal([...set]);
+    } else {
+      // Mirrors renderChips' single-select chips: clicking always selects
+      // this tag (use the field's own "Off" control above to clear it).
+      setVal(id);
+    }
+    notifyStateChange();
+    refreshActive();
+  };
+
+  for (const group of groups) {
+    const groupEl = document.createElement("div");
+    groupEl.className = "wildcards-group";
+
+    const groupTitle = document.createElement("div");
+    groupTitle.className = "wildcards-group-title";
+    groupTitle.innerHTML = `${escapeHtml(group.label)} <span class="wildcards-group-count">${group.items.length}</span>`;
+    groupEl.appendChild(groupTitle);
+
+    const chipsRow = document.createElement("div");
+    chipsRow.className = "wildcards-group-chips";
+    for (const it of group.items) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = chipItemClass({ id: it.item_id }, wildcardChipIsSelected(getVal, isMulti, it.item_id)) + " wildcard-chip";
+      chip.textContent = it.label;
+      chip.title = it.label;
+      chip.dataset.id = it.item_id;
+      chip.onclick = () => toggle(it.item_id);
+      chipsRow.appendChild(chip);
+    }
+    groupEl.appendChild(chipsRow);
+    section.appendChild(groupEl);
+  }
+
+  container.appendChild(section);
+}
+
 async function loadCategoryChips(container, categoryId, getVal, setVal, opts = {}) {
   if (!container) return;
   const { subgroup = null, selectionScope = "", ...chipOpts } = opts;
@@ -1694,6 +2175,7 @@ async function loadCategoryChips(container, categoryId, getVal, setVal, opts = {
       selectionScope: scopeKey,
       categoryId,
     });
+    if (subgroup) await appendWildcardsSection(container, categoryId, getVal, setVal, false, subgroup);
   } catch (e) {
     container.innerHTML = `<span style="color:#eb3b5a;font-size:12px">${categoryId}: not loaded</span>`;
   }
@@ -1803,6 +2285,7 @@ async function loadCategoryMultiChips(container, categoryId, getVal, setVal, opt
       selectionScope: scopeKey,
       categoryId,
     });
+    if (subgroup) await appendWildcardsSection(container, categoryId, getVal, setVal, true, subgroup);
   } catch (e) {
     container.innerHTML = `<span style="color:#eb3b5a;font-size:12px">${categoryId}: not loaded</span>`;
   }
@@ -1894,11 +2377,25 @@ function initEnvironmentPanel() {
           const map = itemSubgroupMaps[leaf.categoryId] || {};
           return values.filter((id) => map[id] === leaf.subgroup);
         },
+        nodeSelectionScopeKey(leaf),
+        addTagContextFromLeaf(leaf),
       );
       updateSelectionCounts();
     } else {
       selectionCountEls.delete(detailSelectionKey);
-      document.getElementById("environment-detail-title").textContent = leaf.label;
+      setDetailTitleWithSelectionCount(
+        "environment-detail-title",
+        leaf.label,
+        detailSelectionKey,
+        () => {
+          const value = getEnvironmentLeafValue(leaf);
+          if (Array.isArray(value)) return value;
+          return valueMatchesNodeSubgroup(leaf, value) ? value : "";
+        },
+        nodeSelectionScopeKey(leaf),
+        addTagContextFromLeaf(leaf),
+      );
+      updateSelectionCounts();
     }
     const treeEl = document.getElementById("environment-tree");
     treeEl.innerHTML = "";
@@ -1917,7 +2414,13 @@ function initEnvironmentPanel() {
           clearActiveScopePreset("environment");
           notifyStateChange();
         },
-        { max: 2, randomCount: 1, ...opts },
+        {
+          max: 2,
+          randomCount: 1,
+          ...opts,
+          selectionScope: nodeSelectionScopeKey(leaf),
+          categoryId: leaf.categoryId,
+        },
       );
     } else {
       loadCategoryChips(
@@ -1929,7 +2432,11 @@ function initEnvironmentPanel() {
           clearActiveScopePreset("environment");
           notifyStateChange();
         },
-        opts,
+        {
+          ...opts,
+          selectionScope: nodeSelectionScopeKey(leaf),
+          categoryId: leaf.categoryId,
+        },
       );
     }
   };
@@ -2127,11 +2634,25 @@ function initStylePanel() {
           const map = itemSubgroupMaps[leaf.categoryId] || {};
           return values.filter((id) => map[id] === leaf.subgroup);
         },
+        nodeSelectionScopeKey(leaf),
+        addTagContextFromLeaf(leaf),
       );
       updateSelectionCounts();
     } else {
       selectionCountEls.delete(detailSelectionKey);
-      document.getElementById("style-detail-title").textContent = leaf.label;
+      setDetailTitleWithSelectionCount(
+        "style-detail-title",
+        leaf.label,
+        detailSelectionKey,
+        () => {
+          const value = state.style[leaf.field] || "";
+          if (Array.isArray(value)) return value;
+          return valueMatchesNodeSubgroup(leaf, value) ? value : "";
+        },
+        nodeSelectionScopeKey(leaf),
+        addTagContextFromLeaf(leaf),
+      );
+      updateSelectionCounts();
     }
     const treeEl = document.getElementById("style-tree");
     treeEl.innerHTML = "";
@@ -2151,7 +2672,7 @@ function initStylePanel() {
           clearActiveScopePreset("style");
           notifyStateChange();
         },
-        { ...multiOpts, ...opts },
+        { ...multiOpts, ...opts, selectionScope: nodeSelectionScopeKey(leaf), categoryId: leaf.categoryId },
       );
     } else {
       loadCategoryChips(
@@ -2163,7 +2684,7 @@ function initStylePanel() {
           clearActiveScopePreset("style");
           notifyStateChange();
         },
-        opts,
+        { ...opts, selectionScope: nodeSelectionScopeKey(leaf), categoryId: leaf.categoryId },
       );
     }
   };
@@ -2202,6 +2723,60 @@ function isPoseLeafDisabled(node) {
   return Boolean(node.requiresGroup) && !state.group_mode;
 }
 
+function addTagContextFromLeaf(leaf) {
+  return leaf?.categoryId ? { categoryId: leaf.categoryId, subgroup: leaf.subgroup || null } : null;
+}
+
+function resolveTreeNodeCategoryId(node) {
+  if (!node) return null;
+  if (node.categoryId) return node.categoryId;
+  if (!Array.isArray(node.children) || !node.children.length) return null;
+  const ids = new Set();
+  for (const child of node.children) {
+    const id = resolveTreeNodeCategoryId(child);
+    if (id) ids.add(id);
+  }
+  return ids.size === 1 ? [...ids][0] : null;
+}
+
+function buildAddTagButtonHtml(categoryId, subgroup = null) {
+  if (!categoryId) return "";
+  const subgroupAttr = subgroup ? ` data-add-tag-subgroup="${escapeHtml(subgroup)}"` : "";
+  const title = subgroup
+    ? `Добавить runtime-тег в ${categoryId} / ${subgroup}`
+    : `Добавить runtime-тег в ${categoryId}`;
+  return `<span class="btn-add-tag-inline" role="button" tabindex="0" data-open-add-tag-modal data-add-tag-category="${escapeHtml(categoryId)}"${subgroupAttr} title="${escapeHtml(title)}" aria-label="Добавить тег">+</span>`;
+}
+
+function appendAddTagButton(container, categoryId, subgroup = null) {
+  if (!container || !categoryId) return;
+  let btn = container.querySelector(".btn-add-tag-inline");
+  if (!btn) {
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn-add-tag-inline";
+    btn.setAttribute("data-open-add-tag-modal", "");
+    btn.textContent = "+";
+    btn.setAttribute("aria-label", "Добавить тег");
+    container.appendChild(btn);
+  }
+  btn.dataset.addTagCategory = categoryId;
+  if (subgroup) btn.dataset.addTagSubgroup = subgroup;
+  else delete btn.dataset.addTagSubgroup;
+  btn.title = subgroup
+    ? `Добавить runtime-тег в ${categoryId} / ${subgroup}`
+    : `Добавить runtime-тег в ${categoryId}`;
+}
+
+function setDetailTitle(titleElId, label, addTagContext = null) {
+  const titleEl = document.getElementById(titleElId);
+  if (!titleEl) return;
+  titleEl.textContent = "";
+  titleEl.append(document.createTextNode(label));
+  if (addTagContext?.categoryId) appendAddTagButton(titleEl, addTagContext.categoryId, addTagContext.subgroup || null);
+  else titleEl.querySelector(".btn-add-tag-inline")?.remove();
+}
+
 function renderCategoryTree(nodes, container, activeLeafId, onSelect, depth = 0, options = {}) {
   const { isDisabled = () => false } = options;
   for (const node of nodes) {
@@ -2212,7 +2787,8 @@ function renderCategoryTree(nodes, container, activeLeafId, onSelect, depth = 0,
       title.className = "outfit-tree-group-title";
       title.dataset.groupId = node.id;
       const groupCount = sumTreeNodeCount(node);
-      title.innerHTML = `<span class="tree-label">${node.label}</span><span class="tree-count">${groupCount > 0 ? groupCount : ""}</span>`;
+      const groupCategoryId = resolveTreeNodeCategoryId(node);
+      title.innerHTML = `<span class="tree-label">${node.label}</span><span class="tree-row-trail"><span class="tree-count">${groupCount > 0 ? groupCount : ""}</span></span>`;
       group.appendChild(title);
       renderCategoryTree(node.children, group, activeLeafId, onSelect, depth + 1, options);
       container.appendChild(group);
@@ -2229,7 +2805,7 @@ function renderCategoryTree(nodes, container, activeLeafId, onSelect, depth = 0,
       + (depth > 0 ? " child" : "")
       + (node.id === activeLeafId ? " active" : "")
       + (disabled ? " disabled" : "");
-    btn.innerHTML = `<span class="tree-label">${node.label}</span><span class="tree-count"></span>`;
+    btn.innerHTML = `<span class="tree-label">${node.label}</span><span class="tree-row-trail"><span class="tree-count"></span></span>`;
     applyCountDisplay(btn.querySelector(".tree-count"), leafState);
     btn.disabled = disabled;
     btn.onclick = () => {
@@ -2289,7 +2865,17 @@ function handleOutfitFieldChange(leaf, value) {
 function selectOutfitLeaf(leaf) {
   activeOutfitLeafId = leaf.id;
   const outfitTree = getOutfitTree();
-  document.getElementById("outfit-detail-title").textContent = leaf.label;
+  const outfitDetailKey = "outfit-tree-detail";
+  setDetailTitleWithSelectionCount("outfit-detail-title", leaf.label, outfitDetailKey, () => {
+    const value = state.outfit[leaf.field];
+    if (Array.isArray(value)) {
+      if (!leaf.subgroup) return value;
+      const map = itemSubgroupMaps[leaf.categoryId] || {};
+      return value.filter((id) => map[id] === leaf.subgroup);
+    }
+    return countScalarForTreeNode(leaf, value) ? value : "";
+  }, nodeSelectionScopeKey(leaf), addTagContextFromLeaf(leaf));
+  updateSelectionCounts();
   const tree = document.getElementById("outfit-tree");
   tree.innerHTML = "";
   renderOutfitTree(outfitTree, tree);
@@ -2314,14 +2900,18 @@ function selectOutfitLeaf(leaf) {
     async (v) => {
       handleOutfitFieldChange(leaf, v);
       clearActiveScopePreset("outfit");
-      await renderConditionDropdown(leaf);
+      await renderClothingStatePanel(leaf);
     },
-    leaf.subgroup ? { subgroup: leaf.subgroup } : {},
+    {
+      ...(leaf.subgroup ? { subgroup: leaf.subgroup } : {}),
+      selectionScope: nodeSelectionScopeKey(leaf),
+      categoryId: leaf.categoryId,
+    },
   );
-  renderConditionDropdown(leaf);
+  renderClothingStatePanel(leaf);
 }
 
-function setDetailTitleWithSelectionCount(titleElId, label, selectionKey, getSubgroupValues, scopeKey = "") {
+function setDetailTitleWithSelectionCount(titleElId, label, selectionKey, getSubgroupValues, scopeKey = "", addTagContext = null) {
   const titleEl = document.getElementById(titleElId);
   titleEl.textContent = "";
   titleEl.append(document.createTextNode(label));
@@ -2332,6 +2922,8 @@ function setDetailTitleWithSelectionCount(titleElId, label, selectionKey, getSub
     titleEl.appendChild(countEl);
   }
   selectionCountEls.set(selectionKey, { getVal: getSubgroupValues, el: countEl, scopeKey });
+  if (addTagContext?.categoryId) appendAddTagButton(titleEl, addTagContext.categoryId, addTagContext.subgroup || null);
+  else titleEl.querySelector(".btn-add-tag-inline")?.remove();
 }
 
 function initCategoryTreePanel({
@@ -2345,6 +2937,7 @@ function initCategoryTreePanel({
   getFieldValue,
   setFieldValue,
   multiOpts = null,
+  getMultiOpts = null,
   presetScope = null,
   defaultHint = "",
 }) {
@@ -2377,6 +2970,7 @@ function initCategoryTreePanel({
     container.className = "chip-panel";
 
     const isMulti = Boolean(leaf.multi);
+    const tagCtx = addTagContextFromLeaf(leaf);
     if (isMulti) {
       setDetailTitleWithSelectionCount(titleElId, leaf.label, detailSelectionKey, () => {
         const values = getFieldValue();
@@ -2384,7 +2978,7 @@ function initCategoryTreePanel({
         if (!leaf.subgroup) return values;
         const map = itemSubgroupMaps[leaf.categoryId] || {};
         return values.filter((id) => map[id] === leaf.subgroup);
-      }, nodeSelectionScopeKey(leaf));
+      }, nodeSelectionScopeKey(leaf), tagCtx);
       updateSelectionCounts();
     } else {
       setDetailTitleWithSelectionCount(titleElId, leaf.label, detailSelectionKey, () => {
@@ -2392,7 +2986,7 @@ function initCategoryTreePanel({
         if (Array.isArray(value)) return value;
         if (!leaf.subgroup) return value || "";
         return valueMatchesNodeSubgroup(leaf, value) ? value : "";
-      }, nodeSelectionScopeKey(leaf));
+      }, nodeSelectionScopeKey(leaf), tagCtx);
       updateSelectionCounts();
     }
 
@@ -2405,12 +2999,15 @@ function initCategoryTreePanel({
       selectionScope: nodeSelectionScopeKey(leaf),
     };
     if (leaf.multi) {
+      const resolvedMultiOpts = typeof getMultiOpts === "function"
+        ? (getMultiOpts(leaf) || multiOpts || {})
+        : (multiOpts || {});
       loadCategoryMultiChips(
         container,
         leaf.categoryId,
         getFieldValue,
         onFieldChange,
-        { ...multiOpts, ...chipOpts },
+        { ...resolvedMultiOpts, ...chipOpts },
       );
     } else {
       loadCategoryChips(container, leaf.categoryId, getFieldValue, onFieldChange, chipOpts);
@@ -2544,10 +3141,11 @@ function initAccessoriesPanel() {
     clearAllBtn.dataset.bound = "1";
     clearAllBtn.onclick = () => {
       state.appearance.accessories = [];
+      state.appearance.tattoos = [];
       clearGeneratedOutput();
       initAccessoriesPanel();
       notifyStateChange();
-      toast("Все аксессуары отключены");
+      toast("Все аксессуары и тату отключены");
     };
   }
   initCategoryTreePanel({
@@ -2558,11 +3156,23 @@ function initAccessoriesPanel() {
     chipsElId: "accessories-chips",
     getActiveLeafId: () => activeAccessoriesLeafId,
     setActiveLeafId: (id) => { activeAccessoriesLeafId = id; },
-    getFieldValue: () => state.appearance.accessories,
-    setFieldValue: (v) => {
-      state.appearance.accessories = Array.isArray(v) ? v.slice(0, 4) : [];
+    getFieldValue: () => {
+      const leaf = findTreeLeaf(activeAccessoriesLeafId, getAccessoriesTree());
+      const field = leaf?.field || "accessories";
+      const values = state.appearance[field] || [];
+      return Array.isArray(values) ? values : [];
     },
-    multiOpts: { max: 4, randomCount: 2 },
+    setFieldValue: (v) => {
+      const leaf = findTreeLeaf(activeAccessoriesLeafId, getAccessoriesTree());
+      const field = leaf?.field || "accessories";
+      const max = field === "tattoos" ? 6 : 4;
+      state.appearance[field] = Array.isArray(v) ? v.slice(0, max) : [];
+    },
+    getMultiOpts: (leaf) => (
+      leaf?.field === "tattoos"
+        ? { max: 6, randomCount: 2 }
+        : { max: 4, randomCount: 2 }
+    ),
   });
 }
 
@@ -2574,7 +3184,12 @@ function initPosePanel() {
       return;
     }
     activePoseLeafId = leaf.id;
-    document.getElementById("pose-detail-title").textContent = leaf.label;
+    const poseDetailKey = "pose-tree-detail";
+    setDetailTitleWithSelectionCount("pose-detail-title", leaf.label, poseDetailKey, () => {
+      const value = state.pose || "";
+      return countScalarForTreeNode(leaf, value) ? value : "";
+    }, nodeSelectionScopeKey(leaf), addTagContextFromLeaf(leaf));
+    updateSelectionCounts();
     const treeEl = document.getElementById("pose-tree");
     treeEl.innerHTML = "";
     renderCategoryTree(poseTree, treeEl, activePoseLeafId, selectLeaf, 0, { isDisabled: isPoseLeafDisabled });
@@ -2600,7 +3215,11 @@ function initPosePanel() {
         state.pose = v;
         clearActiveScopePreset("pose");
       },
-      leaf.subgroup ? { subgroup: leaf.subgroup } : {},
+      {
+        ...(leaf.subgroup ? { subgroup: leaf.subgroup } : {}),
+        selectionScope: nodeSelectionScopeKey(leaf),
+        categoryId: leaf.categoryId,
+      },
     );
   };
 
@@ -2659,7 +3278,7 @@ function injectPresetsIntoTree(baseTree, scopeKey, getBuiltinPresets) {
     presetScope: scopeKey,
     presetPanel: "custom",
   });
-  return [{ id: `${scopeKey}_presets`, label: "Presets", children }, ...(baseTree || [])];
+  return [{ id: `${scopeKey}_presets`, label: "Presets", children }, ...injectWildcardLeaves(baseTree || [])];
 }
 
 function collectCategoryIdsFromTree(nodes, ids = new Set()) {
@@ -3065,17 +3684,14 @@ const SCOPE_PRESET_REGISTRY = {
     snapshotPayload: () => {
       const outfit = JSON.parse(JSON.stringify(state.outfit));
       const hasField = OUTFIT_PRESET_FIELDS.some((f) => outfit[f])
-        || Object.values(outfit.conditions || {}).some(Boolean);
+        || Object.values(outfit.conditions || {}).some((slot) => countSlotConditions(slot) > 0);
       return hasField ? { outfit } : {};
     },
     applyPayload: (payload) => {
       if (!payload.outfit) return;
       const o = payload.outfit;
       for (const field of OUTFIT_PRESET_FIELDS) state.outfit[field] = o[field] || "";
-      state.outfit.conditions = {
-        ...createDefaultState().outfit.conditions,
-        ...(o.conditions || {}),
-      };
+      state.outfit.conditions = sanitizeOutfitConditions(o.conditions);
     },
     refreshPanel: () => initOutfitPanel(),
     emptySaveMessage: "Выберите хотя бы один элемент одежды",
@@ -3416,9 +4032,282 @@ function switchTab(tab) {
     initTagStudioLister().catch((e) => toast("Ошибка: " + e.message));
     loadTagStudioPanel().catch((e) => toast("Ошибка: " + e.message));
   }
+  if (tab === "wildcards") {
+    initWildcardsPanel().catch((e) => toast("Ошибка: " + e.message));
+  }
   if (tab === "favorites") loadFavorites();
   if (tab === "llm") loadLlmPanel();
-  if (tab === "advanced") loadAdvancedMeta();
+  if (tab === "advanced") {
+    loadAdvancedMeta();
+    loadHistoryPanel().catch(() => {});
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Wildcards panel
+// ─────────────────────────────────────────────────────────────────────────────
+
+let wildcardsCategoriesCache = null;
+let wildcardsExpanded = new Set();
+
+async function initWildcardsPanel() {
+  await loadWildcardsCategoryOptions();
+  bindWildcardsEvents();
+  await loadWildcardsSubgroupOptions(document.getElementById("wildcards-target-category")?.value || "");
+  await loadWildcardsList();
+}
+
+async function loadWildcardsSubgroupOptions(categoryId) {
+  const datalist = document.getElementById("wildcards-subgroup-options");
+  if (!datalist) return;
+  if (!categoryId) {
+    datalist.innerHTML = "";
+    return;
+  }
+  try {
+    const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
+    const subs = (data.subcategories || []).filter((s) => s && s !== "none");
+    datalist.innerHTML = subs.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
+  } catch {
+    datalist.innerHTML = "";
+  }
+}
+
+async function loadWildcardsCategoryOptions() {
+  const select = document.getElementById("wildcards-target-category");
+  if (!select) return;
+  if (!wildcardsCategoriesCache) {
+    try {
+      const data = await api("/categories");
+      wildcardsCategoriesCache = (data.categories || []).sort((a, b) => a.id.localeCompare(b.id));
+    } catch {
+      wildcardsCategoriesCache = [];
+    }
+  }
+  const current = select.value;
+  select.innerHTML = wildcardsCategoriesCache
+    .map((c) => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.id)} — ${escapeHtml(c.title)}</option>`)
+    .join("");
+  if (current && wildcardsCategoriesCache.some((c) => c.id === current)) select.value = current;
+}
+
+let wildcardsEventsBound = false;
+
+function bindWildcardsEvents() {
+  if (wildcardsEventsBound) return;
+  wildcardsEventsBound = true;
+
+  document.getElementById("btn-wildcards-refresh")?.addEventListener("click", () => {
+    loadWildcardsList();
+    toast("Wildcards refreshed");
+  });
+
+  document.getElementById("wildcards-target-category")?.addEventListener("change", (e) => {
+    loadWildcardsSubgroupOptions(e.target.value || "");
+  });
+
+  document.getElementById("btn-wildcards-preview")?.addEventListener("click", wildcardsDoPreview);
+  document.getElementById("btn-wildcards-upload")?.addEventListener("click", wildcardsDoUpload);
+
+  document.getElementById("wildcards-file-input")?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    document.getElementById("wildcards-raw-text").value = text;
+    const filenameEl = document.getElementById("wildcards-filename");
+    if (filenameEl && !filenameEl.value.trim()) filenameEl.value = file.name;
+  });
+}
+
+async function wildcardsDoPreview() {
+  const rawText = document.getElementById("wildcards-raw-text")?.value || "";
+  const subgroup = document.getElementById("wildcards-target-subgroup")?.value?.trim() || "";
+  const previewEl = document.getElementById("wildcards-preview");
+  if (!rawText.trim()) {
+    previewEl.textContent = "Введите содержимое файла для предпросмотра.";
+    return;
+  }
+  try {
+    const data = await api("/wildcards/preview", {
+      method: "POST",
+      body: JSON.stringify({ raw_text: rawText, target_subgroup: subgroup }),
+    });
+    const sample = data.items.slice(0, 5).map((i) => `${escapeHtml(i.label)} → <code>${escapeHtml(i.item_id)}</code>`).join("<br>");
+    const more = data.count > 5 ? `<br>…и ещё ${data.count - 5}` : "";
+    previewEl.innerHTML = `<strong>${data.count}</strong> строк будет добавлено:<br>${sample}${more}`;
+  } catch (e) {
+    previewEl.textContent = "Ошибка: " + e.message;
+  }
+}
+
+async function wildcardsDoUpload() {
+  const targetCategory = document.getElementById("wildcards-target-category")?.value || "";
+  const targetSubgroup = document.getElementById("wildcards-target-subgroup")?.value?.trim() || "";
+  const filename = document.getElementById("wildcards-filename")?.value?.trim() || "";
+  const rawText = document.getElementById("wildcards-raw-text")?.value || "";
+
+  if (!targetCategory) return toast("Выберите Category");
+  if (!targetSubgroup) return toast("Укажите Subgroup");
+  if (!filename) return toast("Укажите File name / label");
+  if (!rawText.trim()) return toast("Содержимое файла пустое");
+
+  const btn = document.getElementById("btn-wildcards-upload");
+  btn.disabled = true;
+  btn.textContent = "Uploading…";
+  try {
+    const data = await api("/wildcards", {
+      method: "POST",
+      body: JSON.stringify({
+        filename,
+        target_category: targetCategory,
+        target_subgroup: targetSubgroup,
+        raw_text: rawText,
+      }),
+    });
+    toast(`Загружено ${data.item_count} тегов в ${data.target_category} / ${data.target_subgroup}`);
+    document.getElementById("wildcards-raw-text").value = "";
+    document.getElementById("wildcards-filename").value = "";
+    document.getElementById("wildcards-preview").textContent = "—";
+    document.getElementById("wildcards-file-input").value = "";
+    invalidateWildcardsByCategoryCache();
+    await loadWildcardsList();
+  } catch (e) {
+    toast("Ошибка: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Upload";
+  }
+}
+
+async function loadWildcardsList() {
+  const container = document.getElementById("wildcards-list");
+  if (!container) return;
+  try {
+    const data = await api("/wildcards");
+    const rows = data.wildcards || [];
+    if (!rows.length) {
+      container.innerHTML = '<span style="font-size:12px;color:var(--text-muted)">Пока нет загруженных wildcards.</span>';
+      return;
+    }
+    container.innerHTML = rows.map((w) => wildcardCardHtml(w)).join("");
+    bindWildcardCardEvents();
+    // Восстанавливаем развёрнутые карточки
+    for (const id of wildcardsExpanded) {
+      const body = document.getElementById(`wildcard-items-${id}`);
+      if (body) await wildcardsLoadItems(id, body);
+    }
+  } catch (e) {
+    container.innerHTML = `<span style="font-size:12px;color:var(--text-muted)">Ошибка: ${escapeHtml(e.message)}</span>`;
+  }
+}
+
+function wildcardCardHtml(w) {
+  const disabledCls = w.enabled ? "" : " disabled";
+  const expandLabel = wildcardsExpanded.has(w.id) ? "▾ Свернуть" : "▸ Показать строки";
+  return `
+    <div class="wildcard-card${disabledCls}" data-wildcard-id="${w.id}">
+      <div class="wildcard-card-header">
+        <input type="checkbox" class="wildcard-toggle" data-wildcard-id="${w.id}" ${w.enabled ? "checked" : ""} title="Включить/выключить весь файл" />
+        <div class="wildcard-card-title">
+          <div class="wildcard-card-filename">${escapeHtml(w.label || w.filename)}</div>
+          <div class="wildcard-card-meta">${escapeHtml(w.target_category)} / ${escapeHtml(w.target_subgroup)} · ${w.item_count} строк</div>
+        </div>
+        <div class="wildcard-card-actions">
+          <button type="button" class="wildcard-card-expand" data-wildcard-id="${w.id}">${expandLabel}</button>
+          <button type="button" class="wildcard-card-delete" data-wildcard-id="${w.id}">Delete</button>
+        </div>
+      </div>
+      <div class="wildcard-items" id="wildcard-items-${w.id}" style="${wildcardsExpanded.has(w.id) ? "" : "display:none"}">Загрузка…</div>
+    </div>`;
+}
+
+function bindWildcardCardEvents() {
+  document.querySelectorAll(".wildcard-toggle").forEach((cb) => {
+    cb.onchange = async () => {
+      const id = Number(cb.dataset.wildcardId);
+      try {
+        await api(`/wildcards/${id}/toggle`, {
+          method: "POST",
+          body: JSON.stringify({ enabled: cb.checked }),
+        });
+        toast(cb.checked ? "Wildcard включён" : "Wildcard отключён");
+        invalidateWildcardsByCategoryCache();
+        const card = cb.closest(".wildcard-card");
+        card?.classList.toggle("disabled", !cb.checked);
+      } catch (e) {
+        toast("Ошибка: " + e.message);
+        cb.checked = !cb.checked;
+      }
+    };
+  });
+
+  document.querySelectorAll(".wildcard-card-expand").forEach((btn) => {
+    btn.onclick = async () => {
+      const id = Number(btn.dataset.wildcardId);
+      const body = document.getElementById(`wildcard-items-${id}`);
+      if (!body) return;
+      const isOpen = body.style.display !== "none";
+      if (isOpen) {
+        body.style.display = "none";
+        wildcardsExpanded.delete(id);
+        btn.textContent = "▸ Показать строки";
+      } else {
+        body.style.display = "";
+        wildcardsExpanded.add(id);
+        btn.textContent = "▾ Свернуть";
+        await wildcardsLoadItems(id, body);
+      }
+    };
+  });
+
+  document.querySelectorAll(".wildcard-card-delete").forEach((btn) => {
+    btn.onclick = async () => {
+      const id = Number(btn.dataset.wildcardId);
+      if (!confirm("Удалить этот wildcard вместе со всеми тегами?")) return;
+      try {
+        await api(`/wildcards/${id}`, { method: "DELETE" });
+        toast("Wildcard удалён");
+        invalidateWildcardsByCategoryCache();
+        wildcardsExpanded.delete(id);
+        await loadWildcardsList();
+      } catch (e) {
+        toast("Ошибка: " + e.message);
+      }
+    };
+  });
+}
+
+async function wildcardsLoadItems(wildcardId, container) {
+  try {
+    const data = await api(`/wildcards/${wildcardId}`);
+    const items = data.items || [];
+    container.innerHTML = items.map((item) => `
+      <div class="wildcard-item-row${item.enabled ? "" : " disabled"}">
+        <input type="checkbox" data-wildcard-id="${wildcardId}" data-item-id="${escapeHtml(item.item_id)}" ${item.enabled ? "checked" : ""} />
+        <span class="wildcard-item-label">${escapeHtml(item.label)}</span>
+        <span class="wildcard-item-id">${escapeHtml(item.item_id)}</span>
+      </div>`).join("");
+    container.querySelectorAll("input[type=checkbox]").forEach((cb) => {
+      cb.onchange = async () => {
+        const wid = cb.dataset.wildcardId;
+        const itemId = cb.dataset.itemId;
+        try {
+          await api(`/wildcards/${wid}/items/${encodeURIComponent(itemId)}/toggle`, {
+            method: "POST",
+            body: JSON.stringify({ enabled: cb.checked }),
+          });
+          invalidateWildcardsByCategoryCache();
+          cb.closest(".wildcard-item-row")?.classList.toggle("disabled", !cb.checked);
+        } catch (e) {
+          toast("Ошибка: " + e.message);
+          cb.checked = !cb.checked;
+        }
+      };
+    });
+  } catch (e) {
+    container.innerHTML = `<span style="font-size:12px;color:var(--text-muted)">Ошибка: ${escapeHtml(e.message)}</span>`;
+  }
 }
 
 async function loadTagStudioPanel() {
@@ -3433,7 +4322,22 @@ async function loadTagStudioPanel() {
   if (subcategoryId) params.set("subcategory_id", subcategoryId);
   params.set("limit", "200");
   const data = await api(`/tag-studio/items?${params.toString()}`);
+  const items = Array.isArray(data?.items) ? data.items : [];
+  tagStudioListerItems = items;
+  const previousKey = tagStudioSelectedTagRow ? tagStudioRowKey(tagStudioSelectedTagRow) : "";
+  tagStudioSelectedTagRow = items.find((row) => tagStudioRowKey(row) === previousKey) || null;
+  const summary = document.getElementById("tagstudio-lister-summary");
+  if (summary) {
+    const parts = [
+      q ? `Search: ${q}` : "",
+      categoryId ? `Category: ${categoryId}` : "",
+      subcategoryId ? `Subcategory: ${subcategoryId}` : "",
+    ].filter(Boolean);
+    summary.textContent = `Найдено: ${items.length}${parts.length ? ` · ${parts.join(" · ")}` : ""}`;
+  }
   renderTagStudioItemsOutput(output, data, { q, categoryId, subcategoryId });
+  renderTagStudioListerList(tagStudioListerItems);
+  renderTagStudioSelectionState();
 }
 
 function renderTagStudioMessage(output, message) {
@@ -3445,10 +4349,48 @@ function formatTagStudioPath(label, categoryId, subcategoryId) {
   return `<span class="tagstudio-main">${escapeHtml(label || "—")}</span> — <span class="tagstudio-meta">${escapeHtml(categoryId || "—")} — ${escapeHtml(subgroup)}</span>`;
 }
 
+function buildTagStudioItemButtonHtml(row, activeClass = "") {
+  const item = row.item || {};
+  const subgroup = getTagStudioRowSubcategory(row) || "none";
+  const overlayClass = row.overlay ? "tagstudio-lister-overlay" : "tagstudio-lister-core";
+  const overlayText = row.overlay ? "runtime" : "core";
+  const inactive = item.meta?.is_active === false;
+  const key = tagStudioRowKey(row);
+  return `
+    <button type="button" class="tagstudio-lister-item tagstudio-selectable-item${activeClass}" data-key="${escapeHtml(key)}">
+      <div class="tagstudio-lister-title">${escapeHtml(item.label || item.id || "—")}${inactive ? ' <span class="tagstudio-badge-inactive">deactivated</span>' : ""}</div>
+      <div class="tagstudio-lister-subline">${escapeHtml(row.category_id || "—")} — ${escapeHtml(subgroup)} · <span class="${overlayClass}">${overlayText}</span></div>
+    </button>
+  `;
+}
+
+function bindTagStudioItemButtons(root, items) {
+  if (!root) return;
+  root.querySelectorAll(".tagstudio-selectable-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.key || "";
+      const row = items.find((entry) => tagStudioRowKey(entry) === key);
+      if (row) selectTagStudioListerRow(row);
+    });
+  });
+}
+
+function refreshTagStudioSearchOutputSelection() {
+  const output = document.getElementById("tagstudio-output");
+  if (!output) return;
+  output.querySelectorAll(".tagstudio-selectable-item").forEach((btn) => {
+    const active = Boolean(
+      tagStudioSelectedTagRow && tagStudioRowKey(tagStudioSelectedTagRow) === (btn.dataset.key || ""),
+    );
+    btn.classList.toggle("active", active);
+  });
+}
+
 function renderTagStudioItemsOutput(output, data, filters = {}) {
   const items = Array.isArray(data?.items) ? data.items : [];
   if (!items.length) {
-    renderTagStudioMessage(output, "Ничего не найдено. Измените фильтр или запрос Search.");
+    const hint = filters.q ? "Ничего не найдено. Попробуйте alias или измените запрос Search." : "Ничего не найдено. Измените фильтр или запрос Search.";
+    renderTagStudioMessage(output, hint);
     return;
   }
   const categoryCount = new Map();
@@ -3469,13 +4411,9 @@ function renderTagStudioItemsOutput(output, data, filters = {}) {
     .map(([categoryId, count]) => `<span class="tagstudio-badge">${escapeHtml(categoryId)}: ${count}</span>`)
     .join("");
   const rows = items.map((row) => {
-    const item = row?.item || {};
-    const meta = item.meta || {};
-    const subgroup = row?.subcategory_id || meta.subcategory_id || meta.subgroup || "none";
-    const aliases = Array.isArray(meta.aliases) && meta.aliases.length
-      ? ` · aliases: ${escapeHtml(meta.aliases.slice(0, 4).join(", "))}${meta.aliases.length > 4 ? " …" : ""}`
-      : "";
-    return `<li>${formatTagStudioPath(item.label, row?.category_id, subgroup)}<span class="tagstudio-meta">${aliases}</span></li>`;
+    const key = tagStudioRowKey(row);
+    const activeClass = tagStudioSelectedTagRow && tagStudioRowKey(tagStudioSelectedTagRow) === key ? " active" : "";
+    return buildTagStudioItemButtonHtml(row, activeClass);
   });
   const activeFilters = [
     filters.q ? `Search: ${escapeHtml(filters.q)}` : "",
@@ -3492,9 +4430,10 @@ function renderTagStudioItemsOutput(output, data, filters = {}) {
     ${activeFilters ? `<div class="tagstudio-meta">${activeFilters}</div>` : ""}
     <div class="tagstudio-section-title">Топ категорий</div>
     <div class="tagstudio-summary">${topCategories || '<span class="tagstudio-badge">—</span>'}</div>
-    <div class="tagstudio-section-title">ТЭГ — категория — подгруппа</div>
-    <ol class="tagstudio-list">${rows.join("")}</ol>
+    <div class="tagstudio-section-title">Результаты — кликните тег для выбора и Edit</div>
+    <div class="tagstudio-search-list">${rows.join("")}</div>
   `;
+  bindTagStudioItemButtons(output, items);
 }
 
 async function runTagStudioDedupe() {
@@ -3652,75 +4591,96 @@ function renderTagStudioListerList(items) {
     return;
   }
   root.innerHTML = items.map((row) => {
-    const item = row.item || {};
-    const subgroup = getTagStudioRowSubcategory(row) || "none";
-    const overlayClass = row.overlay ? "tagstudio-lister-overlay" : "tagstudio-lister-core";
-    const overlayText = row.overlay ? "runtime" : "core";
     const key = tagStudioRowKey(row);
     const activeClass = tagStudioSelectedTagRow && tagStudioRowKey(tagStudioSelectedTagRow) === key ? " active" : "";
-    return `
-      <button type="button" class="tagstudio-lister-item${activeClass}" data-key="${escapeHtml(key)}">
-        <div class="tagstudio-lister-title">${escapeHtml(item.label || item.id || "—")}</div>
-        <div class="tagstudio-lister-subline">${escapeHtml(row.category_id || "—")} — ${escapeHtml(subgroup)} · <span class="${overlayClass}">${overlayText}</span></div>
-      </button>
-    `;
+    return buildTagStudioItemButtonHtml(row, activeClass);
   }).join("");
-  root.querySelectorAll(".tagstudio-lister-item").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const key = btn.dataset.key || "";
-      const row = tagStudioListerItems.find((entry) => tagStudioRowKey(entry) === key);
-      if (!row) return;
-      selectTagStudioListerRow(row);
-    });
-  });
+  bindTagStudioItemButtons(root, items);
 }
 
 function renderTagStudioSelectionState() {
   const metaEl = document.getElementById("tagstudio-selected-meta");
   const descInput = document.getElementById("tagstudio-edit-description");
   const saveBtn = document.getElementById("btn-tagstudio-save-description");
+  const editBtn = document.getElementById("btn-tagstudio-edit-tag");
   const moveBtn = document.getElementById("btn-tagstudio-move-tag");
   const deleteBtn = document.getElementById("btn-tagstudio-delete-tag");
-  if (!metaEl || !descInput || !saveBtn || !moveBtn || !deleteBtn) return;
+  const reactivateBtn = document.getElementById("btn-tagstudio-reactivate-tag");
+  if (!metaEl || !descInput || !saveBtn || !editBtn || !moveBtn || !deleteBtn) return;
   if (!tagStudioSelectedTagRow) {
-    metaEl.textContent = "Выберите тег в списке выше.";
+    metaEl.textContent = "Выберите тег в результатах Search или в листере ниже.";
     descInput.value = "";
     saveBtn.disabled = true;
+    editBtn.disabled = true;
     moveBtn.disabled = true;
     deleteBtn.disabled = true;
+    reactivateBtn?.classList.add("hidden");
     return;
   }
   const row = tagStudioSelectedTagRow;
   const subgroup = getTagStudioRowSubcategory(row) || "none";
-  const mode = row.overlay ? "runtime (можно менять)" : "core (только просмотр)";
-  metaEl.textContent = `${row.item.label} — ${row.category_id} — ${subgroup} · ${mode}`;
+  const inactive = row.item?.meta?.is_active === false;
+  const mode = row.overlay ? "runtime (можно менять)" : "core (редактирование → runtime-копия)";
+  metaEl.textContent = `${row.item.label} — ${row.category_id} — ${subgroup} · ${mode}${inactive ? " · deactivated" : ""}`;
   descInput.value = row.item.meta?.description || "";
-  const editable = Boolean(row.overlay);
+  const editable = !inactive;
   saveBtn.disabled = !editable;
-  moveBtn.disabled = !editable;
-  deleteBtn.disabled = !editable;
+  editBtn.disabled = inactive;
+  moveBtn.disabled = !row.overlay || inactive;
+  deleteBtn.disabled = !row.overlay || inactive;
+  if (reactivateBtn) {
+    const showReactivate = Boolean(row.overlay) && inactive;
+    reactivateBtn.classList.toggle("hidden", !showReactivate);
+    reactivateBtn.disabled = !showReactivate;
+  }
+}
+
+async function loadTagStudioMoveSubcategoryOptions(categoryId) {
+  const input = document.getElementById("tagstudio-move-subcategory");
+  const datalist = document.getElementById("tagstudio-move-subcategory-options");
+  if (!input) return [];
+  if (!categoryId) {
+    if (datalist) datalist.innerHTML = "";
+    input.dataset.hasSubcategories = "0";
+    return [];
+  }
+  try {
+    const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
+    const values = (data.subcategories || []).filter((s) => s && s !== "none");
+    if (datalist) datalist.innerHTML = values.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
+    input.dataset.hasSubcategories = values.length ? "1" : "0";
+    return values;
+  } catch {
+    if (datalist) datalist.innerHTML = "";
+    input.dataset.hasSubcategories = "0";
+    return [];
+  }
 }
 
 async function syncTagStudioMoveSubcategory(categoryId, selected = "") {
   const moveSubcategory = document.getElementById("tagstudio-move-subcategory");
   if (!moveSubcategory) return;
-  const values = await loadTagStudioSubcategorySelect(categoryId, moveSubcategory, {
-    anyLabel: "none",
-    noneLabel: "none",
-    includeAny: false,
-  });
-  if (selected && values.includes(selected)) moveSubcategory.value = selected;
+  // Free-text field with a datalist of existing subgroups as suggestions —
+  // unlike the Lister filter select, this one must also accept a brand-new
+  // subgroup name that has no tags in it yet (the backend's move endpoint
+  // already supports this; the closed <select> it used to be just never
+  // offered that as an option, so "move to subcategory" silently couldn't
+  // target any subgroup that didn't already contain at least one tag).
+  await loadTagStudioMoveSubcategoryOptions(categoryId);
+  moveSubcategory.value = selected || "";
 }
 
 async function selectTagStudioListerRow(row) {
   tagStudioSelectedTagRow = row;
   renderTagStudioListerList(tagStudioListerItems);
+  refreshTagStudioSearchOutputSelection();
   const moveCategory = document.getElementById("tagstudio-move-category");
   if (moveCategory) {
     moveCategory.value = row.category_id || "";
     await syncTagStudioMoveSubcategory(moveCategory.value, getTagStudioRowSubcategory(row));
   }
   renderTagStudioSelectionState();
+  document.querySelector(".tagstudio-selected")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 async function loadTagStudioLister() {
@@ -3747,7 +4707,9 @@ async function loadTagStudioLister() {
 
 async function handleTagStudioSaveDescription() {
   if (!tagStudioSelectedTagRow) return toast("Сначала выберите тег");
-  if (!tagStudioSelectedTagRow.overlay) return toast("Core-теги нельзя редактировать в Tag Studio");
+  if (tagStudioSelectedTagRow.item?.meta?.is_active === false) {
+    return toast("Сначала восстановите тег (Reactivate)");
+  }
   const description = document.getElementById("tagstudio-edit-description")?.value.trim() || "";
   const categoryId = tagStudioSelectedTagRow.category_id;
   const itemId = tagStudioSelectedTagRow.item.id;
@@ -3785,6 +4747,177 @@ async function handleTagStudioMoveTag() {
     }),
   });
   toast("Тег перенесен");
+  await Promise.all([loadTagStudioLister(), loadTagStudioPanel()]);
+}
+
+async function handleTagStudioReactivateTag() {
+  if (!tagStudioSelectedTagRow) return toast("Сначала выберите тег");
+  if (!tagStudioSelectedTagRow.overlay) return toast("Core-теги нельзя восстанавливать в Tag Studio");
+  const row = tagStudioSelectedTagRow;
+  const subgroup = getTagStudioRowSubcategory(row) || "none";
+  const path = `${row.category_id} — ${subgroup}`;
+  const ok = window.confirm(`Восстановить тег "${row.item.label}" в ${path}?`);
+  if (!ok) return;
+  await api(`/categories/${encodeURIComponent(row.category_id)}/items/${encodeURIComponent(row.item.id)}`, {
+    method: "PUT",
+    body: JSON.stringify({ is_active: true, persist: true, source: "user" }),
+  });
+  toast(`Тег восстановлен в ${path}`);
+  await Promise.all([loadTagStudioLister(), loadTagStudioPanel()]);
+}
+
+function closeEditTagModal() {
+  const modal = document.getElementById("edit-tag-modal");
+  modal?.classList.add("hidden");
+  setEditTagModalReadOnly(false);
+}
+
+const EDIT_TAG_FIELD_IDS = [
+  "edit-tag-label",
+  "edit-tag-aliases",
+  "edit-tag-description",
+  "edit-tag-default-weight",
+  "edit-tag-illustrious",
+  "edit-tag-anima",
+  "edit-tag-zimage",
+  "edit-tag-subgroup",
+];
+
+async function fillEditTagSubgroups(categoryId) {
+  const subgroupInput = document.getElementById("edit-tag-subgroup");
+  const datalist = document.getElementById("edit-tag-subgroup-options");
+  if (!subgroupInput) return [];
+  const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
+  const subgroups = collectKnownSubgroups(categoryId, data);
+  if (datalist) datalist.innerHTML = subgroups.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
+  return subgroups;
+}
+
+function setEditTagModalReadOnly(readOnly, showCoreHint = false) {
+  const saveBtn = document.getElementById("edit-tag-save");
+  const hint = document.getElementById("edit-tag-readonly-hint");
+  for (const id of EDIT_TAG_FIELD_IDS) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.readOnly = readOnly;
+    el.disabled = readOnly;
+  }
+  saveBtn?.classList.toggle("hidden", readOnly);
+  hint?.classList.toggle("hidden", !showCoreHint);
+}
+
+async function openEditTagModal() {
+  if (!tagStudioSelectedTagRow) return toast("Сначала выберите тег");
+  const row = tagStudioSelectedTagRow;
+  if (row.item?.meta?.is_active === false) {
+    return toast("Сначала восстановите тег (Reactivate)");
+  }
+  const item = row.item;
+  const isCore = !row.overlay;
+  document.getElementById("edit-tag-label").value = item.label || "";
+  document.getElementById("edit-tag-aliases").value = Array.isArray(item.meta?.aliases) ? item.meta.aliases.join(", ") : "";
+  document.getElementById("edit-tag-description").value = item.meta?.description || "";
+  document.getElementById("edit-tag-default-weight").value = String(item.default_weight ?? 1.0);
+  document.getElementById("edit-tag-illustrious").value = item.tags?.illustrious || "";
+  document.getElementById("edit-tag-anima").value = item.tags?.anima || "";
+  document.getElementById("edit-tag-zimage").value = item.tags?.zimage_turbo || item.tags?.zimage || "";
+
+  const categorySelect = document.getElementById("edit-tag-category");
+  const subgroupInput = document.getElementById("edit-tag-subgroup");
+  const coreHint = document.getElementById("edit-tag-core-category-hint");
+  const categories = await loadAddTagCategories();
+  if (categorySelect) {
+    categorySelect.innerHTML = "";
+    for (const category of categories) {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.textContent = `${category.title} (${category.id})`;
+      categorySelect.appendChild(option);
+    }
+    categorySelect.value = row.category_id;
+    // Moving between categories is only meaningful for runtime (overlay)
+    // tags — same restriction as the standalone "Move tag" button. Core
+    // tags can still have their subgroup changed (it forks to a runtime
+    // copy on save, same as editing any other field on a core tag).
+    categorySelect.disabled = isCore;
+  }
+  coreHint?.classList.toggle("hidden", !isCore);
+  await fillEditTagSubgroups(row.category_id);
+  if (subgroupInput) subgroupInput.value = getTagStudioRowSubcategory(row);
+
+  const title = document.getElementById("edit-tag-modal-title");
+  if (title) title.textContent = isCore ? "Edit tag (core → runtime)" : "Edit tag";
+  setEditTagModalReadOnly(false, isCore);
+  document.getElementById("edit-tag-modal")?.classList.remove("hidden");
+}
+
+async function saveEditTagFromModal(event) {
+  event?.preventDefault();
+  if (!tagStudioSelectedTagRow) return;
+  const row = tagStudioSelectedTagRow;
+  const wasCore = !row.overlay;
+  const label = document.getElementById("edit-tag-label")?.value.trim() || "";
+  const aliasesRaw = document.getElementById("edit-tag-aliases")?.value || "";
+  const aliases = aliasesRaw.split(",").map((x) => x.trim()).filter(Boolean);
+  const description = document.getElementById("edit-tag-description")?.value.trim() || null;
+  const defaultWeight = Number.parseFloat(document.getElementById("edit-tag-default-weight")?.value || "1.0");
+  const tags = {
+    illustrious: document.getElementById("edit-tag-illustrious")?.value.trim() || "",
+    anima: document.getElementById("edit-tag-anima")?.value.trim() || "",
+    zimage_turbo: document.getElementById("edit-tag-zimage")?.value.trim() || "",
+  };
+  const newCategoryId = document.getElementById("edit-tag-category")?.value || row.category_id;
+  const newSubgroup = document.getElementById("edit-tag-subgroup")?.value.trim() || "";
+  // Category change is only offered (the select is enabled) for runtime
+  // tags — same restriction as the standalone Move tag button. wasCore is
+  // double-checked here too in case the field somehow ends up enabled.
+  const categoryChanging = !wasCore && newCategoryId && newCategoryId !== row.category_id;
+  if (!label) return toast("Введите label");
+  if (Number.isNaN(defaultWeight) || defaultWeight <= 0) return toast("Укажите корректный default weight");
+
+  const putBody = {
+    label,
+    aliases,
+    description,
+    default_weight: defaultWeight,
+    tags,
+    persist: true,
+    source: "user",
+  };
+  if (!categoryChanging) {
+    // Subgroup change within the same category — the PUT endpoint already
+    // supports this directly (and forks core tags to a runtime copy first).
+    putBody.subcategory_id = newSubgroup;
+    putBody.allow_new_subcategory = true;
+  }
+  await api(`/categories/${encodeURIComponent(row.category_id)}/items/${encodeURIComponent(row.item.id)}`, {
+    method: "PUT",
+    body: JSON.stringify(putBody),
+  });
+
+  if (categoryChanging) {
+    // Cross-category move has to go through the dedicated move endpoint
+    // (the PUT above only ever touches the item within its current
+    // category) — call it after the PUT so we're moving the exact item
+    // id the PUT just confirmed exists, with the same single Save click
+    // also carrying the new subgroup along.
+    await api(`/categories/${encodeURIComponent(row.category_id)}/items/${encodeURIComponent(row.item.id)}/move`, {
+      method: "POST",
+      body: JSON.stringify({
+        to_category_id: newCategoryId,
+        to_subcategory_id: newSubgroup || null,
+        persist: true,
+        source: "user",
+      }),
+    });
+  }
+
+  closeEditTagModal();
+  if (categoryChanging) {
+    toast("Тег обновлён и перенесён в новую категорию/подгруппу");
+  } else {
+    toast(wasCore ? "Сохранено как runtime-копия поверх core-тега" : "Тег обновлён");
+  }
   await Promise.all([loadTagStudioLister(), loadTagStudioPanel()]);
 }
 
@@ -3841,10 +4974,24 @@ async function initTagStudioLister() {
     handleTagStudioSaveDescription().catch((e) => toast("Ошибка: " + e.message));
   });
   document.getElementById("btn-tagstudio-move-tag")?.addEventListener("click", () => {
+    if (document.getElementById("btn-tagstudio-move-tag")?.disabled) {
+      return toast(tagStudioSelectedTagRow?.overlay
+        ? "Сначала восстановите тег (Reactivate)"
+        : "Core-теги нельзя перемещать в Tag Studio");
+    }
     handleTagStudioMoveTag().catch((e) => toast("Ошибка: " + e.message));
   });
   document.getElementById("btn-tagstudio-delete-tag")?.addEventListener("click", () => {
+    if (document.getElementById("btn-tagstudio-delete-tag")?.disabled) {
+      return toast("Core-теги нельзя удалять в Tag Studio");
+    }
     handleTagStudioDeleteTag().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-tagstudio-reactivate-tag")?.addEventListener("click", () => {
+    handleTagStudioReactivateTag().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-tagstudio-edit-tag")?.addEventListener("click", () => {
+    openEditTagModal().catch((e) => toast("Ошибка: " + e.message));
   });
   await loadTagStudioLister();
 }
@@ -4350,6 +5497,58 @@ function downloadRulesYaml() {
   toast("YAML downloaded");
 }
 
+async function loadPluginsPanel() {
+  const el = document.getElementById("plugins-list");
+  if (!el) return;
+  el.innerHTML = "Loading…";
+  try {
+    const data = await api("/plugins");
+    const plugins = data.plugins || [];
+    if (!plugins.length) {
+      el.innerHTML = '<span style="font-size:12px;color:var(--text-muted)">Нет drop-in плагинов в plugins_user/.</span>';
+      return;
+    }
+    el.innerHTML = plugins.map(pluginRowHtml).join("");
+    bindPluginsEvents();
+  } catch (e) {
+    el.innerHTML = `<span style="color:#eb3b5a;font-size:12px">Failed to load plugins: ${escapeHtml(e.message)}</span>`;
+  }
+}
+
+function pluginRowHtml(p) {
+  const disabledCls = p.enabled ? "" : " disabled";
+  const errorHtml = p.error ? `<div class="plugin-row-error">⚠ ${escapeHtml(p.error)}</div>` : "";
+  return `
+    <div class="plugin-row${disabledCls}" data-plugin-id="${escapeHtml(p.id)}">
+      <input type="checkbox" class="plugin-toggle" data-plugin-id="${escapeHtml(p.id)}" ${p.enabled ? "checked" : ""} title="Включить/выключить плагин" />
+      <div class="plugin-row-info">
+        <div class="plugin-row-name">${escapeHtml(p.name)} <span class="plugin-row-version">v${escapeHtml(p.version)}</span></div>
+        <div class="plugin-row-meta">${escapeHtml(p.id)} · ${escapeHtml(p.kind)}${p.has_ui ? " · UI" : ""}</div>
+        ${errorHtml}
+      </div>
+    </div>`;
+}
+
+function bindPluginsEvents() {
+  document.querySelectorAll(".plugin-toggle").forEach((cb) => {
+    cb.onchange = async () => {
+      const id = cb.dataset.pluginId;
+      const enabled = cb.checked;
+      cb.disabled = true;
+      try {
+        await api(`/plugins/${encodeURIComponent(id)}/${enabled ? "enable" : "disable"}`, { method: "POST" });
+        toast(`${enabled ? "Включён" : "Отключён"}: ${id}. Требуется перезапуск сервера (см. кнопку слева).`);
+        cb.closest(".plugin-row")?.classList.toggle("disabled", !enabled);
+      } catch (e) {
+        toast("Ошибка: " + e.message);
+        cb.checked = !enabled;
+      } finally {
+        cb.disabled = false;
+      }
+    };
+  });
+}
+
 async function loadDebugPanel() {
   const el = document.getElementById("debug-output");
   if (!el) return;
@@ -4419,9 +5618,294 @@ async function loadLlmPanel() {
 async function loadAdvancedMeta() {
   if (!advancedMetaLoaded) {
     advancedMetaLoaded = true;
-    await Promise.all([loadDebugPanel(), loadChangelogPanel()]);
+    await Promise.all([loadPluginsPanel(), loadDebugPanel(), loadChangelogPanel()]);
   }
-  await loadRulesPanel();
+  await Promise.all([loadRulesPanel(), loadAdvancedTodoPanel()]);
+}
+
+function scheduleAdvancedTodoSave() {
+  clearTimeout(advancedTodoSaveTimer);
+  advancedTodoSaveTimer = setTimeout(async () => {
+    try {
+      await api("/advanced/todo", {
+        method: "PUT",
+        body: JSON.stringify({ items: advancedTodoItems }),
+      });
+    } catch (e) {
+      toast("Todo save error: " + e.message);
+    }
+  }, 400);
+}
+
+function createTodoId() {
+  return `todo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function syncAdvancedTodoDueControls() {
+  const noDue = document.getElementById("advanced-todo-no-due")?.checked ?? true;
+  const dueInput = document.getElementById("advanced-todo-due");
+  const calBtn = document.getElementById("btn-advanced-todo-open-calendar");
+  if (dueInput) {
+    dueInput.disabled = noDue;
+    if (noDue) dueInput.value = "";
+  }
+  if (calBtn) calBtn.disabled = noDue;
+}
+
+function openAdvancedTodoCalendar(dueInput) {
+  if (!dueInput || dueInput.disabled) return;
+  if (typeof dueInput.showPicker === "function") {
+    try {
+      dueInput.showPicker();
+      return;
+    } catch (_) {
+      /* showPicker may require user gesture */
+    }
+  }
+  dueInput.focus();
+  dueInput.click();
+}
+
+function resetAdvancedTodoComposeForm() {
+  const input = document.getElementById("advanced-todo-input");
+  if (input) input.value = "";
+  const noDue = document.getElementById("advanced-todo-no-due");
+  if (noDue) noDue.checked = true;
+  syncAdvancedTodoDueControls();
+}
+
+function isTodoOverdue(item) {
+  if (!item?.due_date || item.done) return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return item.due_date < today;
+}
+
+function normalizeTodoSortOrder() {
+  advancedTodoItems.forEach((item, idx) => {
+    item.sort_order = idx;
+  });
+}
+
+function sortTodoItems(items) {
+  return [...items].sort((a, b) => {
+    const doneDiff = Number(Boolean(a.done)) - Number(Boolean(b.done));
+    if (doneDiff !== 0) return doneDiff;
+    const orderDiff = (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    if (orderDiff !== 0) return orderDiff;
+    return String(a.created_at || "").localeCompare(String(b.created_at || ""));
+  });
+}
+
+function markTodoItemComplete(itemId) {
+  const idx = advancedTodoItems.findIndex((row) => row.id === itemId);
+  if (idx < 0) return;
+  const item = advancedTodoItems[idx];
+  if (item.done) return;
+  item.done = true;
+  advancedTodoItems.splice(idx, 1);
+  const firstDoneIdx = advancedTodoItems.findIndex((row) => row.done);
+  if (firstDoneIdx < 0) {
+    advancedTodoItems.push(item);
+  } else {
+    advancedTodoItems.splice(firstDoneIdx, 0, item);
+  }
+  normalizeTodoSortOrder();
+}
+
+function markTodoItemReopen(itemId) {
+  const idx = advancedTodoItems.findIndex((row) => row.id === itemId);
+  if (idx < 0) return;
+  const item = advancedTodoItems[idx];
+  if (!item.done) return;
+  item.done = false;
+  advancedTodoItems.splice(idx, 1);
+  const firstDoneIdx = advancedTodoItems.findIndex((row) => row.done);
+  const insertAt = firstDoneIdx < 0 ? advancedTodoItems.length : firstDoneIdx;
+  advancedTodoItems.splice(insertAt, 0, item);
+  normalizeTodoSortOrder();
+}
+
+function renderAdvancedTodoList() {
+  const root = document.getElementById("advanced-todo-list");
+  if (!root) return;
+  const sorted = sortTodoItems(advancedTodoItems);
+  if (!sorted.length) {
+    root.innerHTML = '<div class="tagstudio-output-empty">Список пуст.</div>';
+    return;
+  }
+  root.innerHTML = sorted.map((item, index) => {
+    const priority = item.priority || "medium";
+    const noDue = !item.due_date;
+    const overdueClass = !noDue && isTodoOverdue(item) ? " todo-overdue" : "";
+    const doneClass = item.done ? " is-done" : "";
+    const actionButtons = item.done
+      ? `<button type="button" class="btn-ghost btn-sm todo-reopen" data-id="${escapeHtml(item.id)}" title="Вернуть в активные" aria-label="Вернуть в активные">↩</button>`
+      : `<button type="button" class="btn-ghost btn-sm todo-complete" data-id="${escapeHtml(item.id)}" title="Выполнено" aria-label="Выполнено">✓</button>`;
+    return `
+      <div class="todo-item${doneClass}" draggable="true" data-id="${escapeHtml(item.id)}" data-index="${index}">
+        <span class="todo-drag-handle" title="Drag to reorder">⋮⋮</span>
+        <span class="todo-text${item.done ? " is-done" : ""}">${escapeHtml(item.text)}</span>
+        <span class="todo-priority todo-priority-${priority}">${priority}</span>
+        <div class="todo-due-controls${overdueClass}">
+          <input type="date" class="todo-due-input" data-id="${escapeHtml(item.id)}" value="${escapeHtml(item.due_date || "")}" ${noDue ? "disabled" : ""} />
+          <button type="button" class="btn-ghost btn-sm todo-due-calendar" data-id="${escapeHtml(item.id)}" title="Календарь" aria-label="Календарь" ${noDue ? "disabled" : ""}>📅</button>
+          <label class="todo-no-due-inline" title="Без срока">
+            <input type="checkbox" class="todo-no-due-check" data-id="${escapeHtml(item.id)}" ${noDue ? "checked" : ""} />
+            <span class="todo-no-due-label">Без срока</span>
+          </label>
+        </div>
+        <div class="todo-actions">
+          ${actionButtons}
+          <button type="button" class="btn-ghost btn-sm todo-delete" data-id="${escapeHtml(item.id)}" title="Удалить" aria-label="Удалить">✕</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  let dragId = null;
+  root.querySelectorAll(".todo-item").forEach((row) => {
+    row.addEventListener("dragstart", () => {
+      dragId = row.dataset.id || null;
+      row.classList.add("is-dragging");
+    });
+    row.addEventListener("dragend", () => {
+      row.classList.remove("is-dragging");
+      dragId = null;
+    });
+    row.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      row.classList.add("is-drag-over");
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("is-drag-over"));
+    row.addEventListener("drop", (event) => {
+      event.preventDefault();
+      row.classList.remove("is-drag-over");
+      const targetId = row.dataset.id;
+      if (!dragId || !targetId || dragId === targetId) return;
+      const fromIndex = advancedTodoItems.findIndex((item) => item.id === dragId);
+      const toIndex = advancedTodoItems.findIndex((item) => item.id === targetId);
+      if (fromIndex < 0 || toIndex < 0) return;
+      const [moved] = advancedTodoItems.splice(fromIndex, 1);
+      advancedTodoItems.splice(toIndex, 0, moved);
+      normalizeTodoSortOrder();
+      renderAdvancedTodoList();
+      scheduleAdvancedTodoSave();
+    });
+  });
+
+  root.querySelectorAll(".todo-complete").forEach((btn) => {
+    btn.onclick = () => {
+      markTodoItemComplete(btn.dataset.id || "");
+      renderAdvancedTodoList();
+      scheduleAdvancedTodoSave();
+    };
+  });
+  root.querySelectorAll(".todo-reopen").forEach((btn) => {
+    btn.onclick = () => {
+      markTodoItemReopen(btn.dataset.id || "");
+      renderAdvancedTodoList();
+      scheduleAdvancedTodoSave();
+    };
+  });
+  root.querySelectorAll(".todo-delete").forEach((btn) => {
+    btn.onclick = () => {
+      const item = advancedTodoItems.find((row) => row.id === btn.dataset.id);
+      if (!item) return;
+      const ok = window.confirm(`Удалить задачу «${item.text}»?`);
+      if (!ok) return;
+      advancedTodoItems = advancedTodoItems.filter((row) => row.id !== btn.dataset.id);
+      normalizeTodoSortOrder();
+      renderAdvancedTodoList();
+      scheduleAdvancedTodoSave();
+    };
+  });
+
+  root.querySelectorAll(".todo-no-due-check").forEach((input) => {
+    input.onchange = () => {
+      const item = advancedTodoItems.find((row) => row.id === input.dataset.id);
+      if (!item) return;
+      const row = input.closest(".todo-item");
+      const dueInput = row?.querySelector(".todo-due-input");
+      const calBtn = row?.querySelector(".todo-due-calendar");
+      if (input.checked) {
+        item.due_date = null;
+        if (dueInput) {
+          dueInput.value = "";
+          dueInput.disabled = true;
+        }
+        if (calBtn) calBtn.disabled = true;
+      } else {
+        if (dueInput) {
+          dueInput.disabled = false;
+          if (!dueInput.value) dueInput.value = new Date().toISOString().slice(0, 10);
+          item.due_date = dueInput.value || null;
+        }
+        if (calBtn) calBtn.disabled = false;
+      }
+      renderAdvancedTodoList();
+      scheduleAdvancedTodoSave();
+    };
+  });
+
+  root.querySelectorAll(".todo-due-input").forEach((input) => {
+    input.onchange = () => {
+      const item = advancedTodoItems.find((row) => row.id === input.dataset.id);
+      if (!item) return;
+      item.due_date = input.value || null;
+      renderAdvancedTodoList();
+      scheduleAdvancedTodoSave();
+    };
+  });
+
+  root.querySelectorAll(".todo-due-calendar").forEach((btn) => {
+    btn.onclick = () => {
+      const row = btn.closest(".todo-item");
+      const dueInput = row?.querySelector(".todo-due-input");
+      openAdvancedTodoCalendar(dueInput);
+    };
+  });
+}
+
+async function loadAdvancedTodoPanel() {
+  try {
+    const data = await api("/advanced/todo");
+    advancedTodoItems = Array.isArray(data?.items) ? data.items.map((row, index) => ({
+      id: row.id || createTodoId(),
+      text: String(row.text || ""),
+      done: Boolean(row.done),
+      priority: row.priority || "medium",
+      due_date: row.due_date || null,
+      sort_order: Number.isFinite(row.sort_order) ? row.sort_order : index,
+      created_at: row.created_at || new Date().toISOString(),
+    })) : [];
+    renderAdvancedTodoList();
+    syncAdvancedTodoDueControls();
+  } catch (e) {
+    const root = document.getElementById("advanced-todo-list");
+    if (root) root.textContent = "Ошибка загрузки: " + e.message;
+  }
+}
+
+function addAdvancedTodoFromForm() {
+  const text = document.getElementById("advanced-todo-input")?.value.trim() || "";
+  if (!text) return toast("Введите текст задачи");
+  const priority = document.getElementById("advanced-todo-priority")?.value || "medium";
+  const noDue = document.getElementById("advanced-todo-no-due")?.checked ?? true;
+  const dueRaw = noDue ? "" : (document.getElementById("advanced-todo-due")?.value || "");
+  if (!noDue && !dueRaw) return toast("Выберите дату или отметьте «Без срока»");
+  advancedTodoItems.push({
+    id: createTodoId(),
+    text,
+    done: false,
+    priority,
+    due_date: dueRaw || null,
+    sort_order: advancedTodoItems.filter((row) => !row.done).length,
+    created_at: new Date().toISOString(),
+  });
+  normalizeTodoSortOrder();
+  resetAdvancedTodoComposeForm();
+  renderAdvancedTodoList();
+  scheduleAdvancedTodoSave();
 }
 
 async function doGenerate(random = false) {
@@ -4627,32 +6111,17 @@ async function loadAddTagCategories() {
 }
 
 async function fillAddTagSubgroups(categoryId) {
-  const subgroupSelect = document.getElementById("add-tag-subgroup");
-  if (!subgroupSelect) return [];
+  const subgroupInput = document.getElementById("add-tag-subgroup");
+  const datalist = document.getElementById("add-tag-subgroup-options");
+  if (!subgroupInput) return [];
   const data = await api(`/categories/${encodeURIComponent(categoryId)}`);
   const subgroups = collectKnownSubgroups(categoryId, data);
-  subgroupSelect.innerHTML = "";
-  if (!subgroups.length) {
-    const option = document.createElement("option");
-    option.value = "";
-    option.textContent = "none";
-    subgroupSelect.appendChild(option);
-    subgroupSelect.disabled = true;
-    subgroupSelect.dataset.hasSubgroups = "0";
-    return subgroups;
-  }
-  for (const subgroup of subgroups) {
-    const option = document.createElement("option");
-    option.value = subgroup;
-    option.textContent = subgroup;
-    subgroupSelect.appendChild(option);
-  }
-  subgroupSelect.disabled = false;
-  subgroupSelect.dataset.hasSubgroups = "1";
+  if (datalist) datalist.innerHTML = subgroups.map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
+  subgroupInput.dataset.hasSubgroups = subgroups.length ? "1" : "0";
   return subgroups;
 }
 
-async function openAddTagModal() {
+async function openAddTagModalWithContext(prefillCategoryId = null, prefillSubgroup = null) {
   const modal = document.getElementById("add-tag-modal");
   if (!modal) return;
   const categorySelect = document.getElementById("add-tag-category");
@@ -4673,21 +6142,30 @@ async function openAddTagModal() {
     option.textContent = `${category.title} (${category.id})`;
     categorySelect.appendChild(option);
   }
-  const activeLeaf = findTreeLeaf(activeOutfitLeafId, getOutfitTree())
-    || findTreeLeaf(activeCharacterLeafId, getCharacterTree())
-    || findTreeLeaf(activeFaceLeafId, getFaceTree())
-    || findTreeLeaf(activeMakeupLeafId, getMakeupTree())
-    || findTreeLeaf(activeAccessoriesLeafId, getAccessoriesTree())
-    || findTreeLeaf(activePoseLeafId, getPoseTree())
-    || findTreeLeaf(activeCameraLeafId, getCameraTree())
-    || findTreeLeaf(activeLightingLeafId, getLightingTree())
-    || findTreeLeaf(activeEnvironmentLeafId, getEnvironmentTree())
-    || findTreeLeaf(activeStyleLeafId, getStyleTree())
-    || findTreeLeaf(activeFetishLeafId, getFetishTree());
-  if (activeLeaf?.categoryId) categorySelect.value = activeLeaf.categoryId;
-  if (!categorySelect.value && categories[0]?.id) categorySelect.value = categories[0].id;
-  const subgroups = await fillAddTagSubgroups(categorySelect.value);
-  if (activeLeaf?.subgroup && subgroups.includes(activeLeaf.subgroup)) subgroupSelect.value = activeLeaf.subgroup;
+  const categoryIds = new Set(categories.map((row) => row.id));
+  if (prefillCategoryId && categoryIds.has(prefillCategoryId)) {
+    categorySelect.value = prefillCategoryId;
+  } else {
+    const activeLeaf = findTreeLeaf(activeOutfitLeafId, getOutfitTree())
+      || findTreeLeaf(activeCharacterLeafId, getCharacterTree())
+      || findTreeLeaf(activeFaceLeafId, getFaceTree())
+      || findTreeLeaf(activeMakeupLeafId, getMakeupTree())
+      || findTreeLeaf(activeAccessoriesLeafId, getAccessoriesTree())
+      || findTreeLeaf(activePoseLeafId, getPoseTree())
+      || findTreeLeaf(activeCameraLeafId, getCameraTree())
+      || findTreeLeaf(activeLightingLeafId, getLightingTree())
+      || findTreeLeaf(activeEnvironmentLeafId, getEnvironmentTree())
+      || findTreeLeaf(activeStyleLeafId, getStyleTree())
+      || findTreeLeaf(activeFetishLeafId, getFetishTree());
+    if (activeLeaf?.categoryId && categoryIds.has(activeLeaf.categoryId)) {
+      categorySelect.value = activeLeaf.categoryId;
+    } else if (categories[0]?.id) {
+      categorySelect.value = categories[0].id;
+    }
+    if (!prefillSubgroup && activeLeaf?.subgroup) prefillSubgroup = activeLeaf.subgroup;
+  }
+  await fillAddTagSubgroups(categorySelect.value);
+  subgroupSelect.value = prefillSubgroup || "";
   titleEl.textContent = getCategoryTitleById(categorySelect.value);
   document.getElementById("add-tag-persist").checked = true;
   labelInput.value = "";
@@ -4697,6 +6175,10 @@ async function openAddTagModal() {
   defaultWeightInput.value = "1.0";
   modal.classList.remove("hidden");
   labelInput.focus();
+}
+
+async function openAddTagModal() {
+  await openAddTagModalWithContext();
 }
 
 async function createTagFromModal(event) {
@@ -4725,6 +6207,7 @@ async function createTagFromModal(event) {
         item_id: itemId || null,
         subgroup,
         subcategory_id: subgroup,
+        allow_new_subcategory: true,
         aliases,
         description,
         default_weight: defaultWeight,
@@ -4732,8 +6215,9 @@ async function createTagFromModal(event) {
       }),
     });
     await preloadSubgroupMaps();
-    clothingConditionsByField = null;
-    await ensureClothingConditions();
+    clothingStateCatalog = null;
+    clothingStateLoadingPromise = null;
+    await ensureClothingStateCatalog();
     refreshAllPanels();
     syncFormControlsFromState();
     notifyStateChange();
@@ -5303,6 +6787,7 @@ async function loadCharacterLibrary() {
           </div>
           <div class="char-lib-actions">
             <button type="button" class="char-lib-load">Загрузить</button>
+            <button type="button" class="char-lib-rename">Переименовать</button>
             <button type="button" class="char-lib-delete">Удалить</button>
           </div>
         </div>`
@@ -5318,6 +6803,27 @@ async function loadCharacterLibrary() {
           const row = await api(`/character-library/${id}`);
           applyCharacterLibraryPayload(row.payload);
           toast(`Загружен: ${row.name}`);
+        } catch (err) {
+          toast("Ошибка: " + err.message);
+        }
+      };
+    });
+    root.querySelectorAll(".char-lib-rename").forEach((btn) => {
+      btn.onclick = async (e) => {
+        e.stopPropagation();
+        const item = btn.closest(".char-lib-item");
+        const id = item?.dataset.id;
+        if (!id) return;
+        const currentName = item.querySelector(".char-lib-name")?.textContent || "";
+        const nextName = prompt("Новое имя персонажа:", currentName);
+        if (!nextName?.trim() || nextName.trim() === currentName) return;
+        try {
+          await api(`/character-library/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify({ name: nextName.trim() }),
+          });
+          toast("Имя обновлено");
+          loadCharacterLibrary();
         } catch (err) {
           toast("Ошибка: " + err.message);
         }
@@ -5372,19 +6878,63 @@ function bindEvents() {
   document.querySelectorAll(".nav-item").forEach((btn) => {
     btn.onclick = () => switchTab(btn.dataset.tab);
   });
-  document.querySelectorAll("[data-open-add-tag-modal]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      try {
-        await openAddTagModal();
-      } catch (e) {
-        toast("Ошибка: " + e.message);
-      }
-    });
+  document.addEventListener("click", async (event) => {
+    const btn = event.target.closest("[data-open-add-tag-modal]");
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      await openAddTagModalWithContext(
+        btn.dataset.addTagCategory || null,
+        btn.dataset.addTagSubgroup || null,
+      );
+    } catch (e) {
+      toast("Ошибка: " + e.message);
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const btn = event.target.closest(".btn-add-tag-inline[data-open-add-tag-modal]");
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    btn.click();
   });
   document.getElementById("add-tag-modal-close")?.addEventListener("click", closeAddTagModal);
   document.getElementById("add-tag-modal-backdrop")?.addEventListener("click", closeAddTagModal);
   document.getElementById("add-tag-cancel")?.addEventListener("click", closeAddTagModal);
   document.getElementById("add-tag-form")?.addEventListener("submit", createTagFromModal);
+  document.getElementById("edit-tag-modal-close")?.addEventListener("click", closeEditTagModal);
+  document.getElementById("edit-tag-modal-backdrop")?.addEventListener("click", closeEditTagModal);
+  document.getElementById("edit-tag-cancel")?.addEventListener("click", closeEditTagModal);
+  document.getElementById("edit-tag-category")?.addEventListener("change", (event) => {
+    const categoryId = event.target?.value || "";
+    if (!categoryId) return;
+    fillEditTagSubgroups(categoryId).catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("edit-tag-form")?.addEventListener("submit", (event) => {
+    saveEditTagFromModal(event).catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-advanced-todo-add")?.addEventListener("click", addAdvancedTodoFromForm);
+  document.getElementById("advanced-todo-no-due")?.addEventListener("change", syncAdvancedTodoDueControls);
+  document.getElementById("btn-advanced-todo-open-calendar")?.addEventListener("click", () => {
+    const noDue = document.getElementById("advanced-todo-no-due");
+    if (noDue?.checked) {
+      noDue.checked = false;
+      syncAdvancedTodoDueControls();
+    }
+    openAdvancedTodoCalendar(document.getElementById("advanced-todo-due"));
+  });
+  syncAdvancedTodoDueControls();
+  document.getElementById("btn-advanced-todo-refresh")?.addEventListener("click", () => {
+    loadAdvancedTodoPanel().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("advanced-todo-input")?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addAdvancedTodoFromForm();
+    }
+  });
   document.getElementById("add-tag-category")?.addEventListener("change", async (event) => {
     const categoryId = event.target?.value || "";
     if (!categoryId) return;
@@ -5401,6 +6951,12 @@ function bindEvents() {
   });
   document.getElementById("btn-tagstudio-search")?.addEventListener("click", () => {
     loadTagStudioPanel().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("tagstudio-search")?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      loadTagStudioPanel().catch((e) => toast("Ошибка: " + e.message));
+    }
   });
   document.getElementById("btn-tagstudio-dedupe")?.addEventListener("click", () => {
     runTagStudioDedupe().catch((e) => toast("Ошибка: " + e.message));
@@ -5649,6 +7205,67 @@ function bindEvents() {
   });
   document.getElementById("btn-session-reset")?.addEventListener("click", resetSession);
   document.getElementById("session-file-input").onchange = handleSessionFileInput;
+
+  // Server sessions
+  document.getElementById("btn-session-save-server")?.addEventListener("click", openSessionSaveModal);
+  document.getElementById("btn-session-load-server")?.addEventListener("click", openSessionLoadModal);
+  document.getElementById("session-save-modal-close")?.addEventListener("click", closeSessionSaveModal);
+  document.getElementById("session-save-modal-backdrop")?.addEventListener("click", closeSessionSaveModal);
+  document.getElementById("session-save-cancel")?.addEventListener("click", closeSessionSaveModal);
+  document.getElementById("session-save-form")?.addEventListener("submit", (e) => {
+    submitSessionSave(e).catch((err) => toast("Ошибка: " + err.message));
+  });
+  document.getElementById("session-load-modal-close")?.addEventListener("click", closeSessionLoadModal);
+  document.getElementById("session-load-modal-backdrop")?.addEventListener("click", closeSessionLoadModal);
+
+  // Undo
+  document.getElementById("btn-undo-state")?.addEventListener("click", undoLastStateChange);
+
+  // History panel
+  document.getElementById("btn-history-refresh")?.addEventListener("click", () => {
+    loadHistoryPanel().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("history-model-filter")?.addEventListener("change", () => {
+    loadHistoryPanel().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-history-clear")?.addEventListener("click", async () => {
+    const modelFilter = document.getElementById("history-model-filter")?.value || "";
+    const msg = modelFilter ? `Очистить историю для модели ${modelFilter}?` : "Очистить всю историю генераций?";
+    if (!confirm(msg)) return;
+    try {
+      const url = modelFilter ? `/history?model_id=${encodeURIComponent(modelFilter)}` : "/history";
+      await api(url, { method: "DELETE" });
+      loadHistoryPanel();
+      toast("История очищена");
+    } catch (e) { toast("Ошибка: " + e.message); }
+  });
+
+  // Batch
+  initBatchControls();
+
+  // Forge
+  loadForgeSettings();
+  document.getElementById("btn-forge-save")?.addEventListener("click", () => {
+    saveForgeSettings().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-forge-test")?.addEventListener("click", () => {
+    testForgeConnection().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-forge-send")?.addEventListener("click", () => {
+    sendToForge().catch((e) => toast("Forge error: " + e.message));
+  });
+  document.getElementById("btn-forge-hires")?.addEventListener("click", () => {
+    sendToForgeHires().catch((e) => toast("Forge error: " + e.message));
+  });
+  document.getElementById("btn-fq-apply")?.addEventListener("click", () => {
+    applyForgeQuickSettings().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("fq-hires-enabled")?.addEventListener("change", (e) => {
+    document.getElementById("fq-hires-params")?.classList.toggle("visible", e.target.checked);
+  });
+
+  // Hotkeys
+  initHotkeys();
   document.getElementById("btn-restart-server")?.addEventListener("click", restartServer);
   document.getElementById("btn-llm-refresh-models")?.addEventListener("click", async () => {
     try {
@@ -5699,6 +7316,11 @@ function bindEvents() {
     toast("Debug refreshed");
   };
 
+  document.getElementById("btn-refresh-plugins")?.addEventListener("click", () => {
+    loadPluginsPanel();
+    toast("Plugins refreshed");
+  });
+
   document.getElementById("btn-refresh-rules")?.addEventListener("click", () => {
     loadRulesPanel();
     toast("Rules refreshed");
@@ -5718,7 +7340,7 @@ async function init() {
   initStaticChips();
   bindEvents();
   const llmSettingsPromise = loadLlmSettingsCard().catch(() => {});
-  await ensureClothingConditions();
+  await Promise.all([ensureClothingStateCatalog(), loadWildcardsIndex()]);
   void llmSettingsPromise;
   refreshAllPanels();
   syncFormControlsFromState();
@@ -5736,8 +7358,552 @@ async function init() {
       refreshAllPanels();
       syncFormControlsFromState();
       refreshPromptPreview();
+      notifyStateChange();
     })
     .catch(() => {});
+}
+
+// =============================================================
+// UNDO
+// =============================================================
+
+function _undoPush() {
+  try {
+    const snapshot = JSON.stringify(buildPayload());
+    // Don't push if identical to last entry
+    if (undoStack.length && undoStack[undoStack.length - 1] === snapshot) return;
+    undoStack.push(snapshot);
+    if (undoStack.length > UNDO_STACK_MAX) undoStack.shift();
+    document.getElementById("btn-undo-state")?.removeAttribute("disabled");
+  } catch (_) {}
+}
+
+function undoLastStateChange() {
+  if (undoStack.length < 2) {
+    toast("Нечего отменять");
+    return;
+  }
+  // Pop current, restore previous
+  undoStack.pop();
+  const prev = undoStack[undoStack.length - 1];
+  try {
+    applyPayloadToState(JSON.parse(prev));
+    refreshAllPanels();
+    syncFormControlsFromState();
+    notifyStateChange();
+    toast("Отменено");
+  } catch (e) {
+    toast("Ошибка undo: " + e.message);
+  }
+  if (undoStack.length <= 1) {
+    document.getElementById("btn-undo-state")?.setAttribute("disabled", "");
+  }
+}
+
+// =============================================================
+// SERVER SESSIONS
+// =============================================================
+
+function openSessionSaveModal() {
+  const el = document.getElementById("session-save-modal");
+  const input = document.getElementById("session-save-name");
+  if (el) el.classList.remove("hidden");
+  if (input) { input.value = ""; setTimeout(() => input.focus(), 50); }
+}
+
+function closeSessionSaveModal() {
+  document.getElementById("session-save-modal")?.classList.add("hidden");
+}
+
+async function submitSessionSave(event) {
+  event?.preventDefault();
+  const name = document.getElementById("session-save-name")?.value.trim();
+  if (!name) return toast("Введите название");
+  syncStateFromFormControls();
+  try {
+    await api("/sessions", {
+      method: "POST",
+      body: JSON.stringify({ name, state: serializeSession() }),
+    });
+    closeSessionSaveModal();
+    toast(`Сессия «${name}» сохранена`);
+  } catch (e) {
+    toast("Ошибка сохранения: " + e.message);
+  }
+}
+
+async function openSessionLoadModal() {
+  const el = document.getElementById("session-load-modal");
+  const listEl = document.getElementById("session-load-list");
+  if (!el || !listEl) return;
+  el.classList.remove("hidden");
+  listEl.innerHTML = "Загрузка…";
+  try {
+    const data = await api("/sessions");
+    const sessions = data.sessions || [];
+    if (!sessions.length) {
+      listEl.innerHTML = '<span style="color:var(--text-muted);font-size:13px">Нет сохранённых сессий.</span>';
+      return;
+    }
+    listEl.innerHTML = sessions.map((s) => `
+      <div class="session-load-item" data-session-id="${s.id}">
+        <span class="session-load-name" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</span>
+        <span class="session-load-date">${(s.created_at || "").slice(0, 10)}</span>
+        <div class="session-load-actions">
+          <button class="btn btn-secondary btn-sm session-load-btn" data-id="${s.id}">Load</button>
+          <button class="btn-ghost danger session-delete-btn" data-id="${s.id}" title="Удалить">✕</button>
+        </div>
+      </div>
+    `).join("");
+    listEl.querySelectorAll(".session-load-btn").forEach((btn) => {
+      btn.addEventListener("click", () => loadServerSession(Number(btn.dataset.id)));
+    });
+    listEl.querySelectorAll(".session-delete-btn").forEach((btn) => {
+      btn.addEventListener("click", () => deleteServerSession(Number(btn.dataset.id), btn));
+    });
+  } catch (e) {
+    listEl.innerHTML = `<span style="color:#eb3b5a;font-size:12px">Ошибка: ${escapeHtml(e.message)}</span>`;
+  }
+}
+
+function closeSessionLoadModal() {
+  document.getElementById("session-load-modal")?.classList.add("hidden");
+}
+
+async function loadServerSession(id) {
+  try {
+    const data = await api(`/sessions/${id}`);
+    const sessionData = data.session?.state;
+    if (!sessionData) return toast("Сессия пуста");
+    applySession(sessionData);
+    closeSessionLoadModal();
+    toast(`Сессия загружена`);
+  } catch (e) {
+    toast("Ошибка загрузки: " + e.message);
+  }
+}
+
+async function deleteServerSession(id, btn) {
+  if (!confirm("Удалить сессию?")) return;
+  try {
+    await api(`/sessions/${id}`, { method: "DELETE" });
+    btn.closest(".session-load-item")?.remove();
+    const listEl = document.getElementById("session-load-list");
+    if (listEl && !listEl.querySelector(".session-load-item")) {
+      listEl.innerHTML = '<span style="color:var(--text-muted);font-size:13px">Нет сохранённых сессий.</span>';
+    }
+  } catch (e) {
+    toast("Ошибка удаления: " + e.message);
+  }
+}
+
+// =============================================================
+// GENERATION HISTORY
+// =============================================================
+
+async function loadHistoryPanel() {
+  const listEl = document.getElementById("history-list");
+  if (!listEl) return;
+  listEl.innerHTML = "Загрузка…";
+  try {
+    const modelFilter = document.getElementById("history-model-filter")?.value || "";
+    const url = modelFilter ? `/history?limit=50&model_id=${encodeURIComponent(modelFilter)}` : "/history?limit=50";
+    const data = await api(url);
+    const entries = data.history || [];
+    if (!entries.length) {
+      listEl.innerHTML = '<span style="color:var(--text-muted);font-size:13px">История пуста.</span>';
+      return;
+    }
+    listEl.innerHTML = entries.map((e) => `
+      <div class="history-item">
+        <div class="history-item-header">
+          <span>${escapeHtml(MODEL_LABELS[e.model_id] || e.model_id)} · ${(e.created_at || "").replace("T", " ").slice(0, 16)}</span>
+          <div class="history-item-actions">
+            <button class="btn btn-secondary btn-sm history-load-btn" data-id="${e.id}">Load</button>
+            <button class="btn-ghost danger history-del-btn" data-id="${e.id}" title="Удалить">✕</button>
+          </div>
+        </div>
+        <div class="history-item-prompt">${escapeHtml(e.positive || "")}</div>
+      </div>
+    `).join("");
+    listEl.querySelectorAll(".history-load-btn").forEach((btn) => {
+      const id = Number(btn.dataset.id);
+      btn.addEventListener("click", () => {
+        const entry = entries.find((e) => e.id === id);
+        if (!entry?.payload?.state) return toast("Нет данных state");
+        applySession(entry.payload.state, { skipOutputs: true });
+        toast("State загружен из истории");
+      });
+    });
+    listEl.querySelectorAll(".history-del-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        try {
+          await api(`/history/${btn.dataset.id}`, { method: "DELETE" });
+          btn.closest(".history-item")?.remove();
+        } catch (e) { toast("Ошибка: " + e.message); }
+      });
+    });
+  } catch (e) {
+    listEl.innerHTML = `<span style="color:#eb3b5a;font-size:12px">Ошибка: ${escapeHtml(e.message)}</span>`;
+  }
+}
+
+// =============================================================
+// BATCH VARIATIONS
+// =============================================================
+
+function initBatchControls() {
+  const slider = document.getElementById("batch-count");
+  const display = document.getElementById("batch-count-display");
+  const btnN = document.getElementById("btn-batch-n");
+  if (slider) {
+    slider.addEventListener("input", () => {
+      const v = slider.value;
+      if (display) display.textContent = v;
+      if (btnN) btnN.textContent = v;
+    });
+  }
+
+  document.getElementById("btn-batch-generate")?.addEventListener("click", async () => {
+    const count = Number(document.getElementById("batch-count")?.value || 4);
+    const axes = [...document.querySelectorAll(".batch-axis:checked")].map((cb) => cb.value);
+    const resultsEl = document.getElementById("batch-results");
+    if (resultsEl) { resultsEl.innerHTML = "Генерация…"; resultsEl.classList.remove("hidden"); }
+
+    try {
+      syncStateFromFormControls();
+      const data = await api("/generate/batch", {
+        method: "POST",
+        body: JSON.stringify({ state: buildPayload(), count, randomize_axes: axes }),
+      });
+      const results = data.results || [];
+      if (!resultsEl) return;
+      if (!results.length) { resultsEl.innerHTML = "Нет результатов"; return; }
+
+      resultsEl.innerHTML = results.map((r, i) => {
+        const variedStr = Object.entries(r.varied_state || {})
+          .filter(([, v]) => v)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(" · ");
+        return `
+          <div class="batch-result-item">
+            <div class="batch-result-header">
+              <span>#${i + 1} · ${escapeHtml(MODEL_LABELS[r.model_id] || r.model_id)}</span>
+              <span>${r.quality_score?.score ?? "—"}/100</span>
+            </div>
+            ${variedStr ? `<div class="batch-result-header" style="font-style:italic">${escapeHtml(variedStr)}</div>` : ""}
+            <div class="batch-result-prompt">${escapeHtml(r.positive || "")}</div>
+            <div class="batch-result-actions">
+              <button class="btn btn-secondary btn-sm batch-copy-btn" data-idx="${i}">Copy</button>
+              <button class="btn btn-secondary btn-sm batch-forge-btn" data-idx="${i}">→ Forge</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      resultsEl.querySelectorAll(".batch-copy-btn").forEach((btn) => {
+        const r = results[Number(btn.dataset.idx)];
+        btn.addEventListener("click", () => {
+          navigator.clipboard.writeText(r.positive || "");
+          toast("Скопировано");
+        });
+      });
+      resultsEl.querySelectorAll(".batch-forge-btn").forEach((btn) => {
+        const r = results[Number(btn.dataset.idx)];
+        btn.addEventListener("click", () => sendToForge(r.positive, r.negative || ""));
+      });
+    } catch (e) {
+      if (resultsEl) resultsEl.innerHTML = `<span style="color:#eb3b5a">Ошибка: ${escapeHtml(e.message)}</span>`;
+    }
+  });
+}
+
+// =============================================================
+// FORGE INTEGRATION
+// =============================================================
+
+async function loadForgeSettings() {
+  try {
+    forgeSettingsCache = await api("/forge/settings");
+    populateForgeSettingsForm(forgeSettingsCache);
+    populateForgeQuickSettings(forgeSettingsCache);
+    updateForgeSendCard(forgeSettingsCache);
+    if (forgeSettingsCache.enabled) loadForgeSamplers();
+  } catch (_) {}
+}
+
+function populateForgeQuickSettings(s) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ""; };
+  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+  set("fq-steps", s.default_steps);
+  set("fq-cfg", s.default_cfg);
+  set("fq-width", s.default_width);
+  set("fq-height", s.default_height);
+  set("fq-sampler", s.default_sampler);
+  setChk("fq-hires-enabled", s.hires_enabled);
+  set("fq-hires-scale", s.hires_scale);
+  set("fq-hires-denoising", s.hires_denoising);
+  set("fq-hires-upscaler", s.hires_upscaler);
+  setChk("fq-save-images", s.save_images);
+  document.getElementById("fq-hires-params")?.classList.toggle("visible", !!s.hires_enabled);
+}
+
+async function applyForgeQuickSettings() {
+  const get = (id) => document.getElementById(id)?.value ?? "";
+  const getChk = (id) => document.getElementById(id)?.checked ?? false;
+  const current = forgeSettingsCache || await api("/forge/settings");
+  const updated = {
+    ...current,
+    default_steps: Number(get("fq-steps")) || current.default_steps,
+    default_cfg: Number(get("fq-cfg")) || current.default_cfg,
+    default_width: Number(get("fq-width")) || current.default_width,
+    default_height: Number(get("fq-height")) || current.default_height,
+    default_sampler: get("fq-sampler") || current.default_sampler,
+    hires_enabled: getChk("fq-hires-enabled"),
+    hires_scale: Number(get("fq-hires-scale")) || current.hires_scale,
+    hires_denoising: Number(get("fq-hires-denoising")) || current.hires_denoising,
+    hires_upscaler: get("fq-hires-upscaler") || current.hires_upscaler,
+    save_images: getChk("fq-save-images"),
+  };
+  try {
+    forgeSettingsCache = await api("/forge/settings", { method: "PUT", body: JSON.stringify(updated) });
+    populateForgeSettingsForm(forgeSettingsCache);
+    toast("Forge settings saved");
+  } catch (e) { toast("Ошибка: " + e.message); }
+}
+
+function populateForgeSettingsForm(s) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ""; };
+  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+  setChk("forge-enabled", s.enabled);
+  set("forge-base-url", s.base_url);
+  set("forge-checkpoint", s.default_checkpoint);
+  set("forge-steps", s.default_steps);
+  set("forge-cfg", s.default_cfg);
+  set("forge-width", s.default_width);
+  set("forge-height", s.default_height);
+  set("forge-sampler", s.default_sampler);
+  set("forge-scheduler", s.default_scheduler);
+  setChk("forge-hires-enabled", s.hires_enabled);
+  set("forge-hires-scale", s.hires_scale);
+  set("forge-hires-steps", s.hires_steps);
+  set("forge-hires-denoising", s.hires_denoising);
+  set("forge-hires-upscaler", s.hires_upscaler);
+  setChk("forge-save-images", s.save_images);
+}
+
+async function loadForgeSamplers() {
+  await loadForgeOptions();
+}
+
+async function loadForgeOptions() {
+  try {
+    const [samplersData, modelsData, upscalersData, schedulersData] = await Promise.allSettled([
+      api("/forge/samplers"),
+      api("/forge/models"),
+      api("/forge/upscalers"),
+      api("/forge/schedulers"),
+    ]);
+
+    const fill = (id, items) => {
+      const dl = document.getElementById(id);
+      if (dl && items?.length) {
+        dl.innerHTML = items.filter(Boolean).map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
+      }
+    };
+
+    if (samplersData.status === "fulfilled")
+      fill("forge-samplers-list", samplersData.value?.samplers);
+    if (modelsData.status === "fulfilled")
+      fill("forge-models-list", modelsData.value?.models);
+    if (upscalersData.status === "fulfilled")
+      fill("forge-upscalers-list", upscalersData.value?.upscalers);
+    if (schedulersData.status === "fulfilled")
+      fill("forge-schedulers-list", schedulersData.value?.schedulers);
+  } catch (_) {}
+}
+
+async function saveForgeSettings() {
+  const get = (id) => document.getElementById(id)?.value ?? "";
+  const getChk = (id) => document.getElementById(id)?.checked ?? false;
+  const settings = {
+    enabled: getChk("forge-enabled"),
+    base_url: get("forge-base-url") || "http://127.0.0.1:7860",
+    default_checkpoint: get("forge-checkpoint"),
+    default_steps: Number(get("forge-steps")) || 20,
+    default_cfg: Number(get("forge-cfg")) || 7.0,
+    default_width: Number(get("forge-width")) || 832,
+    default_height: Number(get("forge-height")) || 1216,
+    default_sampler: get("forge-sampler") || "DPM++ 2M",
+    default_scheduler: get("forge-scheduler") || "Karras",
+	hires_enabled: getChk("forge-hires-enabled"),
+    hires_scale: Number(get("forge-hires-scale")) || 1.5,
+    hires_steps: Number(get("forge-hires-steps")) || 15,
+    hires_denoising: Number(get("forge-hires-denoising")) || 0.45,
+    hires_upscaler: get("forge-hires-upscaler") || "4x-UltraSharp",
+    save_images: getChk("forge-save-images"),
+  };
+  try {
+    forgeSettingsCache = await api("/forge/settings", {
+      method: "PUT",
+      body: JSON.stringify(settings),
+    });
+    updateForgeSendCard(forgeSettingsCache);
+    if (forgeSettingsCache.enabled) loadForgeSamplers();
+    toast("Forge settings saved");
+  } catch (e) {
+    toast("Ошибка: " + e.message);
+  }
+}
+
+async function testForgeConnection() {
+  const badge = document.getElementById("forge-status-badge");
+  if (badge) badge.textContent = "Checking…";
+  try {
+    const data = await api("/forge/health", { method: "POST" });
+    const dot = document.getElementById("forge-status-dot");
+    if (data.ok) {
+      if (badge) badge.textContent = `✓ OK · ${data.sd_model_checkpoint || "no checkpoint"}`;
+      if (dot) { dot.className = "forge-status-dot ok"; dot.title = "Connected"; }
+    } else {
+      if (badge) badge.textContent = `✗ ${data.error || "unreachable"}`;
+      if (dot) { dot.className = "forge-status-dot err"; dot.title = data.error || "Error"; }
+    }
+  } catch (e) {
+    if (badge) badge.textContent = `✗ ${e.message}`;
+  }
+}
+
+function updateForgeSendCard(settings) {
+  const card = document.getElementById("forge-send-card");
+  const hint = document.getElementById("forge-send-hint");
+  const btn = document.getElementById("btn-forge-send");
+  if (!card) return;
+  if (settings?.enabled) {
+    card.classList.remove("hidden");
+    if (hint) hint.textContent = `${settings.base_url} · steps ${settings.default_steps} · CFG ${settings.default_cfg}`;
+    if (btn) btn.removeAttribute("disabled");
+  } else {
+    card.classList.remove("hidden");
+    if (hint) hint.textContent = "Forge не настроен — включите в Advanced → LLM Settings → Forge.";
+    if (btn) btn.setAttribute("disabled", "");
+  }
+}
+
+// Last successful Forge result — used by "Send to Hires" button
+let _lastForgeResult = null;
+
+async function sendToForge(positiveOverride, negativeOverride, extraOverride) {
+  const positive = positiveOverride ?? document.getElementById("output-positive")?.value ?? "";
+  const negative = negativeOverride ?? document.getElementById("output-negative")?.value ?? "";
+  if (!positive) return toast("Нет промпта для отправки");
+
+  const resultEl = document.getElementById("forge-result");
+  const imgEl = document.getElementById("forge-result-img");
+  const metaEl = document.getElementById("forge-result-meta");
+  const btn = document.getElementById("btn-forge-send");
+  const hiresBtn = document.getElementById("btn-forge-hires");
+  const saveBtn = document.getElementById("btn-forge-save-img");
+
+  if (resultEl) resultEl.classList.add("hidden");
+  if (hiresBtn) hiresBtn.classList.add("hidden");
+  if (saveBtn) saveBtn.classList.add("hidden");
+  if (btn) { btn.disabled = true; btn.textContent = "Generating…"; }
+
+  try {
+    const body = { positive, negative };
+    if (extraOverride) body.override = extraOverride;
+    const data = await api("/forge/send", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    if (data.images?.[0]) {
+      const dataUrl = `data:image/png;base64,${data.images[0]}`;
+      if (imgEl) imgEl.src = dataUrl;
+      const info = data.info || {};
+      const isHires = data.parameters?.enable_hr;
+      if (metaEl) {
+        metaEl.textContent = [
+          `seed: ${info.seed ?? "?"}`,
+          `steps: ${data.parameters?.steps ?? "?"}`,
+          `CFG: ${data.parameters?.cfg_scale ?? "?"}`,
+          isHires ? `hires ×${data.parameters?.hr_scale ?? "?"}` : null,
+        ].filter(Boolean).join(" · ");
+      }
+      if (resultEl) resultEl.classList.remove("hidden");
+
+      // Store for hires re-send
+      _lastForgeResult = { positive, negative, seed: info.seed };
+
+      // Show action buttons
+      if (hiresBtn) {
+        hiresBtn.classList.remove("hidden");
+        hiresBtn.textContent = isHires ? "↑ Hires (again)" : "↑ Send to Hires";
+      }
+      if (saveBtn) {
+        saveBtn.classList.remove("hidden");
+        saveBtn.onclick = () => {
+          const a = document.createElement("a");
+          a.href = dataUrl;
+          a.download = `forge_${info.seed ?? Date.now()}.png`;
+          a.click();
+        };
+      }
+
+      toast(isHires ? "Hi-res готов" : "Изображение получено от Forge");
+    }
+  } catch (e) {
+    toast("Forge error: " + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "Send to Forge ▶"; }
+  }
+}
+
+async function sendToForgeHires() {
+  if (!_lastForgeResult) return toast("Сначала сгенерируйте изображение");
+  const { positive, negative, seed } = _lastForgeResult;
+  const btn = document.getElementById("btn-forge-hires");
+  if (btn) { btn.disabled = true; btn.textContent = "Upscaling…"; }
+  try {
+    await sendToForge(positive, negative, {
+      enable_hr: true,
+      seed: seed ?? -1,
+    });
+  } finally {
+    if (btn) { btn.disabled = false; }
+  }
+}
+
+// =============================================================
+// HOTKEYS  (Ctrl+Enter, Ctrl+Z, Ctrl+S)
+// =============================================================
+
+function initHotkeys() {
+  document.addEventListener("keydown", (event) => {
+    const tag = (event.target?.tagName || "").toLowerCase();
+    const inInput = tag === "input" || tag === "textarea" || tag === "select";
+
+    // Ctrl+Enter → Generate (works everywhere)
+    if (event.ctrlKey && event.key === "Enter") {
+      event.preventDefault();
+      document.getElementById("btn-generate")?.click();
+      return;
+    }
+
+    // Ctrl+S → Save session to server
+    if (event.ctrlKey && event.key === "s") {
+      event.preventDefault();
+      openSessionSaveModal();
+      return;
+    }
+
+    // Ctrl+Z → Undo (not in text inputs — let browser handle those)
+    if (event.ctrlKey && event.key === "z" && !inInput) {
+      event.preventDefault();
+      undoLastStateChange();
+      return;
+    }
+  });
 }
 
 init();

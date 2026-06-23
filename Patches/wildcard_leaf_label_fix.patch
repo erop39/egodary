@@ -1,0 +1,63 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 05912f4..72fa864 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -12,6 +12,17 @@
+ ## [Unreleased]
+ 
+ ### Fixed
++- **Ветка дерева для wildcard-подгруппы подписывалась именем файла, а не тем, что введено в
++  Subgroup.** Например: Category = `appearance.hair`, Subgroup = "Sexy outfit", файл
++  `random_filename_v3.txt` — лист в дереве показывал `🧩 random_filename_v3.txt` вместо
++  `🧩 Sexy Outfit`. `injectWildcardLeaves()` брал `label` загруженного файла (есть только при
++  нескольких файлах в одной подгруппе он ещё и произвольно "побеждает" — какой файл попался первым
++  при переборе). Теперь подпись листа строится из самого названия подгруппы (humanize:
++  `sexy_outfit` → `Sexy Outfit`, уже нормально набранное "Sexy outfit" остаётся как есть) — это и
++  есть то, что пользователь явно ввёл как имя группы. Имя файла по-прежнему видно в списке вкладки
++  Wildcards и в инлайн-секции "🧩 Wildcards" под *другими* подгруппами, где различать файлы
++  действительно нужно.
++
+ - **В промпт попадала локация, которую пользователь не выбирал.** Сборка "scene"-бакета в
+   `core/pipeline.py` добавляла значения `scene.location` (старая плоская категория, без какого-
+   либо UI-контрола в текущем приложении — заменена деревом Environment → Location) И
+diff --git a/egodary/web/static/js/app.js b/egodary/web/static/js/app.js
+index c5d130d..23e2d6c 100644
+--- a/egodary/web/static/js/app.js
++++ b/egodary/web/static/js/app.js
+@@ -1977,6 +1977,19 @@ async function loadWildcardsIndex() {
+ // chips bolted onto every existing subgroup. Field/multi/conditionField are
+ // copied from a sibling leaf of the same categoryId so the new leaf reads
+ // and writes the same state slot as its neighbors.
++// Turns a subgroup id into a readable label for the dynamic tree leaf:
++// "sexy_outfit" -> "Sexy Outfit". Text the user already typed with normal
++// spacing/casing (e.g. "Sexy outfit") passes through essentially unchanged
++// (only stray underscores get converted, since a typed subgroup name could
++// still contain one).
++function humanizeWildcardSubgroupLabel(subgroup) {
++  return String(subgroup || "")
++    .replace(/_/g, " ")
++    .replace(/\s+/g, " ")
++    .trim()
++    .replace(/\b\w/g, (c) => c.toUpperCase());
++}
++
+ function injectWildcardLeaves(nodes) {
+   if (!Array.isArray(nodes) || !nodes.length) return nodes;
+   return nodes.map((node) => {
+@@ -2009,7 +2022,15 @@ function injectWildcardLeaves(nodes) {
+         seen.add(wc.subgroup);
+         extraLeaves.push({
+           id: `wc_${categoryId}_${wc.subgroup}`,
+-          label: `🧩 ${wc.label}`,
++          // Label the leaf by the subgroup name the user typed (e.g. "Sexy
++          // outfit"), not by the source file's label/filename — the
++          // subgroup is the thing distinguishing this leaf from others, and
++          // it's also ambiguous which file "wins" the label when several
++          // files share one subgroup. The file name is still shown per-file
++          // in the Wildcards tab list and in the inline "🧩 Wildcards"
++          // section underneath OTHER (non-matching) subgroups, where
++          // telling files apart actually matters.
++          label: `🧩 ${humanizeWildcardSubgroupLabel(wc.subgroup)}`,
+           categoryId,
+           subgroup: wc.subgroup,
+           field: template.field,

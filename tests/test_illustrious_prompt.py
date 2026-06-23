@@ -16,6 +16,7 @@ def test_illustrious_rules_bucket_order():
     order = rules.format["bucket_order"]
     assert order.index("quality") < order.index("subject") < order.index("character")
     assert order.index("subject") < order.index("face") < order.index("outfit")
+    assert order.index("outfit") < order.index("tattoos") < order.index("pose")
     assert order.index("face") < order.index("hair") < order.index("makeup")
     assert order.index("pose") < order.index("scene") < order.index("lighting")
     assert order.index("style") < order.index("fetish") < order.index("extra")

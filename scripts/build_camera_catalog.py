@@ -81,13 +81,7 @@ def build_label_index() -> dict[str, dict[str, str]]:
     """field -> label -> item_id"""
     index: dict[str, dict[str, str]] = {}
     for field, groups in CAMERA_CATALOG.items():
-        index[field] = {}
-        for items in items_from_groups(field, groups):
-            pass
-        for subgroup, labels in groups.items():
-            for label in labels:
-                for item in items_from_groups({subgroup: [label]}, {subgroup: [label]}):
-                    index[field][label] = item["id"]
+        index[field] = {item["label"]: item["id"] for item in items_from_groups(field, groups)}
     return index
 
 

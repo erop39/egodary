@@ -5,5 +5,5 @@
 записи.
 """
 
-APP_VERSION = "0.1.21"
-BUILD_NUMBER = "0.1.21"
+APP_VERSION = "0.1.35"
+BUILD_NUMBER = "0.1.35"
