@@ -11,6 +11,67 @@
 
 ## [Unreleased]
 
+### Added
+- **Forge / A1111 интеграция** — прямая отправка в локально запущенный Forge (или vanilla A1111)
+  из UI без копирования промпта.
+  - Карточка **Send to Forge ▶** появляется автоматически, когда Forge включён в Advanced → Forge;
+    содержит статус-точку, hint с URL/steps/CFG, inline-слайдер batch (1–4) и прогресс-бар.
+  - **Batch size 1–4:** генерируются N изображений за один вызов; при batch > 1 показывается
+    кликабельная сетка-миниатюр, выбор тайла обновляет главное изображение и seed для hires.
+    Кнопки «⬇ Save» (одно) и «⬇ Save all» (ZIP через JSZip CDN).
+  - **Прогресс-бар:** поллинг `/sdapi/v1/progress` каждые 600 мс; фаза txt2img vs hires по
+    `job_no`/`job_count`; shimmer-скелет вместо сломанной иконки во время ожидания.
+  - **Generation settings** под выходным изображением: сетка ключ/значение с реальными параметрами
+    отправленного запроса (steps, CFG, sampler, seed, размер и т.д.).
+  - **Hires fix:** scale, upscaler, steps, denoising, hires CFG, resize W/H — все поля в сайдбаре
+    и в Quick Settings.
+  - **Quick Settings:** автосохранение перед отправкой (чтобы UI-значения применялись, а не
+    старые из DB); поля sampler, scheduler, batch size, hires CFG, hires resize W/H.
+  - **↺ Reload** — перезагружает все списки из Forge API; тост показывает счётчики по категориям.
+  - API: `GET /api/forge/catalog` — один запрос возвращает models + samplers + upscalers +
+    schedulers + counts (вместо четырёх отдельных); роуты `/api/forge/progress`,
+    `/api/forge/send`, `/api/forge/health`, `/api/forge/settings`.
+  - Настройки: `catalog_timeout` (30 с, для медленного сканирования моделей) отдельно от
+    `timeout` (10 с, для обычных запросов); `batch_size`, `hires_cfg`, `hires_resize_x/y`
+    добавлены в `FORGE_DEFAULTS`.
+
+### Fixed
+- **Hires качество деградировало vs Forge-UI** при идентичных настройках — два бага:
+  (1) `hr_additional_modules: ["Use same choices"]` мешал применению LoRA-весов в API-режиме —
+  поле полностью удалено из payload; (2) проверка `if not payload.get("denoising_strength")`
+  ошибочно перезаписывала значение `0.0` (корректный «без изменений») — исправлено на
+  `if "denoising_strength" not in payload`.
+- **Все списки Forge (модели, samplers, upscalers, schedulers) теперь отсортированы
+  по алфавиту** (`key=str.lower`), дедuplicated через set; упал один тайм-аут — использован
+  `catalog_timeout=30 s` вместо `timeout=10 s` для медленных catalog-эндпоинтов.
+- **`_SCHEDULER_FALLBACK`** расширен: добавлены `Automatic`, `Beta`, `LCM`, `Turbo`,
+  `Linear Quadratic`, `Polyexponential` — полный список, который Forge возвращает по API.
+- **Batch size = 4 генерировал только 1 изображение** — кнопка Send читала значение из DB,
+  а не из UI. Фикс: `btn-forge-send` теперь вызывает `applyForgeQuickSettings()` перед
+  отправкой, чтобы все UI-значения попали в DB.
+- Скелет-placeholder убран из потока документа в idle-состоянии (добавлен `hidden` по умолчанию);
+  устранён пустой блок между кнопкой Send и прогресс-баром.
+- Batch-значение (`4`) больше не выходит за границы карточки — `min-width:0` на flex-контейнере.
+
+### Changed
+- **Batch size** вынесен из Advanced-сайдбара в inline range-slider рядом с кнопкой
+  «Send to Forge ▶» (значение обновляется live при перетаскивании, синхронизируется из
+  сохранённых настроек).
+- `loadForgeOptions()` переключён на `/api/forge/catalog` (один round-trip вместо четырёх);
+  при ручном **↺ Reload** показывает тост `«Forge loaded: N models · M samplers · …»`.
+- Все `fetch_forge_*` функции используют `except Exception` + `logger.warning` — любая ошибка
+  API логируется и не ломает остальные списки.
+
+### Tests
+- **Параллельный запуск тестов** через `pytest-xdist`: `addopts = "-n auto"` в `pyproject.toml`,
+  `pytest-xdist>=3.0` добавлен в `[dev]`-зависимости. Время прогона: **15 с → ~10 с**.
+- `test_forge_send_enabled_but_unreachable`: `gen_timeout=0.05` — TCP-попытка завершается
+  за <300 мс вместо ожидания полного 10-секундного таймаута (экономит ~2 с).
+- `tests/conftest.py`: session-scoped фикстура `loaded_plugin_manager` кэширует
+  `PluginManager.load_all()` один раз на сессию; `test_loader_loads_ui_extension` переключён
+  на неё.
+- 284 passed (все тесты зелёные).
+
 ### Fixed
 - **`update_and_run.bat` закрывалось с "[ERROR] Server failed to start." после обычной остановки
   сервера Ctrl+C.** Сервер на Windows часто возвращает ненулевой код выхода именно при штатной
