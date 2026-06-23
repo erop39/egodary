@@ -52,19 +52,9 @@ class TestUiExtensionProtocol:
 # ---------------------------------------------------------------------------
 
 class TestLoaderUiExtension:
-    def test_loader_loads_ui_extension(self, tmp_path):
+    def test_loader_loads_ui_extension(self, loaded_plugin_manager):
         """Загрузчик корректно загружает ui_extension плагин."""
-        from egodary.plugins.loader import PluginManager
-        from egodary.core.registry import TagRegistry
-
-        # Используем реальный плагин из plugins_user
-        plugins_user = Path(__file__).resolve().parents[1] / "plugins_user"
-        builtin = Path(__file__).resolve().parents[1] / "egodary" / "content"
-
-        registry = TagRegistry()
-        pm = PluginManager(builtin_dir=builtin, dropin_dir=plugins_user)
-        pm.load_all(registry)
-
+        pm = loaded_plugin_manager
         loaded_ids = [p.manifest.plugin.id for p in pm.loaded]
         assert "advanced_prompting" in loaded_ids
 

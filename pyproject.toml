@@ -23,6 +23,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
+    "pytest-xdist>=3.0",
     "ruff>=0.4",
     "httpx>=0.27",
 ]
@@ -38,3 +39,4 @@ egodary = ["web/static/**/*", "content/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-n auto"

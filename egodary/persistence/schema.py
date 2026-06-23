@@ -1206,7 +1206,12 @@ def load_forge_settings() -> dict:
         "hires_upscaler": "4x-UltraSharp",
         "hires_steps": 15,
         "hires_denoising": 0.45,
+        "hires_cfg": 0.0,
+        "hires_resize_x": 0,
+        "hires_resize_y": 0,
+        "batch_size": 1,
         "save_images": False,
+        "catalog_timeout": 30.0,
     }
     if not raw:
         return defaults

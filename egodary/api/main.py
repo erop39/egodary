@@ -1360,6 +1360,15 @@ def forge_health():
     return check_forge_health(settings)
 
 
+@app.get("/api/forge/progress")
+def forge_progress():
+    from egodary.integrations.forge import get_forge_progress
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        return {"ok": False, "progress": 0.0, "step": 0, "steps": 0, "phase": "idle", "eta": 0.0, "image": None, "error": "disabled"}
+    return get_forge_progress(settings)
+
+
 @app.get("/api/forge/models")
 def forge_models():
     from egodary.integrations.forge import fetch_forge_models
@@ -1396,7 +1405,37 @@ def forge_schedulers():
     return {"schedulers": fetch_forge_schedulers(settings)}
 
 
+@app.get("/api/forge/catalog")
+def forge_catalog():
+    """Fetch all option lists in one request; returns counts for diagnostics."""
+    from egodary.integrations.forge import (
+        fetch_forge_models, fetch_forge_samplers,
+        fetch_forge_upscalers, fetch_forge_schedulers,
+    )
+    settings = load_forge_settings()
+    if not settings.get("enabled"):
+        return {"models": [], "samplers": [], "upscalers": [], "schedulers": [],
+                "counts": {"models": 0, "samplers": 0, "upscalers": 0, "schedulers": 0}}
+    models = fetch_forge_models(settings)
+    samplers = fetch_forge_samplers(settings)
+    upscalers = fetch_forge_upscalers(settings)
+    schedulers = fetch_forge_schedulers(settings)
+    return {
+        "models": models,
+        "samplers": samplers,
+        "upscalers": upscalers,
+        "schedulers": schedulers,
+        "counts": {
+            "models": len(models),
+            "samplers": len(samplers),
+            "upscalers": len(upscalers),
+            "schedulers": len(schedulers),
+        },
+    }
 
+
+
+@app.post("/api/forge/send")
 def forge_send(payload: ForgeSendRequest):
     from egodary.integrations.forge import send_to_forge
     settings = load_forge_settings()

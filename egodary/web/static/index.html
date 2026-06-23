@@ -532,7 +532,10 @@
           <div class="card" id="forge-settings-card">
             <div class="card-title row-between">
               <span>Forge / A1111</span>
-              <button class="btn-ghost" type="button" id="btn-forge-test">Test connection</button>
+              <div style="display:flex;gap:6px">
+                <button class="btn-ghost" type="button" id="btn-forge-reload" title="Reload models, samplers, upscalers from Forge">↺ Reload</button>
+                <button class="btn-ghost" type="button" id="btn-forge-test">Test connection</button>
+              </div>
             </div>
             <p class="card-hint">Отправка промпта напрямую в запущенный Forge или A1111. URL: обычно http://127.0.0.1:7860</p>
             <label class="check-row"><input type="checkbox" id="forge-enabled" /> Enable Forge integration</label>
@@ -565,18 +568,40 @@
                 <datalist id="forge-schedulers-list"></datalist>
               </label>
             </div>
+            <div class="field-grid" style="margin-top:8px">
+              <label>Batch size <span class="field-hint">(1–4)</span>
+                <input id="forge-batch-size" type="number" min="1" max="4" step="1" />
+              </label>
+            </div>
             <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Hires Fix</div>
             <label class="check-row"><input type="checkbox" id="forge-hires-enabled" /> Enable Hires fix</label>
             <div class="field-grid">
-              <label>Scale <input id="forge-hires-scale" type="number" min="1.1" max="4" step="0.1" /></label>
-              <label>Hires steps <input id="forge-hires-steps" type="number" min="1" max="60" step="1" /></label>
-              <label>Denoising <input id="forge-hires-denoising" type="number" min="0.05" max="1" step="0.05" /></label>
-              <label>Upscaler <input id="forge-hires-upscaler" type="text" placeholder="4x-UltraSharp" list="forge-upscalers-list" /></label>
-              <datalist id="forge-upscalers-list"></datalist>
+              <label class="span-2">Upscaler
+                <input id="forge-hires-upscaler" type="text" placeholder="4x-UltraSharp" list="forge-upscalers-list" />
+                <datalist id="forge-upscalers-list"></datalist>
+              </label>
+              <label>Upscale by
+                <input id="forge-hires-scale" type="number" min="1.0" max="4" step="0.05" />
+              </label>
+              <label>Hires steps
+                <input id="forge-hires-steps" type="number" min="0" max="60" step="1" />
+              </label>
+              <label>Denoising strength
+                <input id="forge-hires-denoising" type="number" min="0" max="1" step="0.01" />
+              </label>
+              <label>Hires CFG Scale <span class="field-hint">(0 = same as base)</span>
+                <input id="forge-hires-cfg" type="number" min="0" max="30" step="0.5" />
+              </label>
+              <label>Resize width to <span class="field-hint">(0 = off)</span>
+                <input id="forge-hires-resize-x" type="number" min="0" max="4096" step="8" />
+              </label>
+              <label>Resize height to <span class="field-hint">(0 = off)</span>
+                <input id="forge-hires-resize-y" type="number" min="0" max="4096" step="8" />
+              </label>
             </div>
             <div class="card-title" style="font-size:12px;margin-top:10px;opacity:.7">Output</div>
             <label class="check-row"><input type="checkbox" id="forge-save-images" /> Save images to Forge output folder</label>
-			<div class="import-actions">
+            <div class="import-actions">
               <button type="button" class="btn btn-secondary" id="btn-forge-save">Save</button>
             </div>
             <div class="import-report-stats" id="forge-status-badge">—</div>
@@ -757,6 +782,22 @@
         <textarea id="output-negative" rows="5" readonly></textarea>
       </div>
 
+      <div class="card result-card" id="quality-score-panel">
+        <div class="card-title row-between">
+          <span>Quality Score</span>
+          <span class="quality-badge" id="quality-score-badge">—</span>
+        </div>
+        <div class="quality-score-line" id="quality-score-line">—</div>
+        <div class="quality-section hidden" id="quality-issues-wrap">
+          <div class="quality-section-title">Проблемы:</div>
+          <ul class="quality-list" id="quality-issues"></ul>
+        </div>
+        <div class="quality-section hidden" id="quality-recs-wrap">
+          <div class="quality-section-title">Рекомендации:</div>
+          <ul class="quality-list quality-recs" id="quality-recommendations"></ul>
+        </div>
+      </div>
+
       <div class="card result-card">
         <div class="card-title">Output options</div>
         <label class="check-row"><input type="checkbox" id="opt-group-mode" /> Group mode (2girls)</label>
@@ -797,54 +838,68 @@
         </div>
         <p class="card-hint" id="forge-send-hint">Forge не настроен — включите в Advanced → Forge.</p>
 
-        <!-- Quick settings (inline) -->
+        <div class="forge-send-row">
+          <button class="btn btn-secondary" id="btn-forge-send" disabled>Send to Forge ▶</button>
+          <div class="forge-batch-slider-wrap">
+            <label class="forge-batch-label" for="fq-batch-size-slider">Batch</label>
+            <input id="fq-batch-size-slider" type="range" min="1" max="4" step="1" value="1" class="forge-batch-slider" />
+            <span class="forge-batch-value" id="forge-batch-value">1</span>
+          </div>
+        </div>
+
+        <!-- Progress (shown while generating) -->
+        <div class="forge-progress hidden" id="forge-progress">
+          <div class="forge-progress-header">
+            <span class="forge-progress-label" id="forge-progress-label">Generating…</span>
+            <span class="forge-progress-eta" id="forge-progress-eta"></span>
+          </div>
+          <div class="forge-progress-track">
+            <div class="forge-progress-bar" id="forge-progress-bar" style="width:0%"></div>
+          </div>
+          <div class="forge-preview-skeleton hidden" id="forge-preview-skeleton"></div>
+          <img class="forge-preview-img hidden" id="forge-preview-img" src="" alt="" />
+        </div>
+
+        <div class="forge-result hidden" id="forge-result">
+          <div class="forge-batch-grid hidden" id="forge-batch-grid"></div>
+          <img id="forge-result-img" src="" alt="" class="forge-img" />
+          <div class="forge-gen-params" id="forge-gen-params"></div>
+          <div class="forge-result-actions">
+            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-hires">↑ Hires</button>
+            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-save-img">⬇ Save</button>
+            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-save-all">⬇ Save all</button>
+          </div>
+        </div>
+
+        <!-- Generation settings (below image output) -->
         <details class="forge-quick-settings" id="forge-quick-details">
-          <summary class="forge-quick-summary">⚙ Settings</summary>
+          <summary class="forge-quick-summary">⚙ Generation settings</summary>
           <div class="forge-quick-grid">
             <label>Steps <input type="number" id="fq-steps" min="1" max="150" step="1" /></label>
             <label>CFG <input type="number" id="fq-cfg" min="1" max="30" step="0.5" /></label>
             <label>Width <input type="number" id="fq-width" min="64" max="2048" step="64" /></label>
             <label>Height <input type="number" id="fq-height" min="64" max="2048" step="64" /></label>
             <label class="span-2">Sampler <input type="text" id="fq-sampler" list="forge-samplers-list" /></label>
+            <label class="span-2">Scheduler <input type="text" id="fq-scheduler" list="forge-schedulers-list" /></label>
+            <label>Batch size <input type="number" id="fq-batch-size" min="1" max="4" step="1" /></label>
           </div>
           <div class="forge-quick-hires">
             <label class="check-row"><input type="checkbox" id="fq-hires-enabled" /> Hires fix</label>
             <div class="forge-quick-hires-params" id="fq-hires-params">
-              <label>Scale <input type="number" id="fq-hires-scale" min="1.1" max="4" step="0.1" /></label>
-              <label>Denoise <input type="number" id="fq-hires-denoising" min="0.05" max="1" step="0.05" /></label>
               <label class="span-2">Upscaler <input type="text" id="fq-hires-upscaler" list="forge-upscalers-list" placeholder="4x-UltraSharp" /></label>
+              <label>Scale <input type="number" id="fq-hires-scale" min="1.0" max="4" step="0.05" /></label>
+              <label>Steps <input type="number" id="fq-hires-steps" min="0" max="60" step="1" /></label>
+              <label>Denoise <input type="number" id="fq-hires-denoising" min="0" max="1" step="0.01" /></label>
+              <label>Hires CFG <span class="field-hint">(0=same)</span> <input type="number" id="fq-hires-cfg" min="0" max="30" step="0.5" /></label>
+              <label>Resize W <span class="field-hint">(0=off)</span> <input type="number" id="fq-hires-resize-x" min="0" max="4096" step="8" /></label>
+              <label>Resize H <span class="field-hint">(0=off)</span> <input type="number" id="fq-hires-resize-y" min="0" max="4096" step="8" /></label>
             </div>
           </div>
           <label class="check-row"><input type="checkbox" id="fq-save-images" /> Save to Forge outputs</label>
           <button class="btn btn-secondary btn-sm" id="btn-fq-apply" style="margin-top:6px;width:100%">Apply &amp; Save</button>
         </details>
-
-        <button class="btn btn-secondary" id="btn-forge-send" disabled>Send to Forge ▶</button>
-        <div class="forge-result hidden" id="forge-result">
-          <img id="forge-result-img" src="" alt="Generated image" class="forge-img" />
-          <div class="forge-result-meta" id="forge-result-meta"></div>
-          <div class="forge-result-actions">
-            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-hires">↑ Send to Hires</button>
-            <button class="btn btn-secondary btn-sm hidden" id="btn-forge-save-img" title="Скачать изображение">⬇ Save</button>
-          </div>
-        </div>
       </div>
 
-      <div class="card result-card" id="quality-score-panel">
-        <div class="card-title row-between">
-          <span>Quality Score</span>
-          <span class="quality-badge" id="quality-score-badge">—</span>
-        </div>
-        <div class="quality-score-line" id="quality-score-line">—</div>
-        <div class="quality-section hidden" id="quality-issues-wrap">
-          <div class="quality-section-title">Проблемы:</div>
-          <ul class="quality-list" id="quality-issues"></ul>
-        </div>
-        <div class="quality-section hidden" id="quality-recs-wrap">
-          <div class="quality-section-title">Рекомендации:</div>
-          <ul class="quality-list quality-recs" id="quality-recommendations"></ul>
-        </div>
-      </div>
 
     </aside>
   </div>
@@ -1082,6 +1137,7 @@
   <script src="/static/js/style-tree-data.js"></script>
   <script src="/static/js/fetish-tree-data.js"></script>
   <script src="/static/js/tag-tooltips-ru.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous"></script>
   <script src="/static/js/app.js"></script>
 </body>
 </html>

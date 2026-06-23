@@ -286,7 +286,8 @@ def test_forge_send_disabled(client):
 
 
 def test_forge_send_enabled_but_unreachable(client):
-    client.put("/api/forge/settings", json={"enabled": True, "base_url": "http://127.0.0.1:19999"})
+    # Use a tiny gen_timeout so the TCP attempt fails fast instead of waiting 10s
+    client.put("/api/forge/settings", json={"enabled": True, "base_url": "http://127.0.0.1:19999", "gen_timeout": 0.05})
     resp = client.post("/api/forge/send", json={"positive": "1girl", "negative": ""})
     assert resp.status_code == 502
 

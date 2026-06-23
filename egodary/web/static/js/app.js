@@ -7248,11 +7248,29 @@ function bindEvents() {
   document.getElementById("btn-forge-save")?.addEventListener("click", () => {
     saveForgeSettings().catch((e) => toast("Ошибка: " + e.message));
   });
+  // Batch slider live value
+  const _batchSlider = document.getElementById("fq-batch-size-slider");
+  const _batchValueEl = document.getElementById("forge-batch-value");
+  if (_batchSlider && _batchValueEl) {
+    _batchSlider.addEventListener("input", () => {
+      _batchValueEl.textContent = _batchSlider.value;
+    });
+  }
+
   document.getElementById("btn-forge-test")?.addEventListener("click", () => {
     testForgeConnection().catch((e) => toast("Ошибка: " + e.message));
   });
-  document.getElementById("btn-forge-send")?.addEventListener("click", () => {
-    sendToForge().catch((e) => toast("Forge error: " + e.message));
+  document.getElementById("btn-forge-reload")?.addEventListener("click", () => {
+    reloadForgeOptions().catch((e) => toast("Ошибка: " + e.message));
+  });
+  document.getElementById("btn-forge-send")?.addEventListener("click", async () => {
+    try {
+      // Always sync Quick Settings to DB before sending so UI values are applied
+      await applyForgeQuickSettings();
+      await sendToForge();
+    } catch (e) {
+      toast("Forge error: " + e.message);
+    }
   });
   document.getElementById("btn-forge-hires")?.addEventListener("click", () => {
     sendToForgeHires().catch((e) => toast("Forge error: " + e.message));
@@ -7628,7 +7646,7 @@ async function loadForgeSettings() {
     populateForgeSettingsForm(forgeSettingsCache);
     populateForgeQuickSettings(forgeSettingsCache);
     updateForgeSendCard(forgeSettingsCache);
-    if (forgeSettingsCache.enabled) loadForgeSamplers();
+    if (forgeSettingsCache.enabled) loadForgeOptions({ silent: true });
   } catch (_) {}
 }
 
@@ -7640,10 +7658,21 @@ function populateForgeQuickSettings(s) {
   set("fq-width", s.default_width);
   set("fq-height", s.default_height);
   set("fq-sampler", s.default_sampler);
+  set("fq-scheduler", s.default_scheduler);
+  set("fq-batch-size", s.batch_size ?? 1);
+  const batchVal = s.batch_size ?? 1;
+  const sliderEl = document.getElementById("fq-batch-size-slider");
+  const batchLbl = document.getElementById("forge-batch-value");
+  if (sliderEl) sliderEl.value = batchVal;
+  if (batchLbl) batchLbl.textContent = batchVal;
   setChk("fq-hires-enabled", s.hires_enabled);
-  set("fq-hires-scale", s.hires_scale);
-  set("fq-hires-denoising", s.hires_denoising);
   set("fq-hires-upscaler", s.hires_upscaler);
+  set("fq-hires-scale", s.hires_scale);
+  set("fq-hires-steps", s.hires_steps);
+  set("fq-hires-denoising", s.hires_denoising);
+  set("fq-hires-cfg", s.hires_cfg ?? 0);
+  set("fq-hires-resize-x", s.hires_resize_x ?? 0);
+  set("fq-hires-resize-y", s.hires_resize_y ?? 0);
   setChk("fq-save-images", s.save_images);
   document.getElementById("fq-hires-params")?.classList.toggle("visible", !!s.hires_enabled);
 }
@@ -7659,10 +7688,16 @@ async function applyForgeQuickSettings() {
     default_width: Number(get("fq-width")) || current.default_width,
     default_height: Number(get("fq-height")) || current.default_height,
     default_sampler: get("fq-sampler") || current.default_sampler,
+    default_scheduler: get("fq-scheduler") || current.default_scheduler,
+    batch_size: Math.min(4, Math.max(1, Number(document.getElementById("fq-batch-size-slider")?.value) || Number(get("fq-batch-size")) || current.batch_size || 1)),
     hires_enabled: getChk("fq-hires-enabled"),
-    hires_scale: Number(get("fq-hires-scale")) || current.hires_scale,
-    hires_denoising: Number(get("fq-hires-denoising")) || current.hires_denoising,
     hires_upscaler: get("fq-hires-upscaler") || current.hires_upscaler,
+    hires_scale: Number(get("fq-hires-scale")) || current.hires_scale,
+    hires_steps: Number(get("fq-hires-steps")) ?? current.hires_steps,
+    hires_denoising: Number(get("fq-hires-denoising")) || current.hires_denoising,
+    hires_cfg: Number(get("fq-hires-cfg")) ?? 0,
+    hires_resize_x: Number(get("fq-hires-resize-x")) ?? 0,
+    hires_resize_y: Number(get("fq-hires-resize-y")) ?? 0,
     save_images: getChk("fq-save-images"),
   };
   try {
@@ -7684,11 +7719,15 @@ function populateForgeSettingsForm(s) {
   set("forge-height", s.default_height);
   set("forge-sampler", s.default_sampler);
   set("forge-scheduler", s.default_scheduler);
+  set("forge-batch-size", s.batch_size ?? 1);
   setChk("forge-hires-enabled", s.hires_enabled);
+  set("forge-hires-upscaler", s.hires_upscaler);
   set("forge-hires-scale", s.hires_scale);
   set("forge-hires-steps", s.hires_steps);
   set("forge-hires-denoising", s.hires_denoising);
-  set("forge-hires-upscaler", s.hires_upscaler);
+  set("forge-hires-cfg", s.hires_cfg ?? 0);
+  set("forge-hires-resize-x", s.hires_resize_x ?? 0);
+  set("forge-hires-resize-y", s.hires_resize_y ?? 0);
   setChk("forge-save-images", s.save_images);
 }
 
@@ -7696,31 +7735,27 @@ async function loadForgeSamplers() {
   await loadForgeOptions();
 }
 
-async function loadForgeOptions() {
+async function loadForgeOptions({ silent = false } = {}) {
+  const fill = (id, items) => {
+    const dl = document.getElementById(id);
+    if (dl && items?.length) {
+      dl.innerHTML = items.filter(Boolean).map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
+    }
+  };
   try {
-    const [samplersData, modelsData, upscalersData, schedulersData] = await Promise.allSettled([
-      api("/forge/samplers"),
-      api("/forge/models"),
-      api("/forge/upscalers"),
-      api("/forge/schedulers"),
-    ]);
-
-    const fill = (id, items) => {
-      const dl = document.getElementById(id);
-      if (dl && items?.length) {
-        dl.innerHTML = items.filter(Boolean).map((s) => `<option value="${escapeHtml(s)}"></option>`).join("");
-      }
-    };
-
-    if (samplersData.status === "fulfilled")
-      fill("forge-samplers-list", samplersData.value?.samplers);
-    if (modelsData.status === "fulfilled")
-      fill("forge-models-list", modelsData.value?.models);
-    if (upscalersData.status === "fulfilled")
-      fill("forge-upscalers-list", upscalersData.value?.upscalers);
-    if (schedulersData.status === "fulfilled")
-      fill("forge-schedulers-list", schedulersData.value?.schedulers);
-  } catch (_) {}
+    const data = await api("/forge/catalog");
+    fill("forge-models-list", data.models);
+    fill("forge-samplers-list", data.samplers);
+    fill("forge-upscalers-list", data.upscalers);
+    fill("forge-schedulers-list", data.schedulers);
+    if (!silent && data.counts) {
+      const c = data.counts;
+      toast(`Forge loaded: ${c.models} models · ${c.samplers} samplers · ${c.upscalers} upscalers · ${c.schedulers} schedulers`);
+    }
+    return data;
+  } catch (e) {
+    if (!silent) toast("Forge catalog error: " + e.message);
+  }
 }
 
 async function saveForgeSettings() {
@@ -7736,11 +7771,15 @@ async function saveForgeSettings() {
     default_height: Number(get("forge-height")) || 1216,
     default_sampler: get("forge-sampler") || "DPM++ 2M",
     default_scheduler: get("forge-scheduler") || "Karras",
-	hires_enabled: getChk("forge-hires-enabled"),
+    batch_size: Math.min(4, Math.max(1, Number(get("forge-batch-size")) || 1)),
+    hires_enabled: getChk("forge-hires-enabled"),
+    hires_upscaler: get("forge-hires-upscaler") || "4x-UltraSharp",
     hires_scale: Number(get("forge-hires-scale")) || 1.5,
     hires_steps: Number(get("forge-hires-steps")) || 15,
     hires_denoising: Number(get("forge-hires-denoising")) || 0.45,
-    hires_upscaler: get("forge-hires-upscaler") || "4x-UltraSharp",
+    hires_cfg: Number(get("forge-hires-cfg")) || 0,
+    hires_resize_x: Number(get("forge-hires-resize-x")) || 0,
+    hires_resize_y: Number(get("forge-hires-resize-y")) || 0,
     save_images: getChk("forge-save-images"),
   };
   try {
@@ -7749,7 +7788,7 @@ async function saveForgeSettings() {
       body: JSON.stringify(settings),
     });
     updateForgeSendCard(forgeSettingsCache);
-    if (forgeSettingsCache.enabled) loadForgeSamplers();
+    if (forgeSettingsCache.enabled) loadForgeOptions({ silent: true });
     toast("Forge settings saved");
   } catch (e) {
     toast("Ошибка: " + e.message);
@@ -7765,12 +7804,25 @@ async function testForgeConnection() {
     if (data.ok) {
       if (badge) badge.textContent = `✓ OK · ${data.sd_model_checkpoint || "no checkpoint"}`;
       if (dot) { dot.className = "forge-status-dot ok"; dot.title = "Connected"; }
+      loadForgeOptions({ silent: true });
     } else {
       if (badge) badge.textContent = `✗ ${data.error || "unreachable"}`;
       if (dot) { dot.className = "forge-status-dot err"; dot.title = data.error || "Error"; }
     }
   } catch (e) {
     if (badge) badge.textContent = `✗ ${e.message}`;
+  }
+}
+
+async function reloadForgeOptions() {
+  const btn = document.getElementById("btn-forge-reload");
+  if (btn) { btn.disabled = true; btn.textContent = "↺ Loading…"; }
+  try {
+    await loadForgeOptions({ silent: false });
+  } catch (e) {
+    toast("Reload error: " + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "↺ Reload"; }
   }
 }
 
@@ -7790,8 +7842,179 @@ function updateForgeSendCard(settings) {
   }
 }
 
-// Last successful Forge result — used by "Send to Hires" button
-let _lastForgeResult = null;
+// Forge state
+let _lastForgeResult = null;   // { positive, negative, seed }
+let _lastForgeImages = [];     // all base64 images from last batch
+let _lastForgeParams = null;
+let _lastForgeInfo = null;
+let _forgeProgressTimer = null;
+
+function _forgeProgressStop() {
+  if (_forgeProgressTimer) { clearInterval(_forgeProgressTimer); _forgeProgressTimer = null; }
+  const prog = document.getElementById("forge-progress");
+  const preview = document.getElementById("forge-preview-img");
+  const skeleton = document.getElementById("forge-preview-skeleton");
+  if (prog) prog.classList.add("hidden");
+  if (preview) { preview.classList.add("hidden"); preview.src = ""; }
+  if (skeleton) skeleton.classList.add("hidden");
+}
+
+function _forgeProgressStart(batchSize) {
+  const prog = document.getElementById("forge-progress");
+  const bar = document.getElementById("forge-progress-bar");
+  const label = document.getElementById("forge-progress-label");
+  const eta = document.getElementById("forge-progress-eta");
+  const preview = document.getElementById("forge-preview-img");
+  const skeleton = document.getElementById("forge-preview-skeleton");
+  if (prog) prog.classList.remove("hidden");
+  if (bar) bar.style.width = "0%";
+  if (preview) { preview.classList.add("hidden"); preview.src = ""; }
+
+  const n = Math.max(1, Math.min(4, batchSize || 1));
+  if (skeleton) {
+    skeleton.classList.remove("hidden");
+    if (n > 1) {
+      skeleton.innerHTML = Array.from({ length: n }, () =>
+        `<div class="forge-skeleton-tile"></div>`
+      ).join("");
+      skeleton.classList.add("batch-mode");
+    } else {
+      skeleton.innerHTML = "";
+      skeleton.classList.remove("batch-mode");
+    }
+  }
+
+  _forgeProgressTimer = setInterval(async () => {
+    try {
+      const d = await api("/forge/progress");
+      if (!d.ok || d.phase === "idle") return;
+      const pct = Math.round(d.progress * 100);
+      if (bar) bar.style.width = pct + "%";
+      const phaseLabel = d.phase === "hires" ? "Hires fix" : "Generating";
+      const stepInfo = d.steps > 0 ? ` · step ${d.step}/${d.steps}` : "";
+      if (label) label.textContent = `${phaseLabel}${stepInfo}`;
+      if (eta) eta.textContent = d.eta > 0 ? `${Math.ceil(d.eta)}s` : "";
+      if (d.image && preview) {
+        preview.src = `data:image/png;base64,${d.image}`;
+        preview.classList.remove("hidden");
+        if (skeleton) skeleton.classList.add("hidden");
+      }
+    } catch (_) { /* ignore transient errors during polling */ }
+  }, 600);
+}
+
+function _renderForgeGenParams(params, info, seed) {
+  const el = document.getElementById("forge-gen-params");
+  if (!el) return;
+  const p = params || {};
+  const isHires = !!p.enable_hr;
+  const displaySeed = seed ?? info?.seed ?? "?";
+  const rows = [
+    ["Seed", displaySeed],
+    ["Steps", p.steps ?? "?"],
+    ["CFG", p.cfg_scale ?? "?"],
+    ["Sampler", [p.sampler_name, p.scheduler].filter(Boolean).join(" · ") || "?"],
+    ["Size", p.width && p.height ? `${p.width} × ${p.height}` : "?"],
+  ];
+  if (isHires) {
+    rows.push(["Hires scale", `×${p.hr_scale ?? "?"}`]);
+    rows.push(["Hires steps", p.hr_second_pass_steps ?? "?"]);
+    rows.push(["Denoise", p.denoising_strength ?? "?"]);
+    if (p.hr_upscaler) rows.push(["Upscaler", p.hr_upscaler]);
+  }
+  if (p.override_settings?.sd_model_checkpoint) {
+    rows.push(["Checkpoint", p.override_settings.sd_model_checkpoint]);
+  }
+  el.innerHTML = rows.map(([k, v]) =>
+    `<div class="forge-param-row"><span class="forge-param-key">${k}</span><span class="forge-param-val">${v}</span></div>`
+  ).join("");
+}
+
+function _selectForgeTile(idx) {
+  const images = _lastForgeImages;
+  if (!images.length) return;
+  const info = _lastForgeInfo || {};
+  const allSeeds = info.all_seeds || [];
+  const seed = allSeeds[idx] ?? info.seed ?? -1;
+
+  // show selected image in the main slot (visible below the grid)
+  const imgEl = document.getElementById("forge-result-img");
+  if (imgEl) {
+    imgEl.src = `data:image/png;base64,${images[idx]}`;
+    imgEl.style.display = "";
+  }
+
+  // update tile highlight
+  document.querySelectorAll(".forge-batch-tile").forEach((t, i) => {
+    t.classList.toggle("selected", i === idx);
+  });
+
+  // update gen params and last result for hires
+  _renderForgeGenParams(_lastForgeParams, info, seed);
+  if (_lastForgeResult) _lastForgeResult = { ..._lastForgeResult, seed };
+
+  // update save button for selected image
+  const saveBtn = document.getElementById("btn-forge-save-img");
+  if (saveBtn) {
+    saveBtn.onclick = () => {
+      const a = document.createElement("a");
+      a.href = `data:image/png;base64,${images[idx]}`;
+      a.download = `forge_${seed}.png`;
+      a.click();
+    };
+  }
+}
+
+function _renderForgeBatchGrid(images) {
+  const grid = document.getElementById("forge-batch-grid");
+  const singleImg = document.getElementById("forge-result-img");
+  if (!grid) return;
+
+  if (images.length <= 1) {
+    grid.classList.add("hidden");
+    grid.innerHTML = "";
+    if (singleImg) singleImg.style.display = "";
+    return;
+  }
+
+  // batch: show grid, hide single image (tile click sets it)
+  grid.classList.remove("hidden");
+  if (singleImg) singleImg.style.display = "none";
+
+  grid.innerHTML = images.map((img, i) =>
+    `<div class="forge-batch-tile${i === 0 ? " selected" : ""}" data-idx="${i}">` +
+    `<img src="data:image/png;base64,${img}" alt="${i + 1}" loading="lazy" /></div>`
+  ).join("");
+  grid.querySelectorAll(".forge-batch-tile").forEach(tile => {
+    tile.addEventListener("click", () => _selectForgeTile(Number(tile.dataset.idx)));
+  });
+}
+
+async function _forgeZipSaveAll(images, info) {
+  if (typeof JSZip === "undefined") {
+    // fallback: sequential downloads
+    images.forEach((img, i) => {
+      const seed = (info?.all_seeds?.[i] ?? info?.seed ?? i);
+      const a = document.createElement("a");
+      a.href = `data:image/png;base64,${img}`;
+      a.download = `forge_${seed}.png`;
+      a.click();
+    });
+    return;
+  }
+  const zip = new JSZip();
+  images.forEach((img, i) => {
+    const seed = (info?.all_seeds?.[i] ?? info?.seed ?? i);
+    zip.file(`forge_${seed}.png`, img, { base64: true });
+  });
+  const blob = await zip.generateAsync({ type: "blob" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `forge_batch_${Date.now()}.zip`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 async function sendToForge(positiveOverride, negativeOverride, extraOverride) {
   const positive = positiveOverride ?? document.getElementById("output-positive")?.value ?? "";
@@ -7800,7 +8023,6 @@ async function sendToForge(positiveOverride, negativeOverride, extraOverride) {
 
   const resultEl = document.getElementById("forge-result");
   const imgEl = document.getElementById("forge-result-img");
-  const metaEl = document.getElementById("forge-result-meta");
   const btn = document.getElementById("btn-forge-send");
   const hiresBtn = document.getElementById("btn-forge-hires");
   const saveBtn = document.getElementById("btn-forge-save-img");
@@ -7808,53 +8030,75 @@ async function sendToForge(positiveOverride, negativeOverride, extraOverride) {
   if (resultEl) resultEl.classList.add("hidden");
   if (hiresBtn) hiresBtn.classList.add("hidden");
   if (saveBtn) saveBtn.classList.add("hidden");
+  document.getElementById("btn-forge-save-all")?.classList.add("hidden");
   if (btn) { btn.disabled = true; btn.textContent = "Generating…"; }
+
+  const _batchSize = Math.max(1, Number(document.getElementById("fq-batch-size-slider")?.value) || Number(document.getElementById("fq-batch-size")?.value) || 1);
+  _forgeProgressStart(_batchSize);
 
   try {
     const body = { positive, negative };
     if (extraOverride) body.override = extraOverride;
-    const data = await api("/forge/send", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-    if (data.images?.[0]) {
-      const dataUrl = `data:image/png;base64,${data.images[0]}`;
-      if (imgEl) imgEl.src = dataUrl;
+    const data = await api("/forge/send", { method: "POST", body: JSON.stringify(body) });
+
+    if (data.images?.length) {
+      const images = data.images;
       const info = data.info || {};
-      const isHires = data.parameters?.enable_hr;
-      if (metaEl) {
-        metaEl.textContent = [
-          `seed: ${info.seed ?? "?"}`,
-          `steps: ${data.parameters?.steps ?? "?"}`,
-          `CFG: ${data.parameters?.cfg_scale ?? "?"}`,
-          isHires ? `hires ×${data.parameters?.hr_scale ?? "?"}` : null,
-        ].filter(Boolean).join(" · ");
-      }
+      const params = data.parameters || {};
+      const isHires = !!params.enable_hr;
+      const allSeeds = info.all_seeds || [];
+      const firstSeed = allSeeds[0] ?? info.seed ?? -1;
+
+      // store batch state
+      _lastForgeImages = images;
+      _lastForgeParams = params;
+      _lastForgeInfo = info;
+      _lastForgeResult = { positive, negative, seed: firstSeed };
+
+      // render grid (hidden when single image)
+      _renderForgeBatchGrid(images);
+
+      // show first image in main slot
+      const imgEl = document.getElementById("forge-result-img");
+      if (imgEl) imgEl.src = `data:image/png;base64,${images[0]}`;
+
+      _renderForgeGenParams(params, info, firstSeed);
+
       if (resultEl) resultEl.classList.remove("hidden");
 
-      // Store for hires re-send
-      _lastForgeResult = { positive, negative, seed: info.seed };
-
-      // Show action buttons
       if (hiresBtn) {
         hiresBtn.classList.remove("hidden");
-        hiresBtn.textContent = isHires ? "↑ Hires (again)" : "↑ Send to Hires";
+        hiresBtn.textContent = isHires ? "↑ Hires (again)" : "↑ Hires";
       }
+
+      const saveBtn = document.getElementById("btn-forge-save-img");
       if (saveBtn) {
         saveBtn.classList.remove("hidden");
         saveBtn.onclick = () => {
+          const seed = _lastForgeResult?.seed ?? firstSeed;
           const a = document.createElement("a");
-          a.href = dataUrl;
-          a.download = `forge_${info.seed ?? Date.now()}.png`;
+          a.href = document.getElementById("forge-result-img")?.src || "";
+          a.download = `forge_${seed}.png`;
           a.click();
         };
       }
 
-      toast(isHires ? "Hi-res готов" : "Изображение получено от Forge");
+      const saveAllBtn = document.getElementById("btn-forge-save-all");
+      if (saveAllBtn) {
+        if (images.length > 1) {
+          saveAllBtn.classList.remove("hidden");
+          saveAllBtn.onclick = () => _forgeZipSaveAll(images, info);
+        } else {
+          saveAllBtn.classList.add("hidden");
+        }
+      }
+
+      toast(isHires ? "Hi-res готов" : images.length > 1 ? `${images.length} изображений получено` : "Изображение получено от Forge");
     }
   } catch (e) {
     toast("Forge error: " + e.message);
   } finally {
+    _forgeProgressStop();
     if (btn) { btn.disabled = false; btn.textContent = "Send to Forge ▶"; }
   }
 }

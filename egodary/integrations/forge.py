@@ -66,57 +66,140 @@ def check_forge_health(settings: dict) -> dict:
 
 
 def fetch_forge_models(settings: dict) -> list[str]:
-    """Return list of available checkpoint names from Forge."""
     base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
-    timeout = float(settings.get("timeout", 10.0))
+    timeout = float(settings.get("catalog_timeout", 30.0))
     try:
         data = _request_json(f"{base_url}/sdapi/v1/sd-models", timeout=timeout) or []
-        if isinstance(data, list):
-            return [m.get("title") or m.get("model_name", "") for m in data if m]
-        return []
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
+        if not isinstance(data, list):
+            logger.warning("fetch_forge_models: unexpected response type %s", type(data))
+            return []
+        names = sorted(
+            {m.get("title") or m.get("model_name") or "" for m in data if m},
+            key=str.lower,
+        )
+        return [n for n in names if n]
+    except Exception as exc:
+        logger.warning("fetch_forge_models failed: %s", exc)
         return []
 
 
 def fetch_forge_samplers(settings: dict) -> list[str]:
-    """Return list of sampler names from Forge."""
     base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
-    timeout = float(settings.get("timeout", 10.0))
+    timeout = float(settings.get("catalog_timeout", 30.0))
     try:
         data = _request_json(f"{base_url}/sdapi/v1/samplers", timeout=timeout) or []
-        if isinstance(data, list):
-            return [s.get("name", "") for s in data if s]
-        return []
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
+        if not isinstance(data, list):
+            logger.warning("fetch_forge_samplers: unexpected response type %s", type(data))
+            return []
+        names = sorted(
+            {s.get("name") or "" for s in data if s},
+            key=str.lower,
+        )
+        return [n for n in names if n]
+    except Exception as exc:
+        logger.warning("fetch_forge_samplers failed: %s", exc)
         return []
 
 
 def fetch_forge_upscalers(settings: dict) -> list[str]:
-    """Return list of upscaler names from Forge."""
     base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
-    timeout = float(settings.get("timeout", 10.0))
+    timeout = float(settings.get("catalog_timeout", 30.0))
     try:
         data = _request_json(f"{base_url}/sdapi/v1/upscalers", timeout=timeout) or []
-        if isinstance(data, list):
-            return [u.get("name", "") for u in data if u and u.get("name")]
+        if not isinstance(data, list):
+            logger.warning("fetch_forge_upscalers: unexpected response type %s", type(data))
+            return []
+        names = sorted(
+            {u.get("name") or u.get("model_name") or "" for u in data if u},
+            key=str.lower,
+        )
+        result = [n for n in names if n]
+        logger.debug("fetch_forge_upscalers: %d items", len(result))
+        return result
+    except Exception as exc:
+        logger.warning("fetch_forge_upscalers failed: %s", exc)
         return []
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
-        return []
+
+
+_SCHEDULER_FALLBACK = [
+    "Automatic", "Beta", "DDim", "DDPM", "DPM++ 2M",
+    "Euler", "Exponential", "Karras", "LCM", "Linear Quadratic",
+    "Polyexponential", "SGM Uniform", "Simple", "Turbo",
+]
 
 
 def fetch_forge_schedulers(settings: dict) -> list[str]:
-    """Return list of scheduler names from Forge (Forge-specific endpoint)."""
+    base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
+    timeout = float(settings.get("catalog_timeout", 30.0))
+    try:
+        data = _request_json(f"{base_url}/sdapi/v1/schedulers", timeout=timeout) or []
+        if not isinstance(data, list):
+            logger.warning("fetch_forge_schedulers: unexpected response type %s", type(data))
+            return _SCHEDULER_FALLBACK
+        names = sorted(
+            {s.get("label") or s.get("name") or "" for s in data if s},
+            key=str.lower,
+        )
+        result = [n for n in names if n]
+        return result if result else _SCHEDULER_FALLBACK
+    except Exception as exc:
+        logger.warning("fetch_forge_schedulers failed: %s", exc)
+        return _SCHEDULER_FALLBACK
+
+
+
+def get_forge_progress(settings: dict) -> dict:
+    """Poll /sdapi/v1/progress and return a normalised dict.
+
+    Returns:
+        progress  float 0–1
+        step      int
+        steps     int
+        phase     "txt2img" | "hires" | "idle"
+        eta       float seconds
+        image     str | None  base64 preview (may be absent when skip_current_image=True)
+    """
     base_url = settings.get("base_url", "http://127.0.0.1:7860").rstrip("/")
     timeout = float(settings.get("timeout", 10.0))
     try:
-        data = _request_json(f"{base_url}/sdapi/v1/schedulers", timeout=timeout) or []
-        if isinstance(data, list):
-            return [s.get("label") or s.get("name", "") for s in data if s]
-        return []
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError):
-        # Older A1111 builds don't have this endpoint — return common defaults
-        return ["Karras", "Exponential", "Polyexponential", "SGM Uniform", "Simple", "DDIM"]
-
+        data = _request_json(
+            f"{base_url}/sdapi/v1/progress?skip_current_image=false",
+            timeout=timeout,
+        ) or {}
+        state = data.get("state") or {}
+        progress = float(data.get("progress") or 0.0)
+        step = int(state.get("sampling_step") or 0)
+        steps = int(state.get("sampling_steps") or 0)
+        job_no = int(state.get("job_no") or 0)
+        job_count = int(state.get("job_count") or 1)
+        # hires fix runs as job_no=1 when job_count=2
+        if job_count >= 2 and job_no >= 1:
+            phase = "hires"
+        elif progress > 0:
+            phase = "txt2img"
+        else:
+            phase = "idle"
+        return {
+            "ok": True,
+            "progress": progress,
+            "step": step,
+            "steps": steps,
+            "phase": phase,
+            "eta": float(data.get("eta_relative") or 0.0),
+            "image": data.get("current_image"),
+            "error": None,
+        }
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
+        return {
+            "ok": False,
+            "progress": 0.0,
+            "step": 0,
+            "steps": 0,
+            "phase": "idle",
+            "eta": 0.0,
+            "image": None,
+            "error": str(exc),
+        }
 
 
 def send_to_forge(
@@ -153,6 +236,7 @@ def send_to_forge(
         "scheduler": settings.get("default_scheduler", "Karras"),
         "width": int(settings.get("default_width", 832)),
         "height": int(settings.get("default_height", 1216)),
+        "batch_size": max(1, min(4, int(settings.get("batch_size", 1)))),
         "send_images": True,
         "save_images": bool(settings.get("save_images", False)),
     }
@@ -163,7 +247,15 @@ def send_to_forge(
         payload["hr_upscaler"] = settings.get("hires_upscaler", "4x-UltraSharp")
         payload["hr_second_pass_steps"] = int(settings.get("hires_steps", 15))
         payload["denoising_strength"] = float(settings.get("hires_denoising", 0.45))
-        payload["hr_additional_modules"] = ["Use same choices"]
+        resize_x = int(settings.get("hires_resize_x", 0))
+        resize_y = int(settings.get("hires_resize_y", 0))
+        if resize_x > 0:
+            payload["hr_resize_x"] = resize_x
+        if resize_y > 0:
+            payload["hr_resize_y"] = resize_y
+        hires_cfg = float(settings.get("hires_cfg", 0.0))
+        if hires_cfg > 0:
+            payload["hr_cfg_scale"] = hires_cfg
 
     checkpoint = settings.get("default_checkpoint", "")
     if checkpoint:
@@ -178,14 +270,9 @@ def send_to_forge(
             else:
                 payload[k] = v
 
-    # Forge crashes if hr_additional_modules is absent when enable_hr=True
-    if payload.get("enable_hr") and "hr_additional_modules" not in payload:
-        payload["hr_additional_modules"] = ["Use same choices"]
-
-    # Safety: denoising_strength must always be a float when enable_hr is True
-    if payload.get("enable_hr"):
-        if not payload.get("denoising_strength"):
-            payload["denoising_strength"] = 0.45       
+    # denoising_strength must be set when enable_hr is True; 0 is valid (no change)
+    if payload.get("enable_hr") and "denoising_strength" not in payload:
+        payload["denoising_strength"] = 0.45
 
     try:
         resp = _request_json(
